@@ -7,15 +7,53 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  color: var(--foreground);
+  background: #fafafa;
+  font-family: var(--font-inter);
+}
+
+/* Table of Contents styling */
+#ez-toc-container {
+  @apply bg-gray-50 p-6 rounded-lg mb-8;
+}
+
+#ez-toc-container .ez-toc-title {
+  @apply text-xl font-bold mb-4;
+}
+
+#ez-toc-container .ez-toc-list {
+  @apply space-y-2;
+}
+
+#ez-toc-container .ez-toc-link {
+  @apply text-green-600 hover:underline;
+}
+
+#ez-toc-container .ez-toc-toggle {
+  @apply hidden;
+}
+
+/* Image hover effects */
+.prose figure img {
+  @apply transition-all duration-300 ease-in-out rounded-2xl;
+}
+
+.prose figure:hover img {
+  @apply shadow-xl transform scale-[1.02] rounded-2xl;
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
 }
