@@ -35,22 +35,36 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
     setErrorMessage(null);
 
     try {
-      // First process the order
+      // Create the payment using payment element
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        console.error('Submit error:', submitError);
+        throw submitError;
+      }
+
+      // First create the order
       await onSuccess();
       
       // Get the order ID from session storage
       const orderId = sessionStorage.getItem('lastOrderId');
       
+      if (!orderId) {
+        throw new Error('Chyba pri vytváraní objednávky - chýba ID objednávky');
+      }
+
       // Then confirm the payment with the order ID in return URL
-      const { error } = await stripe.confirmPayment({
+      const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
           return_url: `${window.location.origin}/objednavka/uspesna/${orderId}`,
-        },
+        }
       });
 
-      if (error) {
-        const message = error.message || 'Nastala chyba pri spracovaní platby.';
+      console.log('Payment confirmation result:', result);
+
+      if (result.error) {
+        console.error('Confirmation error:', result.error);
+        const message = result.error.message || 'Nastala chyba pri spracovaní platby.';
         setErrorMessage(message);
         onError(message);
         toast.error('Platba zlyhala', {
@@ -58,8 +72,8 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
         });
       }
     } catch (error) {
-      const message = 'Nastala neočakávaná chyba pri spracovaní platby.';
-      console.error('Payment error:', error);
+      console.error('Full payment error:', error);
+      const message = error instanceof Error ? error.message : 'Nastala neočakávaná chyba pri spracovaní platby.';
       setErrorMessage(message);
       onError(message);
       toast.error('Platba zlyhala', {
@@ -80,7 +94,7 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
               <PaymentElement 
                 options={{
                   layout: 'tabs',
-                  paymentMethodOrder: ['card', 'apple_pay', 'google_pay'],
+                  paymentMethodOrder: ['card'],
                   defaultValues: {
                     billingDetails: {
                       name: '',
@@ -91,8 +105,8 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
                     billingDetails: 'auto'
                   },
                   wallets: {
-                    applePay: 'auto',
-                    googlePay: 'auto'
+                    applePay: 'never',
+                    googlePay: 'never'
                   }
                 }}
                 className="p-4"
@@ -112,22 +126,21 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
           <button
             type="submit"
             disabled={!stripe || isLoading}
-            className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 relative overflow-hidden group"
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 relative"
           >
-            <span className={`inline-flex items-center justify-center gap-2 transition-all duration-200 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-                <path fillRule="evenodd" d="M2.5 4A1.5 1.5 0 001 5.5V6h18v-.5A1.5 1.5 0 0017.5 4h-15zM19 8.5H1v6A1.5 1.5 0 002.5 16h15a1.5 1.5 0 001.5-1.5v-6zM3 13.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5a.75.75 0 01-.75-.75zm4.75-.75a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5h-3.5z" clipRule="evenodd" />
-              </svg>
-              Zaplatiť
-            </span>
-            {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-green-600">
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
+                <span>Spracovávam...</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                  <path fillRule="evenodd" d="M2.5 4A1.5 1.5 0 001 5.5V6h18v-.5A1.5 1.5 0 0017.5 4h-15zM19 8.5H1v6A1.5 1.5 0 002.5 16h15a1.5 1.5 0 001.5-1.5v-6zM3 13.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5a.75.75 0 01-.75-.75zm4.75-.75a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5h-3.5z" clipRule="evenodd" />
+                </svg>
+                <span>Zaplatiť</span>
               </div>
             )}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="h-full w-full absolute inset-0 scale-0 rounded-lg bg-green-500 transition-all duration-300 group-hover:scale-100 group-active:scale-95" />
-            </div>
           </button>
 
           <div className="mt-4 flex items-center justify-center space-x-4 text-sm text-gray-500">

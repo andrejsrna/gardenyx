@@ -1300,56 +1300,59 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        <div className="mt-8">
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="create_account"
-              checked={formData.create_account}
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                create_account: e.target.checked,
-                // Clear password if unchecked
-                account_password: e.target.checked ? prev.account_password : ''
-              }))}
-              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-            />
-            <label htmlFor="create_account" className="text-sm text-gray-700">
-              Vytvoriť účet pre budúce objednávky
-            </label>
-          </div>
-
-          {formData.create_account && (
-            <div className="mt-4">
-              <div className="relative">
-                <input
-                  type="password"
-                  id="account_password"
-                  required={formData.create_account}
-                  value={formData.account_password}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    account_password: e.target.value
-                  }))}
-                  className="peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent"
-                  placeholder="Heslo"
-                  minLength={8}
-                />
-                <label
-                  htmlFor="account_password"
-                  className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                           peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                           peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-                >
-                  Heslo pre váš účet
-                </label>
-                <p className="mt-1 text-xs text-gray-500">
-                  Heslo musí mať aspoň 8 znakov
-                </p>
-              </div>
+        {/* Create Account Section */}
+        {!customerData && (
+          <div className="mt-8">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="create_account"
+                checked={formData.create_account}
+                onChange={(e) => setFormData(prev => ({ 
+                  ...prev, 
+                  create_account: e.target.checked,
+                  // Clear password if unchecked
+                  account_password: e.target.checked ? prev.account_password : ''
+                }))}
+                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+              />
+              <label htmlFor="create_account" className="text-sm text-gray-700">
+                Vytvoriť účet pre budúce objednávky
+              </label>
             </div>
-          )}
-        </div>
+
+            {formData.create_account && (
+              <div className="mt-4">
+                <div className="relative">
+                  <input
+                    type="password"
+                    id="account_password"
+                    required={formData.create_account}
+                    value={formData.account_password}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      account_password: e.target.value
+                    }))}
+                    className="peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent"
+                    placeholder="Heslo"
+                    minLength={8}
+                  />
+                  <label
+                    htmlFor="account_password"
+                    className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
+                             peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
+                             peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
+                  >
+                    Heslo pre váš účet
+                  </label>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Heslo musí mať aspoň 8 znakov
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <button
           type="submit"
