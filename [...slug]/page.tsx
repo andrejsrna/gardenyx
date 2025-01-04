@@ -1,4 +1,24 @@
-export default async function BlogPost({ params }: PageProps) {
+import { getPostBySlug } from '@/app/lib/wordpress';
+
+type tParams = Promise<{ slug: string[] }>;
+
+interface Post {
+  title: { rendered: string };
+  content: { rendered: string };
+  date: string;
+}
+
+export default async function BlogPost({ params }: { params: tParams }) {
+  const { slug } = await params;
+  const slugPath = slug.join('/');
+  const post = await getPostBySlug(slugPath) as Post;
+
+  const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   return (
     <article className="max-w-4xl mx-auto px-4 py-16">
       <header className="mb-8">

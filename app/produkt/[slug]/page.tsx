@@ -6,14 +6,15 @@ import { notFound } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
 
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const product = await getProduct(params.slug);
+  const { slug } = await params;
+  const product = await getProduct(slug);
   
   if (!product) {
     return {
@@ -49,7 +50,8 @@ async function getProduct(slug: string) {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = await getProduct(params.slug);
+  const { slug } = await params;
+  const product = await getProduct(slug);
 
   if (!product) {
     notFound();

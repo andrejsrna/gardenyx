@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
@@ -35,8 +35,7 @@ interface BillingFormData {
 
 export default function AccountPage() {
   const router = useRouter();
-  const { isAuthenticated, customerData: authCustomerData, login: authLogin, logout: authLogout } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated, customerData, login: authLogin, logout: authLogout, isLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [formData, setFormData] = useState({
@@ -58,73 +57,44 @@ export default function AccountPage() {
     country: 'SK'
   });
 
-  useEffect(() => {
-    const loadOrders = async () => {
-      if (isAuthenticated && authCustomerData?.id) {
-        try {
-          await fetchOrders();
-        } catch (error) {
-          console.error('Failed to load orders:', error);
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
-
-    loadOrders();
-  }, [isAuthenticated, authCustomerData]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async (customerId: number) => {
     try {
-      if (!authCustomerData?.id) {
-        throw new Error('Nie ste prihlásený');
-      }
-
-      const ordersResponse = await fetch('/api/woocommerce/orders/customer', {
+      const response = await fetch('/api/woocommerce/orders/customer', {
         headers: {
-          'Authorization': `Bearer ${authCustomerData.id}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${customerId}`
         }
       });
-
-      if (!ordersResponse.ok) {
-        const errorData = await ordersResponse.json();
-        throw new Error(errorData.message || 'Nepodarilo sa načítať objednávky');
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders');
       }
-
-      const data = await ordersResponse.json();
+      const data = await response.json();
       setOrders(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
-      toast.error('Nepodarilo sa načítať objednávky');
-    } finally {
-      setIsLoading(false);
+      toast.error('Chyba pri načítaní objednávok');
+      setOrders([]);
     }
-  };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
     try {
-      const userData = await authLogin(formData.email, formData.password);
-      if (userData) {
-        toast.success('Prihlásenie úspešné');
-      } else {
-        throw new Error('Nepodarilo sa načítať údaje používateľa');
-      }
+      await authLogin(formData.email, formData.password);
+      toast.success('Prihlásenie úspešné');
+      // Reload the page after successful login
+      window.location.reload();
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Prihlásenie zlyhalo', {
         description: 'Nesprávne prihlasovacie údaje alebo iná chyba',
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleLogout = async () => {
     try {
+      setOrders([]); // Clear orders immediately
       await authLogout();
       toast.success('Odhlásenie úspešné');
     } catch (error) {
@@ -196,19 +166,26 @@ export default function AccountPage() {
   };
 
   useEffect(() => {
-    if (authCustomerData?.billing) {
+    if (customerData?.billing) {
       setBillingFormData({
-        first_name: authCustomerData.billing.first_name || authCustomerData.first_name || '',
-        last_name: authCustomerData.billing.last_name || authCustomerData.last_name || '',
-        email: authCustomerData.billing.email || authCustomerData.email || '',
-        phone: authCustomerData.billing.phone || '',
-        address_1: authCustomerData.billing.address_1 || '',
-        city: authCustomerData.billing.city || '',
-        postcode: authCustomerData.billing.postcode || '',
-        country: authCustomerData.billing.country || 'SK'
+        first_name: customerData.billing.first_name || customerData.first_name || '',
+        last_name: customerData.billing.last_name || customerData.last_name || '',
+        email: customerData.billing.email || customerData.email || '',
+        phone: customerData.billing.phone || '',
+        address_1: customerData.billing.address_1 || '',
+        city: customerData.billing.city || '',
+        postcode: customerData.billing.postcode || '',
+        country: customerData.billing.country || 'SK'
       });
     }
-  }, [authCustomerData]);
+  }, [customerData]);
+
+  // Also fetch orders when customerData becomes available
+  useEffect(() => {
+    if (customerData?.id) {
+      fetchOrders(customerData.id);
+    }
+  }, [customerData?.id, fetchOrders]);
 
   if (isLoading) {
     return (
@@ -503,7 +480,7 @@ export default function AccountPage() {
             </div>
           )}
 
-          {activeTab === 'account' && authCustomerData && (
+          {activeTab === 'account' && customerData && (
             <div className="bg-white rounded-lg shadow-sm">
               <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -648,25 +625,25 @@ export default function AccountPage() {
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Meno</dt>
                       <dd className="mt-1 text-sm text-gray-900">
-                        {authCustomerData.billing?.first_name || authCustomerData.first_name || '-'}
+                        {customerData.billing?.first_name || customerData.first_name || '-'}
                       </dd>
                     </div>
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Priezvisko</dt>
                       <dd className="mt-1 text-sm text-gray-900">
-                        {authCustomerData.billing?.last_name || authCustomerData.last_name || '-'}
+                        {customerData.billing?.last_name || customerData.last_name || '-'}
                       </dd>
                     </div>
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Email</dt>
                       <dd className="mt-1 text-sm text-gray-900">
-                        {authCustomerData.email || '-'}
+                        {customerData.email || '-'}
                       </dd>
                     </div>
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Telefón</dt>
                       <dd className="mt-1 text-sm text-gray-900">
-                        {authCustomerData.billing?.phone || '-'}
+                        {customerData.billing?.phone || '-'}
                       </dd>
                     </div>
                     <div className="sm:col-span-2">
@@ -674,11 +651,11 @@ export default function AccountPage() {
                         Fakturačná adresa
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900">
-                        {authCustomerData.billing?.address_1 || '-'}
+                        {customerData.billing?.address_1 || '-'}
                         <br />
-                        {authCustomerData.billing?.postcode} {authCustomerData.billing?.city}
+                        {customerData.billing?.postcode} {customerData.billing?.city}
                         <br />
-                        {authCustomerData.billing?.country || '-'}
+                        {customerData.billing?.country || '-'}
                       </dd>
                     </div>
                   </dl>

@@ -6,13 +6,12 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface OrderStatusPageProps {
-  params: {
-    status?: string;
-  };
+  params: Promise<{
+    status: string;
+  }>;
 }
 
-export default function OrderStatusPage({ params }: OrderStatusPageProps) {
-  const { status } = params;
+function OrderStatusContent({ status }: { status: string }) {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order');
   const [isValidOrder, setIsValidOrder] = useState(false);
@@ -24,8 +23,6 @@ export default function OrderStatusPage({ params }: OrderStatusPageProps) {
       setIsValidOrder(true);
     }
   }, [orderId]);
-
-  console.log('Current status:', status, 'Order ID:', orderId);
 
   const getStatusContent = () => {
     // If we have an order ID but no status, treat it as success
@@ -94,28 +91,20 @@ export default function OrderStatusPage({ params }: OrderStatusPageProps) {
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-8">
           <div className="text-center space-y-6">
-            {/* Icon */}
             <div className="flex justify-center">
               {content.icon}
             </div>
-
-            {/* Title */}
             <h1 className="text-2xl font-bold text-gray-900">
               {content.title}
             </h1>
-
-            {/* Message */}
             <p className="text-gray-600">
               {content.message}
             </p>
-
             {orderId && (
               <p className="text-sm text-gray-500">
                 Číslo objednávky: {orderId}
               </p>
             )}
-
-            {/* Button */}
             <div className="pt-4">
               <Link
                 href={content.buttonLink}
@@ -129,4 +118,9 @@ export default function OrderStatusPage({ params }: OrderStatusPageProps) {
       </div>
     </main>
   );
+}
+
+export default async function OrderStatusPage({ params }: OrderStatusPageProps) {
+  const { status } = await params;
+  return <OrderStatusContent status={status} />;
 } 

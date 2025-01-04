@@ -7,10 +7,10 @@ import { getRankMathSEO } from '../lib/wordpress';
 import { parseHTML } from '../lib/html-parser';
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     search?: string;
-  };
+  }>;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -95,8 +95,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BlogPage({ searchParams }: PageProps) {
-  const currentPage = Number(searchParams.page) || 1;
-  const searchQuery = searchParams.search || '';
+  const params = await searchParams;
+  const currentPage = Number(params.page) || 1;
+  const searchQuery = params.search || '';
   
   const { posts, totalPages, totalPosts } = await getPaginatedPosts({
     page: currentPage,

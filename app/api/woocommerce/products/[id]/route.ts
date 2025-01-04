@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const response = await fetch(
-      `${process.env.WORDPRESS_URL}/wp-json/wc/v3/products/${params.id}`,
+      `${process.env.WORDPRESS_URL}/wp-json/wc/v3/products/${id}`,
       {
         headers: {
           Authorization: `Basic ${Buffer.from(

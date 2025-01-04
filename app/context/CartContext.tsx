@@ -1,9 +1,10 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { fbq } from '../components/FacebookPixel';
-import { gtag } from '../components/GoogleAnalytics';
+import { event as gtagEvent } from '../components/GoogleAnalytics';
 import { trackConversion } from '../components/GoogleAds';
+import { toast } from 'sonner';
 
 interface CartItem {
   id: number;
@@ -27,6 +28,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const lastActionRef = useRef<{ type: 'add' | 'update', itemId: number } | null>(null);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -41,13 +43,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
+  // Handle toast notifications
+  useEffect(() => {
+    if (lastActionRef.current) {
+      const message = lastActionRef.current.type === 'add' 
+        ? 'Produkt bol pridaný do košíka'
+        : 'Množstvo produktu v košíku bolo aktualizované';
+      
+      toast.success(message);
+      lastActionRef.current = null;
+    }
+  }, [items]);
+
   const addToCart = (item: CartItem) => {
     setItems(prevItems => {
       const existingItem = prevItems.find(i => i.id === item.id);
+      let updatedItems;
       
       if (existingItem) {
         // Track AddToCart event in GA4
-        gtag('event', 'add_to_cart', {
+        gtagEvent('add_to_cart', {
           currency: 'EUR',
           value: item.price * (existingItem.quantity + item.quantity),
           items: [{
@@ -71,42 +86,46 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           content_type: 'product'
         });
 
-        return prevItems.map(i =>
+        lastActionRef.current = { type: 'update', itemId: item.id };
+        updatedItems = prevItems.map(i =>
           i.id === item.id
             ? { ...i, quantity: i.quantity + item.quantity }
             : i
         );
+      } else {
+        // Track AddToCart event for new item in GA4
+        gtagEvent('add_to_cart', {
+          currency: 'EUR',
+          value: item.price * item.quantity,
+          items: [{
+            item_id: item.id.toString(),
+            item_name: item.name,
+            price: item.price,
+            quantity: item.quantity
+          }]
+        });
+
+        // Track AddToCart event for new item
+        fbq('track', 'AddToCart', {
+          content_ids: [item.id],
+          content_name: item.name,
+          value: item.price * item.quantity,
+          currency: 'EUR',
+          contents: [{
+            id: item.id,
+            quantity: item.quantity
+          }],
+          content_type: 'product'
+        });
+
+        // Track add to cart conversion
+        trackConversion('ADD_TO_CART_CONVERSION_ID', item.price * item.quantity);
+
+        lastActionRef.current = { type: 'add', itemId: item.id };
+        updatedItems = [...prevItems, item];
       }
 
-      // Track AddToCart event for new item in GA4
-      gtag('event', 'add_to_cart', {
-        currency: 'EUR',
-        value: item.price * item.quantity,
-        items: [{
-          item_id: item.id.toString(),
-          item_name: item.name,
-          price: item.price,
-          quantity: item.quantity
-        }]
-      });
-
-      // Track AddToCart event for new item
-      fbq('track', 'AddToCart', {
-        content_ids: [item.id],
-        content_name: item.name,
-        value: item.price * item.quantity,
-        currency: 'EUR',
-        contents: [{
-          id: item.id,
-          quantity: item.quantity
-        }],
-        content_type: 'product'
-      });
-
-      // Track add to cart conversion
-      trackConversion('ADD_TO_CART_CONVERSION_ID', item.price * item.quantity);
-
-      return [...prevItems, item];
+      return updatedItems;
     });
   };
 

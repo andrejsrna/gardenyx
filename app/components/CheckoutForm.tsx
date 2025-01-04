@@ -1,11 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { getShippingMethods, getPaymentGateways, createOrder } from '../lib/wordpress';
-import type { PaymentGateway, CheckoutFormData, ShippingMethod } from '../lib/wordpress';
+import type { PaymentGateway, CheckoutFormData } from '../lib/wordpress';
 import PacketaPointSelector from './PacketaPointSelector';
 import type { PacketaPoint } from '../lib/packeta';
+import { transformPacketaDataToMetadata } from '../lib/packeta';
 import { toast } from 'sonner';
 import Image from 'next/image';
+
+interface ShippingMethod {
+  id: string | number;
+  title: string | null;
+  description?: string;
+  enabled: boolean;
+  method_id: string;
+  settings?: {
+    cost?: {
+      value: string;
+    };
+  };
+}
 
 interface SavedFormData {
   billing: {
@@ -39,30 +53,38 @@ export default function CheckoutForm() {
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true);
 
   const [formData, setFormData] = useState<Partial<CheckoutFormData>>({
-    shipping: {
-      first_name: '',
-      last_name: '',
-      address_1: '',
-      city: '',
-      postcode: '',
-      country: 'SK',
-      company: '',
-      address_2: '',
-      state: ''
-    },
     billing: {
       first_name: '',
       last_name: '',
       email: '',
       phone: '',
       address_1: '',
+      address_2: '',
       city: '',
       postcode: '',
       country: 'SK',
-      company: '',
+      state: '',
+    },
+    shipping: {
+      first_name: '',
+      last_name: '',
+      address_1: '',
       address_2: '',
-      state: ''
-    }
+      city: '',
+      postcode: '',
+      country: 'SK',
+      state: '',
+    },
+    shipping_method: '',
+    payment_method: '',
+    payment_method_title: '',
+    customer_note: '',
+    line_items: items.map(item => ({
+      product_id: item.id,
+      quantity: item.quantity,
+    })),
+    meta_data: [],
+    shipping_lines: []
   });
 
   // Load saved form data from localStorage on component mount
@@ -157,7 +179,8 @@ export default function CheckoutForm() {
     }
   }, [formData.billing, formData.shipping]);
 
-  const isPacketaPickupMethod = (methodId: string | number) => {
+  const isPacketaPickupMethod = (methodId: string | number | undefined) => {
+    if (!methodId) return false;
     // Convert methodId to string to ensure includes() works
     const id = String(methodId);
     return id === 'packeta_pickup';
@@ -227,38 +250,32 @@ export default function CheckoutForm() {
       [section]: {
         ...prev[section],
         [field]: value,
-      },
+      } as CheckoutFormData[typeof section],
       ...(useShippingAsBilling && section === 'billing'
         ? {
             shipping: {
               ...prev.shipping,
               [field]: value,
-            },
+            } as CheckoutFormData['shipping'],
           }
         : {}),
     }));
   };
 
-  const handlePacketaPointSelect = (point: PacketaPoint) => {
-    setSelectedPacketaPoint(point);
-
-    const newFormData: Partial<CheckoutFormData> = {
-      ...formData,
-      shipping: {
-        first_name: formData.billing?.first_name || 'Packeta',
-        last_name: formData.billing?.last_name || 'Pickup',
-        address_1: point.street,
-        city: point.city,
-        postcode: point.zip,
-        country: point.country,
-        company: '',
-        address_2: '',
-        state: ''
-      } as CheckoutFormData['shipping'],
-      shipping_method: 'packeta'
+  const handlePacketaPointSelect = (point: { id: string; name: string; street: string; city: string; zip: string; }) => {
+    setSelectedPacketaPoint(point as PacketaPoint);
+    const packetaData = {
+      point_id: point.id,
+      point_name: point.name,
+      point_address: `${point.street}, ${point.city} ${point.zip}`,
     };
 
-    setFormData(newFormData);
+    const metadata = transformPacketaDataToMetadata(packetaData);
+    setFormData(prev => ({
+      ...prev,
+      meta_data: metadata,
+      packeta_data: packetaData,
+    }));
   };
 
   const handleShippingMethodChange = (method: ShippingMethod) => {
@@ -367,11 +384,6 @@ export default function CheckoutForm() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Update PacketaPointSelector props
-  const packetaProps = {
-    onSelect: handlePacketaPointSelect
   };
 
   return (
@@ -619,10 +631,12 @@ export default function CheckoutForm() {
       </div>
 
       {/* Packeta Point Selector - only show for Z-Point shipping method */}
-      {isPacketaPickupMethod(formData.shipping_method || '') && (
+      {isPacketaPickupMethod(formData.shipping_method) && (
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Výber odberného miesta</h2>
-          <PacketaPointSelector {...packetaProps} />
+          <PacketaPointSelector
+            onSelect={handlePacketaPointSelect}
+          />
         </div>
       )}
 
@@ -713,9 +727,11 @@ export default function CheckoutForm() {
             <div className="flex justify-between text-lg font-bold pt-3 border-t border-gray-200">
               <span>Celková suma</span>
               <span className="text-green-600">
-                {(totalPrice + (shippingMethods.find(method => method.id === formData.shipping_method)?.settings?.cost?.value 
-                  ? parseFloat(shippingMethods.find(method => method.id === formData.shipping_method)?.settings?.cost?.value) 
-                  : 0)).toFixed(2)} €
+                {(() => {
+                  const selectedMethod = shippingMethods.find(method => method.id === formData.shipping_method);
+                  const shippingCost = selectedMethod?.settings?.cost?.value ? parseFloat(selectedMethod.settings.cost.value) : 0;
+                  return (totalPrice + shippingCost).toFixed(2);
+                })()} €
               </span>
             </div>
           </div>

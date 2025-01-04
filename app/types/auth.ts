@@ -15,8 +15,9 @@ interface UserBilling extends UserAddress {
   dic_dph?: string;
 }
 
-interface User {
+export interface User {
   id: number;
+  username?: string;
   email: string;
   first_name: string;
   last_name: string;

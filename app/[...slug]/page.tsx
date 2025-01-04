@@ -5,11 +5,7 @@ import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
 import { parseHTML } from '../lib/html-parser';
 import Toast from '../components/Toast';
 
-interface PageProps {
-  params: Promise<{
-    slug: string[];
-  }>;
-}
+type tParams = Promise<{ slug: string[] }>;
 
 interface PostEmbedded {
   'wp:featuredmedia'?: { source_url: string; }[];
@@ -19,12 +15,14 @@ interface PostEmbedded {
 interface Post {
   title: { rendered: string };
   content: { rendered: string };
+  excerpt: { rendered: string };
   date: string;
+  link: string;
   _embedded?: PostEmbedded;
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: tParams }): Promise<Metadata> {
   const { slug } = await params;
   const slugPath = slug.join('/');
   
@@ -63,7 +61,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function BlogPost({ params }: PageProps) {
+export default async function BlogPost({ params }: { params: tParams }) {
   const { slug } = await params;
   const slugPath = slug.join('/');
   const post = await getPostBySlug(slugPath) as Post;

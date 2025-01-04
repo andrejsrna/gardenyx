@@ -10,7 +10,7 @@ import PacketaPointSelector from '../components/PacketaPointSelector';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
 import { fbq } from '../components/FacebookPixel';
-import { gtag } from '../components/GoogleAnalytics';
+import { event as gtagEvent } from '../components/GoogleAnalytics';
 import { trackConversion } from '../components/GoogleAds';
 
 interface PacketaPoint {
@@ -153,7 +153,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     // Track begin_checkout event in GA4
-    gtag('event', 'begin_checkout', {
+    gtagEvent('begin_checkout', {
       currency: 'EUR',
       value: totalPrice,
       items: items.map(item => ({
@@ -480,7 +480,7 @@ export default function CheckoutPage() {
       }
 
       // Track purchase event in GA4
-      gtag('event', 'purchase', {
+      gtagEvent('purchase', {
         transaction_id: response.order.id.toString(),
         value: finalTotal,
         currency: 'EUR',
@@ -694,7 +694,10 @@ export default function CheckoutPage() {
           </div>
           <div className="h-px bg-gray-200 my-2"></div>
           <div className="flex justify-between text-lg">
-            <span className="font-medium text-gray-900">Celková suma</span>
+            <div>
+              <span className="font-medium text-gray-900">Celková suma</span>
+              <div className="text-xs font-normal text-gray-500">Cena vrátane DPH</div>
+            </div>
             <span className="font-bold text-green-600">{finalAmount.toFixed(2)} €</span>
           </div>
         </div>
@@ -1288,7 +1291,10 @@ export default function CheckoutPage() {
               </div>
             )}
             <div className="border-t pt-4 flex justify-between items-center font-bold">
-              <span>Celková suma</span>
+              <div>
+                <span>Celková suma</span>
+                <div className="text-xs font-normal text-gray-500">Cena vrátane DPH</div>
+              </div>
               <span>{finalTotal.toFixed(2)} €</span>
             </div>
           </div>

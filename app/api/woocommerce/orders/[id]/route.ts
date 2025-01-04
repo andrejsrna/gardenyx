@@ -7,10 +7,10 @@ const WOO_CONSUMER_SECRET = process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET;
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const updateData = await request.json();
 
     const url = `${WORDPRESS_URL}/wp-json/wc/v3/orders/${id}`;
