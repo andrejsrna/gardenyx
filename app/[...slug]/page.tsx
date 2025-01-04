@@ -26,39 +26,103 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
   const { slug } = await params;
   const slugPath = slug.join('/');
   
-  // Get RankMath SEO data
-  const seoData = await getRankMathSEO(`https://najsilnejsiaklbovavyziva.sk/${slugPath}`);
-  
-  if (!seoData) {
+  try {
+    // First try to get the post data
     const post = await getPostBySlug(slugPath);
-    // Fallback to basic metadata if RankMath data is not available
+    if (!post) {
+      return notFound();
+    }
+
+    // Get the date components from the post date
+    const postDate = new Date(post.date);
+    const year = postDate.getFullYear();
+    const month = String(postDate.getMonth() + 1).padStart(2, '0');
+    const day = String(postDate.getDate()).padStart(2, '0');
+
+    // Create the WordPress permalink structure
+    const postSlug = slug[slug.length - 1]; // Get the actual post slug
+    const wpPermalink = `${year}/${month}/${day}/${postSlug}`;
+
+    // Then try to get RankMath SEO data with the correct permalink structure
+    const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/${wpPermalink}`);
+    
+    if (seoData) {
+      // Parse the head HTML using our utility
+      const parser = parseHTML(seoData.head);
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+      
+      return {
+        title: parser.getTitle() || post.title.rendered,
+        description: parser.getMetaTag('description') || post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+        openGraph: {
+          title: parser.getMetaTag('og:title') || post.title.rendered,
+          description: parser.getMetaTag('og:description') || post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+          url: parser.getMetaTag('og:url') || `${siteUrl}/${wpPermalink}`,
+          siteName: 'Najsilnejšia kĺbová výživa',
+          images: parser.getMetaTag('og:image') 
+            ? [{ url: parser.getMetaTag('og:image')! }] 
+            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
+              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+              : [],
+          locale: 'sk_SK',
+          type: 'article',
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: parser.getMetaTag('twitter:title') || post.title.rendered,
+          description: parser.getMetaTag('twitter:description') || post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+          images: parser.getMetaTag('twitter:image') 
+            ? [{ url: parser.getMetaTag('twitter:image')! }]
+            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
+              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+              : [],
+        },
+        alternates: {
+          canonical: parser.getCanonical() || `${siteUrl}/${wpPermalink}`,
+        },
+        robots: {
+          index: true,
+          follow: true,
+        },
+      };
+    }
+
+    // Fallback to basic metadata from post data
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     return {
-      title: post?.title.rendered || 'Blog Post',
-      description: post?.excerpt.rendered?.replace(/(<([^>]+)>)/gi, '') || '',
+      title: post.title.rendered,
+      description: post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
       openGraph: {
-        images: post?._embedded?.['wp:featuredmedia']?.[0]?.source_url ? [post._embedded['wp:featuredmedia'][0].source_url] : [],
+        title: post.title.rendered,
+        description: post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+        url: `${siteUrl}/${wpPermalink}`,
+        siteName: 'Najsilnejšia kĺbová výživa',
+        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
+          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+          : [],
+        locale: 'sk_SK',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title.rendered,
+        description: post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
+          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+          : [],
+      },
+      alternates: {
+        canonical: `${siteUrl}/${wpPermalink}`,
+      },
+      robots: {
+        index: true,
+        follow: true,
       },
     };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return notFound();
   }
-
-  // Parse the head HTML using our utility
-  const parser = parseHTML(seoData.head);
-  
-  return {
-    title: parser.getTitle(),
-    description: parser.getMetaTag('description'),
-    openGraph: {
-      title: parser.getMetaTag('og:title'),
-      description: parser.getMetaTag('og:description'),
-      images: parser.getMetaTag('og:image') ? [{url: parser.getMetaTag('og:image') || ''}] : [],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: parser.getMetaTag('twitter:title'),
-      description: parser.getMetaTag('twitter:description'),
-      images: parser.getMetaTag('twitter:image') ? [{url: parser.getMetaTag('twitter:image') || ''}] : [],
-    },
-  };
 }
 
 export default async function BlogPost({ params }: { params: tParams }) {
