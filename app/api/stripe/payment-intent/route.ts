@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing STRIPE_SECRET_KEY environment variable');
+}
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-12-18.acacia',
 });
 
@@ -9,37 +13,70 @@ export async function POST(request: Request) {
   try {
     const { amount, currency = 'eur' } = await request.json();
     
-    console.log('Received payment intent request:', { amount, currency, type: typeof amount });
+    console.log('Processing payment intent request:', { 
+      amount, 
+      currency, 
+      type: typeof amount,
+      isNumber: typeof amount === 'number',
+      isValid: !isNaN(amount) && amount > 0
+    });
 
     if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
-      console.error('Invalid amount:', { amount, type: typeof amount, isNaN: isNaN(amount) });
+      console.error('Invalid amount provided:', { 
+        amount, 
+        type: typeof amount, 
+        isNaN: isNaN(amount),
+        isPositive: amount > 0 
+      });
       return NextResponse.json(
-        { error: 'Invalid amount provided' },
+        { error: 'Invalid amount provided. Amount must be a positive number.' },
         { status: 400 }
       );
     }
 
-    // Amount is already in cents from the client
-    console.log('Creating payment intent with amount in cents:', amount);
-
     // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
+    console.log('Creating Stripe payment intent with:', {
+      amount,
       currency,
-      payment_method_types: ['card'],
+      automatic_payment_methods: { enabled: true, allow_redirects: 'always' }
+    });
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency,
       capture_method: 'automatic',
       automatic_payment_methods: {
-        enabled: false,
+        enabled: true,
+        allow_redirects: 'always'
       },
+    });
+
+    console.log('Payment intent created successfully:', {
+      id: paymentIntent.id,
+      status: paymentIntent.status,
+      hasClientSecret: !!paymentIntent.client_secret
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error('Stripe payment intent creation error:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      type: error instanceof Error ? error.constructor.name : typeof error,
+      stack: error instanceof Error ? error.stack : undefined
+    });
+
+    if (error instanceof Stripe.errors.StripeError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode || 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Error creating payment intent' },
+      { error: 'An unexpected error occurred while creating the payment intent.' },
       { status: 500 }
     );
   }

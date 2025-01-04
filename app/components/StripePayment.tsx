@@ -94,7 +94,7 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
               <PaymentElement 
                 options={{
                   layout: 'tabs',
-                  paymentMethodOrder: ['card'],
+                  paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link'],
                   defaultValues: {
                     billingDetails: {
                       name: '',
@@ -105,8 +105,8 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
                     billingDetails: 'auto'
                   },
                   wallets: {
-                    applePay: 'never',
-                    googlePay: 'never'
+                    applePay: 'auto',
+                    googlePay: 'auto'
                   }
                 }}
                 className="p-4"
@@ -166,12 +166,16 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
 
 export default function StripePayment({ amount, onSuccess, onError }: StripePaymentProps) {
   const [clientSecret, setClientSecret] = useState<string | undefined>();
-  const amountInCents = Math.round(amount * 100);
 
   useEffect(() => {
     const fetchPaymentIntent = async () => {
       try {
-        console.log('Sending payment intent request with amount in cents:', amountInCents);
+        const amountInCents = Math.round(amount * 100);
+        console.log('Creating payment intent:', {
+          amount,
+          amountInCents,
+          type: typeof amountInCents
+        });
         
         const response = await fetch('/api/stripe/payment-intent', {
           method: 'POST',
@@ -181,14 +185,26 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
 
         if (!response.ok) {
           const errorData = await response.json();
+          console.error('Payment intent creation failed:', {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorData
+          });
           throw new Error(errorData.error || 'Failed to create payment intent');
         }
 
         const data = await response.json();
+        console.log('Payment intent created successfully:', {
+          clientSecret: data.clientSecret ? 'exists' : 'missing'
+        });
         setClientSecret(data.clientSecret);
       } catch (error) {
-        console.error('Error fetching payment intent:', error);
-        onError('Failed to initialize payment');
+        console.error('Full payment intent error:', {
+          error,
+          message: error instanceof Error ? error.message : 'Unknown error',
+          stack: error instanceof Error ? error.stack : undefined
+        });
+        onError(error instanceof Error ? error.message : 'Failed to initialize payment');
         toast.error('Chyba pri inicializácii platby', {
           description: 'Nastala chyba pri príprave platby. Skúste to prosím znova.',
         });
@@ -198,7 +214,7 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
     if (amount > 0) {
       fetchPaymentIntent();
     }
-  }, [amount, amountInCents, onError]);
+  }, [amount, onError]);
 
   if (!clientSecret) {
     return (

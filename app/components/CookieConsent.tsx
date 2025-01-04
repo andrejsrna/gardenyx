@@ -6,20 +6,23 @@ import { useCookieConsent } from '../context/CookieConsentContext';
 export default function CookieConsent() {
   const { consent, setConsent, setModalOpen, isModalOpen } = useCookieConsent();
   const [showDetails, setShowDetails] = useState(false);
-  const [shouldShow, setShouldShow] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check localStorage first
+    // Set mounted state to true after hydration
+    setMounted(true);
+
+    // Check localStorage for existing consent
     const hasConsent = localStorage.getItem('cookieConsent');
     if (!hasConsent) {
-      // Only show after a small delay to prevent flash
-      const timer = setTimeout(() => {
-        setShouldShow(true);
-      }, 300);
-      
-      return () => clearTimeout(timer);
+      // Set default consent with all options enabled
+      setConsent({
+        necessary: true,
+        analytics: true,
+        marketing: true,
+      });
     }
-  }, []);
+  }, [setConsent]);
 
   const handleAcceptAll = () => {
     setConsent({
@@ -28,7 +31,6 @@ export default function CookieConsent() {
       marketing: true,
     });
     setModalOpen(false);
-    setShouldShow(false);
   };
 
   const handleRejectAll = () => {
@@ -38,17 +40,21 @@ export default function CookieConsent() {
       marketing: false,
     });
     setModalOpen(false);
-    setShouldShow(false);
   };
 
   const handleSavePreferences = () => {
     setConsent({ ...consent });
     setModalOpen(false);
-    setShouldShow(false);
   };
 
-  // Show if either shouldShow is true (first visit) or isModalOpen is true (opened via manager)
-  if (!shouldShow && !isModalOpen) {
+  // Don't render anything until component is mounted to prevent flash
+  if (!mounted) {
+    return null;
+  }
+
+  // Show only if no consent is stored or modal is explicitly opened
+  const hasStoredConsent = localStorage.getItem('cookieConsent');
+  if (hasStoredConsent && !isModalOpen) {
     return null;
   }
 

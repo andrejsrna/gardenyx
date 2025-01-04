@@ -12,6 +12,7 @@ import { useAuth } from '../context/AuthContext';
 import { fbq } from '../components/FacebookPixel';
 import { event as gtagEvent } from '../components/GoogleAnalytics';
 import { trackConversion } from '../components/GoogleAds';
+import Link from 'next/link';
 
 interface PacketaPoint {
   id: string;
@@ -151,30 +152,32 @@ export default function CheckoutPage() {
   const [showPacketaSelector, setShowPacketaSelector] = useState(false);
   const { customerData } = useAuth();
 
+  // Track begin_checkout event in GA4
   useEffect(() => {
-    // Track begin_checkout event in GA4
-    gtagEvent('begin_checkout', {
-      currency: 'EUR',
-      value: totalPrice,
-      items: items.map(item => ({
-        item_id: item.id.toString(),
-        item_name: item.name,
-        price: item.price,
-        quantity: item.quantity
-      }))
-    });
+    if (items.length > 0) {
+      gtagEvent('begin_checkout', {
+        currency: 'EUR',
+        value: totalPrice,
+        items: items.map(item => ({
+          item_id: item.id.toString(),
+          item_name: item.name,
+          price: item.price,
+          quantity: item.quantity
+        }))
+      });
 
-    // Track InitiateCheckout event
-    fbq('track', 'InitiateCheckout', {
-      content_ids: items.map(item => item.id),
-      contents: items.map(item => ({
-        id: item.id,
-        quantity: item.quantity
-      })),
-      value: totalPrice,
-      currency: 'EUR',
-      num_items: items.length
-    });
+      // Track InitiateCheckout event
+      fbq('track', 'InitiateCheckout', {
+        content_ids: items.map(item => item.id),
+        contents: items.map(item => ({
+          id: item.id,
+          quantity: item.quantity
+        })),
+        value: totalPrice,
+        currency: 'EUR',
+        num_items: items.length
+      });
+    }
   }, [items, totalPrice]);
 
   // Fetch recommended products
@@ -195,10 +198,6 @@ export default function CheckoutPage() {
 
   // Add effect to initialize form data with user info
   useEffect(() => {
-    console.log('Checkout page - customerData changed:', customerData);
-    console.log('customerData type:', typeof customerData);
-    console.log('customerData keys:', customerData ? Object.keys(customerData) : 'null');
-    
     if (customerData) {
       console.log('Customer details:', {
         id: customerData.id,
@@ -261,6 +260,32 @@ export default function CheckoutPage() {
       });
     }
   }, [customerData]);
+
+  // If cart is empty, show message and button to go back
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-sm p-8 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-500">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Váš košík je prázdny</h2>
+          <p className="text-gray-600 mb-6">Pridajte si produkty do košíka pre pokračovanie v nákupe.</p>
+          <Link 
+            href="/" 
+            className="inline-flex items-center justify-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
+            </svg>
+            Späť na hlavnú stránku
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1265,7 +1290,15 @@ export default function CheckoutPage() {
               />
               <div>
                 <div className="font-medium">Platba kartou</div>
-                <div className="text-sm text-gray-500">Bezpečná platba kartou</div>
+                <div className="text-sm text-gray-500">
+                  Bezpečná platba kartou, Google Pay, Apple Pay alebo Stripe Link
+                </div>
+                <div className="mt-2 flex items-center gap-3">
+                  <Image src="/paymets/visa.svg" alt="Visa" width={24} height={24} className="h-6" />
+                  <Image src="/paymets/mastercard.svg" alt="Mastercard" width={24} height={24} className="h-6" />
+                  <Image src="/paymets/gpay.svg" alt="Google Pay" width={24} height={24} className="h-6" />
+                  <Image src="/paymets/applepay.svg" alt="Apple Pay" width={24} height={24} className="h-6" />
+                </div>
               </div>
             </label>
           </div>
