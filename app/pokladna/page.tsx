@@ -330,7 +330,12 @@ export default function CheckoutPage() {
           dic_dph: formData.is_business ? z.string().optional() : z.string().optional()
         }),
         account_password: formData.create_account 
-          ? z.string().min(8, 'Heslo musí mať aspoň 8 znakov')
+          ? z.string()
+              .min(8, 'Heslo musí mať aspoň 8 znakov')
+              .regex(
+                /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+                'Heslo musí obsahovať aspoň jedno veľké písmeno, číslo a špeciálny znak'
+              )
           : z.string().optional()
       });
 
@@ -1247,11 +1252,11 @@ export default function CheckoutPage() {
                       ...prev,
                       account_password: e.target.value
                     }))}
+                    pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
+                    title="Heslo musí obsahovať aspoň 8 znakov, jedno veľké písmeno, číslo a špeciálny znak"
                     className="peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm 
                                focus:border-green-500 focus:ring-green-500 placeholder-transparent"
                     placeholder="Heslo"
-                    minLength={8}
-                    pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
                   />
                   <label
                     htmlFor="account_password"
@@ -1263,8 +1268,7 @@ export default function CheckoutPage() {
                     Heslo pre váš účet
                   </label>
                   <p className="mt-1 text-xs text-gray-500">
-                    Heslo musí obsahovať aspoň 8 znakov, jedno veľké písmeno, 
-                    jedno číslo a jeden špeciálny znak
+                    Heslo musí obsahovať aspoň 8 znakov, jedno veľké písmeno, číslo a jeden špeciálny znak
                   </p>
                 </div>
               </div>
