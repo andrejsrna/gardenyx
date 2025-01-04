@@ -35,9 +35,7 @@ export default function Header() {
 
   useEffect(() => {
     if (customerData) {
-      console.log('User data in header:', customerData);
       const firstName = customerData.billing?.first_name || customerData.first_name || localStorage.getItem('customerName') || 'používateľ';
-      console.log('First name from user:', firstName);
       setCustomerName(firstName);
     }
   }, [customerData]);

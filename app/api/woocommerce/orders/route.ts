@@ -23,11 +23,9 @@ export async function POST(request: Request) {
   try {
     const orderData = await request.json();
     
-    console.log('Received order data:', orderData);
 
     const response = await api.post('orders', orderData);
     
-    console.log('WooCommerce API response:', response.data);
 
     if (!response.data || !response.data.id) {
       throw new Error('Invalid response from WooCommerce');

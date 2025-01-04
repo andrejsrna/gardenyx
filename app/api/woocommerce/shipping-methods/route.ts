@@ -67,9 +67,6 @@ export async function GET() {
 
     const methods = await methodsResponse.json();
 
-    // Log the methods for debugging
-    console.log('Slovakia shipping methods:', methods);
-
     return NextResponse.json(methods);
   } catch (error) {
     console.error('Error fetching shipping methods:', error);

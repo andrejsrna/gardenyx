@@ -121,6 +121,37 @@ export interface CheckoutFormData {
   is_business?: boolean;
 }
 
+export interface WooCommerceOrder extends Omit<CheckoutFormData, 'is_business'> {
+  status: string;
+  customer_id?: number;
+  billing: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+    email: string;
+    phone: string;
+  };
+  shipping: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+  };
+  shipping_method: string;
+  payment_method: string;
+}
+
 const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://najsilnejsiaklbovavyziva.sk';
 const WORDPRESS_API_URL = `${WORDPRESS_URL}/wp-json/wp/v2`;
 const WOOCOMMERCE_API_URL = `${WORDPRESS_URL}/wp-json/wc/v3`;

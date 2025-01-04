@@ -18,6 +18,13 @@ interface WooCommerceOrder {
   }>;
 }
 
+interface CreateOrderData extends WooCommerceOrder {
+  meta_data: Array<{
+    key: string;
+    value: string;
+  }>;
+}
+
 export const wooApi = {
   get: async (endpoint: string) => {
     const response = await fetch(`${WOO_API_BASE}${endpoint}`);
@@ -65,7 +72,7 @@ export const wooApi = {
 // Specific API functions
 export const getProduct = (id: number) => wooApi.get(`/products/${id}`);
 export const getProducts = (params: string) => wooApi.get(`/products?${params}`);
-export const createOrder = async (orderData: WooCommerceOrder) => {
+export async function createOrder(orderData: CreateOrderData) {
   try {
     const response = await fetch('/api/woocommerce/orders', {
       method: 'POST',
@@ -75,36 +82,15 @@ export const createOrder = async (orderData: WooCommerceOrder) => {
       body: JSON.stringify(orderData),
     });
 
-    const data = await response.json();
-    console.log('API Response:', {
-      status: response.status,
-      statusText: response.statusText,
-      data
-    });
-
     if (!response.ok) {
-      throw new Error(data.message || `Server responded with status ${response.status}`);
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to create order');
     }
 
-    if (!data.order || !data.order.id) {
-      throw new Error('Server returned invalid order data');
-    }
-
-    return data;
-  } catch (error: unknown) {
-    const err = error as Error;
-    console.error('Detailed error in createOrder:', {
-      name: err.name,
-      message: err.message,
-      stack: err.stack,
-      cause: err.cause
-    });
-    return { 
-      error: {
-        message: err.message || 'An error occurred while creating the order',
-        details: err
-      }
-    };
+    return response.json();
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw error;
   }
-};
+}
 export const updateOrder = (orderId: number, data: Partial<WooCommerceOrder>) => wooApi.put(`/orders/${orderId}`, data); 

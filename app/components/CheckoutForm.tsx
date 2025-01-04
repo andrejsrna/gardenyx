@@ -197,7 +197,6 @@ export default function CheckoutForm() {
         // Transform shipping methods to split Packeta into two options
         const transformedMethods = shipping.flatMap(method => {
           // Log each method for debugging
-          console.log('Processing method:', method);
           
           if (method.method_id === 'packetery_shipping_method' && method.enabled) {
             // Create two virtual methods from the Packeta method
@@ -221,14 +220,12 @@ export default function CheckoutForm() {
           return method;
         });
 
-        console.log('Transformed shipping methods:', transformedMethods);
         
         // Filter out disabled methods and those without titles
         const enabledMethods = transformedMethods.filter(method => 
           method.enabled && method.title !== null && method.title !== undefined
         );
         
-        console.log('Enabled shipping methods:', enabledMethods);
         setShippingMethods(enabledMethods);
         setPaymentGateways(payment.filter(gateway => gateway.enabled));
       } catch (error) {

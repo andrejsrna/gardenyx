@@ -26,10 +26,8 @@ export async function GET() {
       );
     }
 
-    console.log('Fetching Packeta points with API key:', PACKETA_API_KEY);
 
     const apiUrl = `https://pickup-point.api.packeta.com/v5/${PACKETA_API_KEY}/branch/json?lang=sk`;
-    console.log('Packeta API URL:', apiUrl);
 
     const response = await fetch(apiUrl, {
       method: 'GET',
@@ -37,9 +35,6 @@ export async function GET() {
         'Accept': 'application/json',
       },
     });
-
-    console.log('Packeta API response status:', response.status);
-    console.log('Packeta API response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -57,7 +52,6 @@ export async function GET() {
     }
 
     const rawText = await response.text();
-    console.log('Raw API response:', rawText);
 
     let data;
     try {
@@ -80,7 +74,6 @@ export async function GET() {
 
     // Filter points for Slovakia
     const slovakPoints = data.data.filter((point) => point.country === 'sk');
-    console.log('Found Slovak points:', slovakPoints.length);
 
     return NextResponse.json(slovakPoints);
   } catch (error) {

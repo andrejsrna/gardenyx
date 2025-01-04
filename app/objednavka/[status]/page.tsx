@@ -1,90 +1,59 @@
 'use client';
 
+import { useEffect, useState, use } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCart } from '../../context/CartContext';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
-interface OrderStatusPageProps {
+interface OrderSuccessProps {
   params: Promise<{
     status: string;
   }>;
 }
 
-function OrderStatusContent({ status }: { status: string }) {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get('order');
-  const [isValidOrder, setIsValidOrder] = useState(false);
+interface OrderData {
+  id: number;
+  status: string;
+  total: string;
+  // Add other order properties you need
+}
+
+export default function OrderStatusPage(props: OrderSuccessProps) {
+  const params = use(props.params);
+  const [isLoading, setIsLoading] = useState(true);
+  const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const { clearCart } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
-    // Check if we have a valid order ID either in URL or session storage
-    const lastOrderId = sessionStorage.getItem('lastOrderId');
-    if (orderId || lastOrderId) {
-      setIsValidOrder(true);
-    }
-  }, [orderId]);
+    const fetchOrderData = async () => {
+      try {
+        const response = await fetch(`/api/orders/${params.status}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch order data');
+        }
+        const data = await response.json();
+        setOrderData(data);
+        if (params.status === 'success') {
+          clearCart();
+        }
+      } catch (error) {
+        console.error('Error fetching order:', error);
+        router.push('/objednavka/neuspesna');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const getStatusContent = () => {
-    // If we have an order ID but no status, treat it as success
-    if (orderId && (!status || status === 'undefined')) {
-      return {
-        icon: <CheckCircleIcon className="h-24 w-24 text-green-600" />,
-        title: 'Objednávka bola úspešne vytvorená!',
-        message: 'Ďakujeme za Váš nákup. O stave objednávky Vás budeme informovať emailom.',
-        buttonText: 'Späť na e-shop',
-        buttonLink: '/',
-        buttonStyle: 'bg-green-600 hover:bg-green-700',
-      };
-    }
+    fetchOrderData();
+  }, [params.status, clearCart, router]);
 
-    // If we're on success page but don't have a valid order, show error
-    if (status === 'uspesna' && !isValidOrder) {
-      return {
-        icon: <XCircleIcon className="h-24 w-24 text-gray-600" />,
-        title: 'Neplatný stav objednávky',
-        message: 'Stav objednávky nebol nájdený.',
-        buttonText: 'Späť na e-shop',
-        buttonLink: '/',
-        buttonStyle: 'bg-gray-600 hover:bg-gray-700',
-      };
-    }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-    const currentStatus = (status || '').toLowerCase();
-    switch (currentStatus) {
-      case 'uspesna':
-      case 'success':
-        return {
-          icon: <CheckCircleIcon className="h-24 w-24 text-green-600" />,
-          title: 'Objednávka bola úspešne vytvorená!',
-          message: 'Ďakujeme za Váš nákup. O stave objednávky Vás budeme informovať emailom.',
-          buttonText: 'Späť na e-shop',
-          buttonLink: '/',
-          buttonStyle: 'bg-green-600 hover:bg-green-700',
-        };
-      case 'neuspesna':
-      case 'failed':
-        return {
-          icon: <XCircleIcon className="h-24 w-24 text-red-600" />,
-          title: 'Objednávka nebola dokončená',
-          message: 'Pri spracovaní objednávky nastala chyba. Prosím, skúste to znova alebo nás kontaktujte.',
-          buttonText: 'Skúsiť znova',
-          buttonLink: '/pokladna',
-          buttonStyle: 'bg-red-600 hover:bg-red-700',
-        };
-      default:
-        console.log('Invalid status received:', status);
-        return {
-          icon: <XCircleIcon className="h-24 w-24 text-gray-600" />,
-          title: 'Neplatný stav objednávky',
-          message: 'Stav objednávky nebol nájdený.',
-          buttonText: 'Späť na e-shop',
-          buttonLink: '/',
-          buttonStyle: 'bg-gray-600 hover:bg-gray-700',
-        };
-    }
-  };
-
-  const content = getStatusContent();
+  const isSuccess = params.status === 'success' || params.status === 'uspesna';
 
   return (
     <main className="min-h-screen bg-gray-50 py-16">
@@ -92,25 +61,33 @@ function OrderStatusContent({ status }: { status: string }) {
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-8">
           <div className="text-center space-y-6">
             <div className="flex justify-center">
-              {content.icon}
+              {isSuccess ? (
+                <CheckCircleIcon className="h-24 w-24 text-green-600" />
+              ) : (
+                <XCircleIcon className="h-24 w-24 text-red-600" />
+              )}
             </div>
             <h1 className="text-2xl font-bold text-gray-900">
-              {content.title}
+              {isSuccess ? 'Objednávka bola úspešne vytvorená!' : 'Objednávka nebola dokončená'}
             </h1>
             <p className="text-gray-600">
-              {content.message}
+              {isSuccess 
+                ? 'Ďakujeme za Váš nákup. O stave objednávky Vás budeme informovať emailom.'
+                : 'Pri spracovaní objednávky nastala chyba. Prosím, skúste to znova alebo nás kontaktujte.'}
             </p>
-            {orderId && (
+            {orderData?.id && (
               <p className="text-sm text-gray-500">
-                Číslo objednávky: {orderId}
+                Číslo objednávky: {orderData.id}
               </p>
             )}
             <div className="pt-4">
               <Link
-                href={content.buttonLink}
-                className={`inline-flex items-center px-6 py-3 text-base font-medium text-white rounded-lg ${content.buttonStyle} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
+                href={isSuccess ? '/' : '/pokladna'}
+                className={`inline-flex items-center px-6 py-3 text-base font-medium text-white rounded-lg ${
+                  isSuccess ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
               >
-                {content.buttonText}
+                {isSuccess ? 'Späť na e-shop' : 'Skúsiť znova'}
               </Link>
             </div>
           </div>
@@ -118,9 +95,4 @@ function OrderStatusContent({ status }: { status: string }) {
       </div>
     </main>
   );
-}
-
-export default async function OrderStatusPage({ params }: OrderStatusPageProps) {
-  const { status } = await params;
-  return <OrderStatusContent status={status} />;
 } 

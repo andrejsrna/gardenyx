@@ -60,7 +60,6 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
         }
       });
 
-      console.log('Payment confirmation result:', result);
 
       if (result.error) {
         console.error('Confirmation error:', result.error);
@@ -171,11 +170,6 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
     const fetchPaymentIntent = async () => {
       try {
         const amountInCents = Math.round(amount * 100);
-        console.log('Creating payment intent:', {
-          amount,
-          amountInCents,
-          type: typeof amountInCents
-        });
         
         const response = await fetch('/api/stripe/payment-intent', {
           method: 'POST',
@@ -194,9 +188,7 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
         }
 
         const data = await response.json();
-        console.log('Payment intent created successfully:', {
-          clientSecret: data.clientSecret ? 'exists' : 'missing'
-        });
+
         setClientSecret(data.clientSecret);
       } catch (error) {
         console.error('Full payment intent error:', {

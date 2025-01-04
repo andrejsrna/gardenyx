@@ -75,7 +75,8 @@ export default function PacketaPointSelector({ onSelect }: PacketaPointSelectorP
     <>
       <Script
         src="https://widget.packeta.com/v6/www/js/library.js"
-        onLoad={() => console.log('Packeta Widget loaded')}
+        onLoad={() => {
+        }}
       />
       <div className="w-full h-32 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>

@@ -1,6 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { toast } from 'sonner';
+import { getSession } from '../lib/utils/session';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -45,29 +47,70 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthContextType['customerData']>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const logout = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await fetch('/api/auth/logout', { method: 'POST' });
+      
+      // Clear session
+      const session = await getSession();
+      session.destroy();
+      
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const resetTimeout = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (user) {
+        timeoutId = setTimeout(() => {
+          logout();
+          toast.info('Sedenie vypršalo', {
+            description: 'Z bezpečnostných dôvodov ste boli odhlásený.'
+          });
+        }, SESSION_TIMEOUT);
+      }
+    };
+
+    resetTimeout();
+    window.addEventListener('mousemove', resetTimeout);
+    window.addEventListener('keypress', resetTimeout);
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener('mousemove', resetTimeout);
+      window.removeEventListener('keypress', resetTimeout);
+    };
+  }, [user, logout]);
+
   const checkAuth = async () => {
     try {
-      console.log('Checking auth...');
       const response = await fetch('/api/auth/check');
       if (!response.ok) {
         throw new Error('Auth check failed');
       }
       const data = await response.json();
-      console.log('Auth check raw response:', data);
       
       if (data && data.customerData && data.customerData.id) {
-        console.log('Setting user data:', data.customerData);
         setUser(data.customerData);
       } else {
-        console.log('Invalid or missing user data:', data);
         setUser(null);
       }
     } catch (error) {
@@ -94,36 +137,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const userData = await response.json();
+      
+      // Update session
+      const session = await getSession();
+      session.customerId = userData.id;
+      session.isLoggedIn = true;
+      await session.save();
+
       setUser(userData);
       return userData;
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      setIsLoading(true);
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-      setUser(null);
-      
-      // Clear all auth-related cookies
-      document.cookie = 'customerId=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-      document.cookie = 'customerToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-      document.cookie = 'customerName=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-      
-      // Clear localStorage
-      localStorage.removeItem('isAuthenticated');
-      
-      // Force a check of authentication state
-      await checkAuth();
-    } catch (error) {
-      console.error('Logout failed:', error);
     } finally {
       setIsLoading(false);
     }

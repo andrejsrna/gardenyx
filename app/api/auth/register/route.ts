@@ -25,7 +25,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    console.log('Registration request body:', body);
 
     const { first_name, last_name, email, password, phone, address_1, city, postcode, country } = body;
 
@@ -40,7 +39,6 @@ export async function POST(request: NextRequest) {
     );
 
     const existingUsers = await checkUserResponse.json();
-    console.log('Existing users check:', existingUsers);
 
     if (Array.isArray(existingUsers) && existingUsers.length > 0) {
       return NextResponse.json(
@@ -84,7 +82,6 @@ export async function POST(request: NextRequest) {
     });
 
     const responseData = await response.json();
-    console.log('WooCommerce API response:', responseData);
 
     if (!response.ok) {
       console.error('WooCommerce API error:', responseData);

@@ -15,8 +15,6 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { email, password } = body;
 
-    console.log('Attempting WordPress auth for:', email);
-
     // First authenticate with WordPress
     const authResponse = await fetch(`${process.env.WORDPRESS_URL}/wp-json/jwt-auth/v1/token`, {
       method: 'POST',
@@ -30,7 +28,6 @@ export async function POST(request: Request) {
     });
 
     const authData = await authResponse.json();
-    console.log('Auth response:', authData); // Debug log
 
     if (!authResponse.ok || !authData.token) {
       return NextResponse.json(
@@ -47,10 +44,6 @@ export async function POST(request: Request) {
       const { data: customers } = await api.get('customers', {
         search: authData.user_email // Use the email from JWT response
       });
-
-      console.log('WooCommerce search params:', { search: authData.user_email }); // Debug log
-      console.log('Found customers:', customers); // Debug log
-
       if (!customers || customers.length === 0) {
         return NextResponse.json(
           { 

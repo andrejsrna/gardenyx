@@ -11,8 +11,13 @@ import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
 import { fbq } from '../components/FacebookPixel';
 import { event as gtagEvent } from '../components/GoogleAnalytics';
-import { trackConversion } from '../components/GoogleAds';
 import Link from 'next/link';
+import { checkoutFormSchema } from '../lib/validations/checkout';
+import { sanitizeInput } from '../lib/utils/sanitize';
+import { z } from 'zod';
+import { logError } from '../lib/utils/logger';
+import { getCsrfToken } from '../lib/utils/csrf';
+import { validatePassword } from '../lib/utils/password';
 
 interface PacketaPoint {
   id: string;
@@ -61,50 +66,40 @@ interface FormData {
   is_business: boolean;
   create_account: boolean;
   account_password?: string;
+  consents: {
+    terms: boolean;
+    privacy: boolean;
+    marketing: boolean;
+  };
 }
 
-interface CheckoutFormData {
+interface PaymentError {
+  type: string;
+  message: string;
+  code?: string;
+}
+
+interface WooCommerceOrder {
   status: string;
-  currency: string;
-  customer_note: string;
   customer_id?: number;
-  billing: {
-    first_name: string;
-    last_name: string;
-    company: string;
-    address_1: string;
-    address_2: string;
-    city: string;
-    state: string;
-    postcode: string;
-    country: string;
-    email: string;
-    phone: string;
-  };
-  shipping: {
-    first_name: string;
-    last_name: string;
-    company: string;
-    address_1: string;
-    address_2: string;
-    city: string;
-    state: string;
-    postcode: string;
-    country: string;
-  };
+  billing: FormData['billing'];
+  shipping: FormData['shipping'];
   shipping_method: string;
   payment_method: string;
   payment_method_title: string;
-  meta_data: Array<{ key: string; value: string }>;
-  line_items: Array<{ product_id: number; quantity: number }>;
+  meta_data: Array<{
+    key: string;
+    value: string;
+  }>;
+  line_items: Array<{
+    product_id: number;
+    quantity: number;
+  }>;
   shipping_lines: Array<{
     method_id: string;
     method_title: string;
     total: string;
-    meta_data: Array<{ key: string; value: string }>;
   }>;
-  set_paid: boolean;
-  is_business: boolean;
 }
 
 export default function CheckoutPage() {
@@ -146,6 +141,11 @@ export default function CheckoutPage() {
     is_business: false,
     create_account: false,
     account_password: '',
+    consents: {
+      terms: false,
+      privacy: false,
+      marketing: false
+    }
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [showStripePayment, setShowStripePayment] = useState(false);
@@ -199,14 +199,6 @@ export default function CheckoutPage() {
   // Add effect to initialize form data with user info
   useEffect(() => {
     if (customerData) {
-      console.log('Customer details:', {
-        id: customerData.id,
-        first_name: customerData.first_name,
-        last_name: customerData.last_name,
-        email: customerData.email,
-        billing: customerData.billing,
-        shipping: customerData.shipping
-      });
       
       setFormData(prev => {
         const newFormData = {
@@ -255,7 +247,6 @@ export default function CheckoutPage() {
           is_business: Boolean(customerData.meta_data?.find(m => m.key === 'billing_ic')?.value || customerData.billing?.company)
         };
         
-        console.log('New form data:', newFormData);
         return newFormData;
       });
     }
@@ -289,52 +280,101 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    try {
+      // Add password validation only if creating account
+      if (formData.create_account) {
+        if (!formData.account_password) {
+          toast.error('Chýbajúce heslo', {
+            description: 'Pre vytvorenie účtu je potrebné zadať heslo.'
+          });
+          return;
+        }
+        
+        const { isValid, errors } = validatePassword(formData.account_password);
+        if (!isValid) {
+          toast.error('Neplatné heslo', {
+            description: errors.join('\n')
+          });
+          return;
+        }
+      }
 
-    // Basic validation
-    if (!formData.billing.first_name || !formData.billing.last_name || !formData.billing.email || !formData.billing.phone || !formData.billing.address_1 || !formData.billing.city || !formData.billing.postcode) {
-      toast.error('Chýbajúce údaje', {
-        description: 'Prosím, vyplňte všetky povinné polia.',
+      // Sanitize and validate form data
+      const sanitizedData = {
+        ...formData,
+        billing: {
+          ...formData.billing,
+          first_name: sanitizeInput(formData.billing.first_name),
+          last_name: sanitizeInput(formData.billing.last_name),
+          company: sanitizeInput(formData.billing.company || ''),
+          address_1: sanitizeInput(formData.billing.address_1),
+          address_2: sanitizeInput(formData.billing.address_2 || ''),
+          city: sanitizeInput(formData.billing.city),
+          state: sanitizeInput(formData.billing.state || ''),
+          postcode: sanitizeInput(formData.billing.postcode),
+          country: sanitizeInput(formData.billing.country),
+          email: sanitizeInput(formData.billing.email),
+          phone: sanitizeInput(formData.billing.phone),
+          ic: formData.is_business ? sanitizeInput(formData.billing.ic || '') : undefined,
+          dic: formData.is_business ? sanitizeInput(formData.billing.dic || '') : undefined,
+          dic_dph: formData.is_business ? sanitizeInput(formData.billing.dic_dph || '') : undefined,
+        }
+      };
+
+      // Only include business fields in validation if is_business is true
+      const validationSchema = checkoutFormSchema.extend({
+        billing: checkoutFormSchema.shape.billing.extend({
+          ic: formData.is_business ? z.string().length(8, 'IČO musí mať 8 číslic') : z.string().optional(),
+          dic: formData.is_business ? z.string().length(10, 'DIČ musí mať 10 číslic') : z.string().optional(),
+          dic_dph: formData.is_business ? z.string().optional() : z.string().optional()
+        }),
+        account_password: formData.create_account 
+          ? z.string().min(8, 'Heslo musí mať aspoň 8 znakov')
+          : z.string().optional()
       });
-      return;
-    }
 
-    if (formData.is_business && (!formData.billing.company || !formData.billing.ic || !formData.billing.dic)) {
-      toast.error('Chýbajúce údaje', {
-        description: 'Prosím, vyplňte názov firmy, IČO a DIČ.',
-      });
-      return;
-    }
+      validationSchema.parse(sanitizedData);
 
-    if (!formData.shipping_method) {
-      toast.error('Chýbajúce údaje', {
-        description: 'Prosím, vyberte spôsob dopravy.',
-      });
-      return;
-    }
+      // Additional business validation
+      if (formData.is_business && (!formData.billing.company || !formData.billing.ic || !formData.billing.dic)) {
+        toast.error('Chýbajúce údaje', {
+          description: 'Prosím, vyplňte názov firmy, IČO a DIČ.',
+        });
+        return;
+      }
 
-    // Only check payment method if we're not already showing Stripe payment
-    if (!showStripePayment && !formData.payment_method) {
-      toast.error('Chýbajúce údaje', {
-        description: 'Prosím, vyberte spôsob platby.',
-      });
-      return;
-    }
+      if (formData.shipping_method === 'packeta_pickup' && 
+          !formData.meta_data.some(item => item.key === 'packeta_point_id')) {
+        toast.error('Chýbajúce údaje', {
+          description: 'Prosím, vyberte výdajné miesto Packeta.',
+        });
+        setShowPacketaSelector(true);
+        return;
+      }
 
-    if (formData.shipping_method === 'packeta_pickup' && !formData.meta_data.some(item => item.key === 'packeta_point_id')) {
-      toast.error('Chýbajúce údaje', {
-        description: 'Prosím, vyberte výdajné miesto Packeta.',
-      });
-      setShowPacketaSelector(true);
-      return;
-    }
+      // If payment method is stripe and we're not showing the payment form yet
+      if (formData.payment_method === 'stripe' && !showStripePayment) {
+        setShowStripePayment(true);
+        return;
+      }
 
-    // If payment method is stripe and we're not showing the payment form yet
-    if (formData.payment_method === 'stripe' && !showStripePayment) {
-      setShowStripePayment(true);
-      return;
-    }
+      await processOrder();
 
-    await processOrder();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const firstError = error.errors[0];
+        toast.error('Nesprávne vyplnené údaje', {
+          description: firstError.message,
+        });
+      } else {
+        console.error('Form submission error:', error);
+        toast.error('Chyba', {
+          description: 'Nastala neočakávaná chyba. Skúste to prosím znova.',
+        });
+      }
+    }
   };
 
   const handlePacketaPointSelect = (point: PacketaPoint) => {
@@ -351,290 +391,134 @@ export default function CheckoutPage() {
 
   const processOrder = async () => {
     setIsProcessing(true);
-    let newCustomerId: number | undefined;
-    
-    try {
-      // If creating account, register the user first
-      if (formData.create_account && formData.account_password) {
-        try {
-          console.log('Attempting to register user:', {
-            email: formData.billing.email,
-            first_name: formData.billing.first_name,
-            last_name: formData.billing.last_name
-          });
+    let orderId: string | null = null;
 
-          const registerResponse = await fetch('/api/auth/register', {
+    try {
+      // Start payment monitoring
+      const paymentStartTime = Date.now();
+      
+      if (formData.payment_method === 'stripe') {
+        try {
+          // Create payment intent first
+          const token = getCsrfToken();
+          const paymentResponse = await fetch('/api/stripe/payment-intent', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              ...(token && { 'X-CSRF-Token': token })
             },
             body: JSON.stringify({
-              first_name: formData.billing.first_name,
-              last_name: formData.billing.last_name,
-              email: formData.billing.email,
-              password: formData.account_password,
-              phone: formData.billing.phone,
-              address_1: formData.billing.address_1,
-              city: formData.billing.city,
-              postcode: formData.billing.postcode,
-              country: formData.billing.country,
-              timestamp: Date.now(),
-            }),
+              amount: finalTotal,
+              currency: 'eur',
+              metadata: {
+                order_id: orderId,
+                customer_email: formData.billing.email,
+              }
+            })
           });
 
-          const registerData = await registerResponse.json();
-          console.log('Registration response:', {
-            status: registerResponse.status,
-            data: registerData
-          });
-
-          if (!registerResponse.ok) {
-            if (registerData.error && registerData.error.includes('email-exists')) {
-              console.log('User exists error:', registerData.error);
-              toast.error('Používateľ s týmto emailom už existuje', {
-                description: 'Prosím, prihláste sa alebo použite inú emailovú adresu.',
-              });
-              return;
-            } else {
-              console.error('Registration error:', registerData.error);
-              toast.error('Chyba pri registrácii', {
-                description: registerData.error || 'Skúste to prosím znova.',
-              });
-              return;
-            }
+          if (!paymentResponse.ok) {
+            throw new Error('Payment initialization failed');
           }
 
-          // If registration successful
-          console.log('Registration successful:', registerData.customer);
-          toast.success('Účet bol úspešne vytvorený');
-          
-          // Store customer data and ID
-          if (registerData.customer) {
-            localStorage.setItem('customerToken', registerData.customer.token);
-            localStorage.setItem('customerId', registerData.customer.id.toString());
-            localStorage.setItem('customerName', registerData.customer.first_name);
-            newCustomerId = registerData.customer.id;
-          }
+          // Log payment duration
+          const paymentDuration = Date.now() - paymentStartTime;
+          console.info(`Payment processing time: ${paymentDuration}ms`);
+
         } catch (error) {
-          console.error('Registration error:', error);
-          toast.error('Chyba pri registrácii', {
-            description: 'Skúste to prosím znova.',
+          const paymentError = error as PaymentError;
+          logError('Payment Processing Error', {
+            error: paymentError,
+            orderId,
+            customerEmail: formData.billing.email,
+            amount: finalTotal,
+            timestamp: new Date().toISOString()
+          });
+
+          let errorMessage = 'Nastala chyba pri spracovaní platby.';
+          
+          if (paymentError.code === 'card_declined') {
+            errorMessage = 'Platba bola zamietnutá. Skontrolujte údaje karty alebo použite inú kartu.';
+          } else if (paymentError.code === 'expired_card') {
+            errorMessage = 'Karta je expirovaná.';
+          }
+
+          toast.error('Chyba platby', {
+            description: errorMessage
           });
           return;
         }
       }
 
-      const shippingCost = getShippingCost();
-      const finalTotal = totalPrice + shippingCost;
-      const orderData: CheckoutFormData = {
-        status: 'processing',
-        currency: 'EUR',
-        customer_note: '',
-        customer_id: newCustomerId || customerData?.id,
-        billing: {
-          first_name: formData.is_business ? formData.billing.company : formData.billing.first_name,
-          last_name: formData.billing.last_name,
-          company: formData.billing.company,
-          address_1: formData.billing.address_1,
-          address_2: '',
-          city: formData.billing.city,
-          state: '',
-          postcode: formData.billing.postcode,
-          country: formData.billing.country,
-          email: formData.billing.email,
-          phone: formData.billing.phone
-        },
-        shipping: {
-          first_name: formData.billing.first_name,
-          last_name: formData.billing.last_name,
-          company: '',
-          address_1: formData.billing.address_1,
-          address_2: '',
-          city: formData.billing.city,
-          state: '',
-          postcode: formData.billing.postcode,
-          country: formData.billing.country
-        },
+      // Create order in WooCommerce
+      const orderData: WooCommerceOrder = {
+        status: 'pending',
+        customer_id: customerData?.id,
+        billing: formData.billing,
+        shipping: formData.shipping,
         shipping_method: formData.shipping_method,
         payment_method: formData.payment_method,
-        payment_method_title: formData.payment_method === 'cod' ? 'Dobierka' : 'Stripe',
-        meta_data: [
-          ...(formData.is_business ? [
-            { key: '_billing_ic', value: formData.billing.ic ?? '' },
-            { key: '_billing_dic', value: formData.billing.dic ?? '' },
-            { key: '_billing_dic_dph', value: formData.billing.dic_dph ?? '' },
-            { key: '_billing_company', value: formData.billing.company ?? '' }
-          ] : [])
-        ],
+        payment_method_title: formData.payment_method === 'stripe' ? 'Platba kartou' : 'Dobierka',
+        meta_data: formData.meta_data,
         line_items: items.map(item => ({
           product_id: item.id,
           quantity: item.quantity
         })),
-        shipping_lines: [
-          {
-            method_id: formData.shipping_method,
-            method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
-            total: shippingCost.toString(),
-            meta_data: [
-              {
-                key: 'weight',
-                value: '0.1'
-              }
-            ]
-          }
-        ],
-        set_paid: formData.payment_method === 'stripe',
-        is_business: formData.is_business
+        shipping_lines: [{
+          method_id: formData.shipping_method,
+          method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta' : 'Doručenie domov',
+          total: getShippingCost().toString()
+        }]
       };
 
-      console.log('Sending order data:', JSON.stringify(orderData, null, 2));
-      const response = await createOrder(orderData);
-      console.log('Raw order response:', response);
-      
-      if (response?.error) {
-        console.error('Order creation failed:', response.error);
-        throw new Error(
-          response.error.message || 
-          (typeof response.error === 'string' ? response.error : 'Nepodarilo sa vytvoriť objednávku')
-        );
-      }
-      
-      if (!response?.order?.id) {
-        console.error('Invalid order response structure:', response);
-        throw new Error('Server vrátil neplatnú odpoveď. Kontaktujte prosím podporu.');
-      }
-
-      // Track purchase event in GA4
-      gtagEvent('purchase', {
-        transaction_id: response.order.id.toString(),
-        value: finalTotal,
-        currency: 'EUR',
-        tax: 0,
-        shipping: getShippingCost(),
-        items: items.map(item => ({
-          item_id: item.id.toString(),
-          item_name: item.name,
-          price: item.price,
-          quantity: item.quantity
-        }))
-      });
-
-      // Track Google Ads conversion
-      trackConversion('YOUR_CONVERSION_ID', finalTotal);
-
-      // Create Packeta packet if using Packeta shipping
-      if (formData.shipping_method.startsWith('packeta_')) {
-        try {
-          const packetaResponse = await fetch('/api/packeta/create-packet', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              orderId: response.order.id.toString(),
-              name: formData.shipping.first_name,
-              surname: formData.shipping.last_name,
-              email: formData.billing.email,
-              phone: formData.billing.phone,
-              value: finalTotal,
-              weight: 0.1,
-              ...(formData.shipping_method === 'packeta_pickup' 
-                ? {
-                    addressId: formData.meta_data.find(item => item.key === 'packeta_point_id')?.value
-                  }
-                : {
-                    address: {
-                      street: formData.shipping.address_1,
-                      houseNumber: '1', // We might need to split address_1 into street and house number
-                      city: formData.shipping.city,
-                      zip: formData.shipping.postcode
-                    },
-                    isHomeDelivery: true
-                  }
-              ),
-              ...(formData.payment_method === 'cod' && {
-                cod: finalTotal
-              })
-            }),
-          });
-
-          if (!packetaResponse.ok) {
-            const errorData = await packetaResponse.json();
-            console.error('Failed to create Packeta packet:', errorData);
-          } else {
-            const packetData = await packetaResponse.json();
-            console.log('Packeta packet created:', packetData);
-
-            // Store Packeta packet info in WooCommerce order metadata
-            try {
-              const updateResponse = await fetch(`/api/woocommerce/orders/${response.order.id}`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  meta_data: [
-                    { key: 'packeta_packet_id', value: packetData.packetId },
-                    { key: 'packeta_barcode', value: packetData.barcode },
-                    { key: 'packeta_barcode_text', value: packetData.barcodeText }
-                  ]
-                }),
-              });
-
-              if (!updateResponse.ok) {
-                const errorData = await updateResponse.json();
-                console.error('Failed to update order with Packeta data:', errorData);
-              }
-            } catch (error) {
-              console.error('Error updating order with Packeta data:', error);
-            }
+      const orderResponse = await createOrder({
+        ...orderData,
+        meta_data: [
+          ...orderData.meta_data,
+          { 
+            key: 'payment_method',
+            value: formData.payment_method
+          },
+          {
+            key: 'consents',
+            value: JSON.stringify({
+              terms: formData.consents.terms,
+              privacy: formData.consents.privacy,
+              marketing: formData.consents.marketing,
+              timestamp: new Date().toISOString()
+            })
           }
-        } catch (error) {
-          console.error('Error creating Packeta packet:', error);
-        }
+        ]
+      });
+
+      if (orderResponse?.error) {
+        throw new Error(orderResponse.error);
       }
 
+      orderId = orderResponse?.order?.id?.toString();
+
+      // Clear sensitive data
+      sessionStorage.removeItem('paymentIntentId');
+      
+      // Success handling
       clearCart();
-      toast.success('Objednávka bola úspešne vytvorená', {
-        description: 'Presmerujeme vás na potvrdenie objednávky...',
-        duration: 3000, // Show for 3 seconds
-      });
-
-      // Store order ID before anything else might fail
-      sessionStorage.setItem('lastOrderId', response.order.id.toString());
-
-      // Wait for toast to be visible and then redirect
-      setTimeout(() => {
-        window.location.href = `/objednavka/uspesna/${response.order.id}`;
-      }, 3000);
-
-    } catch (error: unknown) {
-      console.error('Full error details:', {
-        message: (error as Error).message,
-        stack: (error as Error).stack,
-        error
-      });
+      toast.success('Objednávka bola úspešne vytvorená');
       
-      let errorMessage = 'Nastala chyba pri spracovaní objednávky.';
-      const err = error as Error;
-      
-      if (err.message?.includes('Network') || err.message?.includes('fetch')) {
-        errorMessage = 'Problém s pripojením k serveru. Skontrolujte prosím svoje internetové pripojenie.';
-      } else if (err.message?.includes('Server vrátil neplatnú odpoveď')) {
-        errorMessage = err.message;
-      } else if (typeof err.message === 'string') {
-        errorMessage = err.message;
-      }
+      // Redirect with delay
+      setTimeout(() => {
+        window.location.href = `/objednavka/uspesna/${orderId}`;
+      }, 2000);
 
-      toast.error('Chyba pri vytváraní objednávky', {
-        description: errorMessage,
-        duration: 5000
+    } catch (error) {
+      logError('Order Processing Error', {
+        error,
+        customerEmail: formData.billing.email,
+        timestamp: new Date().toISOString()
       });
 
-      // Don't redirect immediately on error
-      setTimeout(() => {
-        window.location.href = '/objednavka/neuspesna';
-      }, 5000);
+      toast.error('Chyba', {
+        description: 'Nastala chyba pri spracovaní objednávky. Skúste to prosím znova.'
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -693,10 +577,7 @@ export default function CheckoutPage() {
   if (showStripePayment) {
     const shippingCost = getShippingCost();
     const finalAmount = Number((totalPrice + shippingCost).toFixed(2));
-    console.log('Cart total:', totalPrice);
-    console.log('Shipping cost:', shippingCost);
-    console.log('Final amount for Stripe:', finalAmount);
-    
+
     return (
       <div className="max-w-md mt-16 mx-auto bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
         <div className="flex items-center gap-3 mb-8">
@@ -1366,26 +1247,85 @@ export default function CheckoutPage() {
                       ...prev,
                       account_password: e.target.value
                     }))}
-                    className="peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent"
+                    className="peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm 
+                               focus:border-green-500 focus:ring-green-500 placeholder-transparent"
                     placeholder="Heslo"
                     minLength={8}
+                    pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
                   />
                   <label
                     htmlFor="account_password"
-                    className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                             peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                             peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
+                    className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 
+                              transition-all peer-placeholder-shown:top-4 
+                              peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
+                              peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
                   >
                     Heslo pre váš účet
                   </label>
                   <p className="mt-1 text-xs text-gray-500">
-                    Heslo musí mať aspoň 8 znakov
+                    Heslo musí obsahovať aspoň 8 znakov, jedno veľké písmeno, 
+                    jedno číslo a jeden špeciálny znak
                   </p>
                 </div>
               </div>
             )}
           </div>
         )}
+
+        <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
+          <h2 className="text-xl font-semibold mb-4">Súhlas so spracovaním údajov</h2>
+          
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={formData.consents.terms}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                consents: { ...prev.consents, terms: e.target.checked }
+              }))}
+              className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+              required
+            />
+            <span className="text-sm text-gray-700">
+              Súhlasím s <Link href="/obchodne-podmienky" className="text-green-600 hover:underline">obchodnými podmienkami</Link> *
+            </span>
+          </label>
+
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={formData.consents.privacy}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                consents: { ...prev.consents, privacy: e.target.checked }
+              }))}
+              className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+              required
+            />
+            <span className="text-sm text-gray-700">
+              Súhlasím so <Link href="/ochrana-osobnych-udajov" className="text-green-600 hover:underline">spracovaním osobných údajov</Link> *
+            </span>
+          </label>
+
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={formData.consents.marketing}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                consents: { ...prev.consents, marketing: e.target.checked }
+              }))}
+              className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+            />
+            <span className="text-sm text-gray-700">
+              Súhlasím so zasielaním marketingových informácií o novinkách a zľavách
+            </span>
+          </label>
+
+          <p className="text-xs text-gray-500 mt-2">
+            * Povinné polia
+          </p>
+        </div>
 
         <button
           type="submit"

@@ -3,387 +3,252 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-
-interface RegistrationFormData {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  phone: string;
-  address_1: string;
-  city: string;
-  postcode: string;
-  country: string;
-}
-
-interface ValidationErrors {
-  [key: string]: string;
-}
+import Link from 'next/link';
+import { registrationSchema, type RegistrationData } from '../lib/validations/registration';
+import { validatePassword } from '../lib/utils/password';
+import { sanitizeInput } from '../lib/utils/sanitize';
+import { z } from 'zod';
+import { useAuth } from '../context/AuthContext';
 
 export default function RegistrationPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<RegistrationFormData>({
+  const [formData, setFormData] = useState<RegistrationData>({
     first_name: '',
     last_name: '',
     email: '',
     password: '',
-    phone: '',
-    address_1: '',
-    city: '',
-    postcode: '',
-    country: 'SK'
+    confirm_password: '',
+    consents: {
+      terms: false,
+      privacy: false,
+      marketing: false
+    }
   });
-  const [errors, setErrors] = useState<ValidationErrors>({});
-  const [honeypot] = useState('');
 
-  const validateForm = (): boolean => {
-    const newErrors: ValidationErrors = {};
-
-    // Name validations
-    if (formData.first_name.length < 2) {
-      newErrors.first_name = 'Meno musí mať aspoň 2 znaky';
-    }
-    if (formData.last_name.length < 2) {
-      newErrors.last_name = 'Priezvisko musí mať aspoň 2 znaky';
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Neplatný email';
-    }
-
-    // Password validation (at least 8 chars, 1 uppercase, 1 number)
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    if (!passwordRegex.test(formData.password)) {
-      newErrors.password = 'Heslo musí mať aspoň 8 znakov, jedno veľké písmeno a jedno číslo';
-    }
-
-    // Phone validation (Slovak/Czech format)
-    const phoneRegex = /^(\+421|\+420|0)[1-9][0-9]{8}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      newErrors.phone = 'Neplatné telefónne číslo';
-    }
-
-    // Address validation
-    if (formData.address_1.length < 5) {
-      newErrors.address_1 = 'Zadajte platnú adresu';
-    }
-
-    // City validation
-    if (formData.city.length < 2) {
-      newErrors.city = 'Zadajte platné mesto';
-    }
-
-    // PSČ validation
-    const pscRegex = /^\d{5}$/;
-    if (!pscRegex.test(formData.postcode)) {
-      newErrors.postcode = 'PSČ musí mať 5 číslic';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check honeypot
-    if (honeypot) {
-      console.log('Potential spam detected');
-      toast.error('Registrácia zlyhala', {
-        description: 'Skúste to prosím znova neskôr.',
-      });
-      return;
-    }
-
-    if (!validateForm()) {
-      toast.error('Nesprávne vyplnené údaje', {
-        description: 'Prosím, skontrolujte všetky polia.',
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
+      setIsLoading(true);
+
+      // Sanitize inputs
+      const sanitizedData = {
+        ...formData,
+        first_name: sanitizeInput(formData.first_name),
+        last_name: sanitizeInput(formData.last_name),
+        email: sanitizeInput(formData.email.toLowerCase()),
+      };
+
+      // Validate form data
+      registrationSchema.parse(sanitizedData);
+
+      // Additional password validation
+      const { isValid, errors } = validatePassword(formData.password);
+      if (!isValid) {
+        toast.error('Neplatné heslo', {
+          description: errors.join('\n')
+        });
+        return;
+      }
+
+      // Submit registration
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          timestamp: Date.now(), // Add timestamp for rate limiting
-        }),
+        body: JSON.stringify(sanitizedData),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
+      }
 
-      if (response.ok) {
-        toast.success('Registrácia úspešná', {
-          description: 'Teraz sa môžete prihlásiť.',
+      // After successful registration, log the user in
+      await login(formData.email, formData.password);
+
+      toast.success('Registrácia úspešná', {
+        description: 'Boli ste automaticky prihlásený.'
+      });
+      
+      // Redirect to account page instead of login
+      router.push('/moj-ucet');
+      
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const errors = error.errors.map(err => err.message);
+        toast.error('Nesprávne vyplnené údaje', {
+          description: (
+            <ul className="list-disc pl-4 mt-2 space-y-1">
+              {errors.map((err, index) => (
+                <li key={index}>{err}</li>
+              ))}
+            </ul>
+          )
         });
-        router.push('/moj-ucet');
-      } else {
-        toast.error('Registrácia zlyhala', {
-          description: data.error || 'Skúste to prosím znova.',
+      } else if (error instanceof Error) {
+        toast.error('Chyba pri registrácii', {
+          description: error.message
         });
       }
-    } catch (error) {
-      console.error('Registration error:', error);
-      toast.error('Registrácia zlyhala', {
-        description: 'Skúste to prosím znova neskôr.',
-      });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16">
-      <div className="bg-white rounded-2xl shadow-sm p-8">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              strokeWidth={2} 
-              stroke="currentColor" 
-              className="w-5 h-5 text-green-600"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
-              />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">Registrácia</h1>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Registrácia
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Už máte účet?{' '}
+          <Link href="/prihlasenie" className="text-green-600 hover:text-green-500">
+            Prihláste sa
+          </Link>
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="relative">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+                Meno
+              </label>
               <input
                 type="text"
                 id="first_name"
                 required
                 value={formData.first_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.first_name ? 'border-red-500' : ''}`}
-                placeholder="Meno"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.first_name && (
-                <p className="mt-1 text-xs text-red-500">{errors.first_name}</p>
-              )}
-              <label
-                htmlFor="first_name"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                Meno
-              </label>
             </div>
 
-            <div className="relative">
+            <div>
+              <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+                Priezvisko
+              </label>
               <input
                 type="text"
                 id="last_name"
                 required
                 value={formData.last_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.last_name ? 'border-red-500' : ''}`}
-                placeholder="Priezvisko"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.last_name && (
-                <p className="mt-1 text-xs text-red-500">{errors.last_name}</p>
-              )}
-              <label
-                htmlFor="last_name"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                Priezvisko
-              </label>
             </div>
 
-            <div className="relative">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.email ? 'border-red-500' : ''}`}
-                placeholder="Email"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.email && (
-                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
-              )}
-              <label
-                htmlFor="email"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                Email
-              </label>
             </div>
 
-            <div className="relative">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Heslo
+              </label>
               <input
                 type="password"
                 id="password"
                 required
+                pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
+                title="Heslo musí obsahovať aspoň 8 znakov, jedno veľké písmeno, číslo a špeciálny znak"
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.password ? 'border-red-500' : ''}`}
-                placeholder="Heslo"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.password && (
-                <p className="mt-1 text-xs text-red-500">{errors.password}</p>
-              )}
-              <label
-                htmlFor="password"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                Heslo
-              </label>
             </div>
 
-            <div className="relative">
+            <div>
+              <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-700">
+                Potvrdiť heslo
+              </label>
               <input
-                type="tel"
-                id="phone"
+                type="password"
+                id="confirm_password"
                 required
-                value={formData.phone}
-                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.phone ? 'border-red-500' : ''}`}
-                placeholder="Telefón"
+                value={formData.confirm_password}
+                onChange={(e) => setFormData(prev => ({ ...prev, confirm_password: e.target.value }))}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
               />
-              {errors.phone && (
-                <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
-              )}
-              <label
-                htmlFor="phone"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                Telefón
-              </label>
             </div>
 
-            <div className="relative sm:col-span-2">
-              <input
-                type="text"
-                id="address_1"
-                required
-                value={formData.address_1}
-                onChange={(e) => setFormData(prev => ({ ...prev, address_1: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.address_1 ? 'border-red-500' : ''}`}
-                placeholder="Adresa"
-              />
-              {errors.address_1 && (
-                <p className="mt-1 text-xs text-red-500">{errors.address_1}</p>
-              )}
-              <label
-                htmlFor="address_1"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                Adresa
-              </label>
-            </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                id="city"
-                required
-                value={formData.city}
-                onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.city ? 'border-red-500' : ''}`}
-                placeholder="Mesto"
-              />
-              {errors.city && (
-                <p className="mt-1 text-xs text-red-500">{errors.city}</p>
-              )}
-              <label
-                htmlFor="city"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                Mesto
-              </label>
-            </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                id="postcode"
-                required
-                pattern="\d{5}"
-                value={formData.postcode}
-                onChange={(e) => setFormData(prev => ({ ...prev, postcode: e.target.value }))}
-                className={`peer w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent
-                  ${errors.postcode ? 'border-red-500' : ''}`}
-                placeholder="PSČ"
-              />
-              {errors.postcode && (
-                <p className="mt-1 text-xs text-red-500">{errors.postcode}</p>
-              )}
-              <label
-                htmlFor="postcode"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
-                         peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
-                         peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
-              >
-                PSČ
-              </label>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-green-600 text-white py-4 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400 
-                     disabled:cursor-not-allowed transition-colors text-sm font-medium"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Registrujem...</span>
+            <div className="space-y-4">
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  required
+                  checked={formData.consents.terms}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    consents: { ...prev.consents, terms: e.target.checked }
+                  }))}
+                  className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                />
+                <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+                  Súhlasím s <Link href="/obchodne-podmienky" className="text-green-600 hover:underline">obchodnými podmienkami</Link>
+                </label>
               </div>
-            ) : (
-              'Registrovať sa'
-            )}
-          </button>
-        </form>
 
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => router.push('/moj-ucet')}
-            className="text-sm text-gray-600 hover:text-green-600 transition-colors"
-          >
-            Už máte účet? <span className="text-green-600 font-medium">Prihláste sa</span>
-          </button>
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="privacy"
+                  required
+                  checked={formData.consents.privacy}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    consents: { ...prev.consents, privacy: e.target.checked }
+                  }))}
+                  className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                />
+                <label htmlFor="privacy" className="ml-2 block text-sm text-gray-700">
+                  Súhlasím so <Link href="/ochrana-osobnych-udajov" className="text-green-600 hover:underline">spracovaním osobných údajov</Link>
+                </label>
+              </div>
+
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="marketing"
+                  checked={formData.consents.marketing}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    consents: { ...prev.consents, marketing: e.target.checked }
+                  }))}
+                  className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                />
+                <label htmlFor="marketing" className="ml-2 block text-sm text-gray-700">
+                  Chcem dostávať informácie o novinkách a zľavách
+                </label>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Registrujem...' : 'Registrovať sa'}
+            </button>
+          </form>
         </div>
       </div>
     </div>

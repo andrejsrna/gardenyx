@@ -53,7 +53,6 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('Creating Packeta packet with data:', data);
 
     // Create request body
     const requestBody = {
@@ -88,7 +87,6 @@ export async function POST(request: Request) {
     };
 
     const xmlRequest = new Builder().buildObject(requestBody);
-    console.log('Sending XML request to Packeta:', xmlRequest);
 
     // Send request to Packeta API
     const response = await fetch(PACKETA_API_URL, {
@@ -114,10 +112,8 @@ export async function POST(request: Request) {
 
     // Parse XML response
     const xmlResponse = await response.text();
-    console.log('Packeta API response:', xmlResponse);
     
     const packetaResponse = await new Parser({ explicitArray: false }).parseStringPromise(xmlResponse);
-    console.log('Parsed Packeta response:', packetaResponse);
 
     if (packetaResponse.response.status !== 'ok') {
       console.error('Packeta error response:', packetaResponse.response);
