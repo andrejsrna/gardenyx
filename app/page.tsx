@@ -11,94 +11,97 @@ import RecentPosts from './components/RecentPosts';
 import RecommendedProductsWrapper from './components/RecommendedProductsWrapper';
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Get RankMath SEO data for homepage
-  const seoData = await getRankMathSEO('https://najsilnejsiaklbovavyziva.sk');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   
-  if (!seoData) {
-    // Fallback metadata if RankMath data is not available
+  // Get RankMath SEO data for homepage
+  const seoData = await getRankMathSEO(process.env.WORDPRESS_URL!);
+  
+  if (seoData) {
+    // Parse the head HTML using our utility
+    const parser = parseHTML(seoData.head);
+    
     return {
-      title: 'Najsilnejšia kĺbová výživa',
-      description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+      title: parser.getTitle() || 'Najsilnejšia kĺbová výživa',
+      description: parser.getMetaTag('description') || 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
       openGraph: {
-        title: 'Najsilnejšia kĺbová výživa',
-        description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
-        url: 'https://najsilnejsiaklbovavyziva.sk',
-        siteName: 'Najsilnejšia kĺbová výživa',
-        images: [
-          {
-            url: 'https://najsilnejsiaklbovavyziva.sk/og-image.jpg', // Make sure to add your OG image
-            width: 1200,
-            height: 630,
-          },
-        ],
+        title: parser.getMetaTag('og:title') || 'Najsilnejšia kĺbová výživa',
+        description: parser.getMetaTag('og:description') || 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+        url: parser.getMetaTag('og:url') || siteUrl,
+        siteName: parser.getMetaTag('og:site_name') || 'Najsilnejšia kĺbová výživa',
+        images: parser.getMetaTag('og:image') 
+          ? [{
+              url: parser.getMetaTag('og:image') || '',
+              width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
+              height: parseInt(parser.getMetaTag('og:image:height') || '630'),
+            }]
+          : [{
+              url: `${siteUrl}/og-image.jpg`,
+              width: 1200,
+              height: 630,
+            }],
         locale: 'sk_SK',
-        type: 'website',
+        type: (parser.getMetaTag('og:type') || 'website') as 'website',
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Najsilnejšia kĺbová výživa',
-        description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
-        images: ['https://najsilnejsiaklbovavyziva.sk/og-image.jpg'], // Same as OG image
+        title: parser.getMetaTag('twitter:title') || 'Najsilnejšia kĺbová výživa',
+        description: parser.getMetaTag('twitter:description') || 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+        images: parser.getMetaTag('twitter:image') 
+          ? [{ url: parser.getMetaTag('twitter:image')! }]
+          : [`${siteUrl}/og-image.jpg`],
       },
       alternates: {
-        canonical: 'https://najsilnejsiaklbovavyziva.sk',
+        canonical: parser.getCanonical() || siteUrl,
       },
       robots: {
-        index: true,
-        follow: true,
+        index: parser.getRobots()?.includes('noindex') ? false : true,
+        follow: parser.getRobots()?.includes('nofollow') ? false : true,
       },
       icons: {
         icon: '/favicon.ico',
         apple: '/apple-touch-icon.png',
       },
       verification: {
-        google: 'your-google-verification-code', // Add your Google verification code if you have one
+        google: parser.getMetaTag('google-site-verification'),
       },
     };
   }
 
-  // Parse the head HTML using our utility
-  const parser = parseHTML(seoData.head);
-  
+  // Fallback metadata if RankMath data is not available
   return {
-    title: parser.getTitle(),
-    description: parser.getMetaTag('description'),
+    title: 'Najsilnejšia kĺbová výživa',
+    description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
     openGraph: {
-      title: parser.getMetaTag('og:title'),
-      description: parser.getMetaTag('og:description'),
-      url: parser.getMetaTag('og:url'),
-      siteName: parser.getMetaTag('og:site_name'),
-      images: parser.getMetaTag('og:image') 
-        ? [{
-            url: parser.getMetaTag('og:image') || '',
-            width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
-            height: parseInt(parser.getMetaTag('og:image:height') || '630'),
-          }]
-        : undefined,
+      title: 'Najsilnejšia kĺbová výživa',
+      description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+      url: siteUrl,
+      siteName: 'Najsilnejšia kĺbová výživa',
+      images: [
+        {
+          url: `${siteUrl}/og-image.jpg`,
+          width: 1200,
+          height: 630,
+        },
+      ],
       locale: 'sk_SK',
-      type: (parser.getMetaTag('og:type') || 'website') as 'website',
+      type: 'website' as const,
     },
     twitter: {
       card: 'summary_large_image',
-      title: parser.getMetaTag('twitter:title'),
-      description: parser.getMetaTag('twitter:description'),
-      images: parser.getMetaTag('twitter:image') 
-        ? [{ url: parser.getMetaTag('twitter:image')! }]
-        : undefined,
+      title: 'Najsilnejšia kĺbová výživa',
+      description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+      images: [`${siteUrl}/og-image.jpg`],
     },
     alternates: {
-      canonical: parser.getMetaTag('canonical'),
+      canonical: siteUrl,
     },
     robots: {
-      index: parser.getMetaTag('robots')?.includes('noindex') ? false : true,
-      follow: parser.getMetaTag('robots')?.includes('nofollow') ? false : true,
+      index: true,
+      follow: true,
     },
     icons: {
       icon: '/favicon.ico',
       apple: '/apple-touch-icon.png',
-    },
-    verification: {
-      google: parser.getMetaTag('google-site-verification'),
     },
   };
 }

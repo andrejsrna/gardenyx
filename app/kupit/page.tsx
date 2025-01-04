@@ -4,46 +4,56 @@ import { parseHTML } from '../lib/html-parser';
 import ShopContent from './ShopContent';
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Get RankMath SEO data for shop page
-  const seoData = await getRankMathSEO('https://najsilnejsiaklbovavyziva.sk/kupit');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   
-  if (!seoData) {
-    // Fallback metadata if RankMath data is not available
+  // Get RankMath SEO data for shop page
+  const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/kupit`);
+  
+  if (seoData) {
+    // Parse the head HTML using our utility
+    const parser = parseHTML(seoData.head);
+    
     return {
-      title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-      description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+      title: parser.getTitle() || 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
+      description: parser.getMetaTag('description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
       openGraph: {
-        title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-        description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
-        url: 'https://najsilnejsiaklbovavyziva.sk/kupit',
-        siteName: 'Najsilnejšia kĺbová výživa',
-        images: [
-          {
-            url: 'https://najsilnejsiaklbovavyziva.sk/og-image-shop.jpg',
-            width: 1200,
-            height: 630,
-          },
-        ],
+        title: parser.getMetaTag('og:title') || 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
+        description: parser.getMetaTag('og:description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+        url: parser.getMetaTag('og:url') || `${siteUrl}/kupit`,
+        siteName: parser.getMetaTag('og:site_name') || 'Najsilnejšia kĺbová výživa',
+        images: parser.getMetaTag('og:image') 
+          ? [{
+              url: parser.getMetaTag('og:image') || '',
+              width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
+              height: parseInt(parser.getMetaTag('og:image:height') || '630'),
+            }]
+          : [{
+              url: `${siteUrl}/og-image-shop.jpg`,
+              width: 1200,
+              height: 630,
+            }],
         locale: 'sk_SK',
-        type: 'website',
+        type: 'website' as const,
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-        description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
-        images: ['https://najsilnejsiaklbovavyziva.sk/og-image-shop.jpg'],
+        title: parser.getMetaTag('twitter:title') || 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
+        description: parser.getMetaTag('twitter:description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+        images: parser.getMetaTag('twitter:image') 
+          ? [{ url: parser.getMetaTag('twitter:image')! }]
+          : [`${siteUrl}/og-image-shop.jpg`],
       },
       alternates: {
-        canonical: 'https://najsilnejsiaklbovavyziva.sk/kupit',
+        canonical: parser.getCanonical() || `${siteUrl}/kupit`,
       },
       robots: {
-        index: true,
-        follow: true,
+        index: parser.getRobots()?.includes('noindex') ? false : true,
+        follow: parser.getRobots()?.includes('nofollow') ? false : true,
       },
       other: {
-        'price-range': '€€',
-        'availability': 'in stock',
-        'delivery-time': '24h',
+        'price-range': parser.getMetaTag('price-range') || '€€',
+        'availability': parser.getMetaTag('availability') || 'in stock',
+        'delivery-time': parser.getMetaTag('delivery-time') || '24h',
       },
       keywords: [
         'kĺbová výživa',
@@ -57,52 +67,52 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
-  // Parse the head HTML using our utility
-  const parser = parseHTML(seoData.head);
-  
-  // Get all meta tags to check for structured data
-  const allMetaTags = parser.getAllMetaTags();
-  
+  // Fallback metadata if RankMath data is not available
   return {
-    title: parser.getTitle(),
-    description: parser.getMetaTag('description'),
+    title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
+    description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
     openGraph: {
-      title: parser.getMetaTag('og:title'),
-      description: parser.getMetaTag('og:description'),
-      url: parser.getMetaTag('og:url'),
-      siteName: parser.getMetaTag('og:site_name'),
-      images: parser.getMetaTag('og:image') 
-        ? [{
-            url: parser.getMetaTag('og:image') || '',
-            width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
-            height: parseInt(parser.getMetaTag('og:image:height') || '630'),
-          }]
-        : [],
+      title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
+      description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+      url: `${siteUrl}/kupit`,
+      siteName: 'Najsilnejšia kĺbová výživa',
+      images: [
+        {
+          url: `${siteUrl}/og-image-shop.jpg`,
+          width: 1200,
+          height: 630,
+        },
+      ],
       locale: 'sk_SK',
-      type: (parser.getMetaTag('og:type') || 'website') as 'website',
+      type: 'website' as const,
     },
     twitter: {
       card: 'summary_large_image',
-      title: parser.getMetaTag('twitter:title'),
-      description: parser.getMetaTag('twitter:description'),
-      images: parser.getMetaTag('twitter:image') 
-        ? [{ url: parser.getMetaTag('twitter:image')! }] 
-        : undefined,
+      title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
+      description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+      images: [`${siteUrl}/og-image-shop.jpg`],
     },
     alternates: {
-      canonical: parser.getCanonical() || 'https://najsilnejsiaklbovavyziva.sk/kupit',
+      canonical: `${siteUrl}/kupit`,
     },
     robots: {
-      index: parser.getRobots()?.includes('noindex') ? false : true,
-      follow: parser.getRobots()?.includes('nofollow') ? false : true,
+      index: true,
+      follow: true,
     },
     other: {
-      // Preserve any additional meta tags from RankMath
-      ...Object.fromEntries(
-        Object.entries(allMetaTags)
-          .filter(([key]) => !key.startsWith('og:') && !key.startsWith('twitter:'))
-      ),
+      'price-range': '€€',
+      'availability': 'in stock',
+      'delivery-time': '24h',
     },
+    keywords: [
+      'kĺbová výživa',
+      'kolagén',
+      'glukozamín',
+      'chondroitín',
+      'msm',
+      'boswellia serrata',
+      'kurkumín'
+    ],
   };
 }
 

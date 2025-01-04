@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
 import { parseHTML } from '../lib/html-parser';
 import Toast from '../components/Toast';
+import CTA from '../components/CTA';
 
 type tParams = Promise<{ slug: string[] }>;
 
@@ -230,6 +231,12 @@ export default async function BlogPost({ params }: { params: tParams }) {
           </div>
         </div>
       </article>
+
+      {/* CTA Section */}
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <CTA />
+      </div>
+
       <Toast />
     </>
   );

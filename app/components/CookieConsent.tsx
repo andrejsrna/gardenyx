@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
 export default function CookieConsent() {
-  const { consent, setConsent, setModalOpen } = useCookieConsent();
+  const { consent, setConsent, setModalOpen, isModalOpen } = useCookieConsent();
   const [showDetails, setShowDetails] = useState(false);
   const [shouldShow, setShouldShow] = useState(false);
 
@@ -47,7 +47,8 @@ export default function CookieConsent() {
     setShouldShow(false);
   };
 
-  if (!shouldShow) {
+  // Show if either shouldShow is true (first visit) or isModalOpen is true (opened via manager)
+  if (!shouldShow && !isModalOpen) {
     return null;
   }
 
@@ -70,7 +71,8 @@ export default function CookieConsent() {
                 zlepšovať služby a personalizovať obsah.
               </p>
 
-              {showDetails && (
+              {/* Always show cookie settings when opened via manager */}
+              {(showDetails || isModalOpen) && (
                 <div className="space-y-4 mt-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -120,13 +122,15 @@ export default function CookieConsent() {
               )}
 
               <div className="flex flex-col sm:flex-row gap-3 mt-6">
-                <button
-                  onClick={() => setShowDetails(!showDetails)}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-                >
-                  {showDetails ? 'Skryť nastavenia' : 'Upraviť nastavenia'}
-                </button>
-                {showDetails ? (
+                {!isModalOpen && (
+                  <button
+                    onClick={() => setShowDetails(!showDetails)}
+                    className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                  >
+                    {showDetails ? 'Skryť nastavenia' : 'Upraviť nastavenia'}
+                  </button>
+                )}
+                {(showDetails || isModalOpen) ? (
                   <button
                     onClick={handleSavePreferences}
                     className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"

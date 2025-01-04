@@ -14,82 +14,86 @@ interface PageProps {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Get RankMath SEO data for blog page
-  const seoData = await getRankMathSEO('https://najsilnejsiaklbovavyziva.sk/blog');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   
-  if (!seoData) {
-    // Fallback metadata if RankMath data is not available
+  // Get RankMath SEO data for blog page
+  const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/blog`);
+  
+  if (seoData) {
+    // Parse the head HTML using our utility
+    const parser = parseHTML(seoData.head);
+    
     return {
-      title: 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
-      description: 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
+      title: parser.getTitle() || 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
+      description: parser.getMetaTag('description') || 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
       openGraph: {
-        title: 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
-        description: 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
-        url: 'https://najsilnejsiaklbovavyziva.sk/blog',
-        siteName: 'Najsilnejšia kĺbová výživa',
-        images: [
-          {
-            url: 'https://najsilnejsiaklbovavyziva.sk/og-image.jpg',
-            width: 1200,
-            height: 630,
-          },
-        ],
+        title: parser.getMetaTag('og:title') || 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
+        description: parser.getMetaTag('og:description') || 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
+        url: parser.getMetaTag('og:url') || `${siteUrl}/blog`,
+        siteName: parser.getMetaTag('og:site_name') || 'Najsilnejšia kĺbová výživa',
+        images: parser.getMetaTag('og:image') 
+          ? [{
+              url: parser.getMetaTag('og:image') || '',
+              width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
+              height: parseInt(parser.getMetaTag('og:image:height') || '630'),
+            }]
+          : [{
+              url: `${siteUrl}/og-image.jpg`,
+              width: 1200,
+              height: 630,
+            }],
         locale: 'sk_SK',
-        type: 'website',
+        type: 'website' as const,
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
-        description: 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
-        images: ['https://najsilnejsiaklbovavyziva.sk/og-image.jpg'],
+        title: parser.getMetaTag('twitter:title') || 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
+        description: parser.getMetaTag('twitter:description') || 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
+        images: parser.getMetaTag('twitter:image') 
+          ? [{ url: parser.getMetaTag('twitter:image')! }]
+          : [`${siteUrl}/og-image.jpg`],
       },
       alternates: {
-        canonical: 'https://najsilnejsiaklbovavyziva.sk/blog',
+        canonical: parser.getCanonical() || `${siteUrl}/blog`,
       },
       robots: {
-        index: true,
-        follow: true,
+        index: parser.getRobots()?.includes('noindex') ? false : true,
+        follow: parser.getRobots()?.includes('nofollow') ? false : true,
       },
     };
   }
 
-  // Parse the head HTML using our utility
-  const parser = parseHTML(seoData.head);
-  
+  // Fallback metadata if RankMath data is not available
   return {
-    title: parser.getTitle(),
-    description: parser.getMetaTag('description'),
+    title: 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
+    description: 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
     openGraph: {
-      title: parser.getMetaTag('og:title'),
-      description: parser.getMetaTag('og:description'),
-      url: parser.getMetaTag('og:url'),
-      siteName: parser.getMetaTag('og:site_name'),
-      images: parser.getMetaTag('og:image') 
-        ? [{
-            url: parser.getMetaTag('og:image') || '',
-            width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
-            height: parseInt(parser.getMetaTag('og:image:height') || '630'),
-          }]
-        : [],
+      title: 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
+      description: 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
+      url: `${siteUrl}/blog`,
+      siteName: 'Najsilnejšia kĺbová výživa',
+      images: [
+        {
+          url: `${siteUrl}/og-image.jpg`,
+          width: 1200,
+          height: 630,
+        },
+      ],
       locale: 'sk_SK',
-      type: (parser.getMetaTag('og:type') || 'website') as 'website' | 'article',
+      type: 'website' as const,
     },
     twitter: {
       card: 'summary_large_image',
-      title: parser.getMetaTag('twitter:title'),
-      description: parser.getMetaTag('twitter:description'),
-      images: parser.getMetaTag('twitter:image') 
-        ? [{
-            url: parser.getMetaTag('twitter:image') || '',
-          }]
-        : [],
+      title: 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa',
+      description: 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.',
+      images: [`${siteUrl}/og-image.jpg`],
     },
     alternates: {
-      canonical: parser.getCanonical() || 'https://najsilnejsiaklbovavyziva.sk/blog',
+      canonical: `${siteUrl}/blog`,
     },
     robots: {
-      index: parser.getRobots()?.includes('noindex') ? false : true,
-      follow: parser.getRobots()?.includes('nofollow') ? false : true,
+      index: true,
+      follow: true,
     },
   };
 }
