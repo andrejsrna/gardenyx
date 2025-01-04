@@ -28,11 +28,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://widget.packeta.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "connect-src 'self' https://api.stripe.com",
-              "frame-src 'self' https://js.stripe.com",
+              "frame-src 'self' https://js.stripe.com https://widget.packeta.com",
               "font-src 'self'"
             ].join('; ')
           },
