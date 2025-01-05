@@ -54,6 +54,7 @@ export default function RootLayout({
           rel="preload"
           href="/logo.png"
           as="image"
+          type="image/png"
         />
       </head>
       <body className={`${inter.variable} antialiased`}>

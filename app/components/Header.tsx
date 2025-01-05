@@ -49,13 +49,9 @@ export default function Header() {
               src="/logo.png"
               alt="Logo"
               width={150}
-              height={50}
-              style={{
-                width: 'auto',
-                height: 'auto',
-                maxWidth: '150px'
-              }}
-              priority
+              height={40}
+              priority={true}
+              className="h-10 w-auto"
             />
           </Link>
 
