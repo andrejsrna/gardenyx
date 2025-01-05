@@ -9,24 +9,14 @@ export default function CookieConsent() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    
-    // Load saved preferences from localStorage
-    const savedConsent = localStorage.getItem('cookieConsent');
-    if (savedConsent) {
-      try {
-        const parsedConsent = JSON.parse(savedConsent);
-        setConsent(parsedConsent);
-        setModalOpen(false);
-      } catch (error) {
-        console.error('Error parsing cookie consent:', error);
-        localStorage.removeItem('cookieConsent');
+    if (!mounted) {
+      setMounted(true);
+      const savedConsent = localStorage.getItem('cookieConsent');
+      if (!savedConsent) {
+        setModalOpen(true);
       }
-    } else {
-      // Show modal for new users
-      setModalOpen(true);
     }
-  }, [setConsent, setModalOpen]);
+  }, [mounted, setModalOpen]);
 
   const saveConsent = (newConsent: typeof consent) => {
     setConsent(newConsent);
@@ -79,8 +69,7 @@ export default function CookieConsent() {
                 zlepšovať služby a personalizovať obsah.
               </p>
 
-              {/* Always show cookie settings when opened via manager */}
-              {(showDetails || isModalOpen) && (
+              {showDetails && (
                 <div className="space-y-4 mt-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -130,15 +119,19 @@ export default function CookieConsent() {
               )}
 
               <div className="flex flex-col sm:flex-row gap-3 mt-6">
-                {!isModalOpen && (
-                  <button
-                    onClick={() => setShowDetails(!showDetails)}
-                    className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-                  >
-                    {showDetails ? 'Skryť nastavenia' : 'Upraviť nastavenia'}
-                  </button>
-                )}
-                {(showDetails || isModalOpen) ? (
+                <button
+                  onClick={handleRejectAll}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                >
+                  Odmietnuť všetko
+                </button>
+                <button
+                  onClick={() => setShowDetails(!showDetails)}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                >
+                  {showDetails ? 'Skryť nastavenia' : 'Upraviť nastavenia'}
+                </button>
+                {showDetails ? (
                   <button
                     onClick={handleSavePreferences}
                     className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
@@ -146,20 +139,12 @@ export default function CookieConsent() {
                     Uložiť nastavenia
                   </button>
                 ) : (
-                  <>
-                    <button
-                      onClick={handleRejectAll}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-                    >
-                      Odmietnuť všetko
-                    </button>
-                    <button
-                      onClick={handleAcceptAll}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
-                    >
-                      Prijať všetko
-                    </button>
-                  </>
+                  <button
+                    onClick={handleAcceptAll}
+                    className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
+                  >
+                    Prijať všetko
+                  </button>
                 )}
               </div>
             </div>

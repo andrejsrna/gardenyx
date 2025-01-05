@@ -19,8 +19,8 @@ interface CookieConsentContextType {
 
 const defaultConsent: CookieConsent = {
   necessary: true,
-  analytics: false,
-  marketing: false,
+  analytics: true,
+  marketing: true,
 };
 
 const CookieConsentContext = createContext<CookieConsentContextType | undefined>(undefined);
@@ -31,7 +31,6 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
   const [hasConsented, setHasConsented] = useState(false);
 
   useEffect(() => {
-    // Check for existing consent in localStorage
     const savedConsent = localStorage.getItem('cookieConsent');
     if (savedConsent) {
       try {
@@ -41,9 +40,11 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
       } catch (error) {
         console.error('Error parsing cookie consent:', error);
         localStorage.removeItem('cookieConsent');
+        setConsent(defaultConsent);
       }
     } else {
       setModalOpen(true);
+      setConsent(defaultConsent);
     }
   }, []);
 
