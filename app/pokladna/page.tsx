@@ -457,7 +457,7 @@ export default function CheckoutPage() {
 
       // Create order in WooCommerce
       const orderData: WooCommerceOrder = {
-        status: 'pending',
+        status: 'processing',
         customer_id: customerData?.id,
         billing: formData.billing,
         shipping: formData.shipping,
