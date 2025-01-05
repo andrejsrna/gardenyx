@@ -9,54 +9,56 @@ export default function CookieConsent() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Set mounted state to true after hydration
     setMounted(true);
-
-    // Check localStorage for existing consent
-    const hasConsent = localStorage.getItem('cookieConsent');
-    if (!hasConsent) {
-      // Set default consent with all options enabled
-      setConsent({
-        necessary: true,
-        analytics: true,
-        marketing: true,
-      });
+    
+    // Load saved preferences from localStorage
+    const savedConsent = localStorage.getItem('cookieConsent');
+    if (savedConsent) {
+      try {
+        const parsedConsent = JSON.parse(savedConsent);
+        setConsent(parsedConsent);
+        setModalOpen(false);
+      } catch (error) {
+        console.error('Error parsing cookie consent:', error);
+        localStorage.removeItem('cookieConsent');
+      }
+    } else {
+      // Show modal for new users
+      setModalOpen(true);
     }
-  }, [setConsent]);
+  }, [setConsent, setModalOpen]);
+
+  const saveConsent = (newConsent: typeof consent) => {
+    setConsent(newConsent);
+    localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
+    setModalOpen(false);
+  };
 
   const handleAcceptAll = () => {
-    setConsent({
+    saveConsent({
       necessary: true,
       analytics: true,
       marketing: true,
     });
-    setModalOpen(false);
   };
 
   const handleRejectAll = () => {
-    setConsent({
+    saveConsent({
       necessary: true,
       analytics: false,
       marketing: false,
     });
-    setModalOpen(false);
   };
 
   const handleSavePreferences = () => {
-    setConsent({ ...consent });
-    setModalOpen(false);
+    saveConsent(consent);
   };
 
-  // Don't render anything until component is mounted to prevent flash
-  if (!mounted) {
-    return null;
-  }
+  // Don't render until hydrated
+  if (!mounted) return null;
 
-  // Show only if no consent is stored or modal is explicitly opened
-  const hasStoredConsent = localStorage.getItem('cookieConsent');
-  if (hasStoredConsent && !isModalOpen) {
-    return null;
-  }
+  // Don't show if consent is stored and modal isn't explicitly opened
+  if (localStorage.getItem('cookieConsent') && !isModalOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
