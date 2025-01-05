@@ -7,19 +7,15 @@ const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID!;
 
 declare global {
   interface Window {
-    gtag: (
-      command: string,
-      action: string | Date,
-      params?: Record<string, unknown>
-    ) => void;
     dataLayer: unknown[];
+    gtag: (command: string, action: string | Date, params?: Record<string, unknown>) => void;
   }
 }
 
 export default function GoogleAds() {
-  const { consent, hasUserConsented } = useCookieConsent();
+  const { consent, hasConsented } = useCookieConsent();
 
-  if (!hasUserConsented || !consent.marketing) {
+  if (!hasConsented || !consent.marketing) {
     return null;
   }
 
@@ -27,13 +23,14 @@ export default function GoogleAds() {
     <Script
       id="google-ads"
       strategy="afterInteractive"
-      dangerouslySetInnerHTML={{
-        __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${GOOGLE_ADS_ID}');
-        `,
+      src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}`}
+      onLoad={() => {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(command: string, action: string | Date, params?: Record<string, unknown>) {
+          window.dataLayer.push([command, action, params]);
+        }
+        gtag('js', new Date());
+        gtag('config', process.env.NEXT_PUBLIC_GOOGLE_ADS_ID!);
       }}
     />
   );

@@ -2,18 +2,14 @@
 
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, Suspense, useState } from 'react';
+import { useEffect } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!;
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
 declare global {
   interface Window {
-    gtag: (
-      command: string,
-      target: string | Date,
-      params?: Record<string, unknown>
-    ) => void;
+    gtag: (command: string, action: string | Date, params?: Record<string, unknown>) => void;
   }
 }
 
@@ -21,78 +17,46 @@ interface GoogleAnalyticsTrackingProps {
   isGtagLoaded: boolean;
 }
 
+export default function GoogleAnalytics() {
+  const { consent, hasConsented } = useCookieConsent();
+
+  if (!hasConsented || !consent.analytics) {
+    return null;
+  }
+
+  return (
+    <Script
+      id="google-analytics"
+      strategy="afterInteractive"
+      src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+      onLoad={() => {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(...args) {
+          window.dataLayer.push(args);
+        };
+        window.gtag('js', new Date());
+        window.gtag('config', GA_ID);
+      }}
+    />
+  );
+}
+
 function GoogleAnalyticsTracking({ isGtagLoaded }: GoogleAnalyticsTrackingProps) {
-  const { consent, hasUserConsented } = useCookieConsent();
+  const { consent, hasConsented } = useCookieConsent();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!hasUserConsented || !consent.analytics || !pathname || !isGtagLoaded) {
-      return;
-    }
-
-    try {
-      window.gtag('config', GA_MEASUREMENT_ID, {
+    if (isGtagLoaded && hasConsented && consent.analytics) {
+      window.gtag('event', 'page_view', {
         page_path: pathname,
+        page_search: searchParams.toString(),
       });
-    } catch (error) {
-      console.error('Error calling gtag:', error);
     }
-  }, [pathname, searchParams, hasUserConsented, consent.analytics, isGtagLoaded]);
+  }, [isGtagLoaded, hasConsented, consent.analytics, pathname, searchParams]);
 
   return null;
 }
-
-export default function GoogleAnalytics() {
-  const { consent, hasUserConsented } = useCookieConsent();
-  const [isGtagLoaded, setIsGtagLoaded] = useState(false);
-
-  if (!hasUserConsented || !consent.analytics) {
-    return null;
-  }
-
-  const handleScriptLoad = () => {
-    setIsGtagLoaded(true);
-  };
-
-  return (
-    <>
-      <Suspense fallback={null}>
-        <GoogleAnalyticsTracking isGtagLoaded={isGtagLoaded} />
-      </Suspense>
-      <Script
-        strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        onLoad={handleScriptLoad}
-      />
-      <Script
-        id="google-analytics"
-        strategy="afterInteractive"
-        onLoad={handleScriptLoad}
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `,
-        }}
-      />
-    </>
-  );
-}
-
-export const pageview = (url: string) => {
-  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    try {
-      window.gtag('config', GA_MEASUREMENT_ID, {
-        page_path: url,
-      });
-    } catch (error) {
-      console.error('Error in pageview:', error);
-    }
-  }
-};
 
 export const event = (
   action: string,
@@ -103,11 +67,9 @@ export const event = (
     [key: string]: unknown;
   }
 ) => {
-  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    try {
-      window.gtag('event', action, params);
-    } catch (error) {
-      console.error('Error in event:', error);
-    }
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', action, params);
   }
-}; 
+};
+
+export { GoogleAnalyticsTracking }; 
