@@ -1,34 +1,60 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { logError } from '../../../../../lib/utils/logger';
+import { logError } from '@/app/lib/utils/logger';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia'
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY is not defined');
+}
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2024-12-18.acacia',
+  timeout: 10000, // 10 second timeout
 });
 
+type RouteParams = Promise<{ id: string }>;
+
 export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  props: { params: RouteParams }
 ) {
   try {
-    // Ensure params is properly awaited
-    const { id } = await Promise.resolve(params);
+    const { id } = await props.params;
     if (!id) {
-      return NextResponse.json({ error: 'Missing payment intent ID' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing payment intent ID' },
+        { status: 400 }
+      );
     }
 
-    await stripe.paymentIntents.cancel(id);
-    console.log(`[Stripe] Payment intent ${id} cancelled successfully`);
-    return NextResponse.json({ success: true });
+    try {
+      await stripe.paymentIntents.cancel(id);
+      console.log(`[Stripe] Payment intent ${id} cancelled successfully`);
+      return NextResponse.json({ success: true });
+    } catch (stripeError) {
+      console.error('[Stripe] API Error:', stripeError);
+      if (stripeError instanceof Stripe.errors.StripeError) {
+        return NextResponse.json(
+          { error: stripeError.message },
+          { status: stripeError.statusCode || 500 }
+        );
+      }
+      throw stripeError; // Re-throw if it's not a Stripe error
+    }
   } catch (error) {
-    logError('Stripe Payment Intent Cancel', {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to cancel payment intent';
+    const errorDetails = {
       error,
       orderId: null,
-      timestamp: new Date().toISOString()
-    });
+      timestamp: new Date().toISOString(),
+      type: error instanceof Error ? error.constructor.name : typeof error
+    };
+
+    console.error('[API Error]:', errorDetails);
+    logError('Stripe Payment Intent Cancel', errorDetails);
+
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to cancel payment intent' },
-      { status: 400 }
+      { error: errorMessage },
+      { status: 500 }
     );
   }
-} 
+}
