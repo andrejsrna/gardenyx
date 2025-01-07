@@ -10,9 +10,25 @@ import { sanitizeInput } from '../lib/utils/sanitize';
 import { z } from 'zod';
 import { useAuth } from '../context/AuthContext';
 
+// Helper component for required field label
+const RequiredLabel = ({ children }: { children: React.ReactNode }) => (
+  <span className="flex items-center gap-1">
+    {children}
+    <span className="text-red-500">*</span>
+  </span>
+);
+
+// Helper component for validation message
+const ValidationMessage = ({ message, isError = false }: { message: string; isError?: boolean }) => (
+  <p className={`text-xs mt-1 ${isError ? 'text-red-500' : 'text-gray-500'}`}>
+    {message}
+  </p>
+);
+
 export default function RegistrationPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<RegistrationData>({
     first_name: '',
     last_name: '',
@@ -27,6 +43,28 @@ export default function RegistrationPage() {
   });
 
   const { login } = useAuth();
+
+  type FieldValue = string | boolean | { terms: boolean; privacy: boolean; marketing: boolean };
+
+  const validateField = (field: keyof RegistrationData, value: FieldValue) => {
+    try {
+      if (field === 'consents') {
+        registrationSchema.parse({ [field]: value });
+      } else {
+        registrationSchema.parse({ [field]: value });
+      }
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors(prev => ({ ...prev, [field]: error.errors[0].message }));
+      }
+    }
+  };
+
+  const handleInputChange = (field: keyof RegistrationData, value: FieldValue) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    validateField(field, value);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +84,10 @@ export default function RegistrationPage() {
       registrationSchema.parse(sanitizedData);
 
       // Additional password validation
-      const { isValid, errors } = validatePassword(formData.password);
+      const { isValid, errors: pwdErrors } = validatePassword(formData.password);
       if (!isValid) {
         toast.error('Neplatné heslo', {
-          description: errors.join('\n')
+          description: pwdErrors.join('\n')
         });
         return;
       }
@@ -68,24 +106,28 @@ export default function RegistrationPage() {
         throw new Error(error.message || 'Registration failed');
       }
 
-      // After successful registration, log the user in
       await login(formData.email, formData.password);
 
       toast.success('Registrácia úspešná', {
         description: 'Boli ste automaticky prihlásený.'
       });
       
-      // Redirect to account page instead of login
       router.push('/moj-ucet');
       
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errors = error.errors.map(err => err.message);
+        const validationErrors = error.errors.reduce((acc, err) => {
+          const field = err.path[0] as string;
+          acc[field] = err.message;
+          return acc;
+        }, {} as Record<string, string>);
+        setErrors(validationErrors);
+        
         toast.error('Nesprávne vyplnené údaje', {
           description: (
             <ul className="list-disc pl-4 mt-2 space-y-1">
-              {errors.map((err, index) => (
-                <li key={index}>{err}</li>
+              {error.errors.map((err, index) => (
+                <li key={index}>{err.message}</li>
               ))}
             </ul>
           )
@@ -119,74 +161,122 @@ export default function RegistrationPage() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
-                Meno
+                <RequiredLabel>Meno</RequiredLabel>
               </label>
               <input
                 type="text"
                 id="first_name"
                 required
                 value={formData.first_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                onChange={(e) => handleInputChange('first_name', e.target.value)}
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 ${
+                  errors.first_name 
+                    ? 'border-red-300' 
+                    : formData.first_name 
+                      ? 'border-green-300' 
+                      : 'border-gray-300'
+                }`}
               />
+              {errors.first_name && (
+                <ValidationMessage message={errors.first_name} isError />
+              )}
+              <ValidationMessage message="Minimálne 2 znaky" />
             </div>
 
             <div>
               <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
-                Priezvisko
+                <RequiredLabel>Priezvisko</RequiredLabel>
               </label>
               <input
                 type="text"
                 id="last_name"
                 required
                 value={formData.last_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                onChange={(e) => handleInputChange('last_name', e.target.value)}
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 ${
+                  errors.last_name 
+                    ? 'border-red-300' 
+                    : formData.last_name 
+                      ? 'border-green-300' 
+                      : 'border-gray-300'
+                }`}
               />
+              {errors.last_name && (
+                <ValidationMessage message={errors.last_name} isError />
+              )}
+              <ValidationMessage message="Minimálne 2 znaky" />
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
+                <RequiredLabel>Email</RequiredLabel>
               </label>
               <input
                 type="email"
                 id="email"
                 required
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 ${
+                  errors.email 
+                    ? 'border-red-300' 
+                    : formData.email 
+                      ? 'border-green-300' 
+                      : 'border-gray-300'
+                }`}
               />
+              {errors.email && (
+                <ValidationMessage message={errors.email} isError />
+              )}
+              <ValidationMessage message="Platná emailová adresa" />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Heslo
+                <RequiredLabel>Heslo</RequiredLabel>
               </label>
               <input
                 type="password"
                 id="password"
                 required
-                pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
-                title="Heslo musí obsahovať aspoň 8 znakov, jedno veľké písmeno, číslo a špeciálny znak"
                 value={formData.password}
-                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 ${
+                  errors.password 
+                    ? 'border-red-300' 
+                    : formData.password 
+                      ? 'border-green-300' 
+                      : 'border-gray-300'
+                }`}
               />
+              {errors.password && (
+                <ValidationMessage message={errors.password} isError />
+              )}
+              <ValidationMessage message="Minimálne 8 znakov, 1 veľké písmeno, 1 číslo a 1 špeciálny znak" />
             </div>
 
             <div>
               <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-700">
-                Potvrdiť heslo
+                <RequiredLabel>Potvrdiť heslo</RequiredLabel>
               </label>
               <input
                 type="password"
                 id="confirm_password"
                 required
                 value={formData.confirm_password}
-                onChange={(e) => setFormData(prev => ({ ...prev, confirm_password: e.target.value }))}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                onChange={(e) => handleInputChange('confirm_password', e.target.value)}
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 ${
+                  errors.confirm_password 
+                    ? 'border-red-300' 
+                    : formData.confirm_password 
+                      ? 'border-green-300' 
+                      : 'border-gray-300'
+                }`}
               />
+              {errors.confirm_password && (
+                <ValidationMessage message={errors.confirm_password} isError />
+              )}
+              <ValidationMessage message="Musí sa zhodovať s heslom" />
             </div>
 
             <div className="space-y-4">
@@ -196,14 +286,20 @@ export default function RegistrationPage() {
                   id="terms"
                   required
                   checked={formData.consents.terms}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    consents: { ...prev.consents, terms: e.target.checked }
-                  }))}
-                  className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  onChange={(e) => handleInputChange('consents', {
+                    ...formData.consents,
+                    terms: e.target.checked
+                  })}
+                  className={`mt-1 rounded focus:ring-green-500 ${
+                    errors.terms 
+                      ? 'border-red-300 text-red-600' 
+                      : 'border-gray-300 text-green-600'
+                  }`}
                 />
                 <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                  Súhlasím s <Link href="/obchodne-podmienky" className="text-green-600 hover:underline">obchodnými podmienkami</Link>
+                  <RequiredLabel>
+                    Súhlasím s <Link href="/obchodne-podmienky" className="text-green-600 hover:underline">obchodnými podmienkami</Link>
+                  </RequiredLabel>
                 </label>
               </div>
 
@@ -213,14 +309,20 @@ export default function RegistrationPage() {
                   id="privacy"
                   required
                   checked={formData.consents.privacy}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    consents: { ...prev.consents, privacy: e.target.checked }
-                  }))}
-                  className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  onChange={(e) => handleInputChange('consents', {
+                    ...formData.consents,
+                    privacy: e.target.checked
+                  })}
+                  className={`mt-1 rounded focus:ring-green-500 ${
+                    errors.privacy 
+                      ? 'border-red-300 text-red-600' 
+                      : 'border-gray-300 text-green-600'
+                  }`}
                 />
                 <label htmlFor="privacy" className="ml-2 block text-sm text-gray-700">
-                  Súhlasím so <Link href="/ochrana-osobnych-udajov" className="text-green-600 hover:underline">spracovaním osobných údajov</Link>
+                  <RequiredLabel>
+                    Súhlasím so <Link href="/ochrana-osobnych-udajov" className="text-green-600 hover:underline">spracovaním osobných údajov</Link>
+                  </RequiredLabel>
                 </label>
               </div>
 
@@ -229,10 +331,10 @@ export default function RegistrationPage() {
                   type="checkbox"
                   id="marketing"
                   checked={formData.consents.marketing}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    consents: { ...prev.consents, marketing: e.target.checked }
-                  }))}
+                  onChange={(e) => handleInputChange('consents', {
+                    ...formData.consents,
+                    marketing: e.target.checked
+                  })}
                   className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
                 />
                 <label htmlFor="marketing" className="ml-2 block text-sm text-gray-700">
@@ -243,7 +345,7 @@ export default function RegistrationPage() {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || Object.keys(errors).length > 0}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Registrujem...' : 'Registrovať sa'}
