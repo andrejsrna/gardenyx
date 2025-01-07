@@ -9,6 +9,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -18,11 +19,12 @@ interface StripePaymentProps {
   onError: (error: string) => void;
 }
 
-function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
+function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: (error: string) => void }) {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,46 +37,84 @@ function CheckoutForm({ onSuccess, onError }: StripePaymentProps) {
     setErrorMessage(null);
 
     try {
-      // Create the payment using payment element
       const { error: submitError } = await elements.submit();
       if (submitError) {
-        console.error('Submit error:', submitError);
         throw submitError;
       }
 
-      // First create the order
-      await onSuccess();
-      
-      // Get the order ID from session storage
       const orderId = sessionStorage.getItem('lastOrderId');
-      
       if (!orderId) {
-        throw new Error('Chyba pri vytváraní objednávky - chýba ID objednávky');
+        throw new Error('Order ID not found in session storage');
       }
 
-      // Then confirm the payment with the order ID in return URL
-      const result = await stripe.confirmPayment({
+      const { error } = await stripe.confirmPayment({
         elements,
+        redirect: 'if_required',
         confirmParams: {
           return_url: `${window.location.origin}/objednavka/uspesna/${orderId}`,
         }
       });
 
-
-      if (result.error) {
-        console.error('Confirmation error:', result.error);
-        const message = result.error.message || 'Nastala chyba pri spracovaní platby.';
-        setErrorMessage(message);
-        onError(message);
-        toast.error('Platba zlyhala', {
-          description: message,
-        });
+      if (error) {
+        // Handle specific card errors
+        if (error.type === 'card_error') {
+          let errorMessage = 'Nastala chyba pri spracovaní platby.';
+          
+          switch (error.code) {
+            case 'card_declined':
+              errorMessage = 'Platba bola zamietnutá. Skontrolujte údaje karty alebo použite inú kartu.';
+              break;
+            case 'expired_card':
+              errorMessage = 'Karta je expirovaná.';
+              break;
+            case 'incorrect_cvc':
+              errorMessage = 'Nesprávny bezpečnostný kód karty.';
+              break;
+            case 'processing_error':
+              errorMessage = 'Nastala chyba pri spracovaní platby. Skúste to prosím znova.';
+              break;
+            case 'insufficient_funds':
+              errorMessage = 'Na karte nie je dostatok prostriedkov.';
+              break;
+            case 'payment_intent_payment_attempt_failed':
+              errorMessage = error.message || 'Platba bola zamietnutá. Skúste to prosím znova s inou kartou.';
+              break;
+            default:
+              errorMessage = error.message || 'Nastala neočakávaná chyba pri platbe.';
+          }
+          throw new Error(errorMessage);
+        } else if (error.type === 'validation_error') {
+          throw new Error('Prosím, skontrolujte zadané údaje platobnej karty.');
+        } else {
+          throw new Error('Nastala neočakávaná chyba pri spracovaní platby.');
+        }
       }
+
+      // Payment was successful
+      onSuccess();
+      
+      // Only redirect on successful payment
+      router.push(`/objednavka/uspesna/${orderId}`);
     } catch (error) {
-      console.error('Full payment error:', error);
-      const message = error instanceof Error ? error.message : 'Nastala neočakávaná chyba pri spracovaní platby.';
+      console.error('Payment error:', error);
+      const message = error instanceof Error ? error.message : 'Unexpected payment error';
       setErrorMessage(message);
       onError(message);
+      
+      // Update order status to failed without redirect
+      const orderId = sessionStorage.getItem('lastOrderId');
+      if (orderId) {
+        try {
+          await fetch(`/api/woocommerce/orders/${orderId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'failed' })
+          });
+        } catch (updateError) {
+          console.error('Failed to update order status:', updateError);
+        }
+      }
+
       toast.error('Platba zlyhala', {
         description: message,
       });
@@ -167,44 +207,45 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
   const [clientSecret, setClientSecret] = useState<string | undefined>();
 
   useEffect(() => {
-    const fetchPaymentIntent = async () => {
+    const initializePayment = async () => {
       try {
-        const amountInCents = Math.round(amount * 100);
-        
+        console.log('Creating payment intent...');
         const response = await fetch('/api/stripe/payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: amountInCents }),
+          body: JSON.stringify({
+            amount,
+            metadata: {
+              customer_email: sessionStorage.getItem('customerEmail') || undefined
+            }
+          }),
         });
 
+        const data = await response.json();
+        console.log('Payment intent response:', { status: response.status, data });
+        
         if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Payment intent creation failed:', {
-            status: response.status,
-            statusText: response.statusText,
-            error: errorData
-          });
-          throw new Error(errorData.error || 'Failed to create payment intent');
+          throw new Error(data.error || 'Failed to create payment intent');
         }
 
-        const data = await response.json();
-
+        console.log('Payment setup completed successfully');
         setClientSecret(data.clientSecret);
+
       } catch (error) {
-        console.error('Full payment intent error:', {
+        console.error('Payment setup error:', {
           error,
           message: error instanceof Error ? error.message : 'Unknown error',
           stack: error instanceof Error ? error.stack : undefined
         });
         onError(error instanceof Error ? error.message : 'Failed to initialize payment');
         toast.error('Chyba pri inicializácii platby', {
-          description: 'Nastala chyba pri príprave platby. Skúste to prosím znova.',
+          description: 'Prosím skúste to znova alebo kontaktujte podporu.'
         });
       }
     };
 
     if (amount > 0) {
-      fetchPaymentIntent();
+      initializePayment();
     }
   }, [amount, onError]);
 
@@ -259,7 +300,7 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
         locale: 'sk',
       }}
     >
-      <CheckoutForm amount={amount} onSuccess={onSuccess} onError={onError} />
+      <CheckoutForm onSuccess={onSuccess} onError={onError} />
     </Elements>
   );
 } 

@@ -1,6 +1,6 @@
 'use client';
 
-import { init, track, TrackType } from 'fbq';
+import { init, track } from 'fbq';
 import { useEffect } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
@@ -31,8 +31,8 @@ export const fbq = (
   params?: Record<string, unknown>
 ) => {
   if (action === 'track') {
-    track(event as TrackType, params);
+    track(event, params);
   } else if (action === 'init') {
     init(event);
   }
-}; 
+};

@@ -15,6 +15,30 @@ if (!PACKETA_API_KEY) {
   console.error('Missing Packeta API key in environment variables');
 }
 
+  // app/lib/packeta.ts
+  export async function getPacketaTrackingInfo(trackingNumber: string) {
+    try {
+      const response = await fetch(`https://www.zasilkovna.cz/api/v4/${process.env.PACKETA_API_KEY}/track-json`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: trackingNumber
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch tracking info');
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching tracking info:', error);
+      return null;
+    }
+  }
+
 export function transformPacketaDataToMetadata(data: {
   point_id: string;
   point_name: string;

@@ -76,7 +76,8 @@ async function sendTrackingEmail(orderId: string, trackingNumber: string) {
 export default async function OrderSuccessPage({ params }: PageProps) {
   const { orderId } = await params;
   const orderData = await getOrderMetadata(orderId);
-  const packetaBarcode = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === 'packeta_barcode')?.value;
+  const packetaId = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_packet_id')?.value;
+  const packetaBarcode = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_barcode')?.value;
   const trackingEmailSent = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === 'tracking_email_sent')?.value === 'true';
 
   // Send tracking email if we have a tracking number and haven't sent it before
@@ -101,9 +102,9 @@ export default async function OrderSuccessPage({ params }: PageProps) {
           <p className="text-lg text-gray-600 mb-2">
             Číslo objednávky: <span className="font-semibold">{orderId}</span>
           </p>
-          {packetaBarcode && (
+          {packetaId && (
             <p className="text-gray-600 mb-2">
-              Číslo zásielky: <span className="font-semibold">{packetaBarcode}</span>
+              Číslo Packeta zásielky: <span className="font-semibold">{packetaId}</span>
             </p>
           )}
           <p className="text-gray-600 mb-8">

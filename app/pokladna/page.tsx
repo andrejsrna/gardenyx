@@ -350,7 +350,7 @@ export default function CheckoutPage() {
       }
 
       if (formData.shipping_method === 'packeta_pickup' && 
-          !formData.meta_data.some(item => item.key === 'packeta_point_id')) {
+          !formData.meta_data.some(item => item.key === '_packeta_point_id')) {
         toast.error('Chýbajúce údaje', {
           description: 'Prosím, vyberte výdajné miesto Packeta.',
         });
@@ -358,12 +358,71 @@ export default function CheckoutPage() {
         return;
       }
 
-      // If payment method is stripe and we're not showing the payment form yet
-      if (formData.payment_method === 'stripe' && !showStripePayment) {
+      setIsProcessing(true);
+
+      // Create order first if payment method is stripe
+      if (formData.payment_method === 'stripe') {
+        // Create order first
+        const orderData: WooCommerceOrder = {
+          status: 'pending',
+          customer_id: customerData?.id,
+          billing: formData.billing,
+          shipping: formData.shipping,
+          shipping_method: formData.shipping_method,
+          payment_method: formData.payment_method,
+          payment_method_title: 'Platba kartou',
+          meta_data: formData.meta_data,
+          line_items: items.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity
+          })),
+          shipping_lines: [{
+            method_id: formData.shipping_method,
+            method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta' : 'Doručenie domov',
+            total: getShippingCost().toString()
+          }]
+        };
+
+        const orderResponse = await createOrder({
+          ...orderData,
+          meta_data: [
+            ...orderData.meta_data,
+            { 
+              key: 'payment_method',
+              value: formData.payment_method
+            },
+            {
+              key: 'consents',
+              value: JSON.stringify({
+                terms: formData.consents.terms,
+                privacy: formData.consents.privacy,
+                marketing: formData.consents.marketing,
+                timestamp: new Date().toISOString()
+              })
+            }
+          ]
+        });
+
+        if (orderResponse?.error) {
+          throw new Error(orderResponse.error);
+        }
+
+        const orderId = orderResponse?.order?.id?.toString();
+        if (!orderId) {
+          throw new Error('WooCommerce order creation failed - no order ID returned');
+        }
+
+        // Store the order ID and customer email in session storage
+        sessionStorage.setItem('lastOrderId', orderId);
+        sessionStorage.setItem('customerEmail', formData.billing.email);
+
+        // Show Stripe payment form
         setShowStripePayment(true);
+        setIsProcessing(false);
         return;
       }
 
+      // If not stripe payment, process order normally
       await processOrder();
 
     } catch (error) {
@@ -379,6 +438,7 @@ export default function CheckoutPage() {
           description: 'Nastala neočakávaná chyba. Skúste to prosím znova.',
         });
       }
+      setIsProcessing(false);
     }
   };
 
@@ -386,9 +446,9 @@ export default function CheckoutPage() {
     setFormData(prev => ({
       ...prev,
       meta_data: [
-        { key: 'packeta_point_id', value: point.id },
-        { key: 'packeta_point_name', value: point.name },
-        { key: 'packeta_point_address', value: `${point.street}, ${point.city} ${point.zip}` },
+        { key: '_packeta_point_id', value: point.id },
+        { key: '_packeta_point_name', value: point.name },
+        { key: '_packeta_point_address', value: `${point.street}, ${point.city} ${point.zip}` },
       ]
     }));
     setShowPacketaSelector(false);
@@ -401,10 +461,63 @@ export default function CheckoutPage() {
     try {
       // Start payment monitoring
       const paymentStartTime = Date.now();
+
+      // Create order in WooCommerce first
+      const orderData: WooCommerceOrder = {
+        status: 'processing',
+        customer_id: customerData?.id,
+        billing: formData.billing,
+        shipping: formData.shipping,
+        shipping_method: formData.shipping_method,
+        payment_method: formData.payment_method,
+        payment_method_title: formData.payment_method === 'stripe' ? 'Platba kartou' : 'Dobierka',
+        meta_data: formData.meta_data,
+        line_items: items.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity
+        })),
+        shipping_lines: [{
+          method_id: formData.shipping_method,
+          method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta' : 'Doručenie domov',
+          total: getShippingCost().toString()
+        }]
+      };
+
+      const orderResponse = await createOrder({
+        ...orderData,
+        meta_data: [
+          ...orderData.meta_data,
+          { 
+            key: 'payment_method',
+            value: formData.payment_method
+          },
+          {
+            key: 'consents',
+            value: JSON.stringify({
+              terms: formData.consents.terms,
+              privacy: formData.consents.privacy,
+              marketing: formData.consents.marketing,
+              timestamp: new Date().toISOString()
+            })
+          }
+        ]
+      });
+
+      if (orderResponse?.error) {
+        throw new Error(orderResponse.error);
+      }
+
+      orderId = orderResponse?.order?.id?.toString();
+      if (!orderId) {
+        throw new Error('WooCommerce order creation failed - no order ID returned');
+      }
+
+      // Store the order ID in session storage for the payment component
+      sessionStorage.setItem('lastOrderId', orderId);
       
       if (formData.payment_method === 'stripe') {
         try {
-          // Create payment intent first
+          // Create payment intent with order ID
           const token = getCsrfToken();
           const paymentResponse = await fetch('/api/stripe/payment-intent', {
             method: 'POST',
@@ -455,53 +568,6 @@ export default function CheckoutPage() {
         }
       }
 
-      // Create order in WooCommerce
-      const orderData: WooCommerceOrder = {
-        status: 'processing',
-        customer_id: customerData?.id,
-        billing: formData.billing,
-        shipping: formData.shipping,
-        shipping_method: formData.shipping_method,
-        payment_method: formData.payment_method,
-        payment_method_title: formData.payment_method === 'stripe' ? 'Platba kartou' : 'Dobierka',
-        meta_data: formData.meta_data,
-        line_items: items.map(item => ({
-          product_id: item.id,
-          quantity: item.quantity
-        })),
-        shipping_lines: [{
-          method_id: formData.shipping_method,
-          method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta' : 'Doručenie domov',
-          total: getShippingCost().toString()
-        }]
-      };
-
-      const orderResponse = await createOrder({
-        ...orderData,
-        meta_data: [
-          ...orderData.meta_data,
-          { 
-            key: 'payment_method',
-            value: formData.payment_method
-          },
-          {
-            key: 'consents',
-            value: JSON.stringify({
-              terms: formData.consents.terms,
-              privacy: formData.consents.privacy,
-              marketing: formData.consents.marketing,
-              timestamp: new Date().toISOString()
-            })
-          }
-        ]
-      });
-
-      if (orderResponse?.error) {
-        throw new Error(orderResponse.error);
-      }
-
-      orderId = orderResponse?.order?.id?.toString();
-
       // Clear sensitive data
       sessionStorage.removeItem('paymentIntentId');
       
@@ -530,11 +596,16 @@ export default function CheckoutPage() {
   };
 
   const handleStripeSuccess = async () => {
-    await processOrder();
+    // Clear cart and show success message
+    clearCart();
+    toast.success('Platba bola úspešná');
   };
 
   const handleStripeError = (error: string) => {
     console.error('Stripe error:', error);
+    toast.error('Chyba platby', {
+      description: error
+    });
     setShowStripePayment(false);
   };
 
@@ -570,14 +641,12 @@ export default function CheckoutPage() {
     }
   });
 
-  if (showPacketaSelector) {
-    return (
-      <div className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Výber výdajného miesta</h1>
-        <PacketaPointSelector onSelect={handlePacketaPointSelect} />
-      </div>
-    );
-  }
+  const handlePacketaClick = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const currentScroll = window.scrollY;
+    setShowPacketaSelector(true);
+    setTimeout(() => window.scrollTo(0, currentScroll), 0);
+  };
 
   if (showStripePayment) {
     const shippingCost = getShippingCost();
@@ -1076,7 +1145,7 @@ export default function CheckoutPage() {
                     ...prev,
                     shipping_method: e.target.value
                   }));
-                  setShowPacketaSelector(true);
+                  handlePacketaClick(e);
                 }}
                 className="rounded-full border-gray-300 text-green-600 focus:ring-green-500"
                 required
@@ -1091,10 +1160,10 @@ export default function CheckoutPage() {
                     <span className="ml-2 font-medium">2.90 €</span>
                   )}
                 </div>
-                {formData.shipping_method === 'packeta_pickup' && formData.meta_data.some(item => item.key === 'packeta_point_name') && (
+                {formData.shipping_method === 'packeta_pickup' && formData.meta_data.some(item => item.key === '_packeta_point_name') && (
                   <div className="mt-2">
                     <div className="text-sm text-green-600">
-                      Vybrané miesto: {formData.meta_data.find(item => item.key === 'packeta_point_name')?.value}
+                      Vybrané miesto: {formData.meta_data.find(item => item.key === '_packeta_point_name')?.value}
                     </div>
                     <button
                       type="button"
@@ -1339,6 +1408,27 @@ export default function CheckoutPage() {
           {isProcessing ? 'Spracovávam objednávku...' : 'Dokončiť objednávku'}
         </button>
       </form>
+      
+      {showPacketaSelector && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Výber výdajného miesta</h1>
+                <button
+                  onClick={() => setShowPacketaSelector(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <PacketaPointSelector onSelect={handlePacketaPointSelect} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
