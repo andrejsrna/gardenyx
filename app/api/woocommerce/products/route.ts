@@ -16,6 +16,7 @@ interface WooCommerceProduct {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const taxonomy = searchParams.get('taxonomy');
+  const include = searchParams.get('include');
   
   // Build WooCommerce API parameters
   const apiParams = new URLSearchParams();
@@ -24,6 +25,11 @@ export async function GET(request: Request) {
   if (taxonomy) {
     // Use category ID directly
     apiParams.append('category', taxonomy);
+  }
+
+  if (include) {
+    // Add specific product IDs to include
+    apiParams.append('include', include);
   }
 
   const apiUrl = `${process.env.WORDPRESS_URL}/wp-json/wc/v3/products?${apiParams.toString()}`;
@@ -45,6 +51,7 @@ export async function GET(request: Request) {
     
     return NextResponse.json(data);
   } catch (error) {
+    console.error('Error fetching products:', error);
     return NextResponse.json(
       { error: 'Failed to fetch products', details: error },
       { status: 500 }
