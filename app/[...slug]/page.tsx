@@ -5,6 +5,7 @@ import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
 import { parseHTML } from '../lib/html-parser';
 import Toast from '../components/Toast';
 import CTA from '../components/CTA';
+import BlogProductWidget from '../components/BlogProductWidget';
 
 type tParams = Promise<{ slug: string[] }>;
 
@@ -135,6 +136,38 @@ export default async function BlogPost({ params }: { params: tParams }) {
     notFound();
   }
 
+  // Inject product widget before fourth h2
+  const content = post.content.rendered;
+  const h2Regex = /<h2[^>]*>[\s\S]*?<\/h2>/g;
+  const parts = content.split(h2Regex);
+  const h2Matches = content.match(h2Regex) || [];
+  
+  let modifiedContent = '';
+  let hasInjectedWidget = false;
+  for (let i = 0; i < parts.length; i++) {
+    modifiedContent += parts[i];
+    if (i === 3 && !hasInjectedWidget) { // Before fourth h2 (index 3)
+      modifiedContent += `
+        <div class="my-12">
+          <div id="product-widget-mount-point"></div>
+        </div>
+      `;
+      hasInjectedWidget = true;
+    }
+    if (i < h2Matches.length) {
+      modifiedContent += h2Matches[i];
+    }
+  }
+
+  // If we didn't find a fourth h2, append the widget at the end of the content
+  if (!hasInjectedWidget && parts.length > 0) {
+    modifiedContent += `
+      <div class="my-12">
+        <div id="product-widget-mount-point"></div>
+      </div>
+    `;
+  }
+
   const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
     year: 'numeric',
     month: 'long',
@@ -142,7 +175,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
   });
 
   // Get estimated read time (assuming average reading speed of 200 words per minute)
-  const wordCount = post.content.rendered.split(/\s+/).length;
+  const wordCount = content.split(/\s+/).length;
   const readTime = Math.ceil(wordCount / 200);
 
   return (
@@ -199,8 +232,11 @@ export default async function BlogPost({ params }: { params: tParams }) {
                      prose-blockquote:border-green-600 prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-6
                      prose-ul:list-disc prose-ol:list-decimal
                      [&_figure]:!mx-auto [&_figure_img]:!mx-auto [&_figure_figcaption]:text-center"
-          dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+          dangerouslySetInnerHTML={{ __html: modifiedContent }}
         />
+
+        {/* Product Widget */}
+        <BlogProductWidget productIds={[49, 684, 824]} />
 
         {/* Share Buttons */}
         <div className="mt-12 pt-8 border-t">
