@@ -23,7 +23,7 @@ export default function ShopContent() {
   const [productSections, setProductSections] = useState<ProductSection[]>(INITIAL_SECTIONS);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { addToCart } = useCart();
+  const { addToCart, appliedCoupon } = useCart();
 
   const fetchProducts = useCallback(async () => {
     setError(null);
@@ -31,7 +31,6 @@ export default function ShopContent() {
     try {
       const updatedSections = await Promise.all(
         INITIAL_SECTIONS.map(async (section) => {
-          console.log(`[Shop] Fetching products for ${section.taxonomy}`);
           const response = await fetch(`/api/woocommerce/products?taxonomy=${section.taxonomy}`);
           if (!response.ok) {
             const error = await response.json();
@@ -40,13 +39,11 @@ export default function ShopContent() {
           const data = await response.json();
           // Sort products by price in ascending order
           const sortedData = [...data].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-          console.log(`[Shop] Found ${data.length} products for ${section.taxonomy}`);
           return { ...section, products: sortedData };
         })
       );
       setProductSections(updatedSections);
     } catch (error) {
-      console.error('[Shop] Error fetching products:', error);
       setError(error instanceof Error ? error.message : 'Failed to load products');
     } finally {
       setIsLoading(false);
@@ -148,6 +145,14 @@ export default function ShopContent() {
               </span>
             )}
           </div>
+
+          {appliedCoupon && (
+            <div className="bg-green-50 border border-green-100 rounded-lg p-2 mb-4 text-center">
+              <p className="text-sm text-green-700">
+                Kúpte so zľavovým kupónom
+              </p>
+            </div>
+          )}
 
           <div className="flex items-center justify-between gap-4">
             <Link 

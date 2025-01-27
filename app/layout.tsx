@@ -11,6 +11,7 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 import GoogleAds from './components/GoogleAds';
 import { CookieConsentProvider } from './context/CookieConsentContext';
 import CookieConsent from './components/CookieConsent';
+import ExitIntentPopup from './components/ExitIntentPopup';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -66,6 +67,7 @@ export default function RootLayout({
                 {children}
               </main>
               <Footer />
+              <ExitIntentPopup />
               <Toaster 
                 position="top-right"
                 toastOptions={{

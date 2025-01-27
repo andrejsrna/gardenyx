@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import CouponSection from './CouponSection';
 
 interface CartProps {
   onClose: () => void;
@@ -113,6 +114,11 @@ export default function Cart({ onClose }: CartProps) {
       </div>
 
       <div className="border-t pt-4">
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-gray-600">Medzisúčet:</span>
+          <span className="font-medium">{totalPrice.toFixed(2)} €</span>
+        </div>
+        <CouponSection />
         <div className="flex justify-between items-center mb-4">
           <span className="text-gray-600">Spolu:</span>
           <span className="text-lg font-bold">{totalPrice.toFixed(2)} €</span>
