@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 
 interface WooCommerceCategory {
   id: number;
@@ -13,55 +14,70 @@ interface WooCommerceProduct {
   categories: WooCommerceCategory[];
 }
 
+interface WooCommerceError extends Error {
+  response?: {
+    status: number;
+    data: {
+      message?: string;
+      [key: string]: unknown;
+    };
+  };
+}
+
+// Initialize WooCommerce API
+const api = new WooCommerceRestApi({
+  url: process.env.WORDPRESS_URL!,
+  consumerKey: process.env.WC_CONSUMER_KEY!,
+  consumerSecret: process.env.WC_CONSUMER_SECRET!,
+  version: 'wc/v3'
+});
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const taxonomy = searchParams.get('taxonomy');
   const include = searchParams.get('include');
   
-  // Build WooCommerce API parameters
-  const apiParams = new URLSearchParams();
-  apiParams.append('per_page', '100'); // Increase if you need more products
-  apiParams.append('status', 'publish'); // Only get published products
-  
-  if (taxonomy) {
-    // Use category ID directly
-    apiParams.append('category', taxonomy);
-  }
-
-  if (include) {
-    // Add specific product IDs to include
-    apiParams.append('include', include);
-  }
-
-  const apiUrl = `${process.env.WORDPRESS_URL}/wp-json/wc/v3/products?${apiParams.toString()}`;
-
   try {
-    console.log('Fetching products from:', apiUrl);
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Basic ${Buffer.from(
-          `${process.env.WC_CONSUMER_KEY}:${process.env.WC_CONSUMER_SECRET}`
-        ).toString('base64')}`,
-      },
-      next: { revalidate: 60 }, // Cache for 1 minute
-    });
+    console.log('Fetching products...');
+    
+    // Build query parameters
+    const queryParams: {
+      per_page: number;
+      status: string;
+      category?: string;
+      include?: string;
+    } = {
+      per_page: 100,
+      status: 'publish'
+    };
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('WooCommerce API error:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorData
-      });
-      throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
+    if (taxonomy) {
+      queryParams.category = taxonomy;
     }
 
-    const data = await response.json() as WooCommerceProduct[];
+    if (include) {
+      queryParams.include = include;
+    }
+
+    // Fetch products using WooCommerce REST API client
+    const { data } = await api.get('products', queryParams);
     console.log(`Fetched ${data.length} products for ${taxonomy ? `category ${taxonomy}` : 'include list'}`);
     
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching products:', error);
+    
+    // Check if it's a WooCommerce API error
+    if (error instanceof Error && 'response' in error) {
+      const wcError = error as WooCommerceError;
+      console.error('WooCommerce API error details:', wcError.response?.data);
+      
+      return NextResponse.json(
+        { message: wcError.response?.data?.message || 'Failed to fetch products' },
+        { status: wcError.response?.status || 500 }
+      );
+    }
+
     return NextResponse.json(
       { message: error instanceof Error ? error.message : 'Failed to fetch products' },
       { status: 500 }
