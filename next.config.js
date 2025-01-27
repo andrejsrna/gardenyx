@@ -31,10 +31,22 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://widget.packeta.com https://backup.widget.packeta.com https://connect.facebook.net",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
-              "connect-src 'self' https://api.stripe.com",
+              "connect-src 'self' https://api.stripe.com https://najsilnejsiaklbovavyziva.sk/wp-json/wc/v3/*",
               "frame-src 'self' https://js.stripe.com https://widget.packeta.com https://backup.widget.packeta.com",
               "font-src 'self'"
             ].join('; ')
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS'
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization'
           },
           {
             key: 'Permissions-Policy',
