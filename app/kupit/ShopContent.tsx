@@ -31,19 +31,34 @@ export default function ShopContent() {
     try {
       const updatedSections = await Promise.all(
         INITIAL_SECTIONS.map(async (section) => {
-          const response = await fetch(`/api/woocommerce/products?taxonomy=${section.taxonomy}`);
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || `Failed to fetch ${section.taxonomy} products`);
+          try {
+            const response = await fetch(`/api/woocommerce/products?taxonomy=${section.taxonomy}`);
+            const data = await response.json();
+            
+            if (!response.ok) {
+              console.error('API Error Response:', data);
+              throw new Error(data.message || `Failed to fetch products for category ${section.taxonomy}`);
+            }
+
+            // Sort products by price in ascending order
+            const sortedData = [...data].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            return { ...section, products: sortedData };
+          } catch (sectionError) {
+            console.error(`Error fetching section ${section.taxonomy}:`, sectionError);
+            return { ...section, products: [] }; // Return empty products for failed section
           }
-          const data = await response.json();
-          // Sort products by price in ascending order
-          const sortedData = [...data].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-          return { ...section, products: sortedData };
         })
       );
+
+      // Check if any sections have products
+      const hasAnyProducts = updatedSections.some(section => section.products.length > 0);
+      if (!hasAnyProducts) {
+        throw new Error('No products found in any category');
+      }
+
       setProductSections(updatedSections);
     } catch (error) {
+      console.error('Shop content error:', error);
       setError(error instanceof Error ? error.message : 'Failed to load products');
     } finally {
       setIsLoading(false);
