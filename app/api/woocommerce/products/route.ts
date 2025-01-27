@@ -60,7 +60,8 @@ export async function GET(request: Request) {
     }
 
     // Fetch products using WooCommerce REST API client
-    const { data } = await api.get('products', queryParams);
+    const response = await api.get('products', queryParams);
+    const data = response.data as WooCommerceProduct[];
     console.log(`Fetched ${data.length} products for ${taxonomy ? `category ${taxonomy}` : 'include list'}`);
     
     return NextResponse.json(data);
