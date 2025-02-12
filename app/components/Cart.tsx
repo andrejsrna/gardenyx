@@ -54,7 +54,7 @@ export default function Cart({ onClose }: CartProps) {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 z-50 relative">
       {!isLoading && userName && (
         <div className="mb-4">
           <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">

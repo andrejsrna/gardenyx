@@ -69,11 +69,12 @@ export default function RootLayout({
               <Footer />
               <ExitIntentPopup />
               <Toaster 
-                position="top-right"
+                position="bottom-right"
                 toastOptions={{
                   style: {
                     background: '#fff',
                     color: '#1f2937',
+                    zIndex: 40,
                   },
                   className: 'text-sm font-medium',
                 }}
