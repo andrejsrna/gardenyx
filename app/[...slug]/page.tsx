@@ -6,6 +6,7 @@ import { parseHTML } from '../lib/html-parser';
 import Toast from '../components/Toast';
 import CTA from '../components/CTA';
 import BlogProductWidget from '../components/BlogProductWidget';
+import { decode } from 'html-entities';
 
 type tParams = Promise<{ slug: string[] }>;
 
@@ -21,6 +22,17 @@ interface Post {
   date: string;
   link: string;
   _embedded?: PostEmbedded;
+}
+
+// Helper function to clean HTML content - remove tags and decode entities
+function cleanHtmlContent(html: string): string {
+  if (!html) return '';
+  
+  // First remove HTML tags
+  const withoutTags = html.replace(/(<([^>]+)>)/gi, '');
+  
+  // Then decode HTML entities using html-entities library
+  return decode(withoutTags);
 }
 
 // Generate metadata for SEO
@@ -53,12 +65,27 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
       const parser = parseHTML(seoData.head);
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
       
+      // Clean description from HTML tags and entities
+      const description = parser.getMetaTag('description') 
+        ? cleanHtmlContent(parser.getMetaTag('description')!) 
+        : post.excerpt.rendered ? cleanHtmlContent(post.excerpt.rendered) : '';
+      
+      // Clean OG description
+      const ogDescription = parser.getMetaTag('og:description') 
+        ? cleanHtmlContent(parser.getMetaTag('og:description')!) 
+        : description;
+      
+      // Clean Twitter description
+      const twitterDescription = parser.getMetaTag('twitter:description') 
+        ? cleanHtmlContent(parser.getMetaTag('twitter:description')!) 
+        : description;
+      
       return {
         title: parser.getTitle() || post.title.rendered,
-        description: parser.getMetaTag('description') || post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+        description: description,
         openGraph: {
           title: parser.getMetaTag('og:title') || post.title.rendered,
-          description: parser.getMetaTag('og:description') || post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+          description: ogDescription,
           url: parser.getMetaTag('og:url') || `${siteUrl}/${wpPermalink}`,
           siteName: 'Najsilnejšia kĺbová výživa',
           images: parser.getMetaTag('og:image') 
@@ -72,7 +99,7 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
         twitter: {
           card: 'summary_large_image',
           title: parser.getMetaTag('twitter:title') || post.title.rendered,
-          description: parser.getMetaTag('twitter:description') || post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+          description: twitterDescription,
           images: parser.getMetaTag('twitter:image') 
             ? [{ url: parser.getMetaTag('twitter:image')! }]
             : post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
@@ -91,12 +118,16 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
 
     // Fallback to basic metadata from post data
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const cleanDescription = post.excerpt.rendered 
+      ? cleanHtmlContent(post.excerpt.rendered) 
+      : '';
+      
     return {
       title: post.title.rendered,
-      description: post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+      description: cleanDescription,
       openGraph: {
         title: post.title.rendered,
-        description: post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+        description: cleanDescription,
         url: `${siteUrl}/${wpPermalink}`,
         siteName: 'Najsilnejšia kĺbová výživa',
         images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
@@ -108,7 +139,7 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
       twitter: {
         card: 'summary_large_image',
         title: post.title.rendered,
-        description: post.excerpt.rendered?.replace(/(<([^>]+)>)/gi, ''),
+        description: cleanDescription,
         images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
           ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
           : [],
