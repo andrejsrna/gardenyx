@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 
@@ -105,7 +105,7 @@ export default function AccountPage() {
 
   const handleBillingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch('/api/woocommerce/customer/update', {
         method: 'POST',
@@ -221,7 +221,7 @@ export default function AccountPage() {
               />
               <label
                 htmlFor="reset-email"
-                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
+                className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all
                          peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
                          peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
               >
@@ -237,7 +237,7 @@ export default function AccountPage() {
             <button
               type="submit"
               disabled={isResetting}
-              className="w-full bg-green-600 text-white py-4 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400 
+              className="w-full bg-green-600 text-white py-4 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400
                        disabled:cursor-not-allowed transition-colors text-sm font-medium"
             >
               {isResetting ? (
@@ -267,18 +267,18 @@ export default function AccountPage() {
       <div className="max-w-md mx-auto mb-16 mt-16 p-8 bg-white rounded-2xl shadow-sm">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              strokeWidth={2} 
-              stroke="currentColor" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
               className="w-5 h-5 text-green-600"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" 
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
               />
             </svg>
           </div>
@@ -298,7 +298,7 @@ export default function AccountPage() {
             />
             <label
               htmlFor="login"
-              className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
+              className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all
                        peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
                        peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
             >
@@ -323,7 +323,7 @@ export default function AccountPage() {
             />
             <label
               htmlFor="password"
-              className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all 
+              className="absolute -top-2 left-2 bg-white px-1 text-xs text-gray-600 transition-all
                        peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
                        peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
             >
@@ -339,7 +339,7 @@ export default function AccountPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-green-600 text-white py-4 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400 
+            className="w-full bg-green-600 text-white py-4 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400
                      disabled:cursor-not-allowed transition-colors text-sm font-medium"
           >
             {isLoading ? (
@@ -498,101 +498,114 @@ export default function AccountPage() {
                   <form onSubmit={handleBillingSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="billing-first-name" className="block text-sm font-medium text-gray-700">
                           Meno <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
+                          id="billing-first-name"
                           required
                           value={billingFormData.first_name}
                           onChange={(e) => setBillingFormData(prev => ({
                             ...prev,
                             first_name: e.target.value
                           }))}
+                          placeholder="Vaše meno"
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="billing-last-name" className="block text-sm font-medium text-gray-700">
                           Priezvisko <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
+                          id="billing-last-name"
                           required
                           value={billingFormData.last_name}
                           onChange={(e) => setBillingFormData(prev => ({
                             ...prev,
                             last_name: e.target.value
                           }))}
+                          placeholder="Vaše priezvisko"
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="billing-email" className="block text-sm font-medium text-gray-700">
                           Email <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="email"
+                          id="billing-email"
                           required
                           value={billingFormData.email}
                           onChange={(e) => setBillingFormData(prev => ({
                             ...prev,
                             email: e.target.value
                           }))}
+                          placeholder="Váš email"
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="billing-phone" className="block text-sm font-medium text-gray-700">
                           Telefón <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="tel"
+                          id="billing-phone"
                           required
                           value={billingFormData.phone}
                           onChange={(e) => setBillingFormData(prev => ({
                             ...prev,
                             phone: e.target.value
                           }))}
+                          placeholder="+421 XXX XXX XXX"
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
-                      <div className="sm:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700">
+                      <div>
+                        <label htmlFor="billing-address" className="block text-sm font-medium text-gray-700">
                           Adresa <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
+                          id="billing-address"
                           required
                           value={billingFormData.address_1}
                           onChange={(e) => setBillingFormData(prev => ({
                             ...prev,
                             address_1: e.target.value
                           }))}
+                          placeholder="Ulica a číslo"
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="billing-city" className="block text-sm font-medium text-gray-700">
                           Mesto <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
+                          id="billing-city"
                           required
                           value={billingFormData.city}
                           onChange={(e) => setBillingFormData(prev => ({
                             ...prev,
                             city: e.target.value
                           }))}
+                          placeholder="Mesto"
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="billing-postcode" className="block text-sm font-medium text-gray-700">
                           PSČ <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
+                          id="billing-postcode"
                           required
                           pattern="\d{5}"
                           value={billingFormData.postcode}
@@ -600,6 +613,7 @@ export default function AccountPage() {
                             ...prev,
                             postcode: e.target.value
                           }))}
+                          placeholder="PSČ (5 číslic)"
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
@@ -667,4 +681,4 @@ export default function AccountPage() {
       </div>
     </div>
   );
-} 
+}

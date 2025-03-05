@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
-import { logError } from '../../../lib/utils/logger';
+import { createHash } from 'crypto';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 import { Builder, Parser } from 'xml2js';
+import { logError } from '../../../lib/utils/logger';
 
 interface PacketaResponse {
   response: {
@@ -51,6 +53,22 @@ interface OrderData {
   }>;
 }
 
+// Nové rozhranie pre idempotentnosť
+interface OrderRequestWithIdempotencyKey extends OrderData {
+  idempotency_key?: string;
+  meta_data?: MetaData[];
+}
+
+// Pridám rozhranie pre WooCommerce objednávku
+interface WooCommerceOrder {
+  id: number;
+  meta_data?: Array<{
+    key: string;
+    value: string;
+  }>;
+  // Ďalšie polia, ktoré môžu byť potrebné
+}
+
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
 const PACKETA_CARRIER_ID = '131'; // ID pre Slovensko home delivery
@@ -63,10 +81,55 @@ const api = new WooCommerceRestApi({
   version: 'wc/v3'
 });
 
+// Pomocná funkcia na generovanie hash-u pre idempotentnosť
+function generateOrderHash(orderData: OrderData): string {
+  // Vytvorenie konzistentného reťazca z kľúčových údajov objednávky
+  const orderSignature = JSON.stringify({
+    billing_email: orderData.billing.email,
+    billing_phone: orderData.billing.phone,
+    line_items: orderData.line_items,
+    shipping_method: orderData.shipping_method,
+    payment_method: orderData.payment_method,
+    timestamp: new Date().toISOString().slice(0, 16) // Presnosť na minúty - 5-minútové okno na odoslanie
+  });
+
+  // Vytvorenie hash-u
+  return createHash('sha256').update(orderSignature).digest('hex');
+}
+
+// Funkcia na kontrolu existujúcej objednávky podľa idempotency_key
+async function findExistingOrder(idempotencyKey: string) {
+  try {
+    // Hľadáme objednávku s daným idempotency_key v meta_data
+    const response = await api.get('orders', {
+      per_page: 5, // Optimalizácia - kontrolujeme len niekoľko najnovších objednávok
+      orderby: 'date',
+      order: 'desc',
+      status: ['pending', 'processing', 'completed']
+    });
+
+    if (response.data && response.data.length > 0) {
+      // Hľadáme objednávku s rovnakým idempotency_key
+      const existingOrder = response.data.find((order: WooCommerceOrder) =>
+        order.meta_data?.some((meta: { key: string; value: string }) =>
+          meta.key === '_idempotency_key' && meta.value === idempotencyKey
+        )
+      );
+
+      return existingOrder || null;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error finding existing order:', error);
+    return null;
+  }
+}
+
 async function createPacketaPacket(orderData: OrderData, orderId: number, total: number) {
   try {
     const isHomeDelivery = orderData.shipping_method === 'packeta_home';
-    
+
     // Base packet attributes
     const packetAttributes = {
       number: orderId.toString(),
@@ -177,14 +240,57 @@ function calculateTotalWeight(lineItems: Array<{ product_id: number; quantity: n
 
 export async function POST(request: Request) {
   try {
-    const orderData: OrderData = await request.json();
+    // Získame dáta objednávky
+    const orderData: OrderRequestWithIdempotencyKey = await request.json();
+
+    // Získame alebo vygenerujeme idempotency key
+    const idempotencyKey = orderData.idempotency_key || generateOrderHash(orderData);
+
+    // Skontrolujeme, či už existuje objednávka s týmto idempotency key
+    const existingOrder = await findExistingOrder(idempotencyKey);
+
+    if (existingOrder) {
+      console.log(`Found existing order #${existingOrder.id} with idempotency key ${idempotencyKey}`);
+
+      // Ak áno, vrátime existujúcu objednávku namiesto vytvorenia novej
+      return NextResponse.json({
+        order: existingOrder,
+        isExisting: true
+      });
+    }
+
+    // Pridáme idempotency key do meta_data objednávky
+    if (!orderData.meta_data) {
+      orderData.meta_data = [];
+    }
+
+    orderData.meta_data.push({
+      key: '_idempotency_key',
+      value: idempotencyKey
+    });
+
+    // Pridáme session identifier pre ďalšiu ochranu
+    // Oprava cookies() funkcie, ktorá vracia Promise
+    const cookiesStore = await cookies();
+    const sessionId = cookiesStore.get('next-auth.session-token')?.value ||
+                      cookiesStore.get('__Secure-next-auth.session-token')?.value ||
+                      request.headers.get('x-session-id');
+
+    if (sessionId) {
+      orderData.meta_data.push({
+        key: '_session_id',
+        value: sessionId
+      });
+    }
+
+    // Vytvoríme novú objednávku
     const response = await api.post('orders', orderData);
 
     if (!response.data || !response.data.id) {
       throw new Error('Invalid response from WooCommerce');
     }
 
-    // Create Packeta packet if shipping method is Packeta
+    // Vytvorenie Packeta packetu...
     if (orderData.shipping_method === 'packeta_pickup' || orderData.shipping_method === 'packeta_home') {
       try {
         await createPacketaPacket(orderData, response.data.id, Number(response.data.total));
@@ -194,35 +300,39 @@ export async function POST(request: Request) {
       }
     }
 
+    // Log úspešného vytvorenia objednávky
+    console.log(`Created new order #${response.data.id} with idempotency key ${idempotencyKey}`);
+
     return NextResponse.json({
-      order: response.data
+      order: response.data,
+      isExisting: false
     });
 
   } catch (error: unknown) {
     console.error('Order creation error:', error);
-    
+
     const err = error as WooCommerceError;
-    
+
     if (err.response?.data) {
       return NextResponse.json(
-        { 
+        {
           error: {
             message: err.response.data.message || 'WooCommerce API error',
             details: err.response.data
           }
-        }, 
+        },
         { status: err.response.status || 500 }
       );
     }
 
     return NextResponse.json(
-      { 
+      {
         error: {
           message: (err as Error).message || 'Internal server error',
           details: process.env.NODE_ENV === 'development' ? err : undefined
         }
-      }, 
+      },
       { status: 500 }
     );
   }
-} 
+}

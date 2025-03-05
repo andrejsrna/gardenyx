@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useCart } from '../context/CartContext';
-import { getShippingMethods, getPaymentGateways, createOrder } from '../lib/wordpress';
-import type { PaymentGateway, CheckoutFormData } from '../lib/wordpress';
-import PacketaPointSelector from './PacketaPointSelector';
 import type { PacketaPoint } from '../lib/packeta';
 import { transformPacketaDataToMetadata } from '../lib/packeta';
-import { toast } from 'sonner';
-import Image from 'next/image';
+import type { CheckoutFormData, PaymentGateway } from '../lib/wordpress';
+import { createOrder, getPaymentGateways, getShippingMethods } from '../lib/wordpress';
+import PacketaPointSelector from './PacketaPointSelector';
 
 interface ShippingMethod {
   id: string | number;
@@ -87,6 +87,11 @@ export default function CheckoutForm() {
     shipping_lines: []
   });
 
+  // Exportujeme stav loading do globálneho window objektu, aby ho mohla použiť nadradená komponenta
+  useEffect(() => {
+    (window as Window & typeof globalThis & { checkoutFormLoading?: boolean }).checkoutFormLoading = loading;
+  }, [loading]);
+
   // Load saved form data from localStorage on component mount
   useEffect(() => {
     try {
@@ -104,7 +109,7 @@ export default function CheckoutForm() {
             postcode: '',
             country: 'SK'
           };
-          
+
           const shipping = prev.shipping || {
             first_name: '',
             last_name: '',
@@ -193,11 +198,11 @@ export default function CheckoutForm() {
           getShippingMethods(),
           getPaymentGateways()
         ]);
-        
+
         // Transform shipping methods to split Packeta into two options
         const transformedMethods = shipping.flatMap(method => {
           // Log each method for debugging
-          
+
           if (method.method_id === 'packetery_shipping_method' && method.enabled) {
             // Create two virtual methods from the Packeta method
             return [
@@ -220,12 +225,12 @@ export default function CheckoutForm() {
           return method;
         });
 
-        
+
         // Filter out disabled methods and those without titles
-        const enabledMethods = transformedMethods.filter(method => 
+        const enabledMethods = transformedMethods.filter(method =>
           method.enabled && method.title !== null && method.title !== undefined
         );
-        
+
         setShippingMethods(enabledMethods);
         setPaymentGateways(payment.filter(gateway => gateway.enabled));
       } catch (error) {
@@ -295,7 +300,10 @@ export default function CheckoutForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Nastavíme loading stav hneď na začiatku, ešte pred validáciou
+    setLoading(true);
+
     // Validate required fields
     const requiredFields = {
       billing: ['first_name', 'last_name', 'email', 'phone', 'address_1', 'city', 'postcode'],
@@ -309,6 +317,7 @@ export default function CheckoutForm() {
 
     if (missingBillingFields.length > 0) {
       toast.error('Prosím, vyplňte všetky povinné fakturačné údaje');
+      setLoading(false);
       return;
     }
 
@@ -316,6 +325,7 @@ export default function CheckoutForm() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.billing?.email || '')) {
       toast.error('Prosím, zadajte platný email');
+      setLoading(false);
       return;
     }
 
@@ -323,6 +333,7 @@ export default function CheckoutForm() {
     const phoneRegex = /^[+\d\s]{9,}$/;
     if (!phoneRegex.test(formData.billing?.phone || '')) {
       toast.error('Prosím, zadajte platné telefónne číslo');
+      setLoading(false);
       return;
     }
 
@@ -334,6 +345,7 @@ export default function CheckoutForm() {
 
       if (missingShippingFields.length > 0) {
         toast.error('Prosím, vyplňte všetky povinné doručovacie údaje');
+        setLoading(false);
         return;
       }
     }
@@ -342,44 +354,96 @@ export default function CheckoutForm() {
     const pscRegex = /^\d{5}$/;
     if (!pscRegex.test(formData.billing?.postcode || '')) {
       toast.error('Prosím, zadajte platné PSČ (5 číslic)');
+      setLoading(false);
       return;
     }
 
     if (!useShippingAsBilling && !pscRegex.test(formData.shipping?.postcode || '')) {
       toast.error('Prosím, zadajte platné PSČ pre doručovaciu adresu (5 číslic)');
+      setLoading(false);
       return;
     }
 
     if (!formData.shipping_method) {
       toast.error('Prosím, vyberte spôsob dopravy');
+      setLoading(false);
       return;
     }
 
     // Only require pickup point selection for Z-Point shipping method
     if (isPacketaPickupMethod(formData.shipping_method) && !selectedPacketaPoint) {
       toast.error('Prosím, vyberte odberné miesto Packeta');
+      setLoading(false);
       return;
     }
 
     if (!formData.payment_method) {
       toast.error('Prosím, vyberte spôsob platby');
+      setLoading(false);
       return;
     }
 
     try {
-      setLoading(true);
       await createOrder(formData as CheckoutFormData);
       toast.success('Objednávka bola úspešne vytvorená!');
+
+      // Vytvoríme overlay element
+      const overlay = document.createElement('div');
+      overlay.style.position = 'fixed';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+      overlay.style.zIndex = '9999';
+      overlay.style.display = 'flex';
+      overlay.style.alignItems = 'center';
+      overlay.style.justifyContent = 'center';
+      overlay.style.flexDirection = 'column';
+
+      // Pridáme text a spinner
+      const message = document.createElement('div');
+      message.textContent = 'Presmerovanie na stránku s potvrdením objednávky...';
+      message.style.marginTop = '20px';
+      message.style.fontSize = '18px';
+      message.style.fontWeight = '500';
+      message.style.color = '#333';
+
+      // Pridáme spinner (jednoduchý CSS spinner)
+      const spinner = document.createElement('div');
+      spinner.style.border = '5px solid #f3f3f3';
+      spinner.style.borderTop = '5px solid #16a34a'; // green-600
+      spinner.style.borderRadius = '50%';
+      spinner.style.width = '50px';
+      spinner.style.height = '50px';
+      spinner.style.animation = 'spin 1s linear infinite';
+
+      // Pridáme keyframes pre animáciu
+      const style = document.createElement('style');
+      style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+      document.head.appendChild(style);
+
+      // Pridáme elementy do DOM
+      overlay.appendChild(spinner);
+      overlay.appendChild(message);
+      document.body.appendChild(overlay);
+
+      // Vyčistíme košík až po zobrazení overlay
       clearCart();
-      // Redirect to success page
-      window.location.href = '/objednavka/uspesna';
+
+      // Presmerujeme na stránku s potvrdením
+      setTimeout(() => {
+        window.location.href = '/objednavka/uspesna';
+      }, 100);
     } catch (error) {
       toast.error('Nastala chyba pri vytváraní objednávky');
       console.error('Error creating order:', error);
-      // Redirect to failure page
-      window.location.href = '/objednavka/neuspesna';
-    } finally {
       setLoading(false);
+
+      // Presmerujeme na stránku s chybou
+      setTimeout(() => {
+        window.location.href = '/objednavka/neuspesna';
+      }, 1000);
     }
   };
 
@@ -715,8 +779,8 @@ export default function CheckoutForm() {
               <div className="flex justify-between text-gray-600">
                 <span>Doprava</span>
                 <span>
-                  {shippingMethods.find(method => method.id === formData.shipping_method)?.settings?.cost?.value 
-                    ? `${parseFloat(shippingMethods.find(method => method.id === formData.shipping_method)?.settings?.cost?.value || '0').toFixed(2)} €` 
+                  {shippingMethods.find(method => method.id === formData.shipping_method)?.settings?.cost?.value
+                    ? `${parseFloat(shippingMethods.find(method => method.id === formData.shipping_method)?.settings?.cost?.value || '0').toFixed(2)} €`
                     : 'Zadarmo'}
                 </span>
               </div>
@@ -743,7 +807,7 @@ export default function CheckoutForm() {
               </div>
               <div className="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-1">
-                  <path d="M4.464 3.162A2 2 0 016.28 2h7.44a2 2 0 011.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0016 6H4c-.288 0-.568.035-.835.1.03-.147.078-.293.145-.438l1.154-2.5z" />
+                  <path d="M4.464 3.162A2 2 0 016.28 2h7.44a2 2 0 011.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0016 6H4c-.288 0-.568.035-.835.1-.03-.147.078-.293.145-.438l1.154-2.5z" />
                   <path fillRule="evenodd" d="M2 9.5a2 2 0 012-2h12a2 2 0 110 4H4a2 2 0 01-2-2zm13.24 0a.75.75 0 01.75-.75H16a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75V9.5zm-2.25-.75a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 00.75-.75V9.5a.75.75 0 00-.75-.75h-.01z" clipRule="evenodd" />
                 </svg>
                 Šifrované údaje
@@ -762,4 +826,4 @@ export default function CheckoutForm() {
       </button>
     </form>
   );
-} 
+}
