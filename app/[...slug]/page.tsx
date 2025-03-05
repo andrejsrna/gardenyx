@@ -1,12 +1,12 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
-import { parseHTML } from '../lib/html-parser';
-import Toast from '../components/Toast';
-import CTA from '../components/CTA';
-import BlogProductWidget from '../components/BlogProductWidget';
 import { decode } from 'html-entities';
+import { Metadata } from 'next';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import BlogProductWidget from '../components/BlogProductWidget';
+import CTA from '../components/CTA';
+import Toast from '../components/Toast';
+import { parseHTML } from '../lib/html-parser';
+import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
 
 type tParams = Promise<{ slug: string[] }>;
 
@@ -27,19 +27,52 @@ interface Post {
 // Helper function to clean HTML content - remove tags and decode entities
 function cleanHtmlContent(html: string): string {
   if (!html) return '';
-  
+
   // First remove HTML tags
   const withoutTags = html.replace(/(<([^>]+)>)/gi, '');
-  
+
   // Then decode HTML entities using html-entities library
   return decode(withoutTags);
+}
+
+// Helper function to make YouTube embeds responsive
+function makeYouTubeEmbedsResponsive(html: string): string {
+  if (!html) return '';
+
+  // Pattern to match YouTube iframe embeds
+  const youtubePattern = /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:embed\/|watch\?v=)?([^"'&?\/\s]+)[^>]*><\/iframe>/gi;
+
+  // Replace with responsive wrapper
+  return html.replace(youtubePattern, (match, videoId) => {
+    // Extract width and height if present
+    const widthMatch = match.match(/width=["'](\d+)["']/i);
+    const heightMatch = match.match(/height=["'](\d+)["']/i);
+
+    // Calculate aspect ratio (default to 16:9 if not specified)
+    const width = widthMatch ? parseInt(widthMatch[1]) : 560;
+    const height = heightMatch ? parseInt(heightMatch[1]) : 315;
+    const aspectRatio = (height / width) * 100;
+
+    // Create responsive wrapper with proper aspect ratio
+    return `
+      <div class="youtube-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
+        <iframe
+          src="https://www.youtube.com/embed/${videoId}?rel=0"
+          class="absolute top-0 left-0 w-full h-full border-0"
+          title="YouTube video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    `;
+  });
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: { params: tParams }): Promise<Metadata> {
   const { slug } = await params;
   const slugPath = slug.join('/');
-  
+
   try {
     // First try to get the post data
     const post = await getPostBySlug(slugPath);
@@ -59,27 +92,27 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
 
     // Then try to get RankMath SEO data with the correct permalink structure
     const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/${wpPermalink}`);
-    
+
     if (seoData) {
       // Parse the head HTML using our utility
       const parser = parseHTML(seoData.head);
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-      
+
       // Clean description from HTML tags and entities
-      const description = parser.getMetaTag('description') 
-        ? cleanHtmlContent(parser.getMetaTag('description')!) 
+      const description = parser.getMetaTag('description')
+        ? cleanHtmlContent(parser.getMetaTag('description')!)
         : post.excerpt.rendered ? cleanHtmlContent(post.excerpt.rendered) : '';
-      
+
       // Clean OG description
-      const ogDescription = parser.getMetaTag('og:description') 
-        ? cleanHtmlContent(parser.getMetaTag('og:description')!) 
+      const ogDescription = parser.getMetaTag('og:description')
+        ? cleanHtmlContent(parser.getMetaTag('og:description')!)
         : description;
-      
+
       // Clean Twitter description
-      const twitterDescription = parser.getMetaTag('twitter:description') 
-        ? cleanHtmlContent(parser.getMetaTag('twitter:description')!) 
+      const twitterDescription = parser.getMetaTag('twitter:description')
+        ? cleanHtmlContent(parser.getMetaTag('twitter:description')!)
         : description;
-      
+
       return {
         title: parser.getTitle() || post.title.rendered,
         description: description,
@@ -88,10 +121,10 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
           description: ogDescription,
           url: parser.getMetaTag('og:url') || `${siteUrl}/${wpPermalink}`,
           siteName: 'Najsilnejšia kĺbová výživa',
-          images: parser.getMetaTag('og:image') 
-            ? [{ url: parser.getMetaTag('og:image')! }] 
-            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
-              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+          images: parser.getMetaTag('og:image')
+            ? [{ url: parser.getMetaTag('og:image')! }]
+            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
               : [],
           locale: 'sk_SK',
           type: 'article',
@@ -100,10 +133,10 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
           card: 'summary_large_image',
           title: parser.getMetaTag('twitter:title') || post.title.rendered,
           description: twitterDescription,
-          images: parser.getMetaTag('twitter:image') 
+          images: parser.getMetaTag('twitter:image')
             ? [{ url: parser.getMetaTag('twitter:image')! }]
-            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
-              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
               : [],
         },
         alternates: {
@@ -118,10 +151,10 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
 
     // Fallback to basic metadata from post data
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    const cleanDescription = post.excerpt.rendered 
-      ? cleanHtmlContent(post.excerpt.rendered) 
+    const cleanDescription = post.excerpt.rendered
+      ? cleanHtmlContent(post.excerpt.rendered)
       : '';
-      
+
     return {
       title: post.title.rendered,
       description: cleanDescription,
@@ -130,8 +163,8 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
         description: cleanDescription,
         url: `${siteUrl}/${wpPermalink}`,
         siteName: 'Najsilnejšia kĺbová výživa',
-        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
-          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
           : [],
         locale: 'sk_SK',
         type: 'article',
@@ -140,8 +173,8 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
         card: 'summary_large_image',
         title: post.title.rendered,
         description: cleanDescription,
-        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url 
-          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }] 
+        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
           : [],
       },
       alternates: {
@@ -167,12 +200,17 @@ export default async function BlogPost({ params }: { params: tParams }) {
     notFound();
   }
 
+  // Get the original content
+  let content = post.content.rendered;
+
+  // Make YouTube embeds responsive
+  content = makeYouTubeEmbedsResponsive(content);
+
   // Inject product widget before fourth h2
-  const content = post.content.rendered;
   const h2Regex = /<h2[^>]*>[\s\S]*?<\/h2>/g;
   const parts = content.split(h2Regex);
   const h2Matches = content.match(h2Regex) || [];
-  
+
   let modifiedContent = '';
   let hasInjectedWidget = false;
   for (let i = 0; i < parts.length; i++) {
@@ -225,11 +263,11 @@ export default async function BlogPost({ params }: { params: tParams }) {
           <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800" />
         )}
         <div className="absolute inset-0 bg-black/40" />
-        
+
         {/* Title Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="max-w-4xl mx-auto px-4 text-center text-white">
-            <h1 
+            <h1
               className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight"
               dangerouslySetInnerHTML={{ __html: post.title.rendered }}
             />
@@ -256,8 +294,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
         </div>
 
         {/* Article Content */}
-        <div 
-          className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 
+        <div
+          className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900
                      prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:underline
                      prose-img:rounded-lg prose-img:shadow-lg prose-strong:text-gray-900
                      prose-blockquote:border-green-600 prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-6
@@ -273,7 +311,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
         <div className="mt-12 pt-8 border-t">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Zdieľať článok</h3>
           <div className="flex gap-4">
-            <a 
+            <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL + '/' + slugPath)}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -284,7 +322,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
               </svg>
               Facebook
             </a>
-            <a 
+            <a
               href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL + '/' + slugPath)}&text=${encodeURIComponent(post.title.rendered)}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -307,4 +345,4 @@ export default async function BlogPost({ params }: { params: tParams }) {
       <Toast />
     </>
   );
-} 
+}

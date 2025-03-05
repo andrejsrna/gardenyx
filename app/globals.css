@@ -13,6 +13,12 @@ body {
   font-family: var(--font-inter);
 }
 
+/* YouTube Responsive Embed */
+.youtube-embed-container {
+  @apply my-8 rounded-xl overflow-hidden shadow-lg;
+  max-width: 100%;
+}
+
 /* Table of Contents styling */
 #ez-toc-container {
   @apply bg-gray-50 p-6 rounded-lg mb-8;
