@@ -1,5 +1,5 @@
+import { ArrowRight, Percent, Truck } from 'lucide-react';
 import Link from 'next/link';
-import { ArrowRight, Truck, Percent } from 'lucide-react';
 
 export default function CTA() {
   return (
@@ -26,7 +26,7 @@ export default function CTA() {
           <div className="space-y-8">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
               Získajte množstvenú zľavu <br className="hidden sm:block" />
-              a dopravu zadarmo od 40 eur
+              a dopravu zadarmo od 39.99 eur
             </h2>
 
             <Link
@@ -48,4 +48,4 @@ export default function CTA() {
       </div>
     </section>
   );
-} 
+}
