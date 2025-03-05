@@ -13,6 +13,7 @@ import PacketaPointSelector from '../components/PacketaPointSelector';
 import StripePayment from '../components/StripePayment';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useCookieConsent } from '../context/CookieConsentContext';
 import { getCsrfToken } from '../lib/utils/csrf';
 import { logError } from '../lib/utils/logger';
 import { validatePassword } from '../lib/utils/password';
@@ -157,6 +158,7 @@ function updateShippingFromBilling(prevData: FormData) {
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart, addToCart, appliedCoupon, discountAmount } = useCart();
   const [recommendedProducts, setRecommendedProducts] = useState<WooCommerceProduct[]>([]);
+  const { consent, hasConsented } = useCookieConsent();
   const [formData, setFormData] = useState<FormData>({
     billing: {
       first_name: '',
@@ -260,6 +262,90 @@ export default function CheckoutPage() {
   useEffect(() => {
     setFormData(prev => updateShippingFromBilling(prev));
   }, []);
+
+  // Načítanie údajov z cookies pri načítaní stránky
+  useEffect(() => {
+    // Načítame údaje z cookies len ak používateľ nie je prihlásený a súhlasil s cookies
+    if (!customerData && hasConsented && consent.necessary) {
+      const savedCheckoutData = localStorage.getItem('checkoutFormData');
+      if (savedCheckoutData) {
+        try {
+          const parsedData = JSON.parse(savedCheckoutData);
+          setFormData(prev => ({
+            ...prev,
+            billing: {
+              ...prev.billing,
+              ...parsedData.billing
+            },
+            shipping: {
+              ...prev.shipping,
+              ...parsedData.shipping
+            },
+            shipping_method: parsedData.shipping_method || prev.shipping_method,
+            payment_method: parsedData.payment_method || prev.payment_method,
+            is_business: parsedData.is_business || prev.is_business
+          }));
+
+          // Ak máme uložené údaje o firme a is_business je true
+          if (parsedData.is_business && parsedData.billing.company) {
+            setFormData(prev => ({
+              ...prev,
+              is_business: true,
+              billing: {
+                ...prev.billing,
+                company: parsedData.billing.company || '',
+                ic: parsedData.billing.ic || '',
+                dic: parsedData.billing.dic || '',
+                dic_dph: parsedData.billing.dic_dph || ''
+              }
+            }));
+          }
+        } catch (error) {
+          console.error('Error parsing saved checkout data:', error);
+          localStorage.removeItem('checkoutFormData');
+        }
+      }
+    }
+  }, [customerData, hasConsented, consent.necessary]);
+
+  // Uloženie údajov do cookies pri zmene formData
+  useEffect(() => {
+    // Ukladáme údaje do cookies len ak používateľ nie je prihlásený a súhlasil s cookies
+    if (!customerData && hasConsented && consent.necessary &&
+        (formData.billing.first_name || formData.billing.last_name || formData.billing.email)) {
+
+      // Vytvoríme objekt s údajmi, ktoré chceme uložiť
+      const dataToSave = {
+        billing: {
+          first_name: formData.billing.first_name,
+          last_name: formData.billing.last_name,
+          company: formData.billing.company,
+          address_1: formData.billing.address_1,
+          city: formData.billing.city,
+          postcode: formData.billing.postcode,
+          country: formData.billing.country,
+          email: formData.billing.email,
+          phone: formData.billing.phone,
+          ic: formData.billing.ic,
+          dic: formData.billing.dic,
+          dic_dph: formData.billing.dic_dph
+        },
+        shipping: {
+          first_name: formData.shipping.first_name,
+          last_name: formData.shipping.last_name,
+          address_1: formData.shipping.address_1,
+          city: formData.shipping.city,
+          postcode: formData.shipping.postcode,
+          country: formData.shipping.country
+        },
+        shipping_method: formData.shipping_method,
+        payment_method: formData.payment_method,
+        is_business: formData.is_business
+      };
+
+      localStorage.setItem('checkoutFormData', JSON.stringify(dataToSave));
+    }
+  }, [formData, customerData, hasConsented, consent.necessary]);
 
   // Add effect to initialize form data with user info
   useEffect(() => {
