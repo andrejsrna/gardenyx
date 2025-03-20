@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { decode } from 'html-entities';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -7,6 +8,11 @@ import CTA from '../components/CTA';
 import Toast from '../components/Toast';
 import { parseHTML } from '../lib/html-parser';
 import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
+
+// Test Sentry integration
+if (process.env.NODE_ENV === 'development') {
+  Sentry.captureException(new Error('Test error from Sentry integration'));
+}
 
 type tParams = Promise<{ slug: string[] }>;
 
