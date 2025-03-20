@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
@@ -214,9 +215,10 @@ export default function CheckoutPage() {
   const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 
-  // Track begin_checkout event in GA4
+  // Track begin_checkout event in GA4 and Sentry
   useEffect(() => {
     if (items.length > 0) {
+      // Existing GA4 tracking
       gtagEvent('begin_checkout', {
         currency: 'EUR',
         value: totalPrice,
@@ -238,6 +240,13 @@ export default function CheckoutPage() {
         value: totalPrice,
         currency: 'EUR',
         num_items: items.length
+      });
+
+      // Track checkout start in Sentry
+      Sentry.setContext('checkout', {
+        items_count: items.length,
+        total_price: totalPrice,
+        currency: 'EUR'
       });
     }
   }, [items, totalPrice]);
@@ -617,13 +626,13 @@ export default function CheckoutPage() {
   };
 
   const processOrder = async () => {
-    // Ochrana proti opakovanému vytvoreniu tej istej objednávky
-    if (orderIdCreated) {
-      console.log(`Order #${orderIdCreated} already created, preventing duplicate submission`);
-      return;
-    }
-
     try {
+      // Ochrana proti opakovanému vytvoreniu tej istej objednávky
+      if (orderIdCreated) {
+        console.log(`Order #${orderIdCreated} already created, preventing duplicate submission`);
+        return;
+      }
+
       // Start payment monitoring
       const paymentStartTime = Date.now();
 
@@ -777,6 +786,14 @@ export default function CheckoutPage() {
         setShowStripePayment(true);
       }
 
+      // Track successful order creation in Sentry
+      Sentry.setContext('order', {
+        order_id: orderId,
+        total_amount: finalTotal,
+        payment_method: formData.payment_method,
+        shipping_method: formData.shipping_method
+      });
+
     } catch (error) {
       logError('Order Processing Error', {
         error,
@@ -795,6 +812,16 @@ export default function CheckoutPage() {
       setTimeout(() => {
         window.location.href = '/objednavka/neuspesna';
       }, 1000);
+
+      // Log error to Sentry with additional context
+      Sentry.setContext('order_error', {
+        payment_method: formData.payment_method,
+        shipping_method: formData.shipping_method,
+        total_amount: finalTotal,
+        items_count: items.length
+      });
+      Sentry.captureException(error);
+
     } finally {
       setIsSubmitting(false);
       setOrderIdCreated(null);
@@ -802,6 +829,16 @@ export default function CheckoutPage() {
   };
 
   const handleStripeSuccess = async () => {
+    // Track successful payment in Sentry
+    Sentry.captureMessage('Stripe payment successful', {
+      level: 'info',
+      extra: {
+        order_id: orderIdCreated,
+        amount: finalTotal,
+        currency: 'EUR'
+      }
+    });
+
     // Predíďte duplicitným objednávkam pri callback-u
     if (!orderIdCreated) {
       console.error('Order ID not found for Stripe success callback');
@@ -823,6 +860,16 @@ export default function CheckoutPage() {
   };
 
   const handleStripeError = (error: string) => {
+    // Track Stripe payment error in Sentry
+    Sentry.captureException(new Error(error), {
+      level: 'error',
+      extra: {
+        order_id: orderIdCreated,
+        payment_method: 'stripe',
+        amount: finalTotal
+      }
+    });
+
     console.error('Stripe error:', error);
     toast.error('Chyba platby', {
       description: error
