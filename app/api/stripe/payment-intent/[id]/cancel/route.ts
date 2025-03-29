@@ -1,6 +1,6 @@
+import { logError } from '@/app/lib/utils/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { logError } from '@/app/lib/utils/logger';
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('STRIPE_SECRET_KEY is not defined');
@@ -38,7 +38,15 @@ export async function POST(
           { status: stripeError.statusCode || 500 }
         );
       }
-      throw stripeError; // Re-throw if it's not a Stripe error
+      // Instead of rethrowing, handle the non-Stripe error
+      const genericError = new Error(
+        stripeError instanceof Error ? stripeError.message : 'Unknown payment intent cancellation error'
+      );
+      console.error('[Stripe] Non-Stripe Error:', genericError);
+      return NextResponse.json(
+        { error: genericError.message },
+        { status: 500 }
+      );
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to cancel payment intent';
