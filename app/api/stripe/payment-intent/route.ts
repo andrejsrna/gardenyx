@@ -11,7 +11,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 // Initialize Stripe client (will use the env var)
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { // Provide fallback empty string if potentially undefined
-  apiVersion: '2024-12-18.acacia'
+  apiVersion: '2025-02-24.acacia'
 });
 
 const requestSchema = z.object({

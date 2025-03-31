@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia'
+  apiVersion: '2025-02-24.acacia'
 });
 
 export async function POST(request: Request) {
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const { paymentIntentId, orderId } = await request.json();
 
     await stripe.paymentIntents.update(paymentIntentId, {
-      metadata: { 
+      metadata: {
         order_id: orderId
       }
     });
@@ -23,4 +23,4 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-} 
+}
