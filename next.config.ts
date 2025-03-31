@@ -37,6 +37,24 @@ const nextConfig = {
             key: 'Access-Control-Allow-Headers',
             value: 'Content-Type, Authorization'
           },
+          /*
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self' https:",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google-analytics.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.net https://maps.googleapis.com https://js.stripe.com https://*.sentry.io https://cdn.jsdelivr.net/npm/@widgetbot/crate@^3",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net/npm/@widgetbot/crate@^3",
+              "img-src 'self' data: blob: https://*.stripe.com https://*.facebook.com https://www.facebook.com https://facebook.com https: https://www.google-analytics.com https://www.googletagmanager.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.net https://maps.googleapis.com https://api.stripe.com https://*.sentry.io wss://*.widgetbot.io https://api.packetery.com https://najsilnejsiaklbovavyziva.sk",
+              "frame-src 'self' https://js.stripe.com https://www.facebook.com https://facebook.com https://widgetbot.io",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'self'"
+            ].join('; ')
+          },
+          */
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'

@@ -57,6 +57,7 @@ export async function middleware(request: NextRequest) {
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
 
+    /* Commented out for testing
     // Comprehensive CSP header
     const cspHeader = `
       default-src 'self';
@@ -73,6 +74,7 @@ export async function middleware(request: NextRequest) {
       font-src 'self';
       worker-src 'self' blob: https://js.stripe.com;
     `.replace(/\s{2,}/g, ' ').trim();
+    */
 
     // HTTPS only in production
     if (process.env.NODE_ENV === 'production' && !request.url.startsWith('https')) {
@@ -101,7 +103,7 @@ export async function middleware(request: NextRequest) {
     // Create response with headers
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
-    requestHeaders.set('Content-Security-Policy', cspHeader);
+    // requestHeaders.set('Content-Security-Policy', cspHeader); // Commented out for testing
 
     // Add CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {
