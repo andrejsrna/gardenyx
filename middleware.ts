@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import { rateLimit } from './app/lib/utils/rateLimit';
 
 // Paths that require API key authentication
-const PROTECTED_PATHS = [
-  '/api/stripe',  // Remove WooCommerce from protected paths as it uses its own auth
+const PROTECTED_PATHS: string[] = [
+  // '/api/stripe', // Temporarily removed - payment intent uses Stripe secret key, not generic API key
 ];
 
 // CORS headers
