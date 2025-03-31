@@ -51,6 +51,7 @@ interface OrderData {
     product_id: number;
     quantity: number;
   }>;
+  total?: string; // Ensure total exists if used for COD
 }
 
 // Nové rozhranie pre idempotentnosť
@@ -62,6 +63,7 @@ interface OrderRequestWithIdempotencyKey extends OrderData {
 // Pridám rozhranie pre WooCommerce objednávku
 interface WooCommerceOrder {
   id: number;
+  total: string; // Ensure total is present in the response
   meta_data?: Array<{
     key: string;
     value: string;
@@ -108,7 +110,7 @@ async function findExistingOrder(idempotencyKey: string) {
       status: ['pending', 'processing', 'completed']
     });
 
-    if (response.data && response.data.length > 0) {
+    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
       // Hľadáme objednávku s rovnakým idempotency_key
       const existingOrder = response.data.find((order: WooCommerceOrder) =>
         order.meta_data?.some((meta: { key: string; value: string }) =>
@@ -126,17 +128,44 @@ async function findExistingOrder(idempotencyKey: string) {
   }
 }
 
+/**
+ * Parses a combined address string into street and house number.
+ * Handles formats like "Street Name 123", "Street Name 123/A", "Street 123/456".
+ * If no number is found, returns the whole string as street.
+ */
+function parseAddress(addressLine: string): { street: string; houseNumber: string } {
+  if (!addressLine) {
+    return { street: '', houseNumber: '' };
+  }
+
+  // Regex to find a number (potentially with slashes/letters) at the end, possibly preceded by a space.
+  const match = addressLine.match(/^(.*?)\s*([\d/A-Za-z-]+)$/);
+
+  if (match && match[2] && /\d/.test(match[2])) {
+    // Found a number part at the end
+    const street = (match[1] || '').trim();
+    const houseNumber = match[2].trim();
+    return { street, houseNumber };
+  } else {
+    // No number found at the end, assume the whole string is the street
+    return { street: addressLine.trim(), houseNumber: '' };
+  }
+}
+
 async function createPacketaPacket(orderData: OrderData, orderId: number, total: number) {
   try {
+    if (!PACKETA_API_PASSWORD) {
+      throw new Error('Missing Packeta API Password');
+    }
     const isHomeDelivery = orderData.shipping_method === 'packeta_home';
 
     // Base packet attributes
-    const packetAttributes = {
+    const packetAttributes: Record<string, string | undefined> = {
       number: orderId.toString(),
       name: orderData.shipping.first_name,
       surname: orderData.shipping.last_name,
       email: orderData.billing.email,
-      phone: orderData.billing.phone,
+      phone: orderData.billing.phone.replace(/\s/g, ''), // Ensure phone has no spaces for Packeta
       value: total.toString(),
       currency: 'EUR',
       weight: calculateTotalWeight(orderData.line_items).toString(),
@@ -146,17 +175,32 @@ async function createPacketaPacket(orderData: OrderData, orderId: number, total:
 
     // Add delivery specific attributes
     if (isHomeDelivery) {
-      // Pre home delivery potrebujeme carrier ID a kompletnú adresu
-      const address = orderData.shipping.address_1.split(' ');
-      const houseNumber = address.pop() || '';
-      const street = address.join(' ');
+      // Use the new parsing function
+      const { street, houseNumber } = parseAddress(orderData.shipping.address_1);
+
+      if (!street && !houseNumber) {
+          throw new Error(`Invalid address format for home delivery: ${orderData.shipping.address_1}`);
+      }
+      // Packeta requires houseNumber for home delivery (even if empty string initially)
+      if (!houseNumber) {
+          logError('Packeta Address Warning', {
+              error: {
+                message: `Address '${orderData.shipping.address_1}' parsed without house number. Sending empty houseNumber.`,
+                parsedStreet: street,
+                parsedHouseNumber: houseNumber
+              },
+              orderId: orderId.toString(),
+              timestamp: new Date().toISOString()
+          });
+      }
+
 
       Object.assign(packetAttributes, {
-        addressId: PACKETA_CARRIER_ID,
-        street,
-        houseNumber,
+        addressId: PACKETA_CARRIER_ID, // Use the specific carrier ID for home delivery
+        street: street,
+        houseNumber: houseNumber, // Send parsed house number (might be empty)
         city: orderData.shipping.city,
-        zip: orderData.shipping.postcode.replace(/\s/g, '')
+        zip: orderData.shipping.postcode.replace(/\s/g, '') // Ensure zip has no spaces
       });
     } else {
       // Pre pickup point potrebujeme len ID výdajného miesta
@@ -165,7 +209,7 @@ async function createPacketaPacket(orderData: OrderData, orderId: number, total:
         throw new Error('Missing Packeta point ID for pickup delivery');
       }
       Object.assign(packetAttributes, {
-        addressId: pointId
+        addressId: pointId // Use the selected pickup point ID
       });
     }
 
@@ -184,6 +228,8 @@ async function createPacketaPacket(orderData: OrderData, orderId: number, total:
     });
     const xmlRequest = builder.buildObject(xmlData);
 
+    // console.log("Sending to Packeta:", xmlRequest); // Uncomment for debugging XML
+
     const response = await fetch(PACKETA_API_URL, {
       method: 'POST',
       headers: {
@@ -193,17 +239,18 @@ async function createPacketaPacket(orderData: OrderData, orderId: number, total:
       body: xmlRequest
     });
 
+    const responseText = await response.text();
+    // console.log("Received from Packeta:", responseText); // Uncomment for debugging XML response
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to create Packeta packet: ${response.statusText}. Response: ${errorText}`);
+      throw new Error(`Failed to create Packeta packet: ${response.statusText}. Response: ${responseText}`);
     }
 
-    const responseText = await response.text();
     const parser = new Parser({ explicitArray: false });
     const result = await parser.parseStringPromise(responseText) as PacketaResponse;
 
     if (result.response?.status !== 'ok') {
-      throw new Error(result.response?.message || 'Failed to create Packeta packet');
+      throw new Error(result.response?.message || `Failed to create Packeta packet: ${result.response?.status}`);
     }
 
     if (!result.response.result) {
@@ -211,23 +258,37 @@ async function createPacketaPacket(orderData: OrderData, orderId: number, total:
     }
 
     // Update order with Packeta tracking data
-    await api.put(`orders/${orderId}`, {
-      meta_data: [
-        { key: '_packeta_packet_id', value: result.response.result.id },
-        { key: '_packeta_barcode', value: result.response.result.barcode },
-        { key: '_packeta_barcode_text', value: result.response.result.barcodeText }
-      ]
-    });
+    try {
+        await api.put(`orders/${orderId}`, {
+            meta_data: [
+                { key: '_packeta_packet_id', value: result.response.result.id },
+                { key: '_packeta_barcode', value: result.response.result.barcode },
+                { key: '_packeta_barcode_text', value: result.response.result.barcodeText }
+            ]
+        });
+    } catch (updateError) {
+        logError('WooCommerce Order Update Failed (Packeta Data)', {
+            error: {
+                updateError,
+                packetaId: result.response.result.id
+            },
+            orderId: orderId.toString(),
+            timestamp: new Date().toISOString()
+        });
+        // Continue even if update fails, Packeta packet was created
+    }
+
 
     return result.response.result;
 
   } catch (error) {
-    logError('Packeta Packet Creation', {
-      error,
+    logError('Packeta Packet Creation Failed', {
+      error: error instanceof Error ? error.message : String(error),
       orderId: orderId.toString(),
       customerEmail: orderData.billing.email,
       timestamp: new Date().toISOString()
     });
+    // Re-throw the error so the main POST handler knows it failed
     throw error;
   }
 }
@@ -264,56 +325,84 @@ export async function POST(request: Request) {
       orderData.meta_data = [];
     }
 
-    orderData.meta_data.push({
-      key: '_idempotency_key',
-      value: idempotencyKey
-    });
+    // Ensure idempotency key is not duplicated if already present from client
+    if (!orderData.meta_data.some(m => m.key === '_idempotency_key')) {
+        orderData.meta_data.push({
+            key: '_idempotency_key',
+            value: idempotencyKey
+        });
+    }
+
 
     // Pridáme session identifier pre ďalšiu ochranu
-    // Oprava cookies() funkcie, ktorá vracia Promise
     const cookiesStore = await cookies();
     const sessionId = cookiesStore.get('next-auth.session-token')?.value ||
                       cookiesStore.get('__Secure-next-auth.session-token')?.value ||
                       request.headers.get('x-session-id');
 
     if (sessionId) {
-      orderData.meta_data.push({
-        key: '_session_id',
-        value: sessionId
-      });
+       // Ensure session ID is not duplicated if already present from client
+       if (!orderData.meta_data.some(m => m.key === '_session_id')) {
+           orderData.meta_data.push({
+               key: '_session_id',
+               value: sessionId
+            });
+       }
     }
+
+    // Remove the temporary key used on client-side if it exists
+    delete orderData.idempotency_key;
 
     // Vytvoríme novú objednávku
     const response = await api.post('orders', orderData);
 
     if (!response.data || !response.data.id) {
-      throw new Error('Invalid response from WooCommerce');
+      throw new Error('Invalid response from WooCommerce when creating order');
     }
+
+    const newOrder = response.data as WooCommerceOrder; // Type assertion
 
     // Vytvorenie Packeta packetu...
     if (orderData.shipping_method === 'packeta_pickup' || orderData.shipping_method === 'packeta_home') {
       try {
-        await createPacketaPacket(orderData, response.data.id, Number(response.data.total));
-      } catch (error) {
+        // Pass the total from the created order response
+        await createPacketaPacket(orderData, newOrder.id, Number(newOrder.total));
+      } catch (packetaError) {
         // Log error but don't fail the order creation
-        console.error('Failed to create Packeta packet:', error);
+        console.error(`Failed to create Packeta packet for order #${newOrder.id}:`, packetaError);
+        // Optionally update the order status or add a note about Packeta failure
+        try {
+            await api.put(`orders/${newOrder.id}`, {
+                status: 'on-hold', // Or a custom status
+                customer_note: `Automatické vytvorenie zásielky v Packete zlyhalo. Prosím, skontrolujte manuálne. Chyba: ${(packetaError instanceof Error ? packetaError.message : String(packetaError))}`
+            });
+        } catch (updateError) {
+             console.error(`Failed to update order status after Packeta failure for order #${newOrder.id}:`, updateError);
+        }
       }
     }
 
     // Log úspešného vytvorenia objednávky
-    console.log(`Created new order #${response.data.id} with idempotency key ${idempotencyKey}`);
+    console.log(`Created new order #${newOrder.id} with idempotency key ${idempotencyKey}`);
 
     return NextResponse.json({
-      order: response.data,
+      order: newOrder,
       isExisting: false
     });
 
   } catch (error: unknown) {
-    console.error('Order creation error:', error);
+    console.error('Order creation process error:', error);
 
     const err = error as WooCommerceError;
 
     if (err.response?.data) {
+      logError('WooCommerce API Error (Order Creation)', {
+          error: {
+              apiError: err.response.data,
+              status: err.response.status
+          },
+          timestamp: new Date().toISOString()
+      });
       return NextResponse.json(
         {
           error: {
@@ -325,6 +414,13 @@ export async function POST(request: Request) {
       );
     }
 
+    logError('Internal Server Error (Order Creation)', {
+        error: {
+            message: (err as Error).message || String(err),
+            stack: (err as Error).stack
+        },
+        timestamp: new Date().toISOString()
+    });
     return NextResponse.json(
       {
         error: {
