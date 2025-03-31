@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 // Regex patterns
 // Akceptuje formáty: +421XXXXXXXXX, +421 XXX XXX XXX, 09XXXXXXXX, 0914 000 000
-const PHONE_REGEX = /^(\+421|0)[1-9][0-9\s]{8,}$/;
 const PSC_REGEX = /^\d{5}$/;
 const IC_REGEX = /^\d{8}$/;
 const DIC_REGEX = /^\d{10}$/;
