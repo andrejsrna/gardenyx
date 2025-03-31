@@ -1,15 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
 import {
-  Elements,
-  PaymentElement,
-  useStripe,
-  useElements,
+    Elements,
+    PaymentElement,
+    useElements,
+    useStripe,
 } from '@stripe/react-stripe-js';
-import { toast } from 'sonner';
+import { loadStripe } from '@stripe/stripe-js';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -59,7 +59,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
         // Handle specific card errors
         if (error.type === 'card_error') {
           let errorMessage = 'Nastala chyba pri spracovaní platby.';
-          
+
           switch (error.code) {
             case 'card_declined':
               errorMessage = 'Platba bola zamietnutá. Skontrolujte údaje karty alebo použite inú kartu.';
@@ -92,7 +92,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
 
       // Payment was successful
       onSuccess();
-      
+
       // Only redirect on successful payment
       router.push(`/objednavka/uspesna/${orderId}`);
     } catch (error) {
@@ -100,7 +100,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
       const message = error instanceof Error ? error.message : 'Unexpected payment error';
       setErrorMessage(message);
       onError(message);
-      
+
       // Update order status to failed without redirect
       const orderId = sessionStorage.getItem('lastOrderId');
       if (orderId) {
@@ -130,7 +130,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-green-100 opacity-50 rounded-lg" />
             <div className="relative">
-              <PaymentElement 
+              <PaymentElement
                 options={{
                   layout: 'tabs',
                   paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link'],
@@ -191,7 +191,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
             </div>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-1">
-                <path d="M4.464 3.162A2 2 0 016.28 2h7.44a2 2 0 011.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0016 6H4c-.288 0-.568.035-.835.1.03-.147.078-.293.145-.438l1.154-2.5z" />
+                <path d="M4.464 3.162A2 2 0 016.28 2h7.44a2 2 0 011.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0016 6H4c-.288 0-.568.035-.835.1-.03-.147.078-.293.145-.438l1.154-2.5z" />
                 <path fillRule="evenodd" d="M2 9.5a2 2 0 012-2h12a2 2 0 110 4H4a2 2 0 01-2-2zm13.24 0a.75.75 0 01.75-.75H16a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75V9.5zm-2.25-.75a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 00.75-.75V9.5a.75.75 0 00-.75-.75h-.01z" clipRule="evenodd" />
               </svg>
               Šifrované údaje
@@ -210,20 +210,29 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
     const initializePayment = async () => {
       try {
         console.log('Creating payment intent...');
+        const orderId = sessionStorage.getItem('lastOrderId');
+        const customerEmail = sessionStorage.getItem('customerEmail');
+
+        if (!orderId) {
+          throw new Error('Missing order ID for payment');
+        }
+
         const response = await fetch('/api/stripe/payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount,
+            currency: 'eur',
             metadata: {
-              customer_email: sessionStorage.getItem('customerEmail') || undefined
+              order_id: orderId,
+              customer_email: customerEmail || undefined
             }
           }),
         });
 
         const data = await response.json();
         console.log('Payment intent response:', { status: response.status, data });
-        
+
         if (!response.ok) {
           throw new Error(data.error || 'Failed to create payment intent');
         }
@@ -303,4 +312,4 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
       <CheckoutForm onSuccess={onSuccess} onError={onError} />
     </Elements>
   );
-} 
+}

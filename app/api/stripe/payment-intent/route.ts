@@ -8,10 +8,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 const requestSchema = z.object({
   amount: z.number().positive(),
+  currency: z.string().default('eur'),
   metadata: z.object({
-    order_id: z.string().nullish(),
+    order_id: z.string(),
     customer_email: z.string().email().nullish()
-  }).nullish()
+  })
 });
 
 export async function POST(request: Request) {
@@ -24,17 +25,23 @@ export async function POST(request: Request) {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
-      currency: 'eur',
+      currency: validatedData.currency,
       automatic_payment_methods: {
         enabled: true,
       },
+      metadata: {
+        order_id: validatedData.metadata.order_id,
+        ...(validatedData.metadata.customer_email && {
+          customer_email: validatedData.metadata.customer_email
+        })
+      },
       statement_descriptor_suffix: 'NKV SHOP',
-      ...(validatedData.metadata?.customer_email && { 
-        receipt_email: validatedData.metadata.customer_email 
+      ...(validatedData.metadata.customer_email && {
+        receipt_email: validatedData.metadata.customer_email
       })
     });
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id
     });
@@ -45,4 +52,4 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-} 
+}

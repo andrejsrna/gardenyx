@@ -16,7 +16,6 @@ import StripePayment from '../components/StripePayment';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useCookieConsent } from '../context/CookieConsentContext';
-import { getCsrfToken } from '../lib/utils/csrf';
 import { logError } from '../lib/utils/logger';
 import { validatePassword } from '../lib/utils/password';
 import { sanitizeInput, sanitizePhone, sanitizePostcode } from '../lib/utils/sanitize';
@@ -674,45 +673,15 @@ export default function CheckoutPage() {
 
       // Store the order ID in session storage for potential use on success/failure pages
       sessionStorage.setItem('lastOrderId', localOrderId.toString());
+      // Also store customer email for Stripe component to use
+      sessionStorage.setItem('customerEmail', formData.billing.email);
 
-      // If Stripe, create Payment Intent
+      // If Stripe, create Payment Intent and show Stripe payment UI
       if (formData.payment_method === 'stripe') {
-        const token = getCsrfToken();
-        const paymentIntentResponse = await fetch('/api/stripe/payment-intent', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token && { 'X-CSRF-Token': token }),
-          },
-          body: JSON.stringify({
-            amount: finalTotal, // Use the calculated final total
-            currency: 'eur',
-            metadata: {
-              order_id: localOrderId.toString(),
-              customer_email: formData.billing.email,
-            },
-          }),
-        });
-
-        if (!paymentIntentResponse.ok) {
-          const errorData = await paymentIntentResponse.json();
-          // Instead of throwing, return early and let the catch block handle it
-          const errorMessage = errorData.error || 'Payment initialization failed';
-          logError('Payment Intent Creation Failed', {
-            error: new Error(errorMessage),
-            orderId: localOrderId.toString(),
-            timestamp: new Date().toISOString()
-          });
-          // Use the existing error handling by setting the state and returning
-          setShowLoadingOverlay(true);
-          setRedirectUrl('/objednavka/neuspesna');
-          setTimeout(() => {
-            window.location.href = '/objednavka/neuspesna';
-          }, 1000);
-          return undefined;
-        }
-        // Payment intent created, StripePayment component will handle the rest
+        // We don't need to create the payment intent here
+        // The StripePayment component will handle this
         setShowStripePayment(true);
+        return localOrderId;
       } else if (formData.payment_method === 'cod') {
         // COD order successful, prepare for redirect
         setShowLoadingOverlay(true);
