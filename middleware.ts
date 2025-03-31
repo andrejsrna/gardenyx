@@ -62,7 +62,7 @@ export async function middleware(request: NextRequest) {
       default-src 'self';
       script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://widget.packeta.com https://backup.widget.packeta.com https://connect.facebook.net https://maps.googleapis.com;
       style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https://*.stripe.com https://najsilnejsiaklbovavyziva.sk;
+      img-src 'self' blob: data: https://*.stripe.com https://*.facebook.com https://www.facebook.com https://facebook.com https://najsilnejsiaklbovavyziva.sk;
       frame-src 'self' https://js.stripe.com https://widget.packeta.com https://backup.widget.packeta.com;
       connect-src 'self'
         https://api.stripe.com
@@ -71,6 +71,7 @@ export async function middleware(request: NextRequest) {
         https://*.sentry.io
         https://*.ingest.sentry.io;
       font-src 'self';
+      worker-src 'self' blob: https://js.stripe.com;
     `.replace(/\s{2,}/g, ' ').trim();
 
     // HTTPS only in production

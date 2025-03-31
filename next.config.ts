@@ -29,12 +29,13 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://widget.packeta.com https://backup.widget.packeta.com https://connect.facebook.net https://www.youtube.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://widget.packeta.com https://backup.widget.packeta.com https://connect.facebook.net https://maps.googleapis.com https://www.youtube.com",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https:",
-              "connect-src 'self' https://api.stripe.com https://najsilnejsiaklbovavyziva.sk/wp-json/wc/v3/*",
+              "img-src 'self' data: blob: https://*.stripe.com https://*.facebook.com https://www.facebook.com https://facebook.com https:",
+              "connect-src 'self' https://api.stripe.com https://najsilnejsiaklbovavyziva.sk/wp-json/wc/v3/* https://*.sentry.io https://*.ingest.sentry.io https://maps.googleapis.com",
               "frame-src 'self' https://js.stripe.com https://widget.packeta.com https://backup.widget.packeta.com https://www.youtube.com",
-              "font-src 'self'"
+              "font-src 'self'",
+              "worker-src 'self' blob: https://js.stripe.com"
             ].join('; ')
           },
           {
