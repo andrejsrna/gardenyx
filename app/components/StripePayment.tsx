@@ -131,23 +131,24 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
             <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-green-100 opacity-50 rounded-lg" />
             <div className="relative">
               <PaymentElement
-                options={{
-                  layout: 'tabs',
-                  paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link'],
-                  defaultValues: {
-                    billingDetails: {
-                      name: '',
-                      email: '',
-                    }
-                  },
-                  fields: {
-                    billingDetails: 'auto'
-                  },
-                  wallets: {
-                    applePay: 'auto',
-                    googlePay: 'auto'
-                  }
-                }}
+                // Temporarily remove options to test rendering
+                // options={{
+                //   layout: 'tabs',
+                //   paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link'],
+                //   defaultValues: {
+                //     billingDetails: {
+                //       name: '',
+                //       email: '',
+                //     }
+                //   },
+                //   fields: {
+                //     billingDetails: 'auto'
+                //   },
+                //   wallets: {
+                //     applePay: 'auto',
+                //     googlePay: 'auto'
+                //   }
+                // }}
                 className="p-4"
               />
             </div>
