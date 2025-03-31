@@ -143,24 +143,23 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
             <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-green-100 opacity-50 rounded-lg" />
             <div className="relative">
               <PaymentElement
-                // Temporarily remove options to test rendering
-                // options={{
-                //   layout: 'tabs',
-                //   paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link'],
-                //   defaultValues: {
-                //     billingDetails: {
-                //       name: '',
-                //       email: '',
-                //     }
-                //   },
-                //   fields: {
-                //     billingDetails: 'auto'
-                //   },
-                //   wallets: {
-                //     applePay: 'auto',
-                //     googlePay: 'auto'
-                //   }
-                // }}
+                options={{
+                  layout: 'tabs',
+                  paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link'],
+                  defaultValues: {
+                    billingDetails: {
+                      name: '',
+                      email: '',
+                    }
+                  },
+                  fields: {
+                    billingDetails: 'auto'
+                  },
+                  wallets: {
+                    applePay: 'auto',
+                    googlePay: 'auto'
+                  }
+                }}
                 className="p-4"
               />
             </div>
@@ -278,41 +277,40 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
     }
     return {
       clientSecret,
-      // Temporarily comment out appearance to test default styling
-      // appearance: {
-      //   theme: 'stripe',
-      //   variables: {
-      //     colorPrimary: '#16a34a',
-      //     colorBackground: '#ffffff',
-      //     colorText: '#1f2937',
-      //     colorDanger: '#dc2626',
-      //     fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      //     borderRadius: '8px',
-      //     spacingUnit: '4px',
-      //   },
-      //   rules: {
-      //     '.Input': {
-      //       border: '1px solid #e5e7eb',
-      //       boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-      //     },
-      //     '.Input:focus': {
-      //       border: '1px solid #16a34a',
-      //       boxShadow: '0 0 0 1px #16a34a',
-      //     },
-      //     '.Tab': {
-      //       border: '1px solid #e5e7eb',
-      //       boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-      //     },
-      //     '.Tab:hover': {
-      //       border: '1px solid #16a34a',
-      //       color: '#16a34a',
-      //     },
-      //     '.Tab--selected': {
-      //       border: '1px solid #16a34a',
-      //       boxShadow: '0 0 0 1px #16a34a',
-      //     },
-      //   },
-      // },
+      appearance: {
+        theme: 'stripe',
+        variables: {
+          colorPrimary: '#16a34a',
+          colorBackground: '#ffffff',
+          colorText: '#1f2937',
+          colorDanger: '#dc2626',
+          fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          borderRadius: '8px',
+          spacingUnit: '4px',
+        },
+        rules: {
+          '.Input': {
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+          },
+          '.Input:focus': {
+            border: '1px solid #16a34a',
+            boxShadow: '0 0 0 1px #16a34a',
+          },
+          '.Tab': {
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+          },
+          '.Tab:hover': {
+            border: '1px solid #16a34a',
+            color: '#16a34a',
+          },
+          '.Tab--selected': {
+            border: '1px solid #16a34a',
+            boxShadow: '0 0 0 1px #16a34a',
+          },
+        },
+      },
       locale: 'sk',
     };
   }, [clientSecret]);
