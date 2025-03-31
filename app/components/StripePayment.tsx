@@ -1,14 +1,14 @@
 'use client';
 
 import {
-    Elements,
-    PaymentElement,
-    useElements,
-    useStripe,
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
 } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -258,7 +258,52 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
     }
   }, [amount, onError]);
 
-  if (!clientSecret) {
+  // Memoize the options object, compute only when clientSecret is a string
+  const options: StripeElementsOptions | undefined = useMemo(() => {
+    if (!clientSecret) {
+      return undefined;
+    }
+    return {
+      clientSecret,
+      appearance: {
+        theme: 'stripe',
+        variables: {
+          colorPrimary: '#16a34a',
+          colorBackground: '#ffffff',
+          colorText: '#1f2937',
+          colorDanger: '#dc2626',
+          fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          borderRadius: '8px',
+          spacingUnit: '4px',
+        },
+        rules: {
+          '.Input': {
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+          },
+          '.Input:focus': {
+            border: '1px solid #16a34a',
+            boxShadow: '0 0 0 1px #16a34a',
+          },
+          '.Tab': {
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+          },
+          '.Tab:hover': {
+            border: '1px solid #16a34a',
+            color: '#16a34a',
+          },
+          '.Tab--selected': {
+            border: '1px solid #16a34a',
+            boxShadow: '0 0 0 1px #16a34a',
+          },
+        },
+      },
+      locale: 'sk',
+    };
+  }, [clientSecret]); // Recompute only when clientSecret changes
+
+  if (!clientSecret || !options) {
     return (
       <div className="w-full h-48 flex flex-col items-center justify-center space-y-4">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600"></div>
@@ -270,44 +315,7 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
   return (
     <Elements
       stripe={stripePromise}
-      options={{
-        clientSecret,
-        appearance: {
-          theme: 'stripe',
-          variables: {
-            colorPrimary: '#16a34a',
-            colorBackground: '#ffffff',
-            colorText: '#1f2937',
-            colorDanger: '#dc2626',
-            fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-            borderRadius: '8px',
-            spacingUnit: '4px',
-          },
-          rules: {
-            '.Input': {
-              border: '1px solid #e5e7eb',
-              boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-            },
-            '.Input:focus': {
-              border: '1px solid #16a34a',
-              boxShadow: '0 0 0 1px #16a34a',
-            },
-            '.Tab': {
-              border: '1px solid #e5e7eb',
-              boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-            },
-            '.Tab:hover': {
-              border: '1px solid #16a34a',
-              color: '#16a34a',
-            },
-            '.Tab--selected': {
-              border: '1px solid #16a34a',
-              boxShadow: '0 0 0 1px #16a34a',
-            },
-          },
-        },
-        locale: 'sk',
-      }}
+      options={options} // Pass the memoized options (now correctly typed)
     >
       <CheckoutForm onSuccess={onSuccess} onError={onError} />
     </Elements>
