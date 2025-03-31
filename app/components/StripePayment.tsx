@@ -2,12 +2,9 @@
 
 import {
   Elements,
-  PaymentElement,
-  useElements,
-  useStripe,
+  PaymentElement
 } from '@stripe/react-stripe-js';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
-import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -15,130 +12,23 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 interface StripePaymentProps {
   amount: number;
-  onSuccess: () => void;
-  onError: (error: string) => void;
 }
 
-function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: (error: string) => void }) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const router = useRouter();
+function CheckoutForm() {
+  // Comment out unused hooks as handleSubmit is removed for now
+  // const stripe = useStripe();
+  // const elements = useElements();
+  // const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage /*, setErrorMessage */] = useState<string | null>(null); // Keep errorMessage for display
+  // const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) {
-      return;
-    }
-
-    setIsLoading(true);
-    setErrorMessage(null);
-
-    try {
-      // Temporarily comment out elements.submit() as confirmPayment handles validation
-      // const { error: submitError } = await elements.submit();
-      // if (submitError) {
-      //   console.error('[Stripe Elements Submit Error]:', submitError);
-      //   throw submitError;
-      // }
-
-      const orderId = sessionStorage.getItem('lastOrderId');
-      if (!orderId) {
-        throw new Error('Order ID not found in session storage');
-      }
-
-      console.log('[Stripe] Attempting confirmPayment...');
-      const { error } = await stripe.confirmPayment({
-        elements,
-        redirect: 'if_required',
-        confirmParams: {
-          return_url: `${window.location.origin}/objednavka/uspesna/${orderId}`,
-        }
-      });
-
-      if (error) {
-        console.error('[Stripe Confirm Payment Error]:', error);
-
-        if (error.type === 'card_error') {
-          let errorMessage = 'Nastala chyba pri spracovaní platby.';
-
-          switch (error.code) {
-            case 'card_declined':
-              errorMessage = 'Platba bola zamietnutá. Skontrolujte údaje karty alebo použite inú kartu.';
-              break;
-            case 'expired_card':
-              errorMessage = 'Karta je expirovaná.';
-              break;
-            case 'incorrect_cvc':
-              errorMessage = 'Nesprávny bezpečnostný kód karty.';
-              break;
-            case 'processing_error':
-              errorMessage = 'Nastala chyba pri spracovaní platby. Skúste to prosím znova.';
-              break;
-            case 'insufficient_funds':
-              errorMessage = 'Na karte nie je dostatok prostriedkov.';
-              break;
-            case 'payment_intent_payment_attempt_failed':
-              errorMessage = error.message || 'Platba bola zamietnutá. Skúste to prosím znova s inou kartou.';
-              break;
-            default:
-              errorMessage = error.message || 'Nastala neočakávaná chyba pri platbe.';
-          }
-          throw new Error(errorMessage);
-        } else if (error.type === 'validation_error') {
-          throw new Error(error.message || 'Prosím, skontrolujte zadané údaje platobnej karty.');
-        } else {
-          throw new Error(error.message || 'Nastala neočakávaná chyba pri spracovaní platby.');
-        }
-      }
-
-      console.log('[Stripe] confirmPayment successful');
-      onSuccess();
-
-      router.push(`/objednavka/uspesna/${orderId}`);
-    } catch (error) {
-      console.error('[Stripe CheckoutForm Submit Catch Block Error]:', error);
-
-      const message = error instanceof Error ? error.message : 'Unexpected payment error';
-      setErrorMessage(message);
-      onError(message);
-
-      const orderId = sessionStorage.getItem('lastOrderId');
-      if (orderId) {
-        try {
-          console.log(`[WooCommerce] Attempting to update order ${orderId} status to failed...`);
-          const updateResponse = await fetch(`/api/woocommerce/orders/${orderId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: 'failed' })
-          });
-          console.log(`[WooCommerce] Update response status for order ${orderId}: ${updateResponse.status}`);
-          if (!updateResponse.ok) {
-            const errorData = await updateResponse.text();
-            throw new Error(`Failed to update order status: ${updateResponse.status} ${updateResponse.statusText} - ${errorData}`);
-          }
-        } catch (updateError) {
-          console.error('[WooCommerce] Failed to update order status:', updateError);
-          toast.error('Chyba pri aktualizácii stavu objednávky', {
-            description: 'Prosím skúste to znova alebo kontaktujte podporu.'
-          });
-        }
-      }
-
-      toast.error('Platba zlyhala', {
-        description: message,
-      });
-    }
-
-    setIsLoading(false);
-  };
+  // We might not need a manual submit handler if Payment Element handles confirmation for methods like Link
+  // const handleSubmit = async (e: React.FormEvent) => { ... };
 
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form /* onSubmit={handleSubmit} */ className="space-y-6">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-green-100 opacity-50 rounded-lg" />
             <div className="relative">
@@ -174,6 +64,8 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
             </div>
           )}
 
+          {/* Comment out the custom submit button */}
+          {/*
           <button
             type="submit"
             disabled={!stripe || isLoading}
@@ -193,6 +85,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
               </div>
             )}
           </button>
+          */}
 
           <div className="mt-4 flex items-center justify-center space-x-4 text-sm text-gray-500">
             <div className="flex items-center">
@@ -215,7 +108,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
   );
 }
 
-export default function StripePayment({ amount, onSuccess, onError }: StripePaymentProps) {
+export default function StripePayment({ amount }: StripePaymentProps) {
   const [clientSecret, setClientSecret] = useState<string | undefined>();
 
   useEffect(() => {
@@ -258,7 +151,6 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
           message: error instanceof Error ? error.message : 'Unknown error',
           stack: error instanceof Error ? error.stack : undefined
         });
-        onError(error instanceof Error ? error.message : 'Failed to initialize payment');
         toast.error('Chyba pri inicializácii platby', {
           description: 'Prosím skúste to znova alebo kontaktujte podporu.'
         });
@@ -268,7 +160,7 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
     if (amount > 0) {
       initializePayment();
     }
-  }, [amount, onError]);
+  }, [amount]);
 
   // Memoize the options object, compute only when clientSecret is a string
   const options: StripeElementsOptions | undefined = useMemo(() => {
@@ -329,7 +221,7 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
       stripe={stripePromise}
       options={options}
     >
-      <CheckoutForm onSuccess={onSuccess} onError={onError} />
+      <CheckoutForm />
     </Elements>
   );
 }
