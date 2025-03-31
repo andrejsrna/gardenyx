@@ -37,16 +37,19 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
     setErrorMessage(null);
 
     try {
-      const { error: submitError } = await elements.submit();
-      if (submitError) {
-        throw submitError;
-      }
+      // Temporarily comment out elements.submit() as confirmPayment handles validation
+      // const { error: submitError } = await elements.submit();
+      // if (submitError) {
+      //   console.error('[Stripe Elements Submit Error]:', submitError);
+      //   throw submitError;
+      // }
 
       const orderId = sessionStorage.getItem('lastOrderId');
       if (!orderId) {
         throw new Error('Order ID not found in session storage');
       }
 
+      console.log('[Stripe] Attempting confirmPayment...');
       const { error } = await stripe.confirmPayment({
         elements,
         redirect: 'if_required',
@@ -56,7 +59,8 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
       });
 
       if (error) {
-        // Handle specific card errors
+        console.error('[Stripe Confirm Payment Error]:', error);
+
         if (error.type === 'card_error') {
           let errorMessage = 'Nastala chyba pri spracovaní platby.';
 
@@ -84,34 +88,42 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void, onError: 
           }
           throw new Error(errorMessage);
         } else if (error.type === 'validation_error') {
-          throw new Error('Prosím, skontrolujte zadané údaje platobnej karty.');
+          throw new Error(error.message || 'Prosím, skontrolujte zadané údaje platobnej karty.');
         } else {
-          throw new Error('Nastala neočakávaná chyba pri spracovaní platby.');
+          throw new Error(error.message || 'Nastala neočakávaná chyba pri spracovaní platby.');
         }
       }
 
-      // Payment was successful
+      console.log('[Stripe] confirmPayment successful');
       onSuccess();
 
-      // Only redirect on successful payment
       router.push(`/objednavka/uspesna/${orderId}`);
     } catch (error) {
-      console.error('Payment error:', error);
+      console.error('[Stripe CheckoutForm Submit Catch Block Error]:', error);
+
       const message = error instanceof Error ? error.message : 'Unexpected payment error';
       setErrorMessage(message);
       onError(message);
 
-      // Update order status to failed without redirect
       const orderId = sessionStorage.getItem('lastOrderId');
       if (orderId) {
         try {
-          await fetch(`/api/woocommerce/orders/${orderId}`, {
-            method: 'PATCH',
+          console.log(`[WooCommerce] Attempting to update order ${orderId} status to failed...`);
+          const updateResponse = await fetch(`/api/woocommerce/orders/${orderId}`, {
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: 'failed' })
           });
+          console.log(`[WooCommerce] Update response status for order ${orderId}: ${updateResponse.status}`);
+          if (!updateResponse.ok) {
+            const errorData = await updateResponse.text();
+            throw new Error(`Failed to update order status: ${updateResponse.status} ${updateResponse.statusText} - ${errorData}`);
+          }
         } catch (updateError) {
-          console.error('Failed to update order status:', updateError);
+          console.error('[WooCommerce] Failed to update order status:', updateError);
+          toast.error('Chyba pri aktualizácii stavu objednávky', {
+            description: 'Prosím skúste to znova alebo kontaktujte podporu.'
+          });
         }
       }
 
@@ -266,43 +278,44 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
     }
     return {
       clientSecret,
-      appearance: {
-        theme: 'stripe',
-        variables: {
-          colorPrimary: '#16a34a',
-          colorBackground: '#ffffff',
-          colorText: '#1f2937',
-          colorDanger: '#dc2626',
-          fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          borderRadius: '8px',
-          spacingUnit: '4px',
-        },
-        rules: {
-          '.Input': {
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-          },
-          '.Input:focus': {
-            border: '1px solid #16a34a',
-            boxShadow: '0 0 0 1px #16a34a',
-          },
-          '.Tab': {
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-          },
-          '.Tab:hover': {
-            border: '1px solid #16a34a',
-            color: '#16a34a',
-          },
-          '.Tab--selected': {
-            border: '1px solid #16a34a',
-            boxShadow: '0 0 0 1px #16a34a',
-          },
-        },
-      },
+      // Temporarily comment out appearance to test default styling
+      // appearance: {
+      //   theme: 'stripe',
+      //   variables: {
+      //     colorPrimary: '#16a34a',
+      //     colorBackground: '#ffffff',
+      //     colorText: '#1f2937',
+      //     colorDanger: '#dc2626',
+      //     fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      //     borderRadius: '8px',
+      //     spacingUnit: '4px',
+      //   },
+      //   rules: {
+      //     '.Input': {
+      //       border: '1px solid #e5e7eb',
+      //       boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      //     },
+      //     '.Input:focus': {
+      //       border: '1px solid #16a34a',
+      //       boxShadow: '0 0 0 1px #16a34a',
+      //     },
+      //     '.Tab': {
+      //       border: '1px solid #e5e7eb',
+      //       boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      //     },
+      //     '.Tab:hover': {
+      //       border: '1px solid #16a34a',
+      //       color: '#16a34a',
+      //     },
+      //     '.Tab--selected': {
+      //       border: '1px solid #16a34a',
+      //       boxShadow: '0 0 0 1px #16a34a',
+      //     },
+      //   },
+      // },
       locale: 'sk',
     };
-  }, [clientSecret]); // Recompute only when clientSecret changes
+  }, [clientSecret]);
 
   if (!clientSecret || !options) {
     return (
@@ -316,7 +329,7 @@ export default function StripePayment({ amount, onSuccess, onError }: StripePaym
   return (
     <Elements
       stripe={stripePromise}
-      options={options} // Pass the memoized options (now correctly typed)
+      options={options}
     >
       <CheckoutForm onSuccess={onSuccess} onError={onError} />
     </Elements>
