@@ -16,8 +16,9 @@ const ratelimit = new Ratelimit({
 });
 
 const generateCouponCode = () => {
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `EXIT-${random}-${new Date().getMinutes()}`;
+  // Use crypto.randomUUID for stronger uniqueness, take first 8 chars
+  const uniquePart = crypto.randomUUID().substring(0, 8).toUpperCase();
+  return `EXIT-${uniquePart}`;
 };
 
 const formatDate = (date: Date) => {
@@ -56,9 +57,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Verify credentials are correct
-    const authString = Buffer.from(`${process.env.WC_CONSUMER_KEY}:${process.env.WC_CONSUMER_SECRET}`).toString('base64');
-    
+    // Verify credentials are correct - Use btoa for Edge compatibility
+    const authString = btoa(`${process.env.WC_CONSUMER_KEY}:${process.env.WC_CONSUMER_SECRET}`);
+
     // Add to handler
     const { success } = await ratelimit.limit(request.headers.get('cf-connecting-ip') ?? 'anonymous');
     if (!success) return new Response('Too Many Requests', { status: 429 });
@@ -87,9 +88,6 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    // Add a small delay to ensure WooCommerce has processed the coupon
-    await new Promise(resolve => setTimeout(resolve, 500));
-
     return NextResponse.json({ code: data.code }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -103,9 +101,14 @@ export async function POST(request: Request) {
       couponData,
       validationError: error instanceof Error ? error.stack : null
     });
+    // Return generic error in production, detailed in development
+    const responseError = process.env.NODE_ENV === 'production'
+        ? { error: 'Coupon creation failed' }
+        : { error: 'Coupon creation failed', details: message };
+
     return NextResponse.json(
-      { error: 'Coupon creation failed', details: message },
+      responseError,
       { status: 500 }
     );
   }
-} 
+}

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { WooCommerceProduct } from '../lib/wordpress';
 
@@ -34,7 +34,7 @@ export default function ShopContent() {
           try {
             const response = await fetch(`/api/woocommerce/products?taxonomy=${section.taxonomy}`);
             const data = await response.json();
-            
+
             if (!response.ok) {
               console.error('API Error Response:', data);
               throw new Error(data.message || `Failed to fetch products for category ${section.taxonomy}`);
@@ -102,7 +102,7 @@ export default function ShopContent() {
         <div className="animate-pulse space-y-12">
           {productSections.map((section, index) => (
             <div key={index} className={`grid ${section.gridCols} gap-6`}>
-              {[...Array(4)].map((_, i) => (
+              {[...Array(5)].map((_, i) => (
                 <div key={i} className="bg-gray-200 rounded-xl h-96"></div>
               ))}
             </div>
@@ -145,11 +145,11 @@ export default function ShopContent() {
             </h3>
           </Link>
 
-          <div 
+          <div
             className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[2.5rem]"
             dangerouslySetInnerHTML={{ __html: product.short_description }}
           />
-          
+
           <div className="flex items-baseline gap-2 mb-4">
             <span className="text-2xl font-bold text-green-600">
               {price.toFixed(2)} €
@@ -170,7 +170,7 @@ export default function ShopContent() {
           )}
 
           <div className="flex items-center justify-between gap-4">
-            <Link 
+            <Link
               href={`/produkt/${product.slug}`}
               className="text-center px-4 py-2 border-2 border-green-600 text-green-600 font-medium rounded-lg hover:bg-green-600 hover:text-white transition-colors"
             >
@@ -204,4 +204,4 @@ export default function ShopContent() {
       ))}
     </div>
   );
-} 
+}

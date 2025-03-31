@@ -353,8 +353,14 @@ export async function POST(request: Request) {
     // Remove the temporary key used on client-side if it exists
     delete orderData.idempotency_key;
 
-    // Vytvoríme novú objednávku
-    const response = await api.post('orders', orderData);
+    // Prepare the final payload with the desired status
+    const finalPayload = {
+        ...orderData,
+        status: 'processing' // Set status for WooCommerce
+    };
+
+    // Vytvoríme novú objednávku using the final payload
+    const response = await api.post('orders', finalPayload);
 
     if (!response.data || !response.data.id) {
       throw new Error('Invalid response from WooCommerce when creating order');

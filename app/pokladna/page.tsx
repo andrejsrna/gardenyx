@@ -1086,24 +1086,24 @@ export default function CheckoutPage() {
                         id="company-name" name="company" type="text"
                         value={formData.billing.company}
                         onChange={(e) => handleInputChange(e, 'billing')}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" // Added padding & text size
                         required={formData.is_business} placeholder="Zadajte názov firmy" aria-label="Názov firmy"
                     />
                   </div>
                 {/* IC Input */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700" htmlFor="billing-ic">IČO <span className="text-red-500">*</span></label>
-                  <input id="billing-ic" name="ic" type="text" value={formData.billing.ic || ''} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required={formData.is_business} placeholder="Zadajte IČO (8 číslic)" maxLength={8} pattern="\d{8}" />
+                  <input id="billing-ic" name="ic" type="text" value={formData.billing.ic || ''} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required={formData.is_business} placeholder="Zadajte IČO (8 číslic)" maxLength={8} pattern="\d{8}" /> { /* Added */}
                 </div>
                 {/* DIC Input */}
                 <div>
                    <label className="block text-sm font-medium text-gray-700" htmlFor="billing-dic">DIČ <span className="text-red-500">*</span></label>
-                  <input id="billing-dic" name="dic" type="text" value={formData.billing.dic || ''} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required={formData.is_business} placeholder="Zadajte DIČ (10 číslic)" maxLength={10} pattern="\d{10}" />
+                  <input id="billing-dic" name="dic" type="text" value={formData.billing.dic || ''} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required={formData.is_business} placeholder="Zadajte DIČ (10 číslic)" maxLength={10} pattern="\d{10}" /> { /* Added */}
                 </div>
                 {/* DIC DPH Input */}
                  <div>
                     <label className="block text-sm font-medium text-gray-700" htmlFor="billing-dic-dph">IČ DPH</label>
-                    <input id="billing-dic-dph" name="dic_dph" type="text" value={formData.billing.dic_dph || ''} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" placeholder="SKXXXXXXXXXX (nepovinné)" />
+                    <input id="billing-dic-dph" name="dic_dph" type="text" value={formData.billing.dic_dph || ''} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" placeholder="SKXXXXXXXXXX (nepovinné)" /> { /* Added */}
                  </div>
               </div>
             )}
@@ -1116,38 +1116,38 @@ export default function CheckoutPage() {
               {/* First Name */}
                <div>
                 <label htmlFor="billing-first-name" className="block text-sm font-medium text-gray-700">Meno <span className="text-red-500">*</span></label>
-                <input id="billing-first-name" name="first_name" type="text" value={formData.billing.first_name} onChange={handleSyncedFieldChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="given-name"/>
+                <input id="billing-first-name" name="first_name" type="text" value={formData.billing.first_name} onChange={handleSyncedFieldChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="given-name"/> { /* Added */}
               </div>
               {/* Last Name */}
               <div>
                 <label htmlFor="billing-last-name" className="block text-sm font-medium text-gray-700">Priezvisko <span className="text-red-500">*</span></label>
-                <input id="billing-last-name" name="last_name" type="text" value={formData.billing.last_name} onChange={handleSyncedFieldChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="family-name"/>
+                <input id="billing-last-name" name="last_name" type="text" value={formData.billing.last_name} onChange={handleSyncedFieldChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="family-name"/> { /* Added */}
               </div>
                {/* Email */}
                <div>
                 <label htmlFor="billing-email" className="block text-sm font-medium text-gray-700">Email <span className="text-red-500">*</span></label>
-                <input id="billing-email" name="email" type="email" value={formData.billing.email} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required placeholder="vas@email.sk" autoComplete="email"/>
+                <input id="billing-email" name="email" type="email" value={formData.billing.email} onChange={(e) => handleInputChange(e, 'billing')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required placeholder="vas@email.sk" autoComplete="email"/>
               </div>
               {/* Phone */}
               <div className="space-y-1">
                  <label htmlFor="billing-phone" className="block text-sm font-medium text-gray-700">Telefón <span className="text-red-500">*</span></label>
-                 <input id="billing-phone" name="phone" type="tel" value={formData.billing.phone} onChange={handlePhoneChange} placeholder="+421 XXX XXX XXX" className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm ${phoneError ? 'border-red-500' : ''}`} required autoComplete="tel"/>
+                 <input id="billing-phone" name="phone" type="tel" value={formData.billing.phone} onChange={handlePhoneChange} placeholder="+421 XXX XXX XXX" className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${phoneError ? 'border-red-500' : ''}`} required autoComplete="tel"/>
                  {phoneError && <p className="text-xs text-red-600">{phoneError}</p>}
               </div>
                {/* Address 1 (Street) */}
                <div className="md:col-span-2">
                 <label htmlFor="billing-address" className="block text-sm font-medium text-gray-700">Adresa <span className="text-red-500">*</span></label>
-                <input id="billing-address" name="address_1" type="text" ref={addressInputRef} value={formData.billing.address_1} onChange={handleSyncedFieldChange} placeholder="Ulica a číslo domu" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="street-address"/>
+                <input id="billing-address" name="address_1" type="text" ref={addressInputRef} value={formData.billing.address_1} onChange={handleSyncedFieldChange} placeholder="Ulica a číslo domu" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="street-address"/>
                </div>
                {/* City */}
                <div>
                 <label htmlFor="billing-city" className="block text-sm font-medium text-gray-700">Mesto <span className="text-red-500">*</span></label>
-                <input id="billing-city" name="city" type="text" value={formData.billing.city} onChange={handleSyncedFieldChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="address-level2"/>
+                <input id="billing-city" name="city" type="text" value={formData.billing.city} onChange={handleSyncedFieldChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="address-level2"/>
                </div>
                {/* Postcode */}
                <div>
                  <label htmlFor="billing-postcode" className="block text-sm font-medium text-gray-700">PSČ <span className="text-red-500">*</span></label>
-                 <input id="billing-postcode" name="postcode" type="text" value={formData.billing.postcode} onChange={handleSyncedFieldChange} pattern="\d{5}" maxLength={5} placeholder="XXXXX" title="PSČ musí obsahovať 5 číslic" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="postal-code"/>
+                 <input id="billing-postcode" name="postcode" type="text" value={formData.billing.postcode} onChange={handleSyncedFieldChange} pattern="\d{5}" maxLength={5} placeholder="XXXXX" title="PSČ musí obsahovať 5 číslic" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="postal-code"/>
                </div>
             </div>
           </div>
@@ -1173,27 +1173,27 @@ export default function CheckoutPage() {
                  {/* Shipping First Name */}
                  <div>
                    <label htmlFor="shipping-first-name" className="block text-sm font-medium text-gray-700">Meno <span className="text-red-500">*</span></label>
-                   <input id="shipping-first-name" name="first_name" type="text" value={formData.shipping.first_name} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="shipping given-name"/>
+                   <input id="shipping-first-name" name="first_name" type="text" value={formData.shipping.first_name} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="shipping given-name"/>
                  </div>
                  {/* Shipping Last Name */}
                  <div>
                    <label htmlFor="shipping-last-name" className="block text-sm font-medium text-gray-700">Priezvisko <span className="text-red-500">*</span></label>
-                   <input id="shipping-last-name" name="last_name" type="text" value={formData.shipping.last_name} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="shipping family-name"/>
+                   <input id="shipping-last-name" name="last_name" type="text" value={formData.shipping.last_name} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="shipping family-name"/>
                  </div>
                  {/* Shipping Address 1 */}
                  <div className="md:col-span-2">
                    <label htmlFor="shipping-address" className="block text-sm font-medium text-gray-700">Adresa <span className="text-red-500">*</span></label>
-                   <input id="shipping-address" name="address_1" type="text" value={formData.shipping.address_1} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="shipping street-address"/>
+                   <input id="shipping-address" name="address_1" type="text" value={formData.shipping.address_1} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="shipping street-address"/>
                  </div>
                  {/* Shipping City */}
                  <div>
                    <label htmlFor="shipping-city" className="block text-sm font-medium text-gray-700">Mesto <span className="text-red-500">*</span></label>
-                   <input id="shipping-city" name="city" type="text" value={formData.shipping.city} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="shipping address-level2"/>
+                   <input id="shipping-city" name="city" type="text" value={formData.shipping.city} onChange={(e) => handleInputChange(e, 'shipping')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="shipping address-level2"/>
                  </div>
                  {/* Shipping Postcode */}
                  <div>
                    <label htmlFor="shipping-postcode" className="block text-sm font-medium text-gray-700">PSČ <span className="text-red-500">*</span></label>
-                   <input id="shipping-postcode" name="postcode" type="text" value={formData.shipping.postcode} onChange={(e) => handleInputChange(e, 'shipping')} pattern="\d{5}" maxLength={5} placeholder="XXXXX" title="PSČ musí obsahovať 5 číslic" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required autoComplete="shipping postal-code"/>
+                   <input id="shipping-postcode" name="postcode" type="text" value={formData.shipping.postcode} onChange={(e) => handleInputChange(e, 'shipping')} pattern="\d{5}" maxLength={5} placeholder="XXXXX" title="PSČ musí obsahovať 5 číslic" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm" required autoComplete="shipping postal-code"/>
                  </div>
               </div>
             </div>
@@ -1359,16 +1359,17 @@ export default function CheckoutPage() {
           <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
             <h2 className="text-xl font-semibold mb-1">Súhlasy</h2>
              <p className="text-xs text-gray-500 mb-3">Pre odoslanie objednávky je potrebné súhlasiť s obchodnými podmienkami a spracovaním osobných údajov.</p>
-            <label className="flex items-start gap-3">
-               <input type="checkbox" name="terms" checked={formData.consents.terms} onChange={(e) => handleInputChange(e, 'consents')} className="mt-1 flex-shrink-0 rounded border-gray-300 text-green-600 focus:ring-green-500" required />
-               <span className="text-sm text-gray-700">Súhlasím s <Link href="/obchodne-podmienky" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">obchodnými podmienkami</Link> <span className="text-red-500">*</span></span>
+            {/* Increased checkbox size, added padding and hover effect to labels */}
+            <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+               <input type="checkbox" name="terms" checked={formData.consents.terms} onChange={(e) => handleInputChange(e, 'consents')} className="mt-1 flex-shrink-0 rounded border-gray-300 text-green-600 focus:ring-green-500 h-5 w-5" required />
+               <span className="text-sm text-gray-700">Súhlasím s <Link href="/obchodne-podmienky" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">obchodnými podmienkami</Link> <span className="text-red-500 font-medium">*</span></span>
             </label>
-            <label className="flex items-start gap-3">
-               <input type="checkbox" name="privacy" checked={formData.consents.privacy} onChange={(e) => handleInputChange(e, 'consents')} className="mt-1 flex-shrink-0 rounded border-gray-300 text-green-600 focus:ring-green-500" required />
-               <span className="text-sm text-gray-700">Potvrdzujem, že som sa oboznámil/a s <Link href="/ochrana-osobnych-udajov" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">informáciami o spracúvaní osobných údajov</Link> <span className="text-red-500">*</span></span>
+            <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+               <input type="checkbox" name="privacy" checked={formData.consents.privacy} onChange={(e) => handleInputChange(e, 'consents')} className="mt-1 flex-shrink-0 rounded border-gray-300 text-green-600 focus:ring-green-500 h-5 w-5" required />
+               <span className="text-sm text-gray-700">Potvrdzujem, že som sa oboznámil/a s <Link href="/ochrana-osobnych-udajov" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">informáciami o spracúvaní osobných údajov</Link> <span className="text-red-500 font-medium">*</span></span>
             </label>
-            <label className="flex items-start gap-3">
-               <input type="checkbox" name="marketing" checked={formData.consents.marketing} onChange={(e) => handleInputChange(e, 'consents')} className="mt-1 flex-shrink-0 rounded border-gray-300 text-green-600 focus:ring-green-500" />
+            <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+               <input type="checkbox" name="marketing" checked={formData.consents.marketing} onChange={(e) => handleInputChange(e, 'consents')} className="mt-1 flex-shrink-0 rounded border-gray-300 text-green-600 focus:ring-green-500 h-5 w-5" />
                <span className="text-sm text-gray-700">Súhlasím so zasielaním marketingových ponúk a noviniek emailom (nepovinné)</span>
             </label>
              <p className="text-xs text-gray-500 pt-2">* Povinné polia</p>
