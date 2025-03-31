@@ -2,7 +2,9 @@
 
 import {
   Elements,
-  PaymentElement
+  PaymentElement,
+  useElements,
+  useStripe
 } from '@stripe/react-stripe-js';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { useEffect, useMemo, useState } from 'react';
@@ -15,20 +17,62 @@ interface StripePaymentProps {
 }
 
 function CheckoutForm() {
-  // Comment out unused hooks as handleSubmit is removed for now
-  // const stripe = useStripe();
-  // const elements = useElements();
-  // const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage /*, setErrorMessage */] = useState<string | null>(null); // Keep errorMessage for display
-  // const router = useRouter();
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // We might not need a manual submit handler if Payment Element handles confirmation for methods like Link
-  // const handleSubmit = async (e: React.FormEvent) => { ... };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js has not yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      console.log("Stripe or Elements not loaded yet.");
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage(null); // Clear previous errors
+
+    // Retrieve order ID to build the return URL
+    const orderId = sessionStorage.getItem('lastOrderId');
+    if (!orderId) {
+      setErrorMessage("Chýba ID objednávky. Skúste prosím znova načítať stránku.");
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/objednavka/uspesna/${orderId}`,
+      },
+    });
+
+    // This point will only be reached if there is an immediate error when
+    // confirming the payment. Otherwise, your customer will be redirected to
+    // your `return_url`. For some payment methods like iDEAL, your customer will
+    // be redirected to an intermediate site first to authorize the payment, then
+    // redirected to the `return_url`.
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setErrorMessage(error.message || 'An unexpected error occurred.');
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
+    } else {
+       // Payment submitted. Stripe will handle redirection if necessary.
+       console.log("Payment submitted successfully or redirection handled by Stripe.");
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-        <form /* onSubmit={handleSubmit} */ className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-green-100 opacity-50 rounded-lg" />
             <div className="relative">
@@ -64,8 +108,6 @@ function CheckoutForm() {
             </div>
           )}
 
-          {/* Comment out the custom submit button */}
-          {/*
           <button
             type="submit"
             disabled={!stripe || isLoading}
@@ -85,7 +127,6 @@ function CheckoutForm() {
               </div>
             )}
           </button>
-          */}
 
           <div className="mt-4 flex items-center justify-center space-x-4 text-sm text-gray-500">
             <div className="flex items-center">
@@ -162,7 +203,6 @@ export default function StripePayment({ amount }: StripePaymentProps) {
     }
   }, [amount]);
 
-  // Memoize the options object, compute only when clientSecret is a string
   const options: StripeElementsOptions | undefined = useMemo(() => {
     if (!clientSecret) {
       return undefined;
