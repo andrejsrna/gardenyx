@@ -7,13 +7,19 @@ interface ErrorLog {
 }
 
 export function logError(type: string, data: ErrorLog) {
-  console.error(`[${type}] ${data.timestamp}`, {
-    ...data,
+  const logPayload = {
+    orderId: data.orderId,
     customerEmail: data.customerEmail ? '***' : undefined,
-    error: data.error instanceof Error ? {
+    amount: data.amount,
+    timestamp: data.timestamp, // Keep timestamp here for context
+    // Handle the error field specifically
+    errorDetails: data.error instanceof Error ? {
       message: data.error.message,
       name: data.error.name,
-      stack: data.error.stack
-    } : data.error
-  });
-} 
+      // Optionally limit stack trace length for cleaner logs
+      stack: data.error.stack?.split('\n').slice(0, 7).join('\n')
+    } : data.error // Use the raw error object if not an Error instance
+  };
+
+  console.error(`[${type}] ${data.timestamp}`, logPayload);
+}

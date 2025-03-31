@@ -18,4 +18,4 @@ export default function RegistrationLayout({
   children: React.ReactNode;
 }) {
   return children;
-} 
+}

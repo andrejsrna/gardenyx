@@ -34,7 +34,7 @@ function CheckoutForm() {
             <div className="relative">
               <PaymentElement
                 options={{
-                  layout: 'tabs',
+                  layout: 'auto',
                   paymentMethodOrder: ['card', 'apple_pay', 'google_pay', 'link'],
                   defaultValues: {
                     billingDetails: {

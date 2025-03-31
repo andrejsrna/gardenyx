@@ -147,14 +147,12 @@ function updateShippingFromBilling(billingData: BillingInfo, currentShipping: Sh
 }
 
 function validatePhone(phone: string): boolean {
-  const phoneWithoutSpaces = phone.replace(/\s+/g, '');
-  if (phoneWithoutSpaces.startsWith('+421') && phoneWithoutSpaces.length !== 13) {
-    return false;
-  }
-  if (phoneWithoutSpaces.startsWith('0') && phoneWithoutSpaces.length !== 10) {
-    return false;
-  }
-  const skPhoneRegex = /^(\+421|0)[1-9][0-9]{8}$/;
+  // Remove all whitespace characters
+  const phoneWithoutSpaces = phone.replace(/\\s+/g, '');
+  // Use a single regex to validate the two possible formats:
+  // 1. +421 followed by 9 digits (first digit 1-9)
+  // 2. 0 followed by 9 digits (first digit 1-9)
+  const skPhoneRegex = /^(?:\\+421[1-9]\\d{8}|0[1-9]\\d{8})$/;
   return skPhoneRegex.test(phoneWithoutSpaces);
 }
 
@@ -901,55 +899,6 @@ export default function CheckoutPage() {
     }
   }, [isSubmitting, formData, processOrder]); // Add dependencies
 
-  const handleStripeSuccess = useCallback(async () => {
-    Sentry.captureMessage('Stripe payment successful', {
-      level: 'info',
-      extra: { order_id: orderIdRef.current, amount: finalTotal, currency: 'EUR' },
-    });
-
-    if (!orderIdRef.current) {
-      logError('Stripe success callback missing order ID.', {
-        error: new Error('Missing order ID in stripe callback'),
-        timestamp: new Date().toISOString()
-      });
-      toast.error('Chyba spracovania platby.');
-      // Redirect to a generic success or error page as order ID context is lost
-      window.location.href = '/objednavka/neuspesna?reason=missing_id';
-      return;
-    }
-
-    setShowLoadingOverlay(true);
-    setRedirectUrl(`/objednavka/uspesna/${orderIdRef.current}`);
-    toast.success('Platba bola úspešná');
-
-    // Redirect after delay, clear cart *after* navigation starts.
-    setTimeout(() => {
-      window.location.href = `/objednavka/uspesna/${orderIdRef.current!}`;
-      clearCart();
-      orderIdRef.current = null; // Clear ref after successful handling
-    }, 1000);
-  }, [finalTotal, clearCart]);
-
-  const handleStripeError = useCallback((errorMessage: string) => {
-    Sentry.captureException(new Error(errorMessage), {
-      level: 'error',
-      extra: { order_id: orderIdRef.current, payment_method: 'stripe', amount: finalTotal },
-      tags: { stage: 'stripe_payment' },
-    });
-
-    logError('Stripe Payment Error', {
-      error: errorMessage,
-      orderId: orderIdRef.current?.toString(),
-      timestamp: new Date().toISOString()
-    });
-    toast.error('Chyba platby', { description: errorMessage });
-    setShowStripePayment(false); // Hide Stripe form on error
-    setPaymentError({ type: 'stripe', message: errorMessage });
-    // Do not redirect automatically, allow user to potentially try again or change method
-    orderIdRef.current = null; // Allow creating a new order attempt if needed
-    setIsSubmitting(false); // Re-enable submit button
-  }, [finalTotal]);
-
   const handleAddRecommendedToCart = useCallback((product: WooCommerceProduct) => {
       addToCart({
           id: product.id,
@@ -1027,8 +976,6 @@ export default function CheckoutPage() {
         )}
         <StripePayment
           amount={finalTotal} // Pass the final calculated amount
-          onSuccess={handleStripeSuccess}
-          onError={handleStripeError}
         />
       </div>
     );

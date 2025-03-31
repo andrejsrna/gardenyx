@@ -33,16 +33,16 @@ Object.entries(RATE_LIMIT_CONFIGS).forEach(([key, config]) => {
 export async function rateLimit(ip: string, type: keyof typeof RATE_LIMIT_CONFIGS = 'default') {
   const limiter = rateLimiters.get(type);
   const config = RATE_LIMIT_CONFIGS[type];
-  
+
   if (!limiter || !config) {
     throw new Error('Invalid rate limiter configuration');
   }
 
   const attempts = limiter.get(ip) || 0;
-  
+
   if (attempts >= config.max) {
     throw new Error(`rate limit exceeded for ${type}`);
   }
-  
+
   limiter.set(ip, attempts + 1);
-} 
+}

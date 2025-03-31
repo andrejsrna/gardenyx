@@ -8,6 +8,9 @@ const IC_REGEX = /^\d{8}$/;
 const DIC_REGEX = /^\d{10}$/;
 const IC_DPH_REGEX = /^SK\d{10}$/;
 
+// Regex pre čisté telefónne číslo (bez medzier)
+const CLEAN_PHONE_REGEX = /^(\+421|0)[1-9]\d{8}$/;
+
 export const billingSchema = z.object({
   first_name: z.string().min(2, 'Meno musí mať aspoň 2 znaky'),
   last_name: z.string().min(2, 'Priezvisko musí mať aspoň 2 znaky'),
@@ -19,7 +22,10 @@ export const billingSchema = z.object({
   postcode: z.string().regex(PSC_REGEX, 'PSČ musí obsahovať 5 číslic'),
   country: z.string(),
   email: z.string().email('Neplatný email'),
-  phone: z.string().regex(PHONE_REGEX, 'Neplatné telefónne číslo'),
+  phone: z.preprocess(
+    (val) => (typeof val === "string" ? val.replace(/\s+/g, '') : val),
+    z.string().regex(CLEAN_PHONE_REGEX, 'Neplatné telefónne číslo')
+  ),
   ic: z.string().regex(IC_REGEX, 'IČO musí mať 8 číslic').optional(),
   dic: z.string().regex(DIC_REGEX, 'DIČ musí mať 10 číslic').optional(),
   dic_dph: z.string().regex(IC_DPH_REGEX, 'IČ DPH musí byť v tvare SK+10 číslic').optional(),

@@ -1,19 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import Header from './components/Header';
-import { CartProvider } from './context/CartContext';
 import { Toaster } from 'sonner';
-import { AuthProvider } from './context/AuthContext';
-import Footer from './components/Footer';
-import FacebookPixel from './components/FacebookPixel';
-import GoogleAnalytics from './components/GoogleAnalytics';
-import GoogleAds from './components/GoogleAds';
-import { CookieConsentProvider } from './context/CookieConsentContext';
 import CookieConsent from './components/CookieConsent';
 import ExitIntentPopup from './components/ExitIntentPopup';
+import FacebookPixel from './components/FacebookPixel';
+import Footer from './components/Footer';
+import GoogleAds from './components/GoogleAds';
+import GoogleAnalytics from './components/GoogleAnalytics';
+import Header from './components/Header';
+import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { CookieConsentProvider } from './context/CookieConsentContext';
+import "./globals.css";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter'
 });
@@ -68,7 +68,7 @@ export default function RootLayout({
               </main>
               <Footer />
               <ExitIntentPopup />
-              <Toaster 
+              <Toaster
                 position="bottom-right"
                 toastOptions={{
                   style: {
