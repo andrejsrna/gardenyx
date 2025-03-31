@@ -4,7 +4,6 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   env: {
     WP_API_URL: process.env.WP_API_URL,
-    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   },
   images: {
     domains: ['najsilnejsiaklbovavyziva.sk', 'cdn.najsilnejsiaklbovavyziva.sk'],
