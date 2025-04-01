@@ -1011,10 +1011,6 @@ export default function CheckoutPage() {
       )}
 
       <div className="max-w-2xl mx-auto p-6">
-        {/* Trust Badges - Static, can be extracted to a component */}
-        <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
-           {/* ... Trust badge content ... */}
-        </div>
 
         {/* Free Shipping Progress */}
         {totalPrice < FREE_SHIPPING_THRESHOLD && (

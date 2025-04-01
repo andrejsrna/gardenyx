@@ -4,9 +4,16 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   env: {
     WP_API_URL: process.env.WP_API_URL,
+    REDIS_URL: process.env.REDIS_URL,
   },
   images: {
     domains: ['najsilnejsiaklbovavyziva.sk', 'cdn.najsilnejsiaklbovavyziva.sk'],
+  },
+  experimental: {
+    serverActions: true,
+    runtime: 'edge',
+    allowedHeaders: ['x-forwarded-for', 'cf-connecting-ip'],
+    env: ['REDIS_URL', 'WP_API_URL', 'WC_CONSUMER_KEY', 'WC_CONSUMER_SECRET', 'WORDPRESS_URL'],
   },
   async headers() {
     return [

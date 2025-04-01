@@ -10,8 +10,23 @@ export const config = {
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
+// Get Redis credentials from environment variables
+const redisUrl = process.env.REDIS_URL || '';
+const redisPassword = process.env.REDIS_PASSWORD || '';
+
+// Extract host and port from Redis URL
+const url = new URL(redisUrl);
+const host = url.hostname;
+const port = url.port;
+
+// Create Redis client with Upstash REST API format
+const redis = new Redis({
+  url: `https://${host}:${port}`,
+  token: redisPassword,
+});
+
 const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
+  redis: redis,
   limiter: Ratelimit.slidingWindow(5, '10 s'),
 });
 

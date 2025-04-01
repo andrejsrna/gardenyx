@@ -40,6 +40,15 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://najsilnejsiakl.sk"
+  },
+  icons: {
+    apple: [
+      { url: '/apple-touch-icon.png' },
+      { url: '/apple-touch-icon-precomposed.png' }
+    ],
+    icon: [
+      { url: '/favicon.ico' }
+    ]
   }
 };
 

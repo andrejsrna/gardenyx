@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
 export default function CookieConsent() {
@@ -11,8 +11,14 @@ export default function CookieConsent() {
   useEffect(() => {
     if (!mounted) {
       setMounted(true);
-      const savedConsent = localStorage.getItem('cookieConsent');
-      if (!savedConsent) {
+      try {
+        const savedConsent = localStorage.getItem('cookieConsent');
+        if (!savedConsent) {
+          setModalOpen(true);
+        }
+      } catch (error) {
+        console.error('Failed to access localStorage:', error);
+        // Optionally handle the error, e.g., default to showing the modal
         setModalOpen(true);
       }
     }
@@ -20,7 +26,12 @@ export default function CookieConsent() {
 
   const saveConsent = (newConsent: typeof consent) => {
     setConsent(newConsent);
-    localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
+    try {
+      localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
+    } catch (error) {
+      console.error('Failed to set localStorage item:', error);
+      // Handle inability to save consent if necessary
+    }
     setModalOpen(false);
   };
 
@@ -48,13 +59,22 @@ export default function CookieConsent() {
   if (!mounted) return null;
 
   // Don't show if consent is stored and modal isn't explicitly opened
-  if (localStorage.getItem('cookieConsent') && !isModalOpen) return null;
+  let hasSavedConsent = false;
+  try {
+    hasSavedConsent = !!localStorage.getItem('cookieConsent');
+  } catch (error) {
+    console.error('Failed to access localStorage:', error);
+    // If we can't check localStorage, assume no consent is saved to be safe
+    hasSavedConsent = false;
+  }
+
+  if (hasSavedConsent && !isModalOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div 
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
+        <div
+          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
           aria-hidden="true"
           onClick={(e) => e.stopPropagation()}
         ></div>
@@ -64,8 +84,8 @@ export default function CookieConsent() {
             <div className="space-y-4">
               <h2 className="text-xl font-bold text-gray-900">Nastavenia cookies</h2>
               <p className="text-gray-600">
-                Používame cookies na zlepšenie vášho zážitku z nakupovania a na analýzu návštevnosti. 
-                Niektoré z nich sú nevyhnutné pre fungovanie stránky, zatiaľ čo iné nám pomáhajú 
+                Používame cookies na zlepšenie vášho zážitku z nakupovania a na analýzu návštevnosti.
+                Niektoré z nich sú nevyhnutné pre fungovanie stránky, zatiaľ čo iné nám pomáhajú
                 zlepšovať služby a personalizovať obsah.
               </p>
 
@@ -153,4 +173,4 @@ export default function CookieConsent() {
       </div>
     </div>
   );
-} 
+}

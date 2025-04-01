@@ -83,7 +83,10 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
     // First try to get the post data
     const post = await getPostBySlug(slugPath);
     if (!post) {
-      return notFound();
+      return {
+        title: 'Stránka nenájdená',
+        description: 'Požadovaná stránka nebola nájdená.',
+      };
     }
 
     // Get the date components from the post date
@@ -96,105 +99,97 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
     const postSlug = slug[slug.length - 1]; // Get the actual post slug
     const wpPermalink = `${year}/${month}/${day}/${postSlug}`;
 
-    // Then try to get RankMath SEO data with the correct permalink structure
-    const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/${wpPermalink}`);
+    try {
+      // Then try to get RankMath SEO data with the correct permalink structure
+      const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/${wpPermalink}`);
 
-    if (seoData) {
-      // Parse the head HTML using our utility
-      const parser = parseHTML(seoData.head);
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+      if (seoData) {
+        // Parse the head HTML using our utility
+        const parser = parseHTML(seoData.head);
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
-      // Clean description from HTML tags and entities
-      const description = parser.getMetaTag('description')
-        ? cleanHtmlContent(parser.getMetaTag('description')!)
-        : post.excerpt.rendered ? cleanHtmlContent(post.excerpt.rendered) : '';
+        // Clean description from HTML tags and entities
+        const description = parser.getMetaTag('description')
+          ? cleanHtmlContent(parser.getMetaTag('description')!)
+          : post.excerpt.rendered ? cleanHtmlContent(post.excerpt.rendered) : '';
 
-      // Clean OG description
-      const ogDescription = parser.getMetaTag('og:description')
-        ? cleanHtmlContent(parser.getMetaTag('og:description')!)
-        : description;
+        // Clean OG description
+        const ogDescription = parser.getMetaTag('og:description')
+          ? cleanHtmlContent(parser.getMetaTag('og:description')!)
+          : description;
 
-      // Clean Twitter description
-      const twitterDescription = parser.getMetaTag('twitter:description')
-        ? cleanHtmlContent(parser.getMetaTag('twitter:description')!)
-        : description;
+        // Clean Twitter description
+        const twitterDescription = parser.getMetaTag('twitter:description')
+          ? cleanHtmlContent(parser.getMetaTag('twitter:description')!)
+          : description;
 
+        return {
+          title: parser.getTitle() || post.title.rendered,
+          description: description,
+          openGraph: {
+            title: parser.getMetaTag('og:title') || post.title.rendered,
+            description: ogDescription,
+            url: parser.getMetaTag('og:url') || `${siteUrl}/${wpPermalink}`,
+            siteName: 'Najsilnejšia kĺbová výživa',
+            images: parser.getMetaTag('og:image')
+              ? [{ url: parser.getMetaTag('og:image')! }]
+              : post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+                ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
+                : [],
+            locale: 'sk_SK',
+            type: 'article',
+          },
+          twitter: {
+            card: 'summary_large_image',
+            title: parser.getMetaTag('twitter:title') || post.title.rendered,
+            description: twitterDescription,
+            images: parser.getMetaTag('twitter:image')
+              ? [{ url: parser.getMetaTag('twitter:image')! }]
+              : post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+                ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
+                : [],
+          },
+          alternates: {
+            canonical: parser.getCanonical() || `${siteUrl}/${wpPermalink}`,
+          },
+          robots: {
+            index: true,
+            follow: true,
+          },
+        };
+      }
+    } catch (seoError) {
+      console.error('Error fetching SEO data:', seoError);
+      // Fallback to basic metadata if SEO data fetch fails
       return {
-        title: parser.getTitle() || post.title.rendered,
-        description: description,
+        title: post.title.rendered,
+        description: cleanHtmlContent(post.excerpt.rendered),
         openGraph: {
-          title: parser.getMetaTag('og:title') || post.title.rendered,
-          description: ogDescription,
-          url: parser.getMetaTag('og:url') || `${siteUrl}/${wpPermalink}`,
+          title: post.title.rendered,
+          description: cleanHtmlContent(post.excerpt.rendered),
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${wpPermalink}`,
           siteName: 'Najsilnejšia kĺbová výživa',
-          images: parser.getMetaTag('og:image')
-            ? [{ url: parser.getMetaTag('og:image')! }]
-            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url
-              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
-              : [],
+          images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+            ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
+            : [],
           locale: 'sk_SK',
           type: 'article',
         },
-        twitter: {
-          card: 'summary_large_image',
-          title: parser.getMetaTag('twitter:title') || post.title.rendered,
-          description: twitterDescription,
-          images: parser.getMetaTag('twitter:image')
-            ? [{ url: parser.getMetaTag('twitter:image')! }]
-            : post._embedded?.['wp:featuredmedia']?.[0]?.source_url
-              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
-              : [],
-        },
-        alternates: {
-          canonical: parser.getCanonical() || `${siteUrl}/${wpPermalink}`,
-        },
-        robots: {
-          index: true,
-          follow: true,
-        },
       };
     }
-
-    // Fallback to basic metadata from post data
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    const cleanDescription = post.excerpt.rendered
-      ? cleanHtmlContent(post.excerpt.rendered)
-      : '';
-
-    return {
-      title: post.title.rendered,
-      description: cleanDescription,
-      openGraph: {
-        title: post.title.rendered,
-        description: cleanDescription,
-        url: `${siteUrl}/${wpPermalink}`,
-        siteName: 'Najsilnejšia kĺbová výživa',
-        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
-          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
-          : [],
-        locale: 'sk_SK',
-        type: 'article',
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: post.title.rendered,
-        description: cleanDescription,
-        images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
-          ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
-          : [],
-      },
-      alternates: {
-        canonical: `${siteUrl}/${wpPermalink}`,
-      },
-      robots: {
-        index: true,
-        follow: true,
-      },
-    };
   } catch (error) {
     console.error('Error generating metadata:', error);
-    return notFound();
+    return {
+      title: 'Stránka nenájdená',
+      description: 'Požadovaná stránka nebola nájdená.',
+    };
   }
+
+  // Default return in case no conditions are met
+  return {
+    title: 'Najsilnejšia kĺbová výživa',
+    description: 'Najsilnejšia kĺbová výživa na Slovensku',
+  };
 }
 
 export default async function BlogPost({ params }: { params: tParams }) {
