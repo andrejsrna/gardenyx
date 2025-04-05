@@ -10,7 +10,7 @@
 body {
   color: var(--foreground);
   background: #fafafa;
-  font-family: var(--font-inter);
+  font-family: Inter, serif;
 }
 
 /* YouTube Responsive Embed */

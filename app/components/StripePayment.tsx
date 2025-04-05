@@ -1,10 +1,10 @@
 'use client';
 
 import {
-  Elements,
-  PaymentElement,
-  useElements,
-  useStripe
+    Elements,
+    PaymentElement,
+    useElements,
+    useStripe
 } from '@stripe/react-stripe-js';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { useEffect, useMemo, useState } from 'react';
@@ -26,16 +26,12 @@ function CheckoutForm() {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      console.log("Stripe or Elements not loaded yet.");
       return;
     }
 
     setIsLoading(true);
-    setErrorMessage(null); // Clear previous errors
+    setErrorMessage(null);
 
-    // Retrieve order ID to build the return URL
     const orderId = sessionStorage.getItem('lastOrderId');
     if (!orderId) {
       setErrorMessage("Chýba ID objednávky. Skúste prosím znova načítať stránku.");
@@ -50,11 +46,6 @@ function CheckoutForm() {
       },
     });
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
     if (error) {
       if (error.type === "card_error" || error.type === "validation_error") {
         setErrorMessage(error.message || 'An unexpected error occurred.');
@@ -62,8 +53,6 @@ function CheckoutForm() {
         setErrorMessage("An unexpected error occurred. Please try again.");
       }
     } else {
-       // Payment submitted. Stripe will handle redirection if necessary.
-       console.log("Payment submitted successfully or redirection handled by Stripe.");
     }
 
     setIsLoading(false);
@@ -155,7 +144,6 @@ export default function StripePayment({ amount }: StripePaymentProps) {
   useEffect(() => {
     const initializePayment = async () => {
       try {
-        console.log('Creating payment intent...');
         const orderId = sessionStorage.getItem('lastOrderId');
         const customerEmail = sessionStorage.getItem('customerEmail');
 
@@ -177,13 +165,10 @@ export default function StripePayment({ amount }: StripePaymentProps) {
         });
 
         const data = await response.json();
-        console.log('Payment intent response:', { status: response.status, data });
 
         if (!response.ok) {
           throw new Error(data.error || 'Failed to create payment intent');
         }
-
-        console.log('Payment setup completed successfully');
         setClientSecret(data.clientSecret);
 
       } catch (error) {

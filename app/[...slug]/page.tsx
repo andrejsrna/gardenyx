@@ -5,11 +5,11 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import BlogProductWidget from '../components/BlogProductWidget';
 import CTA from '../components/CTA';
+import TableOfContents from '../components/TableOfContents';
 import Toast from '../components/Toast';
 import { parseHTML } from '../lib/html-parser';
 import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
 
-// Test Sentry integration
 if (process.env.NODE_ENV === 'development') {
   Sentry.captureException(new Error('Test error from Sentry integration'));
 }
@@ -30,36 +30,27 @@ interface Post {
   _embedded?: PostEmbedded;
 }
 
-// Helper function to clean HTML content - remove tags and decode entities
 function cleanHtmlContent(html: string): string {
   if (!html) return '';
 
-  // First remove HTML tags
   const withoutTags = html.replace(/(<([^>]+)>)/gi, '');
 
-  // Then decode HTML entities using html-entities library
   return decode(withoutTags);
 }
 
-// Helper function to make YouTube embeds responsive
 function makeYouTubeEmbedsResponsive(html: string): string {
   if (!html) return '';
 
-  // Pattern to match YouTube iframe embeds
   const youtubePattern = /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:embed\/|watch\?v=)?([^"'&?\/\s]+)[^>]*><\/iframe>/gi;
 
-  // Replace with responsive wrapper
   return html.replace(youtubePattern, (match, videoId) => {
-    // Extract width and height if present
     const widthMatch = match.match(/width=["'](\d+)["']/i);
     const heightMatch = match.match(/height=["'](\d+)["']/i);
 
-    // Calculate aspect ratio (default to 16:9 if not specified)
     const width = widthMatch ? parseInt(widthMatch[1]) : 560;
     const height = heightMatch ? parseInt(heightMatch[1]) : 315;
     const aspectRatio = (height / width) * 100;
 
-    // Create responsive wrapper with proper aspect ratio
     return `
       <div class="youtube-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
         <iframe
@@ -74,13 +65,22 @@ function makeYouTubeEmbedsResponsive(html: string): string {
   });
 }
 
-// Generate metadata for SEO
+function createSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/<[^>]*>/g, '') // Remove HTML tags from heading text
+    .trim()
+    .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "") // Remove accents
+    .replace(/[^\\w\\s-]/g, '') // Remove non-word chars (excluding spaces and dashes)
+    .replace(/\\s+/g, '-') // Replace spaces with single dashes
+    .replace(/-+/g, '-'); // Replace multiple dashes with single dashes
+}
+
 export async function generateMetadata({ params }: { params: tParams }): Promise<Metadata> {
   const { slug } = await params;
   const slugPath = slug.join('/');
 
   try {
-    // First try to get the post data
     const post = await getPostBySlug(slugPath);
     if (!post) {
       return {
@@ -89,36 +89,29 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
       };
     }
 
-    // Get the date components from the post date
     const postDate = new Date(post.date);
     const year = postDate.getFullYear();
     const month = String(postDate.getMonth() + 1).padStart(2, '0');
     const day = String(postDate.getDate()).padStart(2, '0');
 
-    // Create the WordPress permalink structure
-    const postSlug = slug[slug.length - 1]; // Get the actual post slug
+    const postSlug = slug[slug.length - 1];
     const wpPermalink = `${year}/${month}/${day}/${postSlug}`;
 
     try {
-      // Then try to get RankMath SEO data with the correct permalink structure
       const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/${wpPermalink}`);
 
       if (seoData) {
-        // Parse the head HTML using our utility
         const parser = parseHTML(seoData.head);
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
-        // Clean description from HTML tags and entities
         const description = parser.getMetaTag('description')
           ? cleanHtmlContent(parser.getMetaTag('description')!)
           : post.excerpt.rendered ? cleanHtmlContent(post.excerpt.rendered) : '';
 
-        // Clean OG description
         const ogDescription = parser.getMetaTag('og:description')
           ? cleanHtmlContent(parser.getMetaTag('og:description')!)
           : description;
 
-        // Clean Twitter description
         const twitterDescription = parser.getMetaTag('twitter:description')
           ? cleanHtmlContent(parser.getMetaTag('twitter:description')!)
           : description;
@@ -160,7 +153,6 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
       }
     } catch (seoError) {
       console.error('Error fetching SEO data:', seoError);
-      // Fallback to basic metadata if SEO data fetch fails
       return {
         title: post.title.rendered,
         description: cleanHtmlContent(post.excerpt.rendered),
@@ -185,7 +177,6 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
     };
   }
 
-  // Default return in case no conditions are met
   return {
     title: 'Najsilnejšia kĺbová výživa',
     description: 'Najsilnejšia kĺbová výživa na Slovensku',
@@ -201,13 +192,37 @@ export default async function BlogPost({ params }: { params: tParams }) {
     notFound();
   }
 
-  // Get the original content
   let content = post.content.rendered;
 
-  // Make YouTube embeds responsive
+  const headings: { id: string; text: string; level: number }[] = [];
+  const headingRegex = /<h(2)([^>]*)>([\s\S]*?)<\/h2>/gi;
+
+  const replacements: { original: string; replacement: string }[] = [];
+
+  let match;
+  while ((match = headingRegex.exec(content)) !== null) {
+    const [fullMatch, levelStr, attrs, innerHTML] = match;
+    const level = parseInt(levelStr, 10);
+
+    const textContent = decode(innerHTML.replace(/<[^>]*>/g, '').trim());
+    if (!textContent) continue;
+
+    const id = createSlug(textContent);
+
+    const cleanAttrs = attrs.replace(/\s+id=(?:\"[^\"]*\"|'[^']*'|[^\\s>]+)/i, '');
+
+    headings.push({ id, text: textContent, level });
+
+    const replacementString = `<h${level}${cleanAttrs} id=\"${id}\">${innerHTML}</h${level}>`;
+    replacements.push({ original: fullMatch, replacement: replacementString });
+  }
+
+  replacements.forEach(({ original, replacement }) => {
+    content = content.replace(original, replacement);
+  });
+
   content = makeYouTubeEmbedsResponsive(content);
 
-  // Inject product widget before fourth h2
   const h2Regex = /<h2[^>]*>[\s\S]*?<\/h2>/g;
   const parts = content.split(h2Regex);
   const h2Matches = content.match(h2Regex) || [];
@@ -216,7 +231,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
   let hasInjectedWidget = false;
   for (let i = 0; i < parts.length; i++) {
     modifiedContent += parts[i];
-    if (i === 3 && !hasInjectedWidget) { // Before fourth h2 (index 3)
+    if (i === 3 && !hasInjectedWidget) {
       modifiedContent += `
         <div class="my-12">
           <div id="product-widget-mount-point"></div>
@@ -229,7 +244,6 @@ export default async function BlogPost({ params }: { params: tParams }) {
     }
   }
 
-  // If we didn't find a fourth h2, append the widget at the end of the content
   if (!hasInjectedWidget && parts.length > 0) {
     modifiedContent += `
       <div class="my-12">
@@ -244,13 +258,11 @@ export default async function BlogPost({ params }: { params: tParams }) {
     day: 'numeric',
   });
 
-  // Get estimated read time (assuming average reading speed of 200 words per minute)
   const wordCount = content.split(/\s+/).length;
   const readTime = Math.ceil(wordCount / 200);
 
   return (
     <>
-      {/* Hero Section with Featured Image */}
       <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px]">
         {post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
           <Image
@@ -265,7 +277,6 @@ export default async function BlogPost({ params }: { params: tParams }) {
         )}
         <div className="absolute inset-0 bg-black/40" />
 
-        {/* Title Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="max-w-4xl mx-auto px-4 text-center text-white">
             <h1
@@ -276,10 +287,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
         </div>
       </div>
 
-      {/* Article Content */}
       <article className="max-w-4xl mx-auto px-4 py-12">
-        {/* Article Meta */}
-        <div className="flex flex-wrap items-center justify-center gap-6 mb-12 text-gray-600 text-sm">
+        <div className="flex flex-wrap items-center justify-center gap-6 mb-8 text-gray-600 text-sm">
           <div className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -294,7 +303,12 @@ export default async function BlogPost({ params }: { params: tParams }) {
           </div>
         </div>
 
-        {/* Article Content */}
+        {headings.length > 1 && (
+          <div className="mb-10 border-y py-4">
+            <TableOfContents headings={headings} />
+          </div>
+        )}
+
         <div
           className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900
                      prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:underline
@@ -305,10 +319,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
           dangerouslySetInnerHTML={{ __html: modifiedContent }}
         />
 
-        {/* Product Widget */}
         <BlogProductWidget productIds={[49, 684, 824]} />
 
-        {/* Share Buttons */}
         <div className="mt-12 pt-8 border-t">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Zdieľať článok</h3>
           <div className="flex gap-4">
@@ -338,7 +350,6 @@ export default async function BlogPost({ params }: { params: tParams }) {
         </div>
       </article>
 
-      {/* CTA Section */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <CTA />
       </div>

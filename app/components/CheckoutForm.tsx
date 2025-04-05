@@ -696,7 +696,7 @@ export default function CheckoutForm() {
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Výber odberného miesta</h2>
           <PacketaPointSelector
-            onSelect={handlePacketaPointSelect}
+            onSelectAction={handlePacketaPointSelect}
           />
         </div>
       )}

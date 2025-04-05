@@ -28,7 +28,6 @@ export async function POST(
 
     try {
       await stripe.paymentIntents.cancel(id);
-      console.log(`[Stripe] Payment intent ${id} cancelled successfully`);
       return NextResponse.json({ success: true });
     } catch (stripeError) {
       console.error('[Stripe] API Error:', stripeError);
@@ -38,7 +37,6 @@ export async function POST(
           { status: stripeError.statusCode || 500 }
         );
       }
-      // Instead of rethrowing, handle the non-Stripe error
       const genericError = new Error(
         stripeError instanceof Error ? stripeError.message : 'Unknown payment intent cancellation error'
       );

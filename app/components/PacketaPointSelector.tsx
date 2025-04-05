@@ -30,7 +30,7 @@ declare global {
 }
 
 interface PacketaPointSelectorProps {
-  onSelect: (point: {
+  onSelectAction: (point: {
     id: string;
     name: string;
     street: string;
@@ -39,7 +39,7 @@ interface PacketaPointSelectorProps {
   }) => void;
 }
 
-export default function PacketaPointSelector({ onSelect }: PacketaPointSelectorProps) {
+export default function PacketaPointSelector({ onSelectAction }: PacketaPointSelectorProps) {
   useEffect(() => {
     // Show Packeta Widget when component mounts
     const showPacketaWidget = () => {
@@ -48,7 +48,7 @@ export default function PacketaPointSelector({ onSelect }: PacketaPointSelectorP
           process.env.NEXT_PUBLIC_PACKETA_API_KEY!,
           (point: PacketaWidgetPoint | null) => {
             if (point) {
-              onSelect({
+              onSelectAction({
                 id: point.id,
                 name: point.name,
                 street: point.street,
@@ -69,7 +69,7 @@ export default function PacketaPointSelector({ onSelect }: PacketaPointSelectorP
     const timer = setTimeout(showPacketaWidget, 500);
 
     return () => clearTimeout(timer);
-  }, [onSelect]);
+  }, [onSelectAction]);
 
   return (
     <>
@@ -83,4 +83,4 @@ export default function PacketaPointSelector({ onSelect }: PacketaPointSelectorP
       </div>
     </>
   );
-} 
+}

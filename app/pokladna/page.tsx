@@ -1403,7 +1403,7 @@ export default function CheckoutPage() {
                   </button>
                </div>
                <div className="flex-grow overflow-y-auto p-0"> {/* Packeta widget usually handles its own padding */}
-                   <PacketaPointSelector onSelect={handlePacketaPointSelect} />
+                   <PacketaPointSelector onSelectAction={handlePacketaPointSelect} />
                </div>
             </div>
           </div>

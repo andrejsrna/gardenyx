@@ -14,7 +14,6 @@ export default function ExitIntentPopup() {
     if (localStorage.getItem('exitIntentShown') || isCreatingCoupon.current) {
         return;
     }
-    console.log('ExitIntent: Triggered after delay');
     isCreatingCoupon.current = true;
     setShowModal(true);
     setIsLoading(true);
@@ -56,12 +55,10 @@ export default function ExitIntentPopup() {
 
       if (e.clientY < 10) {
         if (!exitIntentTimerRef.current) {
-            console.log('ExitIntent: Mouse near top, starting timer...');
             exitIntentTimerRef.current = setTimeout(triggerExitIntent, 200);
         }
       } else {
         if (exitIntentTimerRef.current) {
-            console.log('ExitIntent: Mouse moved away, clearing timer.');
             clearTimeout(exitIntentTimerRef.current);
             exitIntentTimerRef.current = null;
         }
@@ -70,7 +67,6 @@ export default function ExitIntentPopup() {
 
     document.addEventListener('mousemove', handleMouseMove);
     return () => {
-      console.log('ExitIntent: Component cleanup');
       document.removeEventListener('mousemove', handleMouseMove);
     };
   }, [showModal]);
@@ -80,7 +76,7 @@ export default function ExitIntentPopup() {
       {showModal && (
         <ExitIntentModal
           code={couponCode}
-          onClose={() => setShowModal(false)}
+          onCloseAction={() => setShowModal(false)}
           isLoading={isLoading}
         />
       )}

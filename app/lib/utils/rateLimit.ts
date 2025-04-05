@@ -22,7 +22,6 @@ const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
 
 const rateLimiters = new Map<string, LRUCache<string, number>>();
 
-// Initialize rate limiters
 Object.entries(RATE_LIMIT_CONFIGS).forEach(([key, config]) => {
   rateLimiters.set(key, new LRUCache({
     max: 10000,
@@ -31,6 +30,10 @@ Object.entries(RATE_LIMIT_CONFIGS).forEach(([key, config]) => {
 });
 
 export async function rateLimit(ip: string, type: keyof typeof RATE_LIMIT_CONFIGS = 'default') {
+  if (process.env.NODE_ENV === 'development') {
+    return;
+  }
+
   const limiter = rateLimiters.get(type);
   const config = RATE_LIMIT_CONFIGS[type];
 

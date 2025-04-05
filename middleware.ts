@@ -96,7 +96,6 @@ export async function middleware(request: NextRequest) {
     const sanitizedParamsString = sanitizedParams.toString();
 
     if (originalParamsString !== sanitizedParamsString) {
-      console.log(`[Middleware] Sanitizing params: ${originalParamsString} -> ${sanitizedParamsString}`);
       const cleanUrl = new URL(url.pathname, url.origin);
       if (sanitizedParams.toString()) {
         cleanUrl.search = sanitizedParams.toString();

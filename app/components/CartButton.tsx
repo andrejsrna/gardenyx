@@ -13,7 +13,7 @@ export default function CartButton() {
 
   return (
     <div className="relative">
-      <button 
+      <button
         data-cart-button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:text-green-600 transition-colors"
@@ -28,15 +28,15 @@ export default function CartButton() {
 
       {isOpen && (
         <>
-          <div 
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={closeCart}
           />
           <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-lg z-50">
-            <Cart onClose={closeCart} />
+            <Cart onCloseAction={closeCart} />
           </div>
         </>
       )}
     </div>
   );
-} 
+}

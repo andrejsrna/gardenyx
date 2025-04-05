@@ -28,11 +28,11 @@ function CountdownDisplay({ initialSeconds, onComplete }: { initialSeconds: numb
 
 export default function ExitIntentModal({
   code,
-  onClose,
+  onCloseAction,
   isLoading = false
 }: {
   code: string;
-  onClose: () => void;
+  onCloseAction: () => void;
   isLoading?: boolean;
 }) {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function ExitIntentModal({
   const handleApplyCoupon = () => {
     applyExitCoupon(code);
     toast.success('Zľavový kód bol úspešne aplikovaný!');
-    onClose();
+    onCloseAction();
     router.push('/kupit');
   };
 
@@ -50,7 +50,7 @@ export default function ExitIntentModal({
       <div className="bg-white rounded-xl max-w-md w-full shadow-xl animate-in fade-in-zoom-in">
         <div className="p-6 relative">
           <button
-            onClick={onClose}
+            onClick={onCloseAction}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
             aria-label="Zatvoriť"
           >
@@ -102,7 +102,7 @@ export default function ExitIntentModal({
                   </button>
 
                   <button
-                    onClick={onClose}
+                    onClick={onCloseAction}
                     className="w-full text-gray-500 py-2 rounded-lg hover:text-gray-700 hover:bg-gray-100 transition-colors text-sm font-medium"
                   >
                     Nie, ďakujem
@@ -110,7 +110,7 @@ export default function ExitIntentModal({
                 </div>
 
                 <div className="text-xs text-gray-500 pt-1">
-                  Táto ponuka platí ešte: <CountdownDisplay initialSeconds={10} onComplete={onClose} />
+                  Táto ponuka platí ešte: <CountdownDisplay initialSeconds={10} onComplete={onCloseAction} />
                 </div>
               </>
             )}
