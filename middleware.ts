@@ -15,7 +15,7 @@ const corsHeaders = {
 };
 
 // List of allowed URL parameters
-const ALLOWED_PARAMS = new Set(['ad_id', 'pixel', 'key']);
+const ALLOWED_PARAMS = new Set(['ad_id', 'pixel', 'key', 'page', 'search']);
 
 // Maximum allowed length for parameter values
 const MAX_PARAM_LENGTH = 100;
@@ -92,7 +92,11 @@ export async function middleware(request: NextRequest) {
     });
 
     // If parameters were sanitized, redirect to clean URL
-    if (url.search !== sanitizedParams.toString()) {
+    const originalParamsString = url.search ? url.search.substring(1) : '';
+    const sanitizedParamsString = sanitizedParams.toString();
+
+    if (originalParamsString !== sanitizedParamsString) {
+      console.log(`[Middleware] Sanitizing params: ${originalParamsString} -> ${sanitizedParamsString}`);
       const cleanUrl = new URL(url.pathname, url.origin);
       if (sanitizedParams.toString()) {
         cleanUrl.search = sanitizedParams.toString();
