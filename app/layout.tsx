@@ -77,17 +77,7 @@ export default function RootLayout({
               </main>
               <Footer />
               <ExitIntentPopup />
-              <Toaster
-                position="bottom-right"
-                toastOptions={{
-                  style: {
-                    background: '#fff',
-                    color: '#1f2937',
-                    zIndex: 40,
-                  },
-                  className: 'text-sm font-medium',
-                }}
-              />
+              <Toaster/>
               <FacebookPixel />
               <GoogleAnalytics />
               <GoogleAds />
