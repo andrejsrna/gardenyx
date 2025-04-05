@@ -15,7 +15,21 @@ const corsHeaders = {
 };
 
 // List of allowed URL parameters
-const ALLOWED_PARAMS = new Set(['ad_id', 'pixel', 'key', 'page', 'search']);
+const ALLOWED_PARAMS = new Set([
+  'ad_id',
+  'pixel',
+  'key',
+  'page',
+  'search',
+  'fbclid', // Allow Facebook Click ID
+  'gclid',  // Allow Google Click ID
+  // Add common UTM parameters (adjust based on usage)
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_term',
+  'utm_content'
+]);
 
 // Maximum allowed length for parameter values
 const MAX_PARAM_LENGTH = 100;
