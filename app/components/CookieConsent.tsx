@@ -1,38 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
 export default function CookieConsent() {
-  const { consent, setConsent, setModalOpen, isModalOpen } = useCookieConsent();
+  const { consent, setConsent } = useCookieConsent();
   const [showDetails, setShowDetails] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    if (!mounted) {
-      setMounted(true);
-      try {
-        const savedConsent = localStorage.getItem('cookieConsent');
-        if (!savedConsent) {
-          setModalOpen(true);
-        }
-      } catch (error) {
-        console.error('Failed to access localStorage:', error);
-        // Optionally handle the error, e.g., default to showing the modal
-        setModalOpen(true);
-      }
-    }
-  }, [mounted, setModalOpen]);
+  const [isVisible, setIsVisible] = useState(true);
 
   const saveConsent = (newConsent: typeof consent) => {
     setConsent(newConsent);
+
+    const consentString = JSON.stringify(newConsent);
+
     try {
-      localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
+      localStorage.setItem('cookieConsent', consentString);
     } catch (error) {
       console.error('Failed to set localStorage item:', error);
-      // Handle inability to save consent if necessary
     }
-    setModalOpen(false);
+
+    const expires = new Date();
+    expires.setFullYear(expires.getFullYear() + 1);
+    const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `cookieConsent=${consentString}; path=/; expires=${expires.toUTCString()}; SameSite=Lax${secureFlag}`;
+    console.log('Cookie set:', document.cookie);
+
+    setIsVisible(false);
   };
 
   const handleAcceptAll = () => {
@@ -55,20 +48,9 @@ export default function CookieConsent() {
     saveConsent(consent);
   };
 
-  // Don't render until hydrated
-  if (!mounted) return null;
-
-  // Don't show if consent is stored and modal isn't explicitly opened
-  let hasSavedConsent = false;
-  try {
-    hasSavedConsent = !!localStorage.getItem('cookieConsent');
-  } catch (error) {
-    console.error('Failed to access localStorage:', error);
-    // If we can't check localStorage, assume no consent is saved to be safe
-    hasSavedConsent = false;
+  if (!isVisible) {
+    return null;
   }
-
-  if (hasSavedConsent && !isModalOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -82,7 +64,9 @@ export default function CookieConsent() {
         <div className="relative inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
           <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
             <div className="space-y-4">
-              <h2 className="text-xl font-bold text-gray-900">Nastavenia cookies</h2>
+              <h2 className="text-xl font-bold text-gray-900" id="modal-title">
+                Nastavenia cookies
+              </h2>
               <p className="text-gray-600">
                 Používame cookies na zlepšenie vášho zážitku z nakupovania a na analýzu návštevnosti.
                 Niektoré z nich sú nevyhnutné pre fungovanie stránky, zatiaľ čo iné nám pomáhajú

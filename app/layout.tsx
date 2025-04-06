@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { cookies } from 'next/headers';
 import { Toaster } from 'sonner';
 import CookieConsent from './components/CookieConsent';
-import ExitIntentPopup from './components/ExitIntentPopup';
+import ExitIntentPopupLoader from './components/ExitIntentPopupLoader';
 import FacebookPixel from './components/FacebookPixel';
 import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
@@ -52,11 +53,19 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const consentCookie = cookieStore.get('cookieConsent');
+  let showConsentBanner = true;
+
+  if (consentCookie) {
+    showConsentBanner = false;
+  }
+
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
@@ -76,12 +85,12 @@ export default function RootLayout({
                 {children}
               </main>
               <Footer />
-              <ExitIntentPopup />
+              <ExitIntentPopupLoader />
               <Toaster/>
               <FacebookPixel />
               <GoogleAnalytics />
               <GoogleAds />
-              <CookieConsent />
+              {showConsentBanner && <CookieConsent />}
             </CartProvider>
           </AuthProvider>
         </CookieConsentProvider>

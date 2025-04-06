@@ -1,4 +1,9 @@
+import bundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -10,13 +15,19 @@ const nextConfig = {
     domains: ['najsilnejsiaklbovavyziva.sk', 'cdn.najsilnejsiaklbovavyziva.sk'],
   },
   experimental: {
-    serverActions: true,
-    runtime: 'edge',
-    allowedHeaders: ['x-forwarded-for', 'cf-connecting-ip'],
-    env: ['REDIS_URL', 'WP_API_URL', 'WC_CONSUMER_KEY', 'WC_CONSUMER_SECRET', 'WORDPRESS_URL'],
+    serverActions: {},
   },
   async headers() {
     return [
+      {
+        source: '/logo.png',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
       {
         source: '/:path*',
         headers: [
@@ -70,10 +81,11 @@ const nextConfig = {
       }
     ];
   },
+  reactStrictMode: true,
 }
 
 const sentryWebpackPluginOptions = {
   silent: true,
 };
 
-export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+export default withBundleAnalyzer(withSentryConfig(nextConfig, sentryWebpackPluginOptions));

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
+import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import Cart from './Cart';
 
@@ -17,10 +17,11 @@ export default function CartButton() {
         data-cart-button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:text-green-600 transition-colors"
+        aria-label={`Nákupný košík, ${totalItems} ${totalItems === 1 ? 'položka' : totalItems >= 2 && totalItems <= 4 ? 'položky' : 'položiek'}`}
       >
         <ShoppingCart className="w-6 h-6" />
         {totalItems > 0 && (
-          <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+          <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full" aria-hidden="true">
             {totalItems}
           </span>
         )}

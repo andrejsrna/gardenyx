@@ -1,8 +1,7 @@
 'use client';
 
-import { Star } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import ReviewModal from './ReviewModal';
 
 interface Review {
   id: string;
@@ -53,30 +52,42 @@ const defaultReviews: Review[] = [
   }
 ];
 
+// Optimized StarRating component using Unicode characters
 const StarRating = ({ rating }: { rating: number }) => {
+  // Round rating to nearest half for potential half-star display (optional)
+  const roundedRating = Math.round(rating * 2) / 2;
   return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          className={`w-4 h-4 ${
-            star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+    <div className="flex items-center" aria-label={`Hodnotenie: ${rating} z 5 hviezdičiek`}>
+      {[1, 2, 3, 4, 5].map((starValue) => (
+        <span
+          key={starValue}
+          className={`text-xl leading-none ${ // Adjusted size and line-height
+            starValue <= roundedRating
+              ? 'text-yellow-400' // Filled star color
+              : 'text-gray-300' // Empty star color
           }`}
-        />
+          aria-hidden="true" // Hide decorative stars from screen readers
+        >
+          ★
+        </span>
       ))}
     </div>
   );
 };
 
+// Dynamically import ReviewModal
+const DynamicReviewModal = dynamic(
+  () => import('./ReviewModal'),
+  { ssr: false }
+);
+
 export default function Reviews() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Calculate average rating
   const averageRating = Number(
     (defaultReviews.reduce((acc, review) => acc + review.rating, 0) / defaultReviews.length).toFixed(1)
   );
 
-  // Calculate rating percentages
   const ratingCounts = defaultReviews.reduce((acc, review) => {
     acc[review.rating] = (acc[review.rating] || 0) + 1;
     return acc;
@@ -122,8 +133,8 @@ export default function Reviews() {
                 <div className="space-y-2 mt-6">
                   {[5, 4, 3, 2, 1].map((stars) => (
                     <div key={stars} className="flex items-center gap-3">
-                      <div className="text-sm text-gray-600 w-16">
-                        {stars} {stars === 1 ? '★' : '★'}
+                      <div className="text-sm text-gray-600 w-16 flex items-center">
+                        {stars} <span className="ml-1 text-yellow-400">★</span>
                       </div>
                       <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div
@@ -168,11 +179,15 @@ export default function Reviews() {
         </div>
       </div>
 
-      <ReviewModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={() => {}}
-      />
+      {/* Use the dynamically imported modal */}
+      {/* Render the modal only when isModalOpen is true to avoid loading it unnecessarily before interaction */}
+      {isModalOpen && (
+        <DynamicReviewModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={() => { /* Handle submit if needed */ }}
+        />
+      )}
     </section>
   );
-} 
+}

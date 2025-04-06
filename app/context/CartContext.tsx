@@ -1,10 +1,10 @@
 'use client';
 
-import {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {toast} from 'sonner';
-import {fbq} from '../components/FacebookPixel';
-import {trackConversion} from '../components/GoogleAds';
-import {event as gtagEvent} from '../components/GoogleAnalytics';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { trackFbEvent } from '../components/FacebookPixel';
+import { trackConversion } from '../components/GoogleAds';
+import { event as gtagEvent } from '../components/GoogleAnalytics';
 
 interface CartItem {
     id: number;
@@ -278,8 +278,10 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             }
             const trackItem = updatedItems.find(i => i.id === itemWithOriginalPrice.id)!;
             const trackValue = trackItem.price * trackItem.quantity;
+
             gtagEvent('add_to_cart', {
-                currency: 'EUR', value: trackValue,
+                currency: 'EUR',
+                value: trackValue,
                 items: [{
                     item_id: trackItem.id.toString(),
                     item_name: trackItem.name,
@@ -287,7 +289,8 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                     quantity: trackItem.quantity
                 }]
             });
-            fbq('track', 'AddToCart', {
+
+            trackFbEvent('AddToCart', {
                 content_ids: [trackItem.id.toString()],
                 content_name: trackItem.name,
                 value: trackValue,
@@ -295,6 +298,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                 contents: [{id: trackItem.id.toString(), quantity: trackItem.quantity}],
                 content_type: 'product'
             });
+
             if (!existingItem) {
                 trackConversion('ADD_TO_CART_CONVERSION_ID', trackValue);
             }

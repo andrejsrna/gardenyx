@@ -1,11 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import CartButton from './CartButton';
+import { ChevronDown, Menu, User as UserIcon, X } from 'lucide-react';
 import Image from 'next/image';
-import { useAuth } from '../context/AuthContext';
-import { User as UserIcon, Menu, X, ChevronDown } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import CartButton from './CartButton';
 
 const INGREDIENTS_SUBMENU = [
   { title: 'Glukozamín', href: '/zlozenie/glukozamin' },
@@ -45,7 +45,7 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="relative z-10">
-            <Image 
+            <Image
               src="/logo.png"
               alt="Logo"
               width={150}
@@ -56,25 +56,25 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-6">
-            <Link 
-              href="/casto-kladene-otazky" 
+            <Link
+              href="/casto-kladene-otazky"
               className="text-gray-600 hover:text-green-600 transition-colors"
             >
               Často kladené otázky
             </Link>
-            <Link 
-              href="/uzivanie" 
+            <Link
+              href="/uzivanie"
               className="text-gray-600 hover:text-green-600 transition-colors"
             >
               Užívanie
             </Link>
             <div className="relative group">
-              <button 
+              <button
                 className="flex items-center gap-1 text-gray-600 hover:text-green-600 transition-colors"
                 onClick={() => setIsIngredientsOpen(!isIngredientsOpen)}
               >
-                <Link 
-                  href="/zlozenie" 
+                <Link
+                  href="/zlozenie"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
                   Zloženie
@@ -95,20 +95,20 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            <Link 
-              href="/blog" 
+            <Link
+              href="/blog"
               className="text-gray-600 hover:text-green-600 transition-colors"
             >
               Blog
             </Link>
-            <Link 
-              href="/kontakt" 
+            <Link
+              href="/kontakt"
               className="text-gray-600 hover:text-green-600 transition-colors"
             >
               Kontakt
             </Link>
-            <Link 
-              href="/kupit" 
+            <Link
+              href="/kupit"
               className="px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
             >
               Kúpiť teraz
@@ -116,8 +116,8 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Link 
-              href="/moj-ucet" 
+            <Link
+              href="/moj-ucet"
               className="group relative flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors"
               title={customerData ? `Prihlásený ako ${customerData.first_name || customerData.billing?.first_name}` : "Môj účet"}
             >
@@ -138,10 +138,11 @@ export default function Header() {
               )}
             </Link>
             <CartButton />
-            
+
             <button
               className="lg:hidden relative z-10"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? "Zavrieť menu" : "Otvoriť menu"}
             >
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6 text-gray-600" />
@@ -157,14 +158,14 @@ export default function Header() {
         <div className="fixed inset-0 bg-white z-40 lg:hidden">
           <div className="container mx-auto px-4 pt-20">
             <nav className="flex flex-col gap-4">
-              <Link 
+              <Link
                 href="/casto-kladene-otazky"
                 className="text-xl text-gray-600 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Často kladené otázky
               </Link>
-              <Link 
+              <Link
                 href="/uzivanie"
                 className="text-xl text-gray-600 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -194,21 +195,21 @@ export default function Header() {
                   </div>
                 )}
               </div>
-              <Link 
+              <Link
                 href="/blog"
                 className="text-xl text-gray-600 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Blog
               </Link>
-              <Link 
+              <Link
                 href="/kontakt"
                 className="text-xl text-gray-600 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Kontakt
               </Link>
-              <Link 
+              <Link
                 href="/kupit"
                 className="text-xl text-center bg-green-600 text-white py-3 rounded-lg mt-4"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -221,4 +222,4 @@ export default function Header() {
       )}
     </header>
   );
-} 
+}
