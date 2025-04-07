@@ -23,7 +23,6 @@ import { checkoutFormSchema } from '../lib/validations/checkout';
 import { createOrder, getProducts } from '../lib/woocommerce';
 import type { WooCommerceProduct } from '../lib/wordpress';
 
-// --- Type Definitions ---
 
 declare global {
   interface Window {
@@ -129,11 +128,9 @@ interface WooCommerceOrder {
   shipping_lines: Array<{ method_id: string; method_title: string; total: string }>;
 }
 
-// --- Helper Functions ---
-
 function updateShippingFromBilling(billingData: BillingInfo, currentShipping: ShippingInfo): ShippingInfo {
   return {
-    ...currentShipping, // Preserve any existing shipping data not in billing
+    ...currentShipping,
     first_name: billingData.first_name,
     last_name: billingData.last_name,
     company: billingData.company || '',
@@ -146,7 +143,6 @@ function updateShippingFromBilling(billingData: BillingInfo, currentShipping: Sh
   };
 }
 
-// Helper to translate Zod path keys to user-friendly names
 function translateFieldName(key: string): string {
   const parts = key.split('.');
   const translations: Record<string, Record<string, string>> = {
@@ -169,7 +165,6 @@ function translateFieldName(key: string): string {
     },
     shipping: {
       _self: 'Adresa doručenia',
-      // Add specific shipping translations if needed, otherwise fallback
     },
     consents: {
        _self: 'Súhlasy',
@@ -177,7 +172,6 @@ function translateFieldName(key: string): string {
        privacy: 'Ochrana osobných údajov',
        marketing: 'Marketingové ponuky',
     },
-    // Add other top-level fields if necessary
     account_password: { _self: 'Heslo pre účet'},
     shipping_method: { _self: 'Spôsob dopravy' },
     payment_method: { _self: 'Spôsob platby' },
@@ -192,18 +186,15 @@ function translateFieldName(key: string): string {
       const fieldTranslation = translations[section]?.[field] || field.replace('_', ' ');
       translated = `${sectionTranslation} - ${fieldTranslation}`;
   } else {
-      // Fallback for deeper nesting or unexpected format
       translated = key.replace('_', ' ');
   }
   return translated.charAt(0).toUpperCase() + translated.slice(1);
 }
 
-// --- Constants ---
-
 const FREE_SHIPPING_THRESHOLD = 39;
 const SHIPPING_COST_PACKETA_PICKUP = 2.9;
 const SHIPPING_COST_PACKETA_HOME = 3.8;
-const RECOMMENDED_PRODUCT_IDS = '839,680,669,47'; // Example IDs
+const RECOMMENDED_PRODUCT_IDS = '839,680,669,47';
 
 const INITIAL_FORM_DATA: FormData = {
   billing: {
@@ -220,9 +211,7 @@ const INITIAL_FORM_DATA: FormData = {
   consents: { terms: false, privacy: false, marketing: false },
 };
 
-// --- Component ---
-
-export default function CheckoutClient() { // Renamed from CheckoutPage
+export default function CheckoutClient() {
   const { items, totalPrice, clearCart, addToCart, appliedCoupon, discountAmount } = useCart();
   const { customerData } = useAuth();
   const { consent, hasConsented } = useCookieConsent();
@@ -238,17 +227,13 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
   const [sameAsShipping, setSameAsShipping] = useState(true);
   const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
-  // Store order ID temporarily between order creation and payment/redirect
   const orderIdRef = useRef<number | null>(null);
 
   const addressInputRef = useRef<HTMLInputElement>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string[] | undefined> | null>(null);
 
-  console.log('[Render] Current formErrors:', formErrors); // Log on every render
+  console.log('[Render] Current formErrors:', formErrors);
 
-  // --- Effects ---
-
-  // Track begin_checkout event
   useEffect(() => {
     if (items.length > 0 && hasConsented && consent.analytics) {
       const eventData = {
@@ -279,57 +264,50 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
     }
   }, [items, totalPrice, hasConsented, consent.analytics]);
 
-  // Fetch recommended products if below free shipping threshold
   useEffect(() => {
     const fetchRecommended = async () => {
       try {
         const products = await getProducts({ include: RECOMMENDED_PRODUCT_IDS });
         setRecommendedProducts(products);
-      } catch (error: unknown) { // Explicitly type caught error as unknown
+      } catch (error: unknown) {
         logError('Error fetching recommended products', {
-            error: error instanceof Error ? error : new Error(String(error)), // Ensure error is an Error object
-            timestamp: new Date().toISOString() // Add timestamp
+            error: error instanceof Error ? error : new Error(String(error)),
+            timestamp: new Date().toISOString()
         });
       }
     };
 
     if (totalPrice < FREE_SHIPPING_THRESHOLD) {
-      // Properly handle the promise by using void to indicate intentional non-use of the result
       void fetchRecommended();
     } else {
-      setRecommendedProducts([]); // Clear if threshold is met
+      setRecommendedProducts([]);
     }
   }, [totalPrice]);
 
-  // Initialize shipping from billing on mount
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
       shipping: updateShippingFromBilling(prev.billing, prev.shipping),
     }));
-  }, []); // Run only once on mount
+  }, []);
 
-  // Load/Save form data from/to localStorage
   useEffect(() => {
-    // Load on mount if not logged in and consent given
     if (!customerData && hasConsented && consent.necessary) {
       const savedData = localStorage.getItem('checkoutFormData');
       if (savedData) {
         try {
           const parsedData = JSON.parse(savedData);
-          // Selectively apply saved data to avoid overwriting potentially newer state
           setFormData(prev => ({
             ...prev,
             billing: { ...prev.billing, ...parsedData.billing },
             shipping: { ...prev.shipping, ...parsedData.shipping },
             shipping_method: parsedData.shipping_method || prev.shipping_method,
             payment_method: parsedData.payment_method || prev.payment_method,
-            is_business: parsedData.is_business ?? prev.is_business, // Use nullish coalescing
-            // Re-apply business details if is_business was saved as true
+            is_business: parsedData.is_business ?? prev.is_business,
             ...(parsedData.is_business && {
                 billing: {
                     ...prev.billing,
-                    ...parsedData.billing, // Ensure billing fields are also updated
+                    ...parsedData.billing,
                     company: parsedData.billing?.company || '',
                     ic: parsedData.billing?.ic || '',
                     dic: parsedData.billing?.dic || '',
@@ -337,7 +315,6 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
                 }
             })
           }));
-          // If shipping was saved as same as billing, ensure sync
           if (parsedData.shipping && parsedData.billing && JSON.stringify(parsedData.shipping) === JSON.stringify(updateShippingFromBilling(parsedData.billing, parsedData.shipping))) {
             setSameAsShipping(true);
           }
@@ -350,15 +327,11 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
         }
       }
     }
-  }, [customerData, hasConsented, consent.necessary]); // Only run on these dependencies
+  }, [customerData, hasConsented, consent.necessary]);
 
-  // Create a separate effect for saving data
   useEffect(() => {
-    // Save on formData change if not logged in and consent given
     if (!customerData && hasConsented && consent.necessary) {
-      // Only save if some identifiable data exists and after initial setup
       if (formData.billing.first_name || formData.billing.last_name || formData.billing.email) {
-        // Debounce the save operation to avoid excessive localStorage writes
         const timer = setTimeout(() => {
           const dataToSave = {
             billing: formData.billing,
@@ -368,14 +341,13 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
             is_business: formData.is_business,
           };
           localStorage.setItem('checkoutFormData', JSON.stringify(dataToSave));
-        }, 500); // Wait 500ms before saving to reduce frequency
+        }, 500);
 
         return () => clearTimeout(timer);
       }
     }
   }, [formData, customerData, hasConsented, consent.necessary]);
 
-  // Initialize form with logged-in customer data
   useEffect(() => {
     if (customerData) {
       setFormData(prev => {
@@ -405,13 +377,11 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
           is_business: isBusinessCustomer,
         };
       });
-      setSameAsShipping(true); // Assume shipping is same when loading customer data
-      // Clear local storage data when user logs in
+      setSameAsShipping(true);
       localStorage.removeItem('checkoutFormData');
     }
-  }, [customerData]); // Run only when customerData changes
+  }, [customerData]);
 
-  // Initialize Google Places Autocomplete
   useEffect(() => {
     if (placesLoaded && addressInputRef.current && window.google?.maps?.places) {
       const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current, {
@@ -449,7 +419,6 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
           return {
             ...prev,
             billing: newBilling,
-            // Update shipping only if it was previously synced
             ...(sameAsShipping && { shipping: updateShippingFromBilling(newBilling, prev.shipping) }),
           };
         });
@@ -457,14 +426,8 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
 
       autocomplete.addListener('place_changed', handlePlaceChanged);
 
-      // Cleanup listener on unmount
-      // Note: Google Maps API doesn't provide a direct removeListener method
-      // for Autocomplete instance listeners in the standard way.
-      // Relying on component unmount for cleanup.
     }
-  }, [placesLoaded, sameAsShipping]); // Re-run if placesLoaded or sameAsShipping changes
-
-  // --- Calculated Values ---
+  }, [placesLoaded, sameAsShipping]);
 
   const getShippingCost = useCallback(() => {
     if (totalPrice >= FREE_SHIPPING_THRESHOLD) return 0;
@@ -478,14 +441,12 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
   const shippingCost = getShippingCost();
   const finalTotal = parseFloat((totalPrice + shippingCost - discountAmount).toFixed(2));
 
-  // --- Event Handlers ---
-
   const handleInputChange = useCallback((
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     section: 'billing' | 'shipping' | 'consents' | 'root'
   ) => {
     const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked; // For checkboxes
+    const checked = (e.target as HTMLInputElement).checked;
 
     setFormData(prev => {
       const newState = { ...prev };
@@ -508,8 +469,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
         newState.consents = { ...newState.consents, [name]: checked };
       } else if (section === 'root') {
         if (type === 'checkbox') {
-          (newState as Record<string, unknown>)[name] = checked; // For root level checkboxes like is_business, create_account
-          // Special handling for toggling business/account creation
+          (newState as Record<string, unknown>)[name] = checked;
           if (name === 'is_business' && !checked) {
              newState.billing = { ...newState.billing, company: '', ic: '', dic: '', dic_dph: ''};
              if (sameAsShipping) {
@@ -520,7 +480,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
             newState.account_password = '';
           }
         } else {
-          (newState as Record<string, unknown>)[name] = value; // For root level inputs like password, customer_note
+          (newState as Record<string, unknown>)[name] = value;
         }
       }
 
@@ -528,7 +488,6 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
     });
   }, [sameAsShipping]);
 
-  // Specific handler for fields that affect both billing and shipping when synced
   const handleSyncedFieldChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => {
@@ -549,13 +508,12 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
     setFormData(prev => ({
       ...prev,
       billing: { ...prev.billing, phone: formattedPhone },
-      // Update shipping phone only if it was previously synced (and phone existed in billing)
       ...(sameAsShipping && prev.billing.phone && {
-          shipping: { ...prev.shipping } // Phone is not typically part of shipping, but keep structure if needed
+          shipping: { ...prev.shipping }
       }),
     }));
 
-    setPhoneError(null); // Clear any previous error when input changes
+    setPhoneError(null);
 
   }, [sameAsShipping]);
 
@@ -563,21 +521,16 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
     setFormData(prev => ({
       ...prev,
       meta_data: [
-        // Remove old packeta points first
         ...prev.meta_data.filter(item => !item.key.startsWith('_packeta_point_')),
-        // Add new ones
         { key: '_packeta_point_id', value: point.id },
         { key: '_packeta_point_name', value: point.name },
         { key: '_packeta_point_address', value: `${point.street}, ${point.city} ${point.zip}` },
       ],
-      // Update shipping address details to match the Packeta point for clarity in the order
        shipping: {
          ...prev.shipping,
          address_1: point.street,
          city: point.city,
          postcode: point.zip,
-         // Optionally update company name to Packeta point name if needed for shipping label
-         // company: point.name
        }
     }));
     setShowPacketaSelector(false);
@@ -592,12 +545,11 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
         shipping: updateShippingFromBilling(prev.billing, prev.shipping),
       }));
     } else {
-      // Optionally clear shipping or leave as is for manual entry
       setFormData(prev => ({
         ...prev,
-        shipping: { // Reset to empty or keep previous non-synced values? Resetting is cleaner.
+        shipping: {
           ...INITIAL_FORM_DATA.shipping,
-          country: prev.shipping.country, // Keep country
+          country: prev.shipping.country,
         },
       }));
     }
@@ -608,13 +560,11 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
       setFormData(prev => ({
         ...prev,
         shipping_method: value,
-        // Clear Packeta point meta data if switching away from pickup
         meta_data: value === 'packeta_pickup'
           ? prev.meta_data
           : prev.meta_data.filter(item => !item.key.startsWith('_packeta_point_')),
       }));
       if (value === 'packeta_pickup') {
-          // Open selector immediately if switching to Packeta pickup
           setShowPacketaSelector(true);
       }
   }, []);
@@ -627,7 +577,6 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
   }, []);
 
   const processOrder = useCallback(async (): Promise<number | undefined> => {
-    // Prevent duplicate creation if an order ID is already being processed
     if (orderIdRef.current) {
       logError('Order processing blocked, order already created or in progress.', {
         error: new Error('Order creation blocked - already in progress'),
@@ -642,7 +591,6 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
     let localOrderId: number | undefined;
 
     try {
-      // Prepare shipping address based on shipping method
       let finalShippingAddress = formData.shipping;
       if (formData.shipping_method === 'packeta_pickup') {
         const packetaPointId = formData.meta_data.find(item => item.key === '_packeta_point_id')?.value;
@@ -652,7 +600,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
         if (!packetaPointId) {
            toast.error('Chýbajúce údaje', { description: 'Prosím, vyberte výdajné miesto Packeta.' });
            setShowPacketaSelector(true);
-           return undefined; // Stop processing
+           return undefined;
         }
 
         if (packetaPointName && packetaAddress) {
@@ -660,12 +608,12 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
            const [city, zip] = cityWithZip ? cityWithZip.split(' ') : ['', ''];
 
            finalShippingAddress = {
-             ...formData.shipping, // Keep name from original form
-             company: packetaPointName, // Set company to Packeta point name
+             ...formData.shipping,
+             company: packetaPointName,
              address_1: street || '',
              city: city || '',
-             postcode: zip || formData.shipping.postcode, // Use zip from point, fallback to form input
-             country: 'SK', // Assume SK for Packeta points
+             postcode: zip || formData.shipping.postcode,
+             country: 'SK',
            };
         }
       }
@@ -688,7 +636,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
             { key: 'payment_method', value: formData.payment_method },
             { key: 'consents', value: JSON.stringify({ ...formData.consents, timestamp: new Date().toISOString() }) },
             ...(appliedCoupon ? [{ key: 'coupon_code', value: appliedCoupon }] : []),
-            ...(formData.is_business ? [ // Add business keys explicitly if needed by backend/reporting
+            ...(formData.is_business ? [
                 { key: 'is_business', value: 'true'},
                 { key: 'billing_ic', value: formData.billing.ic || ''},
                 { key: 'billing_dic', value: formData.billing.dic || ''},
@@ -697,46 +645,36 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
         ],
         ...(formData.create_account && formData.account_password && {
             create_account: true,
-            account_password: formData.account_password, // Send password only if create_account is true
+            account_password: formData.account_password,
         }),
       };
 
       const orderResponse = await createOrder(orderPayload);
 
-      // Check if order ID exists in the response
       if (!orderResponse?.order?.id) {
         throw new Error('WooCommerce order creation failed - no order ID returned');
       }
 
       localOrderId = orderResponse.order.id;
-      orderIdRef.current = localOrderId; // Store the created order ID
+      orderIdRef.current = localOrderId;
 
-      // Store the order ID in session storage for potential use on success/failure pages
       sessionStorage.setItem('lastOrderId', localOrderId.toString());
-      // Also store customer email for Stripe component to use
       sessionStorage.setItem('customerEmail', formData.billing.email);
 
-      // If Stripe, create Payment Intent and show Stripe payment UI
       if (formData.payment_method === 'stripe') {
-        // We don't need to create the payment intent here
-        // The StripePayment component will handle this
         setShowStripePayment(true);
         return localOrderId;
       } else if (formData.payment_method === 'cod') {
-        // COD order successful, prepare for redirect
         setShowLoadingOverlay(true);
         setRedirectUrl(`/objednavka/uspesna/${localOrderId}`);
         toast.success('Objednávka bola úspešne vytvorená');
 
-        // Redirect after a short delay. Clear cart *after* navigation starts.
         setTimeout(() => {
           window.location.href = `/objednavka/uspesna/${localOrderId!}`;
           clearCart();
-          // No need to clear orderIdRef here as page is navigating away
         }, 1000);
       }
 
-      // Track successful order creation / payment initiation
       Sentry.setContext('order', {
         order_id: localOrderId,
         total_amount: finalTotal,
@@ -749,7 +687,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
              value: finalTotal,
              currency: 'EUR',
              shipping: shippingCost,
-             tax: 0, // Assuming tax is included in prices
+             tax: 0,
              coupon: appliedCoupon || '',
              items: items.map(item => ({
                  item_id: item.id.toString(),
@@ -776,8 +714,8 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
 
     } catch (error: unknown) {
       logError('Order Processing Error', {
-        error: error instanceof Error ? error : new Error(String(error)), // Ensure error is an Error object
-        orderId: localOrderId !== undefined ? localOrderId.toString() : undefined, // Convert number to string or pass undefined
+        error: error instanceof Error ? error : new Error(String(error)),
+        orderId: localOrderId !== undefined ? localOrderId.toString() : undefined,
         customerEmail: formData.billing.email,
         timestamp: new Date().toISOString()
       });
@@ -790,16 +728,14 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
         description: 'Nastala neočakávaná chyba. Skúste to prosím znova alebo nás kontaktujte.',
       });
 
-      // Show error overlay and redirect to failure page
       setShowLoadingOverlay(true);
       setRedirectUrl('/objednavka/neuspesna');
       setTimeout(() => {
         window.location.href = '/objednavka/neuspesna';
-        // Don't clear cart on failure, user might want to retry
       }, 1000);
 
-      orderIdRef.current = null; // Reset order ID ref on failure
-      setShowStripePayment(false); // Hide stripe form if it was shown before error
+      orderIdRef.current = null;
+      setShowStripePayment(false);
       return undefined;
     }
   }, [formData, customerData, items, finalTotal, shippingCost, clearCart, appliedCoupon, hasConsented, consent.analytics]); // Add dependencies
@@ -810,10 +746,9 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
     if (isSubmitting) return;
 
     setIsSubmitting(true);
-    setPaymentError(null); // Clear previous payment errors
-    setFormErrors(null);   // Clear previous form validation errors
+    setPaymentError(null);
+    setFormErrors(null);
 
-    // --- Basic Frontend Validations ---
     if (formData.create_account) {
       if (!formData.account_password) {
         toast.error('Chýbajúce heslo', { description: 'Pre vytvorenie účtu je potrebné zadať heslo.' });
@@ -859,7 +794,6 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
         return;
     }
 
-    // --- Sanitize and Zod Validate ---
     try {
         const sanitizedData = {
             ...formData,
@@ -875,7 +809,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
               postcode: sanitizePostcode(formData.billing.postcode),
               country: sanitizeInput(formData.billing.country),
               email: sanitizeInput(formData.billing.email),
-              phone: sanitizePhone(formData.billing.phone), // Already sanitized in handler, but good practice
+              phone: sanitizePhone(formData.billing.phone),
               ic: formData.is_business ? sanitizeInput(formData.billing.ic || '') : undefined,
               dic: formData.is_business ? sanitizeInput(formData.billing.dic || '') : undefined,
               dic_dph: formData.is_business ? sanitizeInput(formData.billing.dic_dph || '') : undefined,
@@ -894,7 +828,6 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
             }
         };
 
-       // Define Zod schema dynamically based on form state
        const currentSchema = checkoutFormSchema.extend({
            billing: checkoutFormSchema.shape.billing.extend({
                ic: formData.is_business ? z.string().length(8, 'IČO musí mať 8 číslic') : z.string().optional(),
@@ -902,7 +835,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
                dic_dph: formData.is_business ? z.string().optional() : z.string().optional()
            }),
            account_password: formData.create_account
-               ? z.string().min(8, 'Heslo musí mať aspoň 8 znakov.') // Simplified regex check done above
+               ? z.string().min(8, 'Heslo musí mať aspoň 8 znakov.')
                : z.string().optional(),
            shipping_method: z.string().min(1, 'Vyberte spôsob dopravy.'),
            payment_method: z.string().min(1, 'Vyberte spôsob platby.'),
@@ -913,20 +846,16 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
            }),
        });
 
-       // Validate the sanitized data
        currentSchema.parse(sanitizedData);
 
-      // --- Validation Passed - Process Order ---
       await processOrder();
 
     } catch (error) {
       if (error instanceof ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
-        // Log the raw structure of field errors received from Zod
         console.log('[Submit Catch] Raw Zod Field Errors:', JSON.stringify(fieldErrors, null, 2));
         setFormErrors(fieldErrors);
 
-        // Create a JSX list of errors with translated names
         const errorList = (
           <ul className="list-disc list-inside space-y-1 text-sm">
             {Object.entries(fieldErrors).flatMap(([key, messages]) =>
@@ -1017,7 +946,7 @@ export default function CheckoutClient() { // Renamed from CheckoutPage
     } finally {
       setIsSubmitting(false);
     }
-  }, [isSubmitting, formData, processOrder, items, finalTotal, shippingCost, clearCart, appliedCoupon, hasConsented, consent.analytics, customerData, addToCart]); // Ensure all dependencies are listed
+  }, [isSubmitting, formData, processOrder]);
 
   const handleAddRecommendedToCart = useCallback((product: WooCommerceProduct) => {
       addToCart({
