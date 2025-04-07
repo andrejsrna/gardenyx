@@ -5,10 +5,9 @@ import Script from 'next/script';
 // import { useEffect, useState } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
-// @ts-expect-error - fbq is not defined in the global scope
 declare global {
   interface Window {
-    fbq?: (action: string, event: string, params?: Record<string, unknown> | undefined) => void;
+    fbq: (action: string, event: string, params?: Record<string, unknown> | undefined) => void;
   }
 }
 
