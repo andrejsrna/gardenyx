@@ -1,8 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-interface CookieConsent {
+// Export the type directly
+export interface CookieConsent {
   necessary: boolean;
   analytics: boolean;
   marketing: boolean;
@@ -59,14 +60,14 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
   };
 
   return (
-    <CookieConsentContext.Provider 
-      value={{ 
-        consent, 
-        setConsent: handleSetConsent, 
-        isModalOpen, 
+    <CookieConsentContext.Provider
+      value={{
+        consent,
+        setConsent: handleSetConsent,
+        isModalOpen,
         setModalOpen,
         hasConsented,
-        openCookieManager 
+        openCookieManager
       }}
     >
       {children}

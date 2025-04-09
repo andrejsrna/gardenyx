@@ -6,7 +6,7 @@ import { trackFbEvent } from '../components/FacebookPixel';
 import { trackConversion } from '../components/GoogleAds';
 import { event as gtagEvent } from '../components/GoogleAnalytics';
 
-interface CartItem {
+export interface CartItem {
     id: number;
     name: string;
     price: number;
