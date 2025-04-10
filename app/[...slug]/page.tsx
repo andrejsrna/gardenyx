@@ -104,23 +104,22 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
         const parser = parseHTML(seoData.head);
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
-        const description = parser.getMetaTag('description')
-          ? cleanHtmlContent(parser.getMetaTag('description')!)
-          : post.excerpt.rendered ? cleanHtmlContent(post.excerpt.rendered) : '';
+        const cleanedTitle = cleanHtmlContent(parser.getTitle() || post.title.rendered);
+        const cleanedExcerpt = cleanHtmlContent(post.excerpt.rendered);
 
-        const ogDescription = parser.getMetaTag('og:description')
-          ? cleanHtmlContent(parser.getMetaTag('og:description')!)
-          : description;
+        const description = cleanHtmlContent(parser.getMetaTag('description') || '') || cleanedExcerpt;
 
-        const twitterDescription = parser.getMetaTag('twitter:description')
-          ? cleanHtmlContent(parser.getMetaTag('twitter:description')!)
-          : description;
+        const ogTitle = cleanHtmlContent(parser.getMetaTag('og:title') || '') || cleanedTitle;
+        const ogDescription = cleanHtmlContent(parser.getMetaTag('og:description') || '') || description;
+
+        const twitterTitle = cleanHtmlContent(parser.getMetaTag('twitter:title') || '') || cleanedTitle;
+        const twitterDescription = cleanHtmlContent(parser.getMetaTag('twitter:description') || '') || description;
 
         return {
-          title: parser.getTitle() || post.title.rendered,
+          title: cleanedTitle,
           description: description,
           openGraph: {
-            title: parser.getMetaTag('og:title') || post.title.rendered,
+            title: ogTitle,
             description: ogDescription,
             url: parser.getMetaTag('og:url') || `${siteUrl}/${wpPermalink}`,
             siteName: 'Najsilnejšia kĺbová výživa',
@@ -134,7 +133,7 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
           },
           twitter: {
             card: 'summary_large_image',
-            title: parser.getMetaTag('twitter:title') || post.title.rendered,
+            title: twitterTitle,
             description: twitterDescription,
             images: parser.getMetaTag('twitter:image')
               ? [{ url: parser.getMetaTag('twitter:image')! }]
@@ -153,12 +152,14 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
       }
     } catch (seoError) {
       console.error('Error fetching SEO data:', seoError);
+      const cleanedTitle = cleanHtmlContent(post.title.rendered);
+      const cleanedExcerpt = cleanHtmlContent(post.excerpt.rendered);
       return {
-        title: post.title.rendered,
-        description: cleanHtmlContent(post.excerpt.rendered),
+        title: cleanedTitle,
+        description: cleanedExcerpt,
         openGraph: {
-          title: post.title.rendered,
-          description: cleanHtmlContent(post.excerpt.rendered),
+          title: cleanedTitle,
+          description: cleanedExcerpt,
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/${wpPermalink}`,
           siteName: 'Najsilnejšia kĺbová výživa',
           images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
