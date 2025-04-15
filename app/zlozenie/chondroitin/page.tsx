@@ -1,9 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowLeft, CheckCircle2, BookOpen } from 'lucide-react';
 import Accordion from '@/app/components/Accordion';
+import { ArrowLeft, BookOpen, CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import RelatedPostsByTag from '../../components/RelatedPostsByTag';
 
 const benefits = [
   {
@@ -68,11 +70,11 @@ const studies = [
 
 export default function ChondroitinPage() {
   return (
-    <main className="py-16">
+    <main className="bg-white py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Back button */}
-          <Link 
+          <Link
             href="/zlozenie"
             className="inline-flex items-center text-gray-600 hover:text-green-600 transition-colors mb-8"
           >
@@ -85,7 +87,7 @@ export default function ChondroitinPage() {
             <div className="md:w-1/2">
               <h1 className="text-4xl font-bold mb-4">Chondroitín</h1>
               <p className="text-lg text-gray-600 mb-6">
-                Chondroitín je ďalšou prirodzene sa vyskytujúcou látkou v kĺbovej chrupavke, 
+                Chondroitín je ďalšou prirodzene sa vyskytujúcou látkou v kĺbovej chrupavke,
                 ktorá je často používaná v doplnkoch na podporu zdravia kĺbov, najmä u ľudí s osteoartritídou.
               </p>
             </div>
@@ -104,7 +106,7 @@ export default function ChondroitinPage() {
             <h2 className="text-2xl font-bold mb-8">Účinky chondroitínu</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {benefits.map((benefit, index) => (
-                <div 
+                <div
                   key={index}
                   className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
                 >
@@ -163,8 +165,8 @@ export default function ChondroitinPage() {
               Najsilnejšia kĺbová výživa - zažite rozdiel!
             </h2>
             <p className="text-gray-600 mb-6">
-              S naším unikátnym zložením, ktoré kombinuje prírodné ingrediencie 
-              s najnovšími vedeckými poznatkami, je naším cieľom ponúknuť vám to 
+              S naším unikátnym zložením, ktoré kombinuje prírodné ingrediencie
+              s najnovšími vedeckými poznatkami, je naším cieľom ponúknuť vám to
               najlepšie pre vaše kĺby.
             </p>
             <Link
@@ -175,7 +177,20 @@ export default function ChondroitinPage() {
             </Link>
           </section>
         </div>
+
+        <section className="max-w-3xl mx-auto mt-16">
+          <h2 className="text-2xl font-bold text-center mb-8">Prečo je Chondroitín dôležitý?</h2>
+          {/* ... existing content ... */}
+        </section>
+
+        {/* Add RelatedPostsByTag component here */}
+        <RelatedPostsByTag tagSlug="chondroitin" title="Články o chondroitíne" />
+
+        <section className="max-w-3xl mx-auto mt-16 text-center">
+          <h2 className="text-2xl font-bold mb-4">Nájdite Chondroitín v našom produkte</h2>
+          {/* ... existing content ... */}
+        </section>
       </div>
     </main>
   );
-} 
+}

@@ -1,10 +1,10 @@
-import Link from 'next/link';
+import { Metadata } from 'next';
 import Image from 'next/image';
-import {getPaginatedPosts} from '../lib/wordpress';
-import type {WordPressPost} from '../lib/wordpress';
-import {Metadata} from 'next';
-import {getRankMathSEO} from '../lib/wordpress';
-import {parseHTML} from '../lib/html-parser';
+import Link from 'next/link';
+import FeaturedPost from '../components/FeaturedPost';
+import { parseHTML } from '../lib/html-parser';
+import type { WordPressPost } from '../lib/wordpress';
+import { getPaginatedPosts, getPostBySlug, getRankMathSEO } from '../lib/wordpress';
 
 interface PageProps {
     searchParams: Promise<{
@@ -105,9 +105,26 @@ export default async function BlogPage({searchParams}: PageProps) {
         search: searchQuery,
     });
 
+    const featuredPostSlug = 'ako-si-vybrat-najlepsiu-klbovu-vyzivu-pre-vase-potreby-kompletny-sprievodca';
+    let featuredPostData: WordPressPost | null = null;
+    try {
+        featuredPostData = await getPostBySlug(featuredPostSlug);
+    } catch (error) {
+        console.error(`Error fetching featured post (${featuredPostSlug}):`, error);
+    }
+
     return (
         <main className="py-16">
             <div className="container mx-auto px-4">
+                {featuredPostData && (
+                    <FeaturedPost
+                        title={featuredPostData.title.rendered}
+                        excerpt={featuredPostData.excerpt.rendered}
+                        imageUrl={featuredPostData._embedded?.['wp:featuredmedia']?.[0]?.source_url}
+                        slug={featuredPostSlug}
+                    />
+                )}
+
                 <header className="text-center mb-12">
                     <h1 className="text-4xl font-bold mb-4">Blog</h1>
                     <p className="text-gray-600 mb-8">
@@ -245,4 +262,4 @@ export default async function BlogPage({searchParams}: PageProps) {
             </div>
         </main>
     );
-} 
+}

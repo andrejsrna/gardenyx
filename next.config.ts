@@ -12,7 +12,16 @@ const nextConfig = {
     REDIS_URL: process.env.REDIS_URL,
   },
   images: {
-    domains: ['najsilnejsiaklbovavyziva.sk', 'cdn.najsilnejsiaklbovavyziva.sk'],
+    remotePatterns: [
+      {
+        hostname: 'najsilnejsiaklbovavyziva.sk',
+        protocol: 'https',
+      },
+      {
+        hostname: 'cdn.najsilnejsiaklbovavyziva.sk',
+        protocol: 'https',
+      },
+    ],
   },
   experimental: {
     serverActions: {},

@@ -1,9 +1,10 @@
 'use client';
 
-import Link from 'next/link';
+import { ArrowLeft, BookOpen, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
-import { ArrowLeft, CheckCircle2, BookOpen } from 'lucide-react';
+import Link from 'next/link';
 import Accordion from '../../components/Accordion';
+import RelatedPostsByTag from '../../components/RelatedPostsByTag';
 
 const benefits = [
   {
@@ -72,13 +73,12 @@ const studies = [
 ];
 
 export default function GlucosaminePage() {
-
   return (
-    <main className="py-16">
+    <main className="bg-white py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Back button */}
-          <Link 
+          <Link
             href="/zlozenie"
             className="inline-flex items-center text-gray-600 hover:text-green-600 transition-colors mb-8"
           >
@@ -91,7 +91,7 @@ export default function GlucosaminePage() {
             <div className="md:w-1/2">
               <h1 className="text-4xl font-bold mb-4">Glukozamín</h1>
               <p className="text-lg text-gray-600 mb-6">
-                Glukozamín je prirodzená látka, ktorá sa nachádza v zdravej chrupavke. 
+                Glukozamín je prirodzená látka, ktorá sa nachádza v zdravej chrupavke.
                 Doplnky sú často používané na podporu zdravia kĺbov, najmä u ľudí trpiacich osteoartritídou.
               </p>
             </div>
@@ -110,7 +110,7 @@ export default function GlucosaminePage() {
             <h2 className="text-2xl font-bold mb-8">Účinky glukozamínu</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {benefits.map((benefit, index) => (
-                <div 
+                <div
                   key={index}
                   className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
                 >
@@ -169,8 +169,8 @@ export default function GlucosaminePage() {
               Najsilnejšia kĺbová výživa - zažite rozdiel!
             </h2>
             <p className="text-gray-600 mb-6">
-              S naším unikátnym zložením, ktoré kombinuje prírodné ingrediencie 
-              s najnovšími vedeckými poznatkami, je naším cieľom ponúknuť vám to 
+              S naším unikátnym zložením, ktoré kombinuje prírodné ingrediencie
+              s najnovšími vedeckými poznatkami, je naším cieľom ponúknuť vám to
               najlepšie pre vaše kĺby.
             </p>
             <Link
@@ -180,8 +180,21 @@ export default function GlucosaminePage() {
               Kúpiť najsilnejšiu kĺbovú výživu
             </Link>
           </section>
+
+          <section className="max-w-3xl mx-auto mt-16">
+            <h2 className="text-2xl font-bold text-center mb-8">Prečo je Glukozamín dôležitý?</h2>
+            {/* ... existing content ... */}
+          </section>
+
+          {/* Add RelatedPostsByTag component here */}
+          <RelatedPostsByTag tagSlug="glukozamin" title="Články o glukozamíne" />
+
+          <section className="max-w-3xl mx-auto mt-16 text-center">
+            <h2 className="text-2xl font-bold mb-4">Nájdite Glukozamín v našom produkte</h2>
+            {/* ... existing content ... */}
+          </section>
         </div>
       </div>
     </main>
   );
-} 
+}

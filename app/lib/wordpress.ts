@@ -152,6 +152,12 @@ export interface WooCommerceOrder extends Omit<CheckoutFormData, 'is_business'> 
   payment_method: string;
 }
 
+export interface WordPressTag {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://najsilnejsiaklbovavyziva.sk';
 const WORDPRESS_API_URL = `${WORDPRESS_URL}/wp-json/wp/v2`;
 const WOOCOMMERCE_API_URL = `${WORDPRESS_URL}/wp-json/wc/v3`;
@@ -164,11 +170,11 @@ const WOO_CONSUMER_SECRET = process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET || '';
 // Helper function to create authenticated WooCommerce URL
 export function getWooCommerceUrl(endpoint: string, queryParams: Record<string, string | number> = {}) {
   const params = new URLSearchParams();
-  
+
   // Add authentication parameters
   params.append('consumer_key', WOO_CONSUMER_KEY);
   params.append('consumer_secret', WOO_CONSUMER_SECRET);
-  
+
   // Add additional query parameters
   Object.entries(queryParams).forEach(([key, value]) => {
     params.append(key, value.toString());
@@ -232,16 +238,25 @@ export interface PaginatedPosts {
 interface GetPaginatedPostsOptions {
   page?: number;
   search?: string;
+  tags?: number;
 }
 
-export async function getPaginatedPosts({ 
-  page = 1, 
-  search = '' 
+export async function getPaginatedPosts({
+  page = 1,
+  search = '',
+  tags,
 }: GetPaginatedPostsOptions = {}): Promise<PaginatedPosts> {
   try {
-    const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
+    let url = `${WORDPRESS_API_URL}/posts?_embed&per_page=${POSTS_PER_PAGE}&page=${page}&orderby=date&order=desc`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    if (tags) {
+      url += `&tags=${tags}`;
+    }
+
     const response = await fetch(
-      `${WORDPRESS_API_URL}/posts?_embed&per_page=${POSTS_PER_PAGE}&page=${page}&orderby=date&order=desc${searchParam}`,
+      url,
       {
         next: {
           // Cache for 1 hour
@@ -264,12 +279,8 @@ export async function getPaginatedPosts({
       totalPosts,
     };
   } catch (error) {
-    console.error('Error fetching paginated posts:', error);
-    return {
-      posts: [],
-      totalPages: 0,
-      totalPosts: 0,
-    };
+    console.error('Error fetching paginated WordPress posts:', error);
+    return { posts: [], totalPages: 0, totalPosts: 0 };
   }
 }
 
@@ -298,7 +309,7 @@ export async function getProductsByCategory(categorySlug: string, limit: number 
       order: 'desc',
       status: 'publish'
     });
-    
+
     const productsResponse = await fetch(productsUrl);
 
     if (!productsResponse.ok) {
@@ -367,7 +378,7 @@ export async function getProductsByIds(ids: number[]): Promise<WooCommerceProduc
       include: ids.join(','),
       status: 'publish'
     });
-    
+
     const productsResponse = await fetch(productsUrl);
 
     if (!productsResponse.ok) {
@@ -400,4 +411,32 @@ export async function getRankMathSEO(url: string) {
     console.error('Error fetching RankMath SEO data:', error);
     return null;
   }
-} 
+}
+
+export async function getTagBySlug(slug: string): Promise<WordPressTag | null> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/tags?slug=${slug}`,
+      {
+        next: {
+          revalidate: 3600, // Cache for 1 hour
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch tag with slug: ${slug}, Status: ${response.status}`);
+    }
+
+    const tags: WordPressTag[] = await response.json();
+    if (tags.length > 0) {
+      return tags[0]; // Return the first tag found (should be unique by slug)
+    } else {
+      console.warn(`No tag found with slug: ${slug}`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching WordPress tag by slug "${slug}":`, error);
+    return null;
+  }
+}
