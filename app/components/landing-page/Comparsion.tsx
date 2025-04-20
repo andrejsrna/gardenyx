@@ -214,7 +214,7 @@ export default function Comparsion() {
             </table>
           </div>
           <p className="text-xs text-gray-500 text-center mt-6">
-            *Údaje o konkurenčných produktoch boli získané z verejne dostupných zdrojov dňa [Dátum] a nemusia byť úplne presné alebo aktuálne.
+            *Údaje o konkurenčných produktoch boli získané z verejne dostupných zdrojov dňa 20.04.2025 a nemusia byť úplne presné alebo aktuálne.
             Údaje pre Konkurenta A sú pre dennú dávku (2,25g), pre Konkurenta B pre 1 tabletu.
             Ceny sú orientačné a môžu sa líšiť.
           </p>
