@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import {useEffect, useState} from 'react';
-import {useAuth} from '../context/AuthContext';
-import {useCart} from '../context/CartContext';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import CouponSection from './CouponSection';
 
 interface CartProps {
@@ -75,7 +75,7 @@ export default function Cart({onCloseAction}: CartProps) {
           </span>
                 </div>
             )}
-            <div className="space-y-3 mb-4 max-h-[40vh] overflow-y-auto pr-2">
+            <div className="space-y-3 mb-4 max-h-[40vh] sm:max-h-[50vh] overflow-y-auto pr-2">
                 {items.map((item) => {
                     const originalPrice = item.price;
                     let displayPrice = originalPrice;
@@ -108,36 +108,39 @@ export default function Cart({onCloseAction}: CartProps) {
                                     />
                                 </div>
                             )}
-                            <div className="flex-grow min-w-0">
-                                <h3 className="font-medium text-sm line-clamp-2 mb-1">{item.name}</h3>
-                                <div className="flex items-center justify-between gap-2">
+                            <div className="flex-grow min-w-0 flex flex-col justify-between">
+                                <h3 className="font-medium text-sm line-clamp-2 mb-1.5">{item.name}</h3>
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-auto gap-2">
                                     <div className="flex items-center gap-1">
                                         <button
                                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                             className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200 transition-colors text-gray-600"
+                                            aria-label={`Znížiť množstvo ${item.name}`}
                                         >
                                             -
                                         </button>
-                                        <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                                        <span className="w-8 text-center text-sm font-medium" aria-label={`Množstvo ${item.name}`}>{item.quantity}</span>
                                         <button
                                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                             className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200 transition-colors text-gray-600"
+                                            aria-label={`Zvýšiť množstvo ${item.name}`}
                                         >
                                             +
                                         </button>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center justify-end gap-2 flex-shrink-0 ml-auto sm:ml-0">
                                         <div className="flex flex-col items-end">
                                             <span className="font-medium text-sm">{lineTotalDisplay.toFixed(2)} €</span>
                                             {showOriginalStrikethrough && (
                                                 <span className="text-xs text-gray-400 line-through">
-                          {lineTotalOriginal.toFixed(2)} €
-                        </span>
+                                                  {lineTotalOriginal.toFixed(2)} €
+                                                </span>
                                             )}
                                         </div>
                                         <button
                                             onClick={() => handleRemove(item.id)}
-                                            className="text-red-400 hover:text-red-600 flex-shrink-0 p-1"
+                                            className="text-red-400 hover:text-red-600 p-1"
+                                             aria-label={`Odstrániť ${item.name} z košíka`}
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                  strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">

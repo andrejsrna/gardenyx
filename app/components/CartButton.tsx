@@ -38,7 +38,13 @@ export default function CartButton() {
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={closeCart}
           />
-          <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-lg z-50">
+          <div
+            className={`
+              fixed top-16 left-4 right-4 max-h-[75vh] overflow-y-auto
+              sm:absolute sm:right-0 sm:left-auto sm:top-full sm:mt-2 sm:max-h-none sm:w-96
+              bg-white rounded-lg shadow-xl z-50
+            `}
+          >
             <Cart onCloseAction={closeCart} />
           </div>
         </>
