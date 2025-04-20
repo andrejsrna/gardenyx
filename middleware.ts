@@ -21,6 +21,7 @@ const ALLOWED_PARAMS = new Set([
   'key',
   'page',
   'search',
+  'include',
   'fbclid', // Allow Facebook Click ID
   'gclid',  // Allow Google Click ID
   // Add common UTM parameters (adjust based on usage)
@@ -32,7 +33,7 @@ const ALLOWED_PARAMS = new Set([
 ]);
 
 // Maximum allowed length for parameter values
-const MAX_PARAM_LENGTH = 100;
+const MAX_PARAM_LENGTH = 250;
 
 export async function middleware(request: NextRequest) {
   try {

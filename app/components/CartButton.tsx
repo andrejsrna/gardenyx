@@ -1,23 +1,28 @@
 'use client';
 
 import { ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import Cart from './Cart';
 
 export default function CartButton() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { totalItems } = useCart();
+  const { totalItems, isCartOpen, openCart, closeCart } = useCart();
 
-  const closeCart = () => setIsOpen(false);
+  const toggleCart = () => {
+    if (isCartOpen) {
+      closeCart();
+    } else {
+      openCart();
+    }
+  };
 
   return (
     <div className="relative">
       <button
         data-cart-button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleCart}
         className="relative p-2 text-gray-600 hover:text-green-600 transition-colors"
         aria-label={`Nákupný košík, ${totalItems} ${totalItems === 1 ? 'položka' : totalItems >= 2 && totalItems <= 4 ? 'položky' : 'položiek'}`}
+        aria-expanded={isCartOpen}
       >
         <ShoppingCart className="w-6 h-6" />
         {totalItems > 0 && (
@@ -27,7 +32,7 @@ export default function CartButton() {
         )}
       </button>
 
-      {isOpen && (
+      {isCartOpen && (
         <>
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40"

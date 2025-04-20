@@ -15,11 +15,11 @@ const nextConfig = {
     remotePatterns: [
       {
         hostname: 'najsilnejsiaklbovavyziva.sk',
-        protocol: 'https',
+        protocol: 'https' as const,
       },
       {
         hostname: 'cdn.najsilnejsiaklbovavyziva.sk',
-        protocol: 'https',
+        protocol: 'https' as const,
       },
     ],
   },

@@ -40,6 +40,9 @@ interface CartContextType {
     removeCoupon: () => void;
     exitCoupon: string | null;
     applyExitCoupon: (code: string) => void;
+    isCartOpen: boolean;
+    openCart: () => void;
+    closeCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -53,6 +56,10 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     const lastActionRef = useRef<{ type: 'add' | 'update', itemId: number } | null>(null);
     const [lastSavedCart, setLastSavedCart] = useState<string | null>(null);
     const [exitCoupon, setExitCoupon] = useState<string | null>(null);
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const openCart = useCallback(() => setIsCartOpen(true), []);
+    const closeCart = useCallback(() => setIsCartOpen(false), []);
 
     const removeCoupon = useCallback(() => {
         setAppliedCoupon(null);
@@ -331,29 +338,32 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         setLastSavedCart(null);
     }, [removeCoupon]);
 
+    const value = {
+        items,
+        totalItems,
+        totalPrice,
+        subtotal,
+        discountAmount,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        saveCartWithEmail,
+        appliedCoupon,
+        couponType,
+        couponAmountRaw,
+        applyPendingCoupon,
+        applyCoupon,
+        removeCoupon,
+        exitCoupon,
+        applyExitCoupon,
+        isCartOpen,
+        openCart,
+        closeCart,
+    };
+
     return (
-        <CartContext.Provider
-            value={{
-                items,
-                totalItems,
-                totalPrice,
-                subtotal,
-                discountAmount,
-                addToCart,
-                removeFromCart,
-                updateQuantity,
-                clearCart,
-                saveCartWithEmail,
-                appliedCoupon,
-                couponType,
-                couponAmountRaw,
-                applyPendingCoupon,
-                applyCoupon,
-                removeCoupon,
-                exitCoupon,
-                applyExitCoupon
-            }}
-        >
+        <CartContext.Provider value={value}>
             {children}
         </CartContext.Provider>
     );
