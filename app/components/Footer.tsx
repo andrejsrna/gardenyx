@@ -34,7 +34,7 @@ export default function Footer() {
   const SOCIAL_LINKS = [
     {
       icon: <Facebook className="w-5 h-5" />,
-      href: 'hhttps://www.facebook.com/profile.php?id=61575962272009',
+      href: 'https://www.facebook.com/profile.php?id=61575962272009',
       label: 'Facebook'
     }
   ];
