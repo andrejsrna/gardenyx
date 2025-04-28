@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { Facebook, Mail, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
-import { Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react';
+import Link from 'next/link';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
 export default function Footer() {
@@ -34,18 +34,8 @@ export default function Footer() {
   const SOCIAL_LINKS = [
     {
       icon: <Facebook className="w-5 h-5" />,
-      href: 'https://facebook.com/fitdoplnky.sk',
+      href: 'hhttps://www.facebook.com/profile.php?id=61575962272009',
       label: 'Facebook'
-    },
-    {
-      icon: <Instagram className="w-5 h-5" />,
-      href: 'https://instagram.com/fitdoplnkysk',
-      label: 'Instagram'
-    },
-    {
-      icon: <Mail className="w-5 h-5" />,
-      href: 'mailto:info@fitdoplnky.sk',
-      label: 'Email'
     }
   ];
 
@@ -78,32 +68,32 @@ export default function Footer() {
             <h3 className="font-bold text-xl text-gray-800 mb-6">Rýchle odkazy</h3>
             <ul className="space-y-3">
               <li>
-                <Link 
-                  href="/doprava-a-platba" 
+                <Link
+                  href="/doprava-a-platba"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
                   Doprava a platba
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/obchodne-podmienky" 
+                <Link
+                  href="/obchodne-podmienky"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
                   Obchodné podmienky
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/ochrana-osobnych-udajov" 
+                <Link
+                  href="/ochrana-osobnych-udajov"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
                   Ochrana osobných údajov
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/reklamacie" 
+                <Link
+                  href="/reklamacie"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
                   Reklamácie a vrátenia
@@ -118,8 +108,8 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <Link 
-                  href="/kontakt" 
+                <Link
+                  href="/kontakt"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
                   Kontakt
@@ -133,9 +123,9 @@ export default function Footer() {
             <h3 className="font-bold text-xl text-gray-800 mb-6">Partneri</h3>
             <ul className="space-y-3">
               <li>
-                <a 
-                  href="https://zdravievpraxi.sk" 
-                  target="_blank" 
+                <a
+                  href="https://zdravievpraxi.sk"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
@@ -143,9 +133,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a 
-                  href="https://fitdoplnky.sk" 
-                  target="_blank" 
+                <a
+                  href="https://fitdoplnky.sk"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
@@ -199,4 +189,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-} 
+}
