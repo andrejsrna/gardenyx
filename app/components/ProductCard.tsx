@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext'; // Adjust path if necessary
 import type { WooCommerceProduct } from '../lib/wordpress'; // Adjust path if necessary
+import { trackFbEvent } from './FacebookPixel';
 
 interface ProductCardProps {
   product: WooCommerceProduct;
@@ -11,6 +12,15 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart, appliedCoupon, openCart } = useCart();
 
   const handleAddToCart = (product: WooCommerceProduct) => {
+    // Track the add to cart event
+    trackFbEvent('AddToCart', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: parseFloat(product.price),
+      currency: 'EUR'
+    });
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -24,6 +34,16 @@ export default function ProductCard({ product }: ProductCardProps) {
     // toast.success(`${product.name} bol pridaný do košíka`);
   };
 
+  const handleViewDetail = () => {
+    trackFbEvent('ViewContent', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: parseFloat(product.price),
+      currency: 'EUR'
+    });
+  };
+
   const hasDiscount = product.sale_price && parseFloat(product.sale_price) < parseFloat(product.regular_price);
   const price = parseFloat(product.price);
   const regularPrice = parseFloat(product.regular_price);
@@ -33,7 +53,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     <article className="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-shadow duration-300 flex flex-col">
       <div className="aspect-[4/3] relative overflow-hidden">
         {product.images[0] && (
-          <Link href={`/produkt/${product.slug}`}>
+          <Link 
+            href={`/produkt/${product.slug}`}
+            onClick={handleViewDetail}
+          >
             <Image
               src={product.images[0].src}
               alt={product.images[0].alt || product.name}
@@ -50,7 +73,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
       </div>
       <div className="p-6 flex flex-col flex-grow">
-        <Link href={`/produkt/${product.slug}`} className="block group mb-2">
+        <Link 
+          href={`/produkt/${product.slug}`} 
+          className="block group mb-2"
+          onClick={handleViewDetail}
+        >
           <h3 className="font-bold text-lg group-hover:text-green-600 transition-colors line-clamp-2 min-h-[2.5em]">
             {product.name}
           </h3>
@@ -85,6 +112,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <Link
               href={`/produkt/${product.slug}`}
               className="text-center px-4 py-2 border-2 border-green-600 text-green-600 font-medium rounded-lg hover:bg-green-600 hover:text-white transition-colors duration-200 text-sm"
+              onClick={handleViewDetail}
             >
               Detail
             </Link>

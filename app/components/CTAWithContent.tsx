@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, Percent, Truck, Star, Shield, Clock, Check } from 'lucide-react';
+import { trackFbEvent } from './FacebookPixel';
 
 export default function CTAWithContent() {
   const benefits = [
@@ -24,6 +27,10 @@ export default function CTAWithContent() {
       description: 'Tisíce spokojných zákazníkov'
     }
   ];
+
+  const handleBuyClick = () => {
+    trackFbEvent('Purchase Intent', { content_name: 'Premium CTA Button' });
+  };
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-50 py-24">
@@ -86,6 +93,7 @@ export default function CTAWithContent() {
               <div className="pt-4">
                 <Link
                   href="/kupit"
+                  onClick={handleBuyClick}
                   className="group inline-flex items-center gap-2 px-8 py-4 text-lg font-medium text-white bg-green-600 rounded-xl hover:bg-green-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-200"
                 >
                   Kúpiť teraz

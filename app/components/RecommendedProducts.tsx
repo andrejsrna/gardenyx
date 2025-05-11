@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 import { WooCommerceProduct } from '../lib/wordpress';
+import { trackFbEvent } from './FacebookPixel';
 
 interface RecommendedProductsProps {
   products: WooCommerceProduct[];
@@ -14,6 +15,15 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
   const { addToCart } = useCart();
 
   const handleAddToCart = (product: WooCommerceProduct) => {
+    // Track the add to cart event with Facebook Pixel
+    trackFbEvent('AddToCart', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: parseFloat(product.price),
+      currency: 'EUR'
+    });
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -57,6 +67,16 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
     });
   };
 
+  const handleViewDetail = (product: WooCommerceProduct) => {
+    trackFbEvent('ViewContent', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: parseFloat(product.price),
+      currency: 'EUR'
+    });
+  };
+
   if (!products.length) {
     return null;
   }
@@ -79,7 +99,10 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
               >
                 <div className="aspect-[4/3] relative overflow-hidden">
                   {product.images[0] && (
-                    <Link href={`/produkt/${product.slug}`}>
+                    <Link 
+                      href={`/produkt/${product.slug}`}
+                      onClick={() => handleViewDetail(product)}
+                    >
                       <Image
                         src={product.images[0].src}
                         alt={product.images[0].alt || product.name}
@@ -96,7 +119,11 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
                   )}
                 </div>
                 <div className="p-6">
-                  <Link href={`/produkt/${product.slug}`} className="block group">
+                  <Link 
+                    href={`/produkt/${product.slug}`} 
+                    className="block group"
+                    onClick={() => handleViewDetail(product)}
+                  >
                     <h3 className="font-bold text-lg mb-2 group-hover:text-green-600 transition-colors line-clamp-2 min-h-[3.5rem]">
                       {product.name}
                     </h3>
@@ -122,6 +149,7 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
                     <Link 
                       href={`/produkt/${product.slug}`}
                       className="text-center px-4 py-2 border-2 border-green-600 text-green-600 font-medium rounded-lg hover:bg-green-600 hover:text-white transition-colors"
+                      onClick={() => handleViewDetail(product)}
                     >
                       Detail
                     </Link>

@@ -1,7 +1,14 @@
+'use client';
+
 import { ArrowRight, Percent, Truck } from 'lucide-react';
 import Link from 'next/link';
+import { trackFbEvent } from './FacebookPixel';
 
 export default function CTA() {
+  const handleBuyClick = () => {
+    trackFbEvent('Purchase Intent', { content_name: 'Main CTA Button' });
+  };
+
   return (
     <section className="bg-gradient-to-br from-green-50 to-white py-16 sm:py-24">
       <div className="container mx-auto px-4">
@@ -31,6 +38,7 @@ export default function CTA() {
 
             <Link
               href="/kupit"
+              onClick={handleBuyClick}
               className="inline-flex items-center gap-2 px-8 py-4 text-lg font-medium text-white bg-green-600 rounded-full hover:bg-green-700 transition-colors group"
             >
               Kúpiť najsilnejšiu kĺbovú výživu

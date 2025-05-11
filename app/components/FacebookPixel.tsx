@@ -42,8 +42,27 @@ export default function FacebookPixel() {
   );
 }
 
-// Optional: Export a function to track custom events if needed, ensuring it checks for window.fbq
+// Export a function to track custom events, ensuring it checks for window.fbq and user consent
 export const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
+  // Check if we can access localStorage (not available in SSR)
+  if (typeof window === 'undefined') return;
+  
+  // Verify user has consented to marketing cookies
+  try {
+    const storedConsent = localStorage.getItem('cookieConsent');
+    if (!storedConsent) return;
+    
+    const consent = JSON.parse(storedConsent);
+    if (!consent.marketing) {
+      // Skip tracking if user hasn't consented to marketing cookies
+      return;
+    }
+  } catch (error) {
+    console.warn('Error checking cookie consent, skipping event tracking:', error);
+    return;
+  }
+
+  // Track the event if fbq is available and user has consented
   const fbqFunc = window.fbq;
   if (typeof fbqFunc === 'function') {
     fbqFunc('track', eventName, params);

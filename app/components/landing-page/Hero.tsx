@@ -1,7 +1,22 @@
+'use client';
+
 import Image from 'next/image';
-import Link from 'next/link';
+import { trackFbEvent } from '../../components/FacebookPixel';
 
 export default function Hero() {
+  const handleOrderClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    
+    // Track click event through Facebook Pixel
+    trackFbEvent('Purchase Button Click', { content_name: 'Joint Boost Purchase Button' });
+    
+    // Smooth scroll to products section
+    const productsSection = document.getElementById('produkty');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="bg-gradient-to-b from-green-50 to-white py-16 md:py-24">
       <div className="container mx-auto px-4">
@@ -14,12 +29,13 @@ export default function Hero() {
             <p className="text-lg md:text-xl text-gray-600 mb-8">
               Joint Boost – najúčinnejšia kĺbová výživa s kolagénom, glukozamínom, kurkumou a MSM.
             </p>
-            <Link
-              href="/kupit" // TODO: Update this link if necessary
+            <a
+              href="#produkty"
+              onClick={handleOrderClick}
               className="inline-block bg-green-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-md hover:bg-green-700 transition-colors duration-300"
             >
               Objednať teraz – len za 14,99 €
-            </Link>
+            </a>
           </div>
 
           {/* Image Section */}

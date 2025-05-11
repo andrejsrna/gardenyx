@@ -23,8 +23,7 @@ export default function CookieConsent() {
     expires.setFullYear(expires.getFullYear() + 1);
     const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
     document.cookie = `cookieConsent=${consentString}; path=/; expires=${expires.toUTCString()}; SameSite=Lax${secureFlag}`;
-    console.log('Cookie set:', document.cookie);
-
+    
     setIsVisible(false);
   };
 
