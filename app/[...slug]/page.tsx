@@ -121,7 +121,7 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
           openGraph: {
             title: ogTitle,
             description: ogDescription,
-            url: parser.getMetaTag('og:url') || `${siteUrl}/${wpPermalink}`,
+            url: `${siteUrl}/${slugPath}`,
             siteName: 'Najsilnejšia kĺbová výživa',
             images: parser.getMetaTag('og:image')
               ? [{ url: parser.getMetaTag('og:image')! }]
@@ -142,7 +142,42 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
                 : [],
           },
           alternates: {
-            canonical: parser.getCanonical() || `${siteUrl}/${wpPermalink}`,
+            canonical: `${siteUrl}/${slugPath}`,
+          },
+          robots: {
+            index: true,
+            follow: true,
+          },
+        };
+      } else {
+        const cleanedTitle = cleanHtmlContent(post.title.rendered);
+        const cleanedExcerpt = cleanHtmlContent(post.excerpt.rendered);
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+        return {
+          title: cleanedTitle,
+          description: cleanedExcerpt,
+          openGraph: {
+            title: cleanedTitle,
+            description: cleanedExcerpt,
+            url: `${siteUrl}/${slugPath}`,
+            siteName: 'Najsilnejšia kĺbová výživa',
+            images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
+              : [],
+            locale: 'sk_SK',
+            type: 'article',
+          },
+          twitter: {
+            card: 'summary_large_image',
+            title: cleanedTitle,
+            description: cleanedExcerpt,
+            images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+              ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
+              : [],
+          },
+          alternates: {
+            canonical: `${siteUrl}/${slugPath}`,
           },
           robots: {
             index: true,
@@ -160,7 +195,7 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
         openGraph: {
           title: cleanedTitle,
           description: cleanedExcerpt,
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${wpPermalink}`,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${slugPath}`,
           siteName: 'Najsilnejšia kĺbová výživa',
           images: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
             ? [{ url: post._embedded['wp:featuredmedia'][0].source_url }]
