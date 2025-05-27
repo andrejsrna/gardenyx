@@ -229,6 +229,10 @@ export default function StripePayment({ amount }: StripePaymentProps) {
         },
       },
       locale: 'sk',
+      loader: 'always',
+      partnerAttributionId: 'nkv_front_001',
+      allowsButtonClick: true,
+      cookies: 'samesite-strict'
     };
   }, [clientSecret]);
 

@@ -69,12 +69,6 @@ export default async function RootLayout({
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
-        <link
-          rel="preload"
-          href="/logo.png"
-          as="image"
-          type="image/png"
-        />
       </head>
       <body className={`${inter.variable} antialiased`}>
         <CookieConsentProvider>

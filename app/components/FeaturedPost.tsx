@@ -25,6 +25,7 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ title, excerpt, imageUrl, s
                     src={imageUrl}
                     alt={title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-300 hover:scale-105"
                   />
                 </div>

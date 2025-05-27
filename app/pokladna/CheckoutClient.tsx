@@ -7,6 +7,7 @@ import Script from 'next/script';
 import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { z, ZodError } from 'zod';
+import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 import CouponSection from '../components/CouponSection';
 import { trackFbEvent } from '../components/FacebookPixel';
@@ -23,37 +24,47 @@ import { checkoutFormSchema } from '../lib/validations/checkout';
 import { createOrder, getProducts } from '../lib/woocommerce';
 import type { WooCommerceProduct } from '../lib/wordpress';
 
+/* eslint-disable @typescript-eslint/no-namespace, @typescript-eslint/no-unsafe-member-access */
+interface GoogleMapsPlaceAutocompleteProps extends HTMLAttributes<HTMLElement> {
+  class?: string;
+  'data-types'?: string;
+  'data-country-restrictions'?: string;
+  'data-fields'?: string;
+  onPlaceSelect?: (event: CustomEvent<{
+    address_components?: Array<{
+      long_name: string;
+      short_name: string;
+      types: string[];
+    }>;
+    formatted_address?: string;
+  }>) => void;
+}
 
 declare global {
   interface Window {
     google: {
       maps: {
         places: {
-          Autocomplete: new (
-            input: HTMLInputElement,
-            options?: {
-              componentRestrictions?: { country: string[] };
-              fields?: string[];
-              types?: string[];
-            }
-          ) => {
-            addListener: (event: string, handler: () => void) => void;
-            getPlace: () => {
-              address_components?: AddressComponent[];
-              formatted_address?: string;
-            };
+          PlaceAutocompleteElement: {
+            prototype: HTMLElement;
+            new (): HTMLElement;
           };
         };
       };
     };
   }
-}
 
-interface AddressComponent {
-  long_name: string;
-  short_name: string;
-  types: string[];
+  interface HTMLElementTagNameMap {
+    'gmp-place-autocomplete': HTMLElement;
+  }
+
+  namespace JSX {
+    interface IntrinsicElements {
+      'gmp-place-autocomplete': DetailedHTMLProps<GoogleMapsPlaceAutocompleteProps, HTMLElement>;
+    }
+  }
 }
+/* eslint-enable @typescript-eslint/no-namespace, @typescript-eslint/no-unsafe-member-access */
 
 interface PacketaPoint {
   id: string;
@@ -223,13 +234,10 @@ export default function CheckoutClient() {
   const [showPacketaSelector, setShowPacketaSelector] = useState(false);
   const [paymentError, setPaymentError] = useState<PaymentError | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
-  const [placesLoaded, setPlacesLoaded] = useState(false);
   const [sameAsShipping, setSameAsShipping] = useState(true);
   const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   const orderIdRef = useRef<number | null>(null);
-
-  const addressInputRef = useRef<HTMLInputElement>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string[] | undefined> | null>(null);
 
   console.log('[Render] Current formErrors:', formErrors);
@@ -381,53 +389,6 @@ export default function CheckoutClient() {
       localStorage.removeItem('checkoutFormData');
     }
   }, [customerData]);
-
-  useEffect(() => {
-    if (placesLoaded && addressInputRef.current && window.google?.maps?.places) {
-      const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current, {
-        componentRestrictions: { country: ['sk'] },
-        fields: ['address_components', 'formatted_address'],
-        types: ['address'],
-      });
-
-      const handlePlaceChanged = () => {
-        const place = autocomplete.getPlace();
-        if (!place.address_components) return;
-
-        let streetNumber = '';
-        let route = '';
-        let postalCode = '';
-        let city = '';
-
-        place.address_components.forEach((component: AddressComponent) => {
-          const types = component.types;
-          if (types.includes('street_number')) streetNumber = component.long_name;
-          if (types.includes('route')) route = component.long_name;
-          if (types.includes('postal_code')) postalCode = component.long_name.replace(/\s+/g, '');
-          if (types.includes('locality') || types.includes('sublocality')) city = component.long_name;
-        });
-
-        const address = `${route} ${streetNumber}`.trim();
-
-        setFormData(prev => {
-          const newBilling = {
-            ...prev.billing,
-            address_1: address,
-            city: city,
-            postcode: postalCode,
-          };
-          return {
-            ...prev,
-            billing: newBilling,
-            ...(sameAsShipping && { shipping: updateShippingFromBilling(newBilling, prev.shipping) }),
-          };
-        });
-      };
-
-      autocomplete.addListener('place_changed', handlePlaceChanged);
-
-    }
-  }, [placesLoaded, sameAsShipping]);
 
   const getShippingCost = useCallback(() => {
     if (totalPrice >= FREE_SHIPPING_THRESHOLD) return 0;
@@ -1034,8 +995,7 @@ export default function CheckoutClient() {
   return (
     <>
       <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
-        onLoad={() => setPlacesLoaded(true)}
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&loading=async`}
         onError={(e) => logError('Google Maps Script Load Error', {
           error: e,
           timestamp: new Date().toISOString()
@@ -1247,17 +1207,58 @@ export default function CheckoutClient() {
                {/* Address 1 (Street) */}
                <div className="md:col-span-2">
                 <label htmlFor="billing-address_1" className="block text-sm font-medium text-gray-700">Adresa <span className="text-red-500">*</span></label>
-                <input
-                   id="billing-address_1"
-                   name="address_1"
-                   type="text"
-                   ref={addressInputRef}
-                   value={formData.billing.address_1}
-                   onChange={handleSyncedFieldChange}
-                   placeholder="Ulica a číslo domu"
-                   className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${formErrors?.['billing.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                   required
-                   autoComplete="street-address"/>
+                <div
+                  id="billing-address_1"
+                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 ${formErrors?.['billing.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                >
+                  {/* @ts-expect-error - Google Maps Place Autocomplete is not typed */}
+                  <gmp-place-autocomplete
+                    class="w-full"
+                    data-types="address"
+                    data-country-restrictions="sk"
+                    data-fields="address_components,formatted_address"
+                    onPlaceSelect={(e: CustomEvent<{
+                      address_components?: Array<{
+                        long_name: string;
+                        short_name: string;
+                        types: string[];
+                      }>;
+                      formatted_address?: string;
+                    }>) => {
+                      const place = e.detail;
+                      if (!place.address_components) return;
+
+                      let streetNumber = '';
+                      let route = '';
+                      let postalCode = '';
+                      let city = '';
+
+                      place.address_components.forEach((component) => {
+                        const types = component.types;
+                        if (types.includes('street_number')) streetNumber = component.long_name;
+                        if (types.includes('route')) route = component.long_name;
+                        if (types.includes('postal_code')) postalCode = component.long_name.replace(/\s+/g, '');
+                        if (types.includes('locality') || types.includes('sublocality')) city = component.long_name;
+                      });
+
+                      const address = `${route} ${streetNumber}`.trim();
+
+                      setFormData(prev => {
+                        const newBilling = {
+                          ...prev.billing,
+                          address_1: address,
+                          city: city,
+                          postcode: postalCode,
+                        };
+                        return {
+                          ...prev,
+                          billing: newBilling,
+                          ...(sameAsShipping && { shipping: updateShippingFromBilling(newBilling, prev.shipping) }),
+                        };
+                      });
+                    }}
+                  />
+                </div>
                </div>
                {/* City */}
                <div>

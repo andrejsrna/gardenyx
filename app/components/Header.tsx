@@ -51,7 +51,8 @@ export default function Header() {
               width={150}
               height={40}
               priority={true}
-              className="h-10 w-auto"
+              style={{ height: '40px', width: '150px', objectFit: 'contain' }}
+              className="w-auto"
             />
           </Link>
 

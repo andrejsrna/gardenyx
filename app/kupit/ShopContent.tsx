@@ -109,8 +109,12 @@ export default function ShopContent() {
           <section key={section.taxonomy} className="space-y-6">
             <h2 className="text-3xl font-bold">{section.title}</h2>
             <div className={`grid ${section.gridCols} gap-6`}>
-              {section.products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {section.products.map((product, index) => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  isPriority={index < 3}
+                />
               ))}
             </div>
           </section>

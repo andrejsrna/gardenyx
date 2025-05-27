@@ -90,6 +90,7 @@ export default function KolagenPage() {
                 src="/images/ingredients/kolagen.jpeg"
                 alt="Kolagén"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-2xl object-cover"
               />
             </div>

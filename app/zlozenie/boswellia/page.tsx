@@ -91,6 +91,7 @@ export default function BoswelliaSerataPage() {
                 src="/images/ingredients/boswellia-serata.jpeg"
                 alt="Boswellia serata"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-2xl object-cover"
               />
             </div>

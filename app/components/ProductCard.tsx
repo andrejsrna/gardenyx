@@ -6,9 +6,10 @@ import { trackFbEvent } from './FacebookPixel';
 
 interface ProductCardProps {
   product: WooCommerceProduct;
+  isPriority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, isPriority = false }: ProductCardProps) {
   const { addToCart, appliedCoupon, openCart } = useCart();
 
   const handleAddToCart = (product: WooCommerceProduct) => {
@@ -56,12 +57,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Link 
             href={`/produkt/${product.slug}`}
             onClick={handleViewDetail}
+            className="block relative w-full h-full"
           >
             <Image
               src={product.images[0].src}
               alt={product.images[0].alt || product.name}
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" // Adjusted sizes
+              priority={isPriority}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
             />
           </Link>

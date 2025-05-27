@@ -184,6 +184,7 @@ export default async function BlogPage({searchParams}: PageProps) {
                                                     src={post._embedded['wp:featuredmedia'][0].source_url}
                                                     alt={post.title.rendered}
                                                     fill
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                                     className="object-cover transition-transform hover:scale-105"
                                                 />
                                             </div>

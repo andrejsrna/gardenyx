@@ -55,6 +55,7 @@ export default function Composition() {
                       src={ingredient.image}
                       alt={ingredient.name}
                       fill
+                      sizes="(max-width: 768px) 96px, 48px"
                       className="object-cover"
                     />
                   </div>

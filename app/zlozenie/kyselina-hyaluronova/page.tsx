@@ -90,6 +90,7 @@ export default function KyselinaHyaluronovaPage() {
                 src="/images/ingredients/kyselina-hyaluronova.jpeg"
                 alt="Kyselina hyaluronová"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-2xl object-cover"
               />
             </div>

@@ -94,6 +94,7 @@ export default function MsmPage() {
                 src="/images/ingredients/msm.jpeg"
                 alt="MSM prášok"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-2xl object-cover"
               />
             </div>

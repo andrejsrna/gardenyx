@@ -5,56 +5,83 @@ import Script from 'next/script';
 // import { useEffect, useState } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
-declare global {
-  interface Window {
-    fbq: (action: string, event: string, params?: Record<string, unknown> | undefined) => void;
-  }
-}
+// Remove type declarations as they're defined in global.d.ts
 
 export default function FacebookPixel() {
   const { consent, hasConsented } = useCookieConsent();
   // const [isLoaded, setIsLoaded] = useState(false); // Removed state
 
+  // Early return if no consent or no marketing consent
   if (!hasConsented || !consent.marketing) {
     return null;
   }
 
+  // Early return if no Pixel ID
+  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  if (!pixelId) {
+    console.error('Facebook Pixel ID is not defined in environment variables');
+    return null;
+  }
+
   return (
-    <Script
-      id="fb-pixel"
-      strategy="afterInteractive"
-      src="https://connect.facebook.net/en_US/fbevents.js"
-      onLoad={() => {
-        // Explicitly check and type window.fbq before calling
-        const fbqFunc = window.fbq;
-        if (typeof fbqFunc === 'function') {
-          fbqFunc('init', process.env.NEXT_PUBLIC_FB_PIXEL_ID!);
-          fbqFunc('track', 'PageView');
-          // setIsLoaded(true); // Removed state update
-        } else {
-          console.error('Facebook Pixel function (fbq) not found after script load.');
-        }
-      }}
-      onError={(e) => {
-        console.error('Failed to load Facebook Pixel script:', e);
-      }}
-    />
+    <>
+      {/* Facebook Pixel Base Code */}
+      <Script
+        id="fb-pixel-base"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+          `
+        }}
+      />
+      {/* Facebook Pixel Init Code */}
+      <Script
+        id="fb-pixel-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            fbq('init', '${pixelId}');
+            fbq('track', 'PageView');
+          `
+        }}
+      />
+      <noscript>
+        <img
+          height="1"
+          width="1"
+          style={{ display: 'none' }}
+          src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
+          alt=""
+        />
+      </noscript>
+    </>
   );
 }
 
 // Export a function to track custom events, ensuring it checks for window.fbq and user consent
 export const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
-  // Check if we can access localStorage (not available in SSR)
   if (typeof window === 'undefined') return;
-  
-  // Verify user has consented to marketing cookies
+
+  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  if (!pixelId) {
+    console.warn('Cannot track FB event - Pixel ID not configured');
+    return;
+  }
+
   try {
     const storedConsent = localStorage.getItem('cookieConsent');
     if (!storedConsent) return;
-    
-    const consent = JSON.parse(storedConsent);
-    if (!consent.marketing) {
-      // Skip tracking if user hasn't consented to marketing cookies
+
+    const consentData = JSON.parse(storedConsent);
+    if (!consentData.marketing) {
       return;
     }
   } catch (error) {
@@ -62,11 +89,14 @@ export const trackFbEvent = (eventName: string, params?: Record<string, unknown>
     return;
   }
 
-  // Track the event if fbq is available and user has consented
-  const fbqFunc = window.fbq;
-  if (typeof fbqFunc === 'function') {
-    fbqFunc('track', eventName, params);
-  } else {
-    console.warn('Cannot track FB event - fbq not available.');
+  try {
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', eventName, params);
+      console.log('Facebook Pixel event tracked:', eventName, params);
+    } else {
+      console.warn('Cannot track FB event - fbq not available');
+    }
+  } catch (error) {
+    console.error('Error tracking Facebook Pixel event:', error);
   }
 };

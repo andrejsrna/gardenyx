@@ -301,13 +301,16 @@ export default async function BlogPost({ params }: { params: tParams }) {
     <>
       <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px]">
         {post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
-          <Image
-            src={post._embedded['wp:featuredmedia'][0].source_url}
-            alt={post.title.rendered}
-            fill
-            className="object-cover"
-            priority
-          />
+          <div className="relative w-full h-full">
+            <Image
+              src={post._embedded['wp:featuredmedia'][0].source_url}
+              alt={post.title.rendered}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              priority
+            />
+          </div>
         ) : (
           <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800" />
         )}
@@ -340,7 +343,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
         </div>
 
         {headings.length > 1 && (
-          <div className="mb-10 border-y py-4">
+          <div className="mb-10">
             <TableOfContents headings={headings} />
           </div>
         )}
@@ -351,7 +354,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
                      prose-img:rounded-lg prose-img:shadow-lg prose-strong:text-gray-900
                      prose-blockquote:border-green-600 prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-6
                      prose-ul:list-disc prose-ol:list-decimal
-                     [&_figure]:!mx-auto [&_figure_img]:!mx-auto [&_figure_figcaption]:text-center"
+                     [&_figure]:!mx-auto [&_figure_img]:!mx-auto [&_figure_figcaption]:text-center
+                     [&_img]:!relative [&_img]:!h-auto [&_img]:!w-auto"
           dangerouslySetInnerHTML={{ __html: modifiedContent }}
         />
 

@@ -72,24 +72,25 @@ export async function middleware(request: NextRequest) {
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
 
-    /* Commented out for testing
     // Comprehensive CSP header
     const cspHeader = `
       default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://widget.packeta.com https://backup.widget.packeta.com https://connect.facebook.net https://maps.googleapis.com;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.facebook.net https://*.facebook.com https://connect.facebook.net https://js.stripe.com https://www.googletagmanager.com https://widget.packeta.com https://backup.widget.packeta.com https://maps.googleapis.com;
       style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https://*.stripe.com https://*.facebook.com https://www.facebook.com https://facebook.com https://najsilnejsiaklbovavyziva.sk;
+      img-src 'self' blob: data: https://*.stripe.com https://*.facebook.com https://www.facebook.com https://facebook.com https://najsilnejsiaklbovavyziva.sk https://*.googletagmanager.com https://www.googletagmanager.com https://cdn.najsilnejsiaklbovavyziva.sk https://*.gstatic.com https://maps.gstatic.com;
       frame-src 'self' https://js.stripe.com https://widget.packeta.com https://backup.widget.packeta.com;
       connect-src 'self'
         https://api.stripe.com
         https://maps.googleapis.com
         https://najsilnejsiaklbovavyziva.sk/wp-json/wc/v3/*
+        https://*.facebook.net
+        https://*.facebook.com
+        https://connect.facebook.net
         https://*.sentry.io
         https://*.ingest.sentry.io;
       font-src 'self';
       worker-src 'self' blob: https://js.stripe.com;
     `.replace(/\s{2,}/g, ' ').trim();
-    */
 
     // HTTPS only in production
     if (process.env.NODE_ENV === 'production' && !request.url.startsWith('https')) {
@@ -121,7 +122,7 @@ export async function middleware(request: NextRequest) {
     // Create response with headers
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
-    // requestHeaders.set('Content-Security-Policy', cspHeader); // Commented out for testing
+    requestHeaders.set('Content-Security-Policy', cspHeader);
 
     // Add CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {

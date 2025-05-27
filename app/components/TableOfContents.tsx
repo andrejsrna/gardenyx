@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { MouseEvent } from 'react';
+import { MouseEvent, useState } from 'react';
+import { List, ChevronDown } from 'lucide-react';
 
 interface Heading {
   id: string;
@@ -14,6 +15,8 @@ interface TableOfContentsProps {
 }
 
 export default function TableOfContents({ headings }: TableOfContentsProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   if (!headings || headings.length === 0) {
     return null;
   }
@@ -33,30 +36,52 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
         top: offsetPosition,
         behavior: 'smooth'
       });
+
+      // Close the accordion after clicking a link
+      setIsOpen(false);
     }
   };
 
   return (
-    <details className="toc-details bg-gray-50 rounded-lg p-4 border border-gray-200 group" open>
-      <summary className="cursor-pointer font-semibold text-lg text-gray-800 list-none group-open:mb-3">
-        <span className="inline-block transition-transform duration-200 ease-in-out group-open:rotate-90 mr-2">
-          ▶
-        </span>
-        Obsah článku
-      </summary>
-      <ul className="space-y-2 pl-4">
-        {headings.map((heading, index) => (
-          <li key={index} className={`toc-level-${heading.level}`}>
-            <Link
-              href={`#${heading.id}`}
-              onClick={(e) => handleScroll(e, heading.id)}
-              className="text-green-700 hover:text-green-900 hover:underline transition-colors duration-150 ease-in-out"
-            >
-              {heading.text}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </details>
+    <div className="bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 shadow-sm overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center gap-3 p-4 text-left hover:bg-green-50/50 transition-colors"
+        aria-expanded={isOpen}
+      >
+        <List className="w-5 h-5 text-green-600" />
+        <span className="font-semibold text-gray-900">Obsah článku</span>
+        <ChevronDown 
+          className={`w-5 h-5 text-gray-400 ml-auto transition-transform duration-300 ${
+            isOpen ? 'transform rotate-180' : ''
+          }`}
+        />
+      </button>
+      
+      <div
+        className={`transition-all duration-300 ease-in-out origin-top ${
+          isOpen ? 'max-h-[500px] opacity-100 scale-y-100' : 'max-h-0 opacity-0 scale-y-95'
+        } overflow-hidden`}
+      >
+        <nav className="p-4" aria-label="Obsah článku">
+          <ul className="space-y-2">
+            {headings.map((heading, index) => (
+              <li 
+                key={index} 
+                className={`pl-${(heading.level - 1) * 4} transition-colors duration-150`}
+              >
+                <Link
+                  href={`#${heading.id}`}
+                  onClick={(e) => handleScroll(e, heading.id)}
+                  className="block py-1.5 px-3 text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-all duration-150"
+                >
+                  {heading.text}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </div>
   );
 }

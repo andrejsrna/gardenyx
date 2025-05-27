@@ -93,6 +93,7 @@ export default function Hero() {
                   src="/product-image.png"
                   alt="Kĺbová výživa produkt"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain p-6 drop-shadow-2xl"
                 />
               </div>

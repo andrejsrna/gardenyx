@@ -41,6 +41,7 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
                 src={product.images[0].src}
                 alt={product.name}
                 fill
+                sizes="64px"
                 className="object-contain p-2"
               />
             </div>
@@ -102,12 +103,13 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
                     <Link 
                       href={`/produkt/${product.slug}`}
                       onClick={() => handleViewDetail(product)}
+                      className="block relative w-full h-full"
                     >
                       <Image
                         src={product.images[0].src}
                         alt={product.images[0].alt || product.name}
                         fill
-                        sizes="(max-width: 768px) 100vw, 25vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
                       />
                     </Link>

@@ -85,11 +85,12 @@ export default function BlogProductWidget({ productIds }: BlogProductWidgetProps
               >
                 <div className="aspect-square relative">
                   {product.images[0] && (
-                    <Link href={`/produkt/${product.slug}`}>
+                    <Link href={`/produkt/${product.slug}`} className="block relative w-full h-full">
                       <Image
                         src={product.images[0].src}
                         alt={product.images[0].alt || product.name}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-contain p-4"
                       />
                     </Link>

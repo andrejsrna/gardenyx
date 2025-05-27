@@ -33,6 +33,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
                 src={product.images[0].src}
                 alt={product.name}
                 fill
+                sizes="64px"
                 className="object-contain p-2"
               />
             </div>

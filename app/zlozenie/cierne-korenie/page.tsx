@@ -99,6 +99,7 @@ export default function CierneKoreniePage() {
                 src="/images/ingredients/cierne-korenie.jpeg"
                 alt="Extrakt z čierneho korenia"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-2xl object-cover"
               />
             </div>

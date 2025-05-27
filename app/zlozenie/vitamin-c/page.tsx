@@ -90,6 +90,7 @@ export default function VitaminCPage() {
                 src="/images/ingredients/vitamin-c.jpeg"
                 alt="Vitamín C"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-2xl object-cover"
               />
             </div>

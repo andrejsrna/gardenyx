@@ -96,6 +96,7 @@ export default function ChondroitinPage() {
                 src="/images/ingredients/chondroitin.jpeg"
                 alt="Chondroitín"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-2xl object-cover"
               />
             </div>
