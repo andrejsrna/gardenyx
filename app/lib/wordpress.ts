@@ -1,3 +1,7 @@
+export interface RankMathSEOResponse {
+  head: string;
+}
+
 export interface WordPressPost {
   id: number;
   date: string;
@@ -335,14 +339,14 @@ export const getProductsByIds = async (ids: number[]): Promise<WooCommerceProduc
   }
 };
 
-export const getRankMathSEO = async (url: string) => {
+export const getRankMathSEO = async (url: string): Promise<RankMathSEOResponse | null> => {
   try {
     const response = await fetch(
       `${WORDPRESS_URL}/wp-json/rankmath/v1/getHead?url=${url}`,
       createFetchOptions()
     );
 
-    return await handleApiResponse<unknown>(response, 'Failed to fetch RankMath SEO data');
+    return await handleApiResponse<RankMathSEOResponse>(response, 'Failed to fetch RankMath SEO data');
   } catch (error) {
     logError(`getRankMathSEO(${url})`, error);
     return null;
