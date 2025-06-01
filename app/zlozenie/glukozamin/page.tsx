@@ -1,10 +1,8 @@
-'use client';
-
 import { ArrowLeft, BookOpen, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Accordion from '../../components/Accordion';
 import RelatedPostsByTag from '../../components/RelatedPostsByTag';
+import ClientAccordion from './ClientAccordion';
 
 const benefits = [
   {
@@ -132,7 +130,7 @@ export default function GlucosaminePage() {
             <h2 className="text-2xl font-bold mb-8">Často kladené otázky</h2>
             <div className="space-y-4">
               {faqs.map((faq, index) => (
-                <Accordion
+                <ClientAccordion
                   key={index}
                   title={faq.question}
                   content={faq.answer}
@@ -182,18 +180,10 @@ export default function GlucosaminePage() {
             </Link>
           </section>
 
-          <section className="max-w-3xl mx-auto mt-16">
-            <h2 className="text-2xl font-bold text-center mb-8">Prečo je Glukozamín dôležitý?</h2>
-            {/* ... existing content ... */}
-          </section>
 
           {/* Add RelatedPostsByTag component here */}
-          <RelatedPostsByTag tagSlug="glukozamin" title="Články o glukozamíne" />
+          <RelatedPostsByTag tagSlug="glukozamin" title="Články o glukozamíne" maxPosts={6} />
 
-          <section className="max-w-3xl mx-auto mt-16 text-center">
-            <h2 className="text-2xl font-bold mb-4">Nájdite Glukozamín v našom produkte</h2>
-            {/* ... existing content ... */}
-          </section>
         </div>
       </div>
     </main>
