@@ -9,6 +9,7 @@ import Reviews from './components/Reviews';
 import Composition from './components/Composition';
 import RecentPosts from './components/RecentPosts';
 import RecommendedProductsWrapper from './components/RecommendedProductsWrapper';
+import FollowFacebook from './components/FollowFacebook';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -116,6 +117,7 @@ export default function Home() {
       <CTAWithContent />
       <Reviews />
       <RecommendedProductsWrapper />
+      <FollowFacebook />
       <RecentPosts />
     </main>
   );
