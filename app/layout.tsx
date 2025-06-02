@@ -8,6 +8,7 @@ import FacebookPixel from './components/FacebookPixel';
 import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import GoogleMaps from './components/GoogleMaps';
 import Header from './components/Header';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -84,6 +85,7 @@ export default async function RootLayout({
               <FacebookPixel />
               <GoogleAnalytics />
               <GoogleAds />
+              <GoogleMaps />
               {showConsentBanner && <CookieConsent />}
             </CartProvider>
           </AuthProvider>

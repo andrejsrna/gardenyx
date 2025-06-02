@@ -1,0 +1,10 @@
+export { default as BusinessPurchaseSection } from './BusinessPurchaseSection';
+export { default as RecommendedProducts } from './RecommendedProducts';
+export { default as FreeShippingProgress } from './FreeShippingProgress';
+export { default as BillingInformationSection } from './BillingInformationSection';
+export { default as ShippingInformationSection } from './ShippingInformationSection';
+export { default as CreateAccountSection } from './CreateAccountSection';
+export { default as ConsentsSection } from './ConsentsSection';
+export { default as ShippingMethodsSection } from './ShippingMethodsSection';
+export { default as PaymentMethodsSection } from './PaymentMethodsSection';
+export { default as OrderSummarySection } from './OrderSummarySection'; 

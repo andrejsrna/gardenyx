@@ -25,9 +25,15 @@ export const billingSchema = z.object({
     (val) => (typeof val === "string" ? val.replace(/\s+/g, '') : val),
     z.string().regex(CLEAN_PHONE_REGEX, 'Neplatné telefónne číslo')
   ),
-  ic: z.string().regex(IC_REGEX, 'IČO musí mať 8 číslic').optional(),
-  dic: z.string().regex(DIC_REGEX, 'DIČ musí mať 10 číslic').optional(),
-  dic_dph: z.string().regex(IC_DPH_REGEX, 'IČ DPH musí byť v tvare SK+10 číslic').optional(),
+  ic: z.string().optional().refine((val) => !val || IC_REGEX.test(val), {
+    message: 'IČO musí mať 8 číslic'
+  }),
+  dic: z.string().optional().refine((val) => !val || DIC_REGEX.test(val), {
+    message: 'DIČ musí mať 10 číslic'
+  }),
+  dic_dph: z.string().optional().refine((val) => !val || IC_DPH_REGEX.test(val), {
+    message: 'IČ DPH musí byť v tvare SK+10 číslic'
+  }),
 });
 
 export const checkoutFormSchema = z.object({
@@ -36,7 +42,9 @@ export const checkoutFormSchema = z.object({
   payment_method: z.string().min(1, 'Vyberte spôsob platby'),
   is_business: z.boolean(),
   create_account: z.boolean(),
-  account_password: z.string().min(8, 'Heslo musí mať aspoň 8 znakov').optional(),
+  account_password: z.string().optional().refine((val) => !val || val.length >= 8, {
+    message: 'Heslo musí mať aspoň 8 znakov'
+  }),
   meta_data: z.array(z.object({
     key: z.string(),
     value: z.string()
