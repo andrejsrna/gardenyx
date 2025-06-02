@@ -43,7 +43,7 @@ export default function Footer() {
     <footer className="bg-gradient-to-b from-white to-green-50">
       <div className="container mx-auto px-4 pt-16 pb-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="font-bold text-xl text-gray-800 mb-6">Spoločnosť</h3>
@@ -118,37 +118,48 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Partners */}
+          {/* Personal Consultation */}
           <div>
-            <h3 className="font-bold text-xl text-gray-800 mb-6">Partneri</h3>
-            <ul className="space-y-3">
-              <li>
-                <a
-                  href="https://zdravievpraxi.sk"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-green-600 transition-colors"
-                >
-                  ZdravieVPraxi.sk
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://fitdoplnky.sk"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-green-600 transition-colors"
-                >
-                  FitDoplnky.sk
-                </a>
-              </li>
-            </ul>
+            <h3 className="font-bold text-xl text-gray-800 mb-6">Poradíme vám</h3>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden bg-green-100 flex items-center justify-center">
+                  <Image
+                    src="/andrej-profile.jpeg"
+                    alt="Andrej - zakladateľ"
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                  <span className="text-green-600 font-bold text-xl">A</span>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-800">Andrej</p>
+                  <p className="text-sm text-gray-600">Zakladateľ a odborník</p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Máte otázky o našom produkte? Osobne vám poradím s dávkovaním a použitím našej kĺbovej výživy.
+              </p>
+              <a
+                href="mailto:andrej@najsilnejsiaklbovavyziva.sk"
+                className="inline-flex items-center text-green-600 hover:text-green-700 transition-colors font-medium"
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                andrej@najsilnejsiaklbovavyziva.sk
+              </a>
+            </div>
           </div>
+        </div>
 
-          {/* Payment Methods */}
-          <div>
-            <h3 className="font-bold text-xl text-gray-800 mb-6">Platobné metódy</h3>
-            <div className="grid grid-cols-3 gap-4">
+        {/* Payment Methods Section */}
+        <div className="mb-12">
+          <h3 className="font-bold text-xl text-gray-800 mb-6 text-center">Platobné metódy</h3>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-5 gap-6">
               {PAYMENT_METHODS.map((method) => (
                 <div key={method.name} className="relative w-16 h-10">
                   <Image
@@ -182,9 +193,35 @@ export default function Footer() {
         {/* Divider */}
         <div className="border-t border-gray-200 my-8" />
 
-        {/* Copyright */}
-        <div className="text-center text-sm text-gray-600">
-          <p>Copyright © {new Date().getFullYear()} JointBoost. Všetky práva vyhradené.</p>
+        {/* Subfooter */}
+        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          {/* Partners */}
+          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
+            <span className="text-sm text-gray-600 font-medium">Partneri:</span>
+            <div className="flex space-x-4">
+              <a
+                href="https://zdravievpraxi.sk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-600 hover:text-green-600 transition-colors"
+              >
+                ZdravieVPraxi.sk
+              </a>
+              <a
+                href="https://fitdoplnky.sk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-600 hover:text-green-600 transition-colors"
+              >
+                FitDoplnky.sk
+              </a>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="text-sm text-gray-600">
+            <p>Copyright © {new Date().getFullYear()} Najsilnejšia kĺbová výživa. Všetky práva vyhradené.</p>
+          </div>
         </div>
       </div>
     </footer>
