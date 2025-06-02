@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, CheckCircle2, BookOpen } from 'lucide-react';
 import Accordion from '@/app/components/Accordion';
+import RelatedPostsByTag from '../../components/RelatedPostsByTag';
 
 const benefits = [
   {
@@ -172,6 +173,10 @@ export default function KyselinaHyaluronovaPage() {
             </Link>
           </section>
         </div>
+
+        {/* Add RelatedPostsByTag component here */}
+        <RelatedPostsByTag tagSlug="kyselina-hyaluronova" title="Články o kyselina hyaluronovej" maxPosts={6} />
+
       </div>
     </main>
   );
