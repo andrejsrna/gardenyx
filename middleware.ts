@@ -42,6 +42,7 @@ const CSP_DIRECTIVES = {
   connectSrc: [
     "'self'", 'https://api.stripe.com', 'https://maps.googleapis.com',
     'https://najsilnejsiaklbovavyziva.sk/wp-json/wc/v3/*',
+    'https://admin.najsilnejsiaklbovavyziva.sk/wp-json/wp/v2/*',
     'https://*.facebook.net', 'https://*.facebook.com',
     'https://connect.facebook.net', 'https://*.sentry.io',
     'https://*.ingest.sentry.io'

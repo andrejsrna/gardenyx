@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, CheckCircle2, BookOpen } from 'lucide-react';
 import Accordion from '@/app/components/Accordion';
+import RelatedPostsByTag from '../../components/RelatedPostsByTag';
 
 const benefits = [
   {
@@ -176,6 +177,10 @@ export default function MsmPage() {
             </Link>
           </section>
         </div>
+
+        {/* Add RelatedPostsByTag component here */}
+        <RelatedPostsByTag tagSlug="msm" title="Články o MSM" maxPosts={6} />
+
       </div>
     </main>
   );
