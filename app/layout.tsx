@@ -10,6 +10,8 @@ import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import GoogleMaps from './components/GoogleMaps';
 import Header from './components/Header';
+import OrganizationSchema from './components/seo/OrganizationSchema';
+import WebSiteSchema from './components/seo/WebSiteSchema';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { CookieConsentProvider } from './context/CookieConsentContext';
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://najsilnejsiakl.sk"
+    canonical: "https://najsilnejsiaklbovavyziva.sk"
   },
   icons: {
     apple: [
@@ -70,6 +72,8 @@ export default async function RootLayout({
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
+        <OrganizationSchema />
+        <WebSiteSchema />
       </head>
       <body className={`${inter.variable} antialiased`}>
         <CookieConsentProvider>

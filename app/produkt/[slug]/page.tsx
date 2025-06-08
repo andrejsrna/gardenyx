@@ -1,9 +1,10 @@
-import { getWooCommerceUrl } from '@/app/lib/wordpress';
+import { getWooCommerceUrl, WooCommerceProduct } from '@/app/lib/wordpress';
 import AddToCartButton from './AddToCartButton';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
+import ProductSchema from '@/app/components/seo/ProductSchema';
 
 interface ProductPageProps {
   params: Promise<{
@@ -22,11 +23,46 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
+
+
+  const cleanDescription = product.short_description.replace(/(<([^>]+)>)/gi, '');
+  const price = parseFloat(product.price);
+  const hasDiscount = product.sale_price !== '';
+  
   return {
-    title: `${product.name} | NKV Shop`,
-    description: product.short_description.replace(/(<([^>]+)>)/gi, ''),
+    title: `${product.name} | Najsilnejšia kĺbová výživa`,
+    description: cleanDescription,
+    keywords: ['kĺbová výživa', 'kolagén', 'glukozamín', 'chondroitín', 'MSM', product.name],
     openGraph: {
+      title: `${product.name} | Najsilnejšia kĺbová výživa`,
+      description: cleanDescription,
+      type: 'website' as const,
+      images: product.images.map((img: WooCommerceProduct['images'][number]) => ({
+        url: img.src,
+        alt: img.alt || product.name,
+        width: 800,
+        height: 800,
+      })),
+      locale: 'sk_SK',
+      siteName: 'Najsilnejšia kĺbová výživa',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.name} | Najsilnejšia kĺbová výživa`,
+      description: cleanDescription,
       images: product.images[0]?.src ? [product.images[0].src] : [],
+    },
+    alternates: {
+      canonical: `https://najsilnejsiaklbovavyziva.sk/produkt/${product.slug}`,
+    },
+    other: {
+      'product:price:amount': price.toString(),
+      'product:price:currency': 'EUR',
+      'product:availability': 'in stock',
+      ...(hasDiscount && {
+        'product:sale_price_dates:start': new Date().toISOString().split('T')[0],
+        'product:sale_price_dates:end': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      }),
     },
   };
 }
@@ -70,8 +106,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 md:py-12">
-      <div className="container mx-auto px-4">
+    <>
+      <ProductSchema product={product} />
+      <div className="min-h-screen bg-gray-50 py-8 md:py-12">
+        <div className="container mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="grid md:grid-cols-2 gap-0">
             {/* Left Column - Image */}
@@ -168,5 +206,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
     </div>
+    </>
   );
 } 

@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { ArrowLeft, CheckCircle2, BookOpen } from 'lucide-react';
 import Accordion from '@/app/components/Accordion';
 import RelatedPostsByTag from '../../components/RelatedPostsByTag';
+import FAQSchema from '../../components/seo/FAQSchema';
+import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema';
 
 const benefits = [
   {
@@ -64,8 +66,17 @@ const studies = [
 ];
 
 export default function KolagenPage() {
+  const breadcrumbItems = [
+    { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
+    { name: 'Zloženie', url: 'https://najsilnejsiaklbovavyziva.sk/zlozenie' },
+    { name: 'Kolagén', url: 'https://najsilnejsiaklbovavyziva.sk/zlozenie/kolagen' }
+  ];
+
   return (
-    <main className="py-16">
+    <>
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={breadcrumbItems} />
+      <main className="py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Back button */}
@@ -179,5 +190,6 @@ export default function KolagenPage() {
 
       </div>
     </main>
+    </>
   );
 } 

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getRankMathSEO } from '../lib/wordpress';
 import { parseHTML } from '../lib/html-parser';
 import ShopContent from './ShopContent';
+import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -117,5 +118,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function ShopPage() {
-  return <ShopContent />;
+  const breadcrumbItems = [
+    { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
+    { name: 'Obchod', url: 'https://najsilnejsiaklbovavyziva.sk/kupit' }
+  ];
+
+  return (
+    <>
+      <BreadcrumbSchema items={breadcrumbItems} />
+      <ShopContent />
+    </>
+  );
 } 

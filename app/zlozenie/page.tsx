@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Leaf, TestTube, Brain, Shield } from 'lucide-react';
+import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
+import ContentHub, { ANTI_INFLAMMATORY_HUB } from '../components/internal-linking/ContentHub';
 
 export const metadata: Metadata = {
   title: 'Zloženie JointBoost | Najsilnejšia kĺbová výživa',
@@ -89,8 +91,15 @@ const features = [
 ];
 
 export default function CompositionPage() {
+  const breadcrumbItems = [
+    { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
+    { name: 'Zloženie', url: 'https://najsilnejsiaklbovavyziva.sk/zlozenie' }
+  ];
+
   return (
-    <main className="py-16">
+    <>
+      <BreadcrumbSchema items={breadcrumbItems} />
+      <main className="py-16">
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <header className="max-w-4xl mx-auto text-center mb-16">
@@ -158,7 +167,18 @@ export default function CompositionPage() {
             </div>
           ))}
         </div>
+
+        {/* Anti-inflammatory ingredients hub */}
+        <ContentHub 
+          topic="Protizápalové zložky"
+          title="Prírodné protizápalové zložky"
+          description="Objavte silné prírodné ingrediencie, ktoré pomáhajú zmierňovať zápaly a podporujú zdravie vašich kĺbov."
+          items={ANTI_INFLAMMATORY_HUB}
+          layout="grid"
+          maxItems={3}
+        />
       </div>
     </main>
+    </>
   );
 } 

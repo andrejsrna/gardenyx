@@ -10,6 +10,7 @@ import Composition from './components/Composition';
 import RecentPosts from './components/RecentPosts';
 import RecommendedProductsWrapper from './components/RecommendedProductsWrapper';
 import FollowFacebook from './components/FollowFacebook';
+import ContentHub, { JOINT_HEALTH_HUB } from './components/internal-linking/ContentHub';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -117,6 +118,13 @@ export default function Home() {
       <CTAWithContent />
       <Reviews />
       <RecommendedProductsWrapper />
+      <ContentHub 
+        topic="Zdravie kĺbov"
+        title="Kompletný sprievodca zdravím kĺbov"
+        description="Objavte všetko o ingredienciách, produktoch a článkoch, ktoré vám pomôžu udržať zdravé a silné kĺby."
+        items={JOINT_HEALTH_HUB}
+        maxItems={4}
+      />
       <FollowFacebook />
       <RecentPosts />
     </main>

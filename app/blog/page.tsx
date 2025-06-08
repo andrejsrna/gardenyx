@@ -6,6 +6,8 @@ import { parseHTML } from '../lib/html-parser';
 import type { WordPressPost } from '../lib/wordpress';
 import { getPaginatedPosts, getPostBySlug, getRankMathSEO, getAllTags, getTagBySlug } from '../lib/wordpress';
 import TagFilter from './TagFilter';
+import BlogSchema from '../components/seo/BlogSchema';
+import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 
 const FEATURED_POST_SLUG = 'ako-si-vybrat-najlepsiu-klbovu-vyzivu-pre-vase-potreby-kompletny-sprievodca';
 const DEFAULT_TITLE = 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa';
@@ -323,8 +325,34 @@ export default async function BlogPage({ searchParams }: PageProps) {
 
     const { posts, totalPages, totalPosts } = postsData;
 
+    const breadcrumbItems = [
+        { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
+        { name: 'Blog', url: 'https://najsilnejsiaklbovavyziva.sk/blog' }
+    ];
+
+    const blogTitle = tagInfo?.name 
+        ? `Blog - ${tagInfo.name}` 
+        : searchQuery 
+            ? `Blog - Výsledky vyhľadávania`
+            : 'Blog o kĺbovej výžive';
+
+    const blogDescription = tagInfo?.name
+        ? `Články o téme ${tagInfo.name}. Nájdite užitočné informácie o kĺbovej výžive.`
+        : searchQuery
+            ? `Výsledky vyhľadávania pre "${searchQuery}" v našom blogu o kĺbovej výžive.`
+            : 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu.';
+
     return (
-        <main className="py-16">
+        <>
+            <BlogSchema 
+                posts={posts}
+                totalPosts={totalPosts}
+                currentPage={currentPage}
+                pageTitle={blogTitle}
+                pageDescription={blogDescription}
+            />
+            <BreadcrumbSchema items={breadcrumbItems} />
+            <main className="py-16">
             <div className="container mx-auto px-4">
                 {featuredPost && (
                     <FeaturedPost
@@ -381,5 +409,6 @@ export default async function BlogPage({ searchParams }: PageProps) {
                 />
             </div>
         </main>
+        </>
     );
 }

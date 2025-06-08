@@ -7,6 +7,14 @@ import BlogProductWidget from '../components/BlogProductWidget';
 import CTA from '../components/CTA';
 import TableOfContents from '../components/TableOfContents';
 import Toast from '../components/Toast';
+
+import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
+import EnhancedArticleSchema from '../components/blog-seo/EnhancedArticleSchema';
+import SmartBreadcrumbs from '../components/internal-linking/SmartBreadcrumbs';
+import BlogDataProvider from '../components/blog-seo/BlogDataProvider';
+import InlineSuggestions from '../components/blog-seo/InlineSuggestions';
+import BlogAnalytics from '../components/blog-seo/BlogAnalytics';
+import { getBlogBreadcrumbs } from '../lib/internal-linking-data';
 import { parseHTML } from '../lib/html-parser';
 import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
 
@@ -22,11 +30,14 @@ interface PostEmbedded {
 }
 
 interface Post {
+  id: number;
   title: { rendered: string };
   content: { rendered: string };
   excerpt: { rendered: string };
   date: string;
   link: string;
+  slug: string;
+  featured_media: number;
   _embedded?: PostEmbedded;
 }
 
@@ -74,6 +85,20 @@ function createSlug(text: string): string {
     .replace(/[^\\w\\s-]/g, '') // Remove non-word chars (excluding spaces and dashes)
     .replace(/\\s+/g, '-') // Replace spaces with single dashes
     .replace(/-+/g, '-'); // Replace multiple dashes with single dashes
+}
+
+function detectPostTopic(post: Post): string {
+  const content = (post.content.rendered + post.title.rendered).toLowerCase();
+  
+  if (content.includes('glukozamín') || content.includes('chondroitín') || content.includes('msm')) {
+    return 'ingredient-science';
+  }
+  
+  if (content.includes('výživa') || content.includes('strava') || content.includes('potraviny')) {
+    return 'nutrition-tips';
+  }
+  
+  return 'joint-health';
 }
 
 export async function generateMetadata({ params }: { params: tParams }): Promise<Metadata> {
@@ -265,8 +290,17 @@ export default async function BlogPost({ params }: { params: tParams }) {
 
   let modifiedContent = '';
   let hasInjectedWidget = false;
+  let hasInjectedSuggestions = false;
   for (let i = 0; i < parts.length; i++) {
     modifiedContent += parts[i];
+    if (i === 2 && !hasInjectedSuggestions) {
+      modifiedContent += `
+        <div class="my-12">
+          <div id="inline-suggestions-mount-point"></div>
+        </div>
+      `;
+      hasInjectedSuggestions = true;
+    }
     if (i === 3 && !hasInjectedWidget) {
       modifiedContent += `
         <div class="my-12">
@@ -296,9 +330,41 @@ export default async function BlogPost({ params }: { params: tParams }) {
 
   const wordCount = content.split(/\s+/).length;
   const readTime = Math.ceil(wordCount / 200);
+  const postTopic = detectPostTopic(post);
+
+  const breadcrumbItems = [
+    { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
+    { name: 'Blog', url: 'https://najsilnejsiaklbovavyziva.sk/blog' },
+    { name: decode(post.title.rendered.replace(/<[^>]*>/g, '')), url: `https://najsilnejsiaklbovavyziva.sk/${slugPath}` }
+  ];
+
+  const smartBreadcrumbs = getBlogBreadcrumbs(
+    decode(post.title.rendered.replace(/<[^>]*>/g, '')),
+    slugPath
+  );
+
+  // const inlineSuggestions = getSuggestionsByTopic(postTopic);
+  // const relatedPosts = getRelatedBlogPosts();
 
   return (
     <>
+      <EnhancedArticleSchema 
+        post={post} 
+        readTime={readTime}
+        wordCount={wordCount}
+        categories={['Zdravie kĺbov']}
+        tags={[]}
+      />
+      <BreadcrumbSchema items={breadcrumbItems} />
+      
+      {/* Smart Breadcrumbs */}
+      <div className="max-w-4xl mx-auto px-4 py-4">
+        <SmartBreadcrumbs 
+          items={smartBreadcrumbs} 
+          showDescriptions={false}
+          className="text-sm"
+        />
+      </div>
       <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px]">
         {post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
           <div className="relative w-full h-full">
@@ -361,6 +427,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
 
         <BlogProductWidget productIds={[49, 684, 824]} />
 
+        {/* Related Posts Section will be shown after the article */}
+
         <div className="mt-12 pt-8 border-t">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Zdieľať článok</h3>
           <div className="flex gap-4">
@@ -389,6 +457,33 @@ export default async function BlogPost({ params }: { params: tParams }) {
           </div>
         </div>
       </article>
+
+      {/* Inline Suggestions for article content */}
+      <InlineSuggestions 
+        topic={postTopic}
+      />
+
+      {/* Related Blog Posts - Real Data */}
+      <div className="max-w-4xl mx-auto px-4">
+        <BlogDataProvider 
+          currentPostId={post.id}
+          postTitle={decode(post.title.rendered.replace(/<[^>]*>/g, ''))}
+          postContent={cleanHtmlContent(post.content.rendered)}
+          postExcerpt={cleanHtmlContent(post.excerpt.rendered)}
+          maxPosts={6}
+          layout="grid"
+        />
+      </div>
+
+      {/* Blog Analytics Tracking */}
+      <BlogAnalytics
+        postId={post.id}
+        postTitle={decode(post.title.rendered.replace(/<[^>]*>/g, ''))}
+        postSlug={slugPath}
+        readTime={readTime}
+        wordCount={wordCount}
+        topic={postTopic}
+      />
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         <CTA />

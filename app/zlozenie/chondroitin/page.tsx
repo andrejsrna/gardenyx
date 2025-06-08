@@ -4,6 +4,12 @@ import Link from 'next/link';
 
 import RelatedPostsByTag from '../../components/RelatedPostsByTag';
 import ClientAccordion from './ClientAccordion';
+import FAQSchema from '../../components/seo/FAQSchema';
+import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema';
+import RelatedIngredients from '../../components/internal-linking/RelatedIngredients';
+import ContextualLinks from '../../components/internal-linking/ContextualLinks';
+import SmartBreadcrumbs from '../../components/internal-linking/SmartBreadcrumbs';
+import { getIngredientContextualLinks, getIngredientBreadcrumbs } from '../../lib/internal-linking-data';
 
 const benefits = [
   {
@@ -67,10 +73,25 @@ const studies = [
 ];
 
 export default function ChondroitinPage() {
+  const breadcrumbItems = [
+    { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
+    { name: 'Zloženie', url: 'https://najsilnejsiaklbovavyziva.sk/zlozenie' },
+    { name: 'Chondroitín', url: 'https://najsilnejsiaklbovavyziva.sk/zlozenie/chondroitin' }
+  ];
+
+  const contextualLinks = getIngredientContextualLinks('chondroitin');
+  const smartBreadcrumbs = getIngredientBreadcrumbs('Chondroitín', 'chondroitin');
+
   return (
-    <main className="bg-white py-16">
+    <>
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={breadcrumbItems} />
+      <main className="bg-white py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
+          {/* Smart Breadcrumbs */}
+          <SmartBreadcrumbs items={smartBreadcrumbs} className="mb-8" />
+          
           {/* Back button */}
           <Link
             href="/zlozenie"
@@ -158,6 +179,22 @@ export default function ChondroitinPage() {
             </div>
           </section>
 
+          {/* Contextual Links */}
+          <ContextualLinks 
+            links={contextualLinks}
+            title="Súvisiace informácie"
+            layout="grid"
+            className="my-12"
+          />
+
+          {/* Related Ingredients */}
+          <RelatedIngredients 
+            currentIngredient="chondroitin"
+            category="joint-support"
+            maxItems={3}
+            title="Ďalšie zložky pre podporu kĺbov"
+          />
+
           {/* CTA Section */}
           <section className="bg-green-50 rounded-2xl p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">
@@ -182,5 +219,6 @@ export default function ChondroitinPage() {
 
       </div>
     </main>
+    </>
   );
 }

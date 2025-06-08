@@ -4,6 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, CheckCircle2, BookOpen } from 'lucide-react';
 import Accordion from '../../components/Accordion';
+import FAQSchema from '../../components/seo/FAQSchema';
+import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema';
 
 const benefits = [
   {
@@ -63,8 +65,17 @@ const studies = [
 ];
 
 export default function BoswelliaSerataPage() {
+  const breadcrumbItems = [
+    { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
+    { name: 'Zloženie', url: 'https://najsilnejsiaklbovavyziva.sk/zlozenie' },
+    { name: 'Boswellia Serata', url: 'https://najsilnejsiaklbovavyziva.sk/zlozenie/boswellia-serata' }
+  ];
+
   return (
-    <main className="py-16">
+    <>
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema items={breadcrumbItems} />
+      <main className="py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Back button */}
@@ -174,5 +185,6 @@ export default function BoswelliaSerataPage() {
         </div>
       </div>
     </main>
+    </>
   );
 } 

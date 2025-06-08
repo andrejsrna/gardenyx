@@ -21,6 +21,11 @@ export interface WordPressPost {
     'wp:featuredmedia'?: Array<{
       source_url: string;
     }>;
+    'wp:term'?: Array<Array<{
+      id: number;
+      name: string;
+      slug: string;
+    }>>;
   };
 }
 
@@ -387,5 +392,115 @@ export const getAllTags = async (): Promise<WordPressTag[]> => {
   } catch (error) {
     logError('getAllTags', error);
     return [];
+  }
+};
+
+// Get related posts based on current post categories or tags
+export const getRelatedPosts = async (
+  currentPostId: number, 
+  limit: number = 6,
+  categories?: number[],
+  tags?: number[]
+): Promise<WordPressPost[]> => {
+  try {
+    const params: Record<string, string | number> = {
+      _embed: '',
+      per_page: limit + 1, // Get one extra to exclude current post
+      orderby: 'date',
+      order: 'desc',
+      exclude: currentPostId
+    };
+
+    // Priority: use categories if available, otherwise use tags
+    if (categories && categories.length > 0) {
+      params.categories = categories.join(',');
+    } else if (tags && tags.length > 0) {
+      params.tags = tags.join(',');
+    }
+
+    const url = buildWordPressUrl('posts', params);
+    const response = await fetch(url, createFetchOptions(1800)); // Cache for 30 minutes
+    
+    const posts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch related posts');
+    
+    // Filter out current post and limit results
+    return posts
+      .filter(post => post.id !== currentPostId)
+      .slice(0, limit);
+  } catch (error) {
+    logError(`getRelatedPosts(${currentPostId})`, error);
+    return [];
+  }
+};
+
+// Get posts by category slug  
+export const getPostsByCategory = async (
+  categorySlug: string,
+  limit: number = 6,
+  excludePostId?: number
+): Promise<WordPressPost[]> => {
+  try {
+    // First get category ID by slug
+    const categoryUrl = buildWordPressUrl('categories', { slug: categorySlug });
+    const categoryResponse = await fetch(categoryUrl, createFetchOptions());
+    const categories = await handleApiResponse<Array<{ id: number }>>(categoryResponse, 'Failed to fetch category');
+    
+    if (!categories.length) return [];
+
+    const params: Record<string, string | number> = {
+      _embed: '',
+      per_page: limit,
+      categories: categories[0].id,
+      orderby: 'date',
+      order: 'desc'
+    };
+
+    if (excludePostId) {
+      params.exclude = excludePostId;
+    }
+
+    const url = buildWordPressUrl('posts', params);
+    const response = await fetch(url, createFetchOptions(1800));
+    
+    return await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch posts by category');
+  } catch (error) {
+    logError(`getPostsByCategory(${categorySlug})`, error);
+    return [];
+  }
+};
+
+// Get popular posts (by comment count or custom meta)
+export const getPopularPosts = async (limit: number = 6): Promise<WordPressPost[]> => {
+  try {
+    const url = buildWordPressUrl('posts', {
+      _embed: '',
+      per_page: limit,
+      orderby: 'comment_count',
+      order: 'desc'
+    });
+    
+    const response = await fetch(url, createFetchOptions(3600)); // Cache for 1 hour
+    return await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch popular posts');
+  } catch (error) {
+    logError('getPopularPosts', error);
+    return [];
+  }
+};
+
+// Enhanced function to get posts with categories and tags data
+export const getPostWithMetadata = async (slug: string): Promise<WordPressPost | null> => {
+  try {
+    const url = buildWordPressUrl('posts', {
+      _embed: '',
+      slug
+    });
+    
+    const response = await fetch(url, createFetchOptions());
+    const posts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch post with metadata');
+    
+    return posts[0] || null;
+  } catch (error) {
+    logError(`getPostWithMetadata(${slug})`, error);
+    return null;
   }
 };
