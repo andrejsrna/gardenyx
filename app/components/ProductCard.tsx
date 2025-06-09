@@ -87,9 +87,26 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
         </Link>
 
         <div
-          className="text-sm text-gray-600 mb-4 line-clamp-2 flex-grow min-h-[2.5em]"
+          className="text-sm text-gray-600 mb-3 line-clamp-2 flex-grow min-h-[2.5em]"
           dangerouslySetInnerHTML={{ __html: product.short_description }}
         />
+
+        {/* Dávkovanie info */}
+        <div className="bg-gray-50 rounded-lg p-2 mb-4">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1">
+              <span className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold">30</span>
+              <span className="text-gray-600">tabliet</span>
+            </div>
+            <div className="text-gray-400">•</div>
+            <div className="flex items-center gap-1">
+              <span className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold">1</span>
+              <span className="text-gray-600">denne</span>
+            </div>
+            <div className="text-gray-400">•</div>
+            <span className="text-green-600 font-medium">30 dní</span>
+          </div>
+        </div>
 
         <div className="mt-auto"> {/* Ensure price and buttons are at the bottom */}
           <div className="flex items-baseline gap-2 mb-4">

@@ -26,9 +26,33 @@ export default function Hero() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
               Pohyb bez bolesti <span className="text-green-600">je možný</span>. Podporte svoje kĺby komplexnou výživou Joint Boost.
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 mb-8">
+            <p className="text-lg md:text-xl text-gray-600 mb-6">
               Joint Boost – najúčinnejšia kĺbová výživa s kolagénom, glukozamínom, kurkumou a MSM.
             </p>
+            
+            {/* Dávkovanie highlight */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
+              <div className="flex items-center justify-center md:justify-start gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">30</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-700">tabliet v balení</span>
+                </div>
+                <div className="text-gray-400">•</div>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">1</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-700">tableta denne</span>
+                </div>
+                <div className="text-gray-400">•</div>
+                <div className="text-sm font-semibold text-green-600">
+                  30 dní výdrž
+                </div>
+              </div>
+            </div>
+            
             <a
               href="#produkty"
               onClick={handleOrderClick}
