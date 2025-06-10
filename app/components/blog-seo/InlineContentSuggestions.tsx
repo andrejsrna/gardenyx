@@ -163,13 +163,6 @@ export const JOINT_HEALTH_SUGGESTIONS: ContentSuggestion[] = [
 
 export const NUTRITION_TIPS_SUGGESTIONS: ContentSuggestion[] = [
   {
-    type: 'blog',
-    title: 'Prírodné protizápalové potraviny',
-    href: '/blog/prirodne-protizapalove-potraviny',
-    description: 'Zoznam potravín, ktoré prirodzene znižujú zápal v tele a podporujú zdravie kĺbov.',
-    ctaText: 'Čítať článok'
-  },
-  {
     type: 'ingredient',
     title: 'Kurkuma proti zápalom',
     href: '/zlozenie/kurkuma',
@@ -199,13 +192,6 @@ export const INGREDIENT_SCIENCE_SUGGESTIONS: ContentSuggestion[] = [
     href: '/zlozenie/kolagen',
     description: 'Ako kolagén podporuje štruktúru a funkciu kĺbového tkaniva.',
     ctaText: 'Prečítať o kolagéne'
-  },
-  {
-    type: 'blog',
-    title: 'Vedecké štúdie o kĺboch',
-    href: '/blog/vedecke-studie-klby',
-    description: 'Prehľad najnovších výskumov v oblasti zdravia kĺbov a výživy.',
-    ctaText: 'Zobraziť štúdie'
   }
 ];
 

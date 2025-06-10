@@ -5,6 +5,28 @@ import { rateLimit } from './app/lib/utils/rateLimit';
 const PROTECTED_PATHS: string[] = [];
 const MAX_PARAM_LENGTH = 250;
 
+// Paths that should bypass rate limiting
+const RATE_LIMIT_EXEMPT_PATHS = [
+  '/api/auth',
+  '/api/create-exit-coupon',
+  '/_next',
+  '/favicon.ico',
+  '/images',
+  '/public',
+  '.css',
+  '.js',
+  '.ico',
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.svg',
+  '.woff',
+  '.woff2',
+  '.ttf',
+  '.eot'
+];
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -59,19 +81,25 @@ function generateCSPHeader() {
 
 function handleErrorResponse(error: unknown, corsHeaders: Record<string, string>) {
   if (error instanceof Error && error.message.includes('rate limit')) {
+    console.warn('Rate limit error in middleware:', error.message);
     return new NextResponse(
-      JSON.stringify({ error: 'Too many requests' }),
+      JSON.stringify({ 
+        error: 'Too many requests',
+        message: 'Please wait a moment before trying again',
+        retryAfter: 60 // seconds
+      }),
       {
         status: 429,
         headers: {
           'Content-Type': 'application/json',
-          'Retry-After': '900',
+          'Retry-After': '60',
           ...corsHeaders
         }
       }
     );
   }
 
+  console.error('Middleware error:', error);
   return new NextResponse(
     JSON.stringify({ error: 'Internal Server Error' }),
     {
@@ -94,14 +122,24 @@ function sanitizeUrlParams(url: URL): URLSearchParams {
   return sanitizedParams;
 }
 
+function shouldApplyRateLimit(pathname: string): boolean {
+  // Skip rate limiting for static assets and exempt paths
+  return !RATE_LIMIT_EXEMPT_PATHS.some(exemptPath => 
+    pathname.startsWith(exemptPath) || pathname.includes(exemptPath)
+  );
+}
+
 export async function middleware(request: NextRequest) {
   try {
     if (request.method === 'OPTIONS') {
       return new NextResponse(null, { status: 200, headers: corsHeaders });
     }
 
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
-    await rateLimit(ip);
+    // Only apply rate limiting to dynamic routes and API endpoints
+    if (shouldApplyRateLimit(request.nextUrl.pathname)) {
+      const ip = request.headers.get('x-forwarded-for') || 'unknown';
+      await rateLimit(ip);
+    }
 
     if (PROTECTED_PATHS.some(path => request.nextUrl.pathname.startsWith(path))) {
       const apiKey = request.headers.get('x-api-key');
@@ -146,5 +184,16 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/:path*', '/xCJW1VKn/:path*']
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - images (public images)
+     * - public (public assets)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|images|public|.*\\.(?:css|js|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$).*)',
+  ],
 };
