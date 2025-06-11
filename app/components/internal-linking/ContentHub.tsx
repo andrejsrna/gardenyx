@@ -254,16 +254,6 @@ export const JOINT_HEALTH_HUB: ContentItem[] = [
     isNew: false
   },
   {
-    title: 'Najsilnejšia kĺbová výživa',
-    href: '/kupit',
-    type: 'product',
-    description: 'Komplexný doplnok s 9 prírodných zložiek pre zdravé kĺby',
-    image: '/images/product-main.jpg',
-    readTime: '2 min',
-    popularity: 'high',
-    isNew: false
-  },
-  {
     title: 'Chondroitín a jeho úloha v kĺboch',
     href: '/zlozenie/chondroitin',
     type: 'ingredient',
