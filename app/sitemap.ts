@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { WooCommerceProduct, WordPressPost, WordPressCategory } from './lib/wordpress';
 
 const BASE_URL = 'https://najsilnejsiaklbovavyziva.sk';
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'}/wp-json`;
 
 // Helper function to fetch data from an API with revalidation
 async function fetchApiData<T>(url: string, errorMessage: string): Promise<T[]> {
@@ -19,19 +20,19 @@ async function fetchApiData<T>(url: string, errorMessage: string): Promise<T[]> 
 
 // Fetch all published WooCommerce products
 const getProducts = () => {
-  const url = `${process.env.WP_API_URL}/wc/v3/products?per_page=100&status=publish`;
+  const url = `${API_BASE_URL}/wc/v3/products?per_page=100&status=publish`;
   return fetchApiData<WooCommerceProduct>(url, 'Failed to fetch products');
 };
 
 // Fetch all published WordPress posts
 const getPosts = () => {
-  const url = `${process.env.WP_API_URL}/wp/v2/posts?per_page=100&status=publish&_fields=slug,date`;
+  const url = `${API_BASE_URL}/wp/v2/posts?per_page=100&status=publish&_fields=slug,date`;
   return fetchApiData<WordPressPost>(url, 'Failed to fetch posts');
 };
 
 // Fetch all WordPress categories
 const getCategories = () => {
-  const url = `${process.env.WP_API_URL}/wp/v2/categories?per_page=100&_fields=slug,id`;
+  const url = `${API_BASE_URL}/wp/v2/categories?per_page=100&_fields=slug,id`;
   return fetchApiData<WordPressCategory>(url, 'Failed to fetch categories');
 };
 
