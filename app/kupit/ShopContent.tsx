@@ -109,17 +109,15 @@ export default function ShopContent() {
     setIsLoading(true);
     
     try {
-      const updatedSections = await Promise.all(
+      const sectionsWithProducts = await Promise.all(
         INITIAL_SECTIONS.map(async (section) => {
           try {
             const response = await fetch(`/api/woocommerce/products?taxonomy=${section.taxonomy}`);
             const data = await response.json();
-
             if (!response.ok) {
               throw new Error(data.message || `Failed to fetch products for category ${section.taxonomy}`);
             }
-
-            return { ...section, products: sortProducts(data, sortBy) };
+            return { ...section, products: data };
           } catch (sectionError) {
             console.error(`Error fetching section ${section.taxonomy}:`, sectionError);
             return { ...section, products: [] };
@@ -127,29 +125,28 @@ export default function ShopContent() {
         })
       );
 
-      const hasAnyProducts = updatedSections.some(section => section.products.length > 0);
+      const hasAnyProducts = sectionsWithProducts.some(section => section.products.length > 0);
       if (!hasAnyProducts) {
         throw new Error('No products found in any category');
       }
 
-      setProductSections(updatedSections);
+      setProductSections(sectionsWithProducts);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to load products');
     } finally {
       setIsLoading(false);
     }
-  }, [sortBy]);
+  }, []);
 
-  useEffect(() => {
-    if (productSections.some(section => section.products.length > 0)) {
-      const updatedSections = productSections.map(section => ({
-        ...section,
-        products: sortProducts(section.products, sortBy)
-      }));
-      setProductSections(updatedSections);
-    }
-  }, [sortBy]);
-
+  const handleSortChange = (newSortBy: SortOption) => {
+    setSortBy(newSortBy);
+    const sortedSections = productSections.map(section => ({
+      ...section,
+      products: sortProducts(section.products, newSortBy)
+    }));
+    setProductSections(sortedSections);
+  };
+  
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
@@ -164,7 +161,7 @@ export default function ShopContent() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-12">
-      <SortControls sortBy={sortBy} onSortChange={setSortBy} />
+      <SortControls sortBy={sortBy} onSortChange={handleSortChange} />
       
       {productSections.map((section) => (
         section.products.length > 0 && (

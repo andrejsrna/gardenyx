@@ -18,14 +18,11 @@ export interface WordPressPost {
   slug: string;
   featured_media: number;
   _embedded?: {
+    'author': [{ name: string; }];
     'wp:featuredmedia'?: Array<{
       source_url: string;
     }>;
-    'wp:term'?: Array<Array<{
-      id: number;
-      name: string;
-      slug: string;
-    }>>;
+    'wp:term'?: WordPressCategory[][];
   };
 }
 
@@ -143,6 +140,18 @@ export interface WordPressTag {
   count: number;
 }
 
+export interface WordPressCategory {
+  id: number;
+  count: number;
+  description: string;
+  link: string;
+  name: string;
+  slug: string;
+  taxonomy: string;
+  parent: number;
+  meta: Array<{ key: string; value: unknown; }>;
+}
+
 export interface PaginatedPosts {
   posts: WordPressPost[];
   totalPages: number;
@@ -153,6 +162,7 @@ interface GetPaginatedPostsOptions {
   page?: number;
   search?: string;
   tags?: number;
+  category?: number;
 }
 
 const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk';
@@ -241,6 +251,7 @@ export const getPaginatedPosts = async ({
   page = 1,
   search = '',
   tags,
+  category,
 }: GetPaginatedPostsOptions = {}): Promise<PaginatedPosts> => {
   try {
     const params: Record<string, string | number> = {
@@ -250,11 +261,18 @@ export const getPaginatedPosts = async ({
       orderby: 'date',
       order: 'desc'
     };
-    
-    if (search) params.search = encodeURIComponent(search);
-    if (tags) params.tags = tags;
+    if (search) {
+      params.search = search;
+    }
+    if (tags) {
+      params.tags = tags;
+    }
+    if (category) {
+      params.categories = category;
+    }
     
     const url = buildWordPressUrl('posts', params);
+    
     const response = await fetch(url, createFetchOptions());
     
     const posts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch paginated posts');
@@ -380,20 +398,34 @@ export const getTagBySlug = async (slug: string): Promise<WordPressTag | null> =
 export const getAllTags = async (): Promise<WordPressTag[]> => {
   try {
     const url = buildWordPressUrl('tags', {
-      per_page: 50,
+      per_page: 100,
       orderby: 'count',
-      order: 'desc'
+      order: 'desc',
+      hide_empty: 'true',
     });
-    
     const response = await fetch(url, createFetchOptions());
-    const tags = await handleApiResponse<WordPressTag[]>(response, 'Failed to fetch all tags');
-    
-    return tags.filter(tag => tag.count > 0);
+    return await handleApiResponse<WordPressTag[]>(response, 'Failed to fetch tags');
   } catch (error) {
     logError('getAllTags', error);
     return [];
   }
 };
+
+export const getCategories = async (): Promise<WordPressCategory[]> => {
+	try {
+	  const url = buildWordPressUrl('categories', {
+		per_page: 100,
+		orderby: 'count',
+		order: 'desc',
+		hide_empty: 'true',
+	  });
+	  const response = await fetch(url, createFetchOptions());
+	  return await handleApiResponse<WordPressCategory[]>(response, 'Failed to fetch categories');
+	} catch (error) {
+	  logError('getCategories', error);
+	  return [];
+	}
+  };
 
 // Get related posts based on current post categories or tags
 export const getRelatedPosts = async (
@@ -501,6 +533,18 @@ export const getPostWithMetadata = async (slug: string): Promise<WordPressPost |
     return posts[0] || null;
   } catch (error) {
     logError(`getPostWithMetadata(${slug})`, error);
+    return null;
+  }
+};
+
+export const getCategoryBySlug = async (slug: string): Promise<WordPressCategory | null> => {
+  try {
+    const url = buildWordPressUrl('categories', { slug });
+    const response = await fetch(url, createFetchOptions());
+    const categories = await handleApiResponse<WordPressCategory[]>(response, 'Failed to fetch category by slug');
+    return categories[0] || null;
+  } catch (error) {
+    logError(`getCategoryBySlug(${slug})`, error);
     return null;
   }
 };

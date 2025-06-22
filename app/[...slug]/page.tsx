@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 import { decode } from 'html-entities';
 import { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import BlogProductWidget from '../components/BlogProductWidget';
 import CTA from '../components/CTA';
@@ -12,34 +13,16 @@ import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 import EnhancedArticleSchema from '../components/blog-seo/EnhancedArticleSchema';
 import SmartBreadcrumbs from '../components/internal-linking/SmartBreadcrumbs';
 import BlogDataProvider from '../components/blog-seo/BlogDataProvider';
-import InlineSuggestions from '../components/blog-seo/InlineSuggestions';
 import BlogAnalytics from '../components/blog-seo/BlogAnalytics';
 import { getBlogBreadcrumbs } from '../lib/internal-linking-data';
 import { parseHTML } from '../lib/html-parser';
-import { getPostBySlug, getRankMathSEO } from '../lib/wordpress';
+import { getPostBySlug, getRankMathSEO, WordPressPost } from '../lib/wordpress';
 
 if (process.env.NODE_ENV === 'development') {
   Sentry.captureException(new Error('Test error from Sentry integration'));
 }
 
 type tParams = Promise<{ slug: string[] }>;
-
-interface PostEmbedded {
-  'wp:featuredmedia'?: { source_url: string; }[];
-  'author'?: { name: string; }[];
-}
-
-interface Post {
-  id: number;
-  title: { rendered: string };
-  content: { rendered: string };
-  excerpt: { rendered: string };
-  date: string;
-  link: string;
-  slug: string;
-  featured_media: number;
-  _embedded?: PostEmbedded;
-}
 
 function cleanHtmlContent(html: string): string {
   if (!html) return '';
@@ -81,13 +64,13 @@ function createSlug(text: string): string {
     .toLowerCase()
     .replace(/<[^>]*>/g, '') // Remove HTML tags from heading text
     .trim()
-    .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "") // Remove accents
-    .replace(/[^\\w\\s-]/g, '') // Remove non-word chars (excluding spaces and dashes)
-    .replace(/\\s+/g, '-') // Replace spaces with single dashes
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
+    .replace(/[^\w\s-]/g, '') // Remove non-word chars (excluding spaces and dashes)
+    .replace(/\s+/g, '-') // Replace spaces with single dashes
     .replace(/-+/g, '-'); // Replace multiple dashes with single dashes
 }
 
-function detectPostTopic(post: Post): string {
+function detectPostTopic(post: WordPressPost): string {
   const content = (post.content.rendered + post.title.rendered).toLowerCase();
   
   if (content.includes('glukozamín') || content.includes('chondroitín') || content.includes('msm')) {
@@ -247,7 +230,7 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
 export default async function BlogPost({ params }: { params: tParams }) {
   const { slug } = await params;
   const slugPath = slug.join('/');
-  const post = await getPostBySlug(slugPath) as Post;
+  const post = await getPostBySlug(slugPath);
 
   if (!post) {
     notFound();
@@ -284,44 +267,6 @@ export default async function BlogPost({ params }: { params: tParams }) {
 
   content = makeYouTubeEmbedsResponsive(content);
 
-  const h2Regex = /<h2[^>]*>[\s\S]*?<\/h2>/g;
-  const parts = content.split(h2Regex);
-  const h2Matches = content.match(h2Regex) || [];
-
-  let modifiedContent = '';
-  let hasInjectedWidget = false;
-  let hasInjectedSuggestions = false;
-  for (let i = 0; i < parts.length; i++) {
-    modifiedContent += parts[i];
-    if (i === 2 && !hasInjectedSuggestions) {
-      modifiedContent += `
-        <div class="my-12">
-          <div id="inline-suggestions-mount-point"></div>
-        </div>
-      `;
-      hasInjectedSuggestions = true;
-    }
-    if (i === 3 && !hasInjectedWidget) {
-      modifiedContent += `
-        <div class="my-12">
-          <div id="product-widget-mount-point"></div>
-        </div>
-      `;
-      hasInjectedWidget = true;
-    }
-    if (i < h2Matches.length) {
-      modifiedContent += h2Matches[i];
-    }
-  }
-
-  if (!hasInjectedWidget && parts.length > 0) {
-    modifiedContent += `
-      <div class="my-12">
-        <div id="product-widget-mount-point"></div>
-      </div>
-    `;
-  }
-
   const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
     year: 'numeric',
     month: 'long',
@@ -343,8 +288,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
     slugPath
   );
 
-  // const inlineSuggestions = getSuggestionsByTopic(postTopic);
-  // const relatedPosts = getRelatedBlogPosts();
+  const categories = post._embedded?.['wp:term']?.[0] || [];
 
   return (
     <>
@@ -388,26 +332,35 @@ export default async function BlogPost({ params }: { params: tParams }) {
               className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight"
               dangerouslySetInnerHTML={{ __html: post.title.rendered }}
             />
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-gray-200">
+              <div className="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <time dateTime={post.date}>{formattedDate}</time>
+              </div>
+              <span className="hidden md:block">•</span>
+              <div className="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{readTime} min čítania</span>
+              </div>
+            </div>
+            {categories.length > 0 && (
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                {categories.map((category) => (
+                  <Link key={category.id} href={`/blog/kategoria/${category.slug}`} className="text-xs bg-white/10 text-white px-3 py-1 rounded-full backdrop-blur-sm hover:bg-white/20 transition-colors">
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       <article className="max-w-4xl mx-auto px-4 py-12">
-        <div className="flex flex-wrap items-center justify-center gap-6 mb-8 text-gray-600 text-sm">
-          <div className="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-            </svg>
-            {formattedDate}
-          </div>
-          <div className="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {readTime} min čítania
-          </div>
-        </div>
-
         {headings.length > 1 && (
           <div className="mb-10">
             <TableOfContents headings={headings} />
@@ -415,17 +368,19 @@ export default async function BlogPost({ params }: { params: tParams }) {
         )}
 
         <div
-          className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900
+          className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-headings:scroll-mt-28
                      prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:underline
                      prose-img:rounded-lg prose-img:shadow-lg prose-strong:text-gray-900
                      prose-blockquote:border-green-600 prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-6
                      prose-ul:list-disc prose-ol:list-decimal
                      [&_figure]:!mx-auto [&_figure_img]:!mx-auto [&_figure_figcaption]:text-center
                      [&_img]:!relative [&_img]:!h-auto [&_img]:!w-auto"
-          dangerouslySetInnerHTML={{ __html: modifiedContent }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
 
-        <BlogProductWidget productIds={[49, 684, 824]} />
+        <div className="my-12">
+          <BlogProductWidget productIds={[49, 684, 824]} />
+        </div>
 
         {/* Related Posts Section will be shown after the article */}
 
@@ -458,20 +413,15 @@ export default async function BlogPost({ params }: { params: tParams }) {
         </div>
       </article>
 
-      {/* Inline Suggestions for article content */}
-      <InlineSuggestions 
-        topic={postTopic}
-      />
-
       {/* Related Blog Posts - Real Data */}
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <BlogDataProvider 
           currentPostId={post.id}
           postTitle={decode(post.title.rendered.replace(/<[^>]*>/g, ''))}
           postContent={cleanHtmlContent(post.content.rendered)}
           postExcerpt={cleanHtmlContent(post.excerpt.rendered)}
-          maxPosts={6}
-          layout="grid"
+          maxPosts={9}
+          layout="list"
         />
       </div>
 

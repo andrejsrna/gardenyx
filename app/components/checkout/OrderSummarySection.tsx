@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent } from 'react';
+import Image from 'next/image';
 import type { FormData } from '../../lib/checkout/types';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
 
@@ -50,12 +51,14 @@ export default function OrderSummarySection({
       <div className="space-y-3 mb-4">
         {cartItems.map((item) => (
           <div key={item.id} className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs">
+            <div className="relative w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs overflow-hidden">
               {item.image ? (
-                <img 
+                <Image 
                   src={item.image} 
                   alt={item.name}
-                  className="w-full h-full object-cover rounded-lg"
+                  fill
+                  sizes="48px"
+                  className="object-cover"
                 />
               ) : (
                 'IMG'

@@ -42,71 +42,25 @@ export default function RelatedBlogPosts({
 
   const layoutClasses = layout === 'grid' 
     ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-    : 'space-y-6';
+    : 'space-y-3';
 
   const PostCard = ({ post }: { post: BlogPost }) => {
     if (layout === 'list') {
       return (
-        <article className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 group">
-          <div className="flex gap-6">
-            {post.featuredImage && (
-              <div className="relative w-32 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                <Link href={`/${post.slug}`}>
-                  <Image
-                    src={post.featuredImage}
-                    alt={post.title}
-                    fill
-                    sizes="128px"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        parent.innerHTML = '<div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-green-100 to-emerald-100 text-green-700 text-2xl">🌿</div>';
-                      }
-                    }}
-                  />
-                </Link>
-              </div>
-            )}
-            
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
-                {post.category && showCategories && (
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-                    {post.category}
-                  </span>
-                )}
-                {post.isPopular && (
-                  <div className="flex items-center text-orange-500" title="Populárny článok">
-                    <TrendingUp className="w-4 h-4" />
-                  </div>
-                )}
-              </div>
-              
-              <Link href={`/${post.slug}`} className="group/title">
-                <h3 className="font-bold text-lg mb-2 group-hover/title:text-green-600 transition-colors line-clamp-2">
-                  {post.title}
-                </h3>
-              </Link>
-              
-              <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                {post.excerpt}
-              </p>
-              
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>{formatDate(post.date)}</span>
-                {post.readTime && showReadTime && (
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {post.readTime} min
-                  </div>
-                )}
-              </div>
+        <Link 
+          href={`/${post.slug}`} 
+          className="flex justify-between items-center p-4 rounded-lg bg-white hover:bg-green-50 border border-gray-200 transition-colors group"
+        >
+          <h3 className="font-semibold text-gray-800 group-hover:text-green-700 transition-colors">
+            {post.title}
+          </h3>
+          {post.readTime && showReadTime && (
+            <div className="flex items-center gap-1.5 text-xs text-gray-500 flex-shrink-0 ml-4">
+              <Clock className="w-3.5 h-3.5" />
+              <span>{post.readTime} min</span>
             </div>
-          </div>
-        </article>
+          )}
+        </Link>
       );
     }
 
@@ -146,18 +100,16 @@ export default function RelatedBlogPosts({
           </div>
         )}
         
-        <div className="p-6">
+        <div className="p-4 flex flex-col flex-grow">
           <Link href={`/${post.slug}`} className="group/title">
-            <h3 className="font-bold text-lg mb-3 group-hover/title:text-green-600 transition-colors line-clamp-2">
+            <h3 className="font-semibold text-base mb-2 group-hover/title:text-green-600 transition-colors line-clamp-2">
               {post.title}
             </h3>
           </Link>
           
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-            {post.excerpt}
-          </p>
-          
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+          <div className="flex-grow"></div>
+
+          <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
             <span>{formatDate(post.date)}</span>
             {post.readTime && showReadTime && (
               <div className="flex items-center gap-1">
@@ -166,33 +118,6 @@ export default function RelatedBlogPosts({
               </div>
             )}
           </div>
-          
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-4">
-              {post.tags.slice(0, 3).map((tag, index) => (
-                <Link
-                  key={index}
-                  href={`/blog?tag=${encodeURIComponent(tag)}`}
-                  className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full hover:bg-green-100 hover:text-green-700 transition-colors"
-                >
-                  {tag}
-                </Link>
-              ))}
-              {post.tags.length > 3 && (
-                <span className="text-xs text-gray-500 px-2 py-1">
-                  +{post.tags.length - 3}
-                </span>
-              )}
-            </div>
-          )}
-          
-          <Link
-            href={`/${post.slug}`}
-            className="inline-flex items-center text-green-600 hover:text-green-700 font-medium text-sm transition-colors group/link"
-          >
-            Čítať článok
-            <ArrowRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 transition-transform" />
-          </Link>
         </div>
       </article>
     );
@@ -205,7 +130,7 @@ export default function RelatedBlogPosts({
           <Star className="w-6 h-6 mr-2 text-green-600" />
           {title}
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 max-w-2xl">
           Objavte ďalšie užitočné články o zdraví kĺbov a prírodných doplnkoch výživy.
         </p>
       </div>

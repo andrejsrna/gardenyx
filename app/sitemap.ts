@@ -1,27 +1,26 @@
 import { MetadataRoute } from 'next';
-import { WooCommerceProduct, WordPressPost, getWooCommerceUrl } from './lib/wordpress';
+import { WooCommerceProduct, WordPressPost, getWooCommerceUrl, getCategories } from './lib/wordpress';
 
 const BASE_URL = 'https://najsilnejsiaklbovavyziva.sk';
-const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk';
-const WORDPRESS_API_URL = `${WORDPRESS_URL}/wp-json/wp/v2`;
+const WORDPRESS_API_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'}/wp-json/wp/v2`;
 
 const STATIC_ROUTES = [
-  '',
-  '/kupit',
-  '/blog',
-  '/zlozenie',
-  '/obchodne-podmienky',
-  '/ochrana-osobnych-udajov',
-  '/doprava-a-platba',
-  '/uzivanie',
-  '/casto-kladene-otazky',
-  '/kontakt',
-  '/registracia',
-  '/reklamacie',
-  '/moj-ucet',
-];
+  { url: '', changeFrequency: 'daily', priority: 1 },
+  { url: '/kupit', changeFrequency: 'weekly', priority: 0.9 },
+  { url: '/blog', changeFrequency: 'weekly', priority: 0.8 },
+  { url: '/zlozenie', changeFrequency: 'monthly', priority: 0.7 },
+  { url: '/obchodne-podmienky', changeFrequency: 'monthly', priority: 0.6 },
+  { url: '/ochrana-osobnych-udajov', changeFrequency: 'monthly', priority: 0.6 },
+  { url: '/doprava-a-platba', changeFrequency: 'monthly', priority: 0.6 },
+  { url: '/uzivanie', changeFrequency: 'monthly', priority: 0.6 },
+  { url: '/casto-kladene-otazky', changeFrequency: 'monthly', priority: 0.7 },
+  { url: '/kontakt', changeFrequency: 'monthly', priority: 0.5 },
+  { url: '/registracia', changeFrequency: 'yearly', priority: 0.4 },
+  { url: '/reklamacie', changeFrequency: 'yearly', priority: 0.4 },
+  { url: '/moj-ucet', changeFrequency: 'yearly', priority: 0.4 },
+] as const;
 
-const INGREDIENT_ROUTES = [
+const INGREDIENT_ROUTES: string[] = [
   '/zlozenie/glukozamin',
   '/zlozenie/chondroitin',
   '/zlozenie/boswellia-serata',
@@ -34,71 +33,64 @@ const INGREDIENT_ROUTES = [
   '/zlozenie/msm',
 ];
 
-async function getProducts(): Promise<WooCommerceProduct[]> {
+const createSitemapEntry = (path: string, options: Partial<MetadataRoute.Sitemap[0]> = {}): MetadataRoute.Sitemap[0] => ({
+  url: `${BASE_URL}${path}`,
+  lastModified: new Date(),
+  changeFrequency: 'monthly',
+  priority: 0.7,
+  ...options,
+});
+
+
+async function fetchFromApi<T>(url: string, errorMessage: string): Promise<T[]> {
   try {
-    const url = getWooCommerceUrl('products', { per_page: '100', status: 'publish' });
     const response = await fetch(url, { next: { revalidate: 3600 } });
-    
     if (!response.ok) {
-      throw new Error(`Failed to fetch products: ${response.status}`);
+      throw new Error(`${errorMessage}: ${response.status}`);
     }
-    
     return await response.json();
   } catch (error) {
-    console.error('Error fetching products for sitemap:', error);
+    console.error(`Error fetching for sitemap (${url}):`, error);
     return [];
   }
 }
 
-async function getBlogPosts(): Promise<WordPressPost[]> {
-  try {
-    const url = `${WORDPRESS_API_URL}/posts?per_page=100&status=publish`;
-    const response = await fetch(url, { next: { revalidate: 3600 } });
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch posts: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching posts for sitemap:', error);
-    return [];
-  }
-}
+const getProducts = () => fetchFromApi<WooCommerceProduct>(getWooCommerceUrl('products', { per_page: '100', status: 'publish' }), 'Failed to fetch products');
+const getBlogPosts = () => fetchFromApi<WordPressPost>(`${WORDPRESS_API_URL}/posts?_fields=slug,date&per_page=100&status=publish`, 'Failed to fetch posts');
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, posts] = await Promise.all([
+  const [products, posts, categories] = await Promise.all([
     getProducts(),
     getBlogPosts(),
+    getCategories(),
   ]);
 
-  const staticUrls: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
-    url: `${BASE_URL}${route}`,
-    lastModified: new Date(),
-    changeFrequency: route === '' ? 'daily' : route === '/blog' ? 'weekly' : 'monthly',
-    priority: route === '' ? 1 : route === '/kupit' ? 0.9 : 0.8,
-  }));
+  const staticUrls = STATIC_ROUTES.map(route => createSitemapEntry(route.url, route));
+  const ingredientUrls = INGREDIENT_ROUTES.map(route => createSitemapEntry(route));
 
-  const ingredientUrls: MetadataRoute.Sitemap = INGREDIENT_ROUTES.map((route) => ({
-    url: `${BASE_URL}${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }));
-
-  const productUrls: MetadataRoute.Sitemap = products.map((product) => ({
-    url: `${BASE_URL}/produkt/${product.slug}`,
+  const productUrls = products.map((product) => createSitemapEntry(`/produkt/${product.slug}`, {
     lastModified: new Date(product.date_modified),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'weekly',
     priority: 0.8,
   }));
 
-  const blogUrls: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${BASE_URL}/blog/${post.slug}`,
+  const blogPostUrls = posts.map((post) => createSitemapEntry(`/${post.slug}`, {
     lastModified: new Date(post.date),
-    changeFrequency: 'monthly' as const,
+    changeFrequency: 'monthly',
     priority: 0.6,
   }));
 
-  return [...staticUrls, ...ingredientUrls, ...productUrls, ...blogUrls];
+  const categoryUrls = categories.map((category) => createSitemapEntry(`/blog/kategoria/${category.slug}`, {
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
+
+  return [
+    ...staticUrls,
+    ...ingredientUrls,
+    ...productUrls,
+    ...blogPostUrls,
+    ...categoryUrls
+  ];
 } 

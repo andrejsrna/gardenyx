@@ -21,25 +21,30 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
     return null;
   }
 
-  const handleScroll = (event: MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    event.preventDefault();
-    const targetElement = document.getElementById(targetId);
+  const handleLinkClick = (event: MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    // We don't prevent default, allowing the browser to navigate to the anchor first.
+    
+    // We then run a correction check after a delay to account for any layout shifts.
+    setTimeout(() => {
+      const targetElement = document.getElementById(targetId);
+      if (!targetElement) return;
 
-    if (targetElement) {
-      const offset = 100;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = targetElement.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
+      const headerHeight = 120; // Estimated height of the sticky header in pixels.
+      const targetRect = targetElement.getBoundingClientRect();
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      // If the element is hidden or partially hidden behind the sticky header...
+      if (targetRect.top < headerHeight) {
+        // ...scroll again to the correct position.
+        const offsetPosition = window.pageYOffset + targetRect.top - headerHeight;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth',
+        });
+      }
+    }, 300); // A generous delay to ensure layout is stable.
 
-      // Close the accordion after clicking a link
-      setIsOpen(false);
-    }
+    // Close the accordion
+    setIsOpen(false);
   };
 
   return (
@@ -51,7 +56,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       >
         <List className="w-5 h-5 text-green-600" />
         <span className="font-semibold text-gray-900">Obsah článku</span>
-        <ChevronDown 
+        <ChevronDown
           className={`w-5 h-5 text-gray-400 ml-auto transition-transform duration-300 ${
             isOpen ? 'transform rotate-180' : ''
           }`}
@@ -66,13 +71,13 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
         <nav className="p-4" aria-label="Obsah článku">
           <ul className="space-y-2">
             {headings.map((heading, index) => (
-              <li 
-                key={index} 
+              <li
+                key={index}
                 className={`pl-${(heading.level - 1) * 4} transition-colors duration-150`}
               >
                 <Link
                   href={`#${heading.id}`}
-                  onClick={(e) => handleScroll(e, heading.id)}
+                  onClick={(e) => handleLinkClick(e, heading.id)}
                   className="block py-1.5 px-3 text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-all duration-150"
                 >
                   {heading.text}
