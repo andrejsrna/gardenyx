@@ -413,7 +413,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
       </article>
 
       {/* Related Blog Posts - Real Data */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4">
         <BlogDataProvider 
           currentPostId={post.id}
           postTitle={decode(post.title.rendered.replace(/<[^>]*>/g, ''))}
@@ -434,10 +434,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
         topic={postTopic}
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:py-0 md:py-12">
-        <div className="sm:mt-0 md:mt-12 pt-8 border-t">
-          <CTA />
-        </div>
+      <div className="max-w-4xl mx-auto px-4 mt-12 md:mt-0">
+        <CTA />
       </div>
 
       <Toast />
