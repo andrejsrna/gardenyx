@@ -240,31 +240,6 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         }
     };
 
-    useEffect(() => {
-        if (lastActionRef.current) {
-            const item = items.find(i => i.id === lastActionRef.current?.itemId);
-            if (item) {
-                const message = lastActionRef.current.type === 'add'
-                    ? `${item.name} bol pridaný do košíka`
-                    : `Množstvo pre ${item.name} bolo aktualizované`;
-                toast.success(message);
-            }
-            lastActionRef.current = null;
-        }
-    }, [items]);
-
-    const applyPendingCoupon = useCallback(() => {
-        const pending = localStorage.getItem('pendingCoupon');
-        if (pending) {
-            applyCoupon(pending);
-            localStorage.removeItem('pendingCoupon');
-        }
-    }, [applyCoupon]);
-
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const totalPrice = Math.max(0, subtotal - discountAmount);
-
     const addToCart = useCallback((item: CartItem) => {
         const itemWithOriginalPrice = {...item, price: item.price};
 
@@ -307,11 +282,12 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             });
 
             if (!existingItem) {
-                trackConversion('ADD_TO_CART_CONVERSION_ID', trackValue);
+                trackConversion('c1xXCLfG9ZgZEJ2x7aU9', trackValue);
             }
             return updatedItems;
         });
-    }, []);
+        openCart();
+    }, [openCart]);
 
     const removeFromCart = useCallback((itemId: number) => {
         setItems(prevItems => prevItems.filter(item => item.id !== itemId));
@@ -324,46 +300,62 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         }
         setItems(prevItems =>
             prevItems.map(item =>
-                item.id === itemId ? {...item, quantity} : item
+                item.id === itemId ? { ...item, quantity } : item
             )
         );
-        lastActionRef.current = {type: 'update', itemId: itemId};
+        lastActionRef.current = { type: 'update', itemId };
     }, [removeFromCart]);
 
     const clearCart = useCallback(() => {
-        ("[CartContext] clearCart called");
         setItems([]);
-        removeCoupon();
-        localStorage.removeItem('abandonedCart');
-        setLastSavedCart(null);
-    }, [removeCoupon]);
+        setAppliedCoupon(null);
+        setDiscountAmount(0);
+        localStorage.removeItem('cart');
+        localStorage.removeItem('appliedCoupon');
+        toast.info("Košík bol vyprázdnený");
+    }, []);
 
-    const value = {
-        items,
-        totalItems,
-        totalPrice,
-        subtotal,
-        discountAmount,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        saveCartWithEmail,
-        appliedCoupon,
-        couponType,
-        couponAmountRaw,
-        applyPendingCoupon,
-        applyCoupon,
-        removeCoupon,
-        exitCoupon,
-        applyExitCoupon,
-        isCartOpen,
-        openCart,
-        closeCart,
-    };
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalPrice = Math.max(0, subtotal - discountAmount);
+
+    const applyPendingCoupon = useCallback(() => {
+        const pendingCoupon = localStorage.getItem('pendingCoupon');
+        if (pendingCoupon) {
+            applyCoupon(pendingCoupon);
+            localStorage.removeItem('pendingCoupon');
+        }
+    }, [applyCoupon]);
+
+    useEffect(() => {
+        if (lastActionRef.current) {
+            lastActionRef.current = null;
+        }
+    }, [items]);
 
     return (
-        <CartContext.Provider value={value}>
+        <CartContext.Provider value={{
+            items,
+            totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
+            totalPrice,
+            subtotal,
+            discountAmount,
+            appliedCoupon,
+            couponType,
+            couponAmountRaw,
+            addToCart,
+            removeFromCart,
+            updateQuantity,
+            clearCart,
+            saveCartWithEmail,
+            applyPendingCoupon,
+            applyCoupon,
+            removeCoupon,
+            exitCoupon,
+            applyExitCoupon,
+            isCartOpen,
+            openCart,
+            closeCart
+        }}>
             {children}
         </CartContext.Provider>
     );

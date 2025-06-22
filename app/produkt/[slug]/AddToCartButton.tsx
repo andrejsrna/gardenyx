@@ -81,6 +81,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       </div>
       
       <button
+        id="add-to-cart-top"
         onClick={handleAddToCart}
         className="w-full px-8 py-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg"
       >

@@ -1,3 +1,5 @@
+'use client';
+
 import { Pill, Clock, Droplets, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -22,6 +24,18 @@ const ingredients: Ingredient[] = [
 ];
 
 export default function Composition() {
+  const handleOrderClick = () => {
+    const addToCartButton = document.getElementById('add-to-cart-top');
+    if (addToCartButton) {
+      addToCartButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Give it a moment to scroll before clicking
+      setTimeout(() => {
+        addToCartButton.click();
+      }, 500); // 500ms delay
+    }
+  };
+
   return (
     <section className="bg-gray-50 py-16 sm:py-24">
       <div className="container mx-auto px-4">
@@ -115,13 +129,13 @@ export default function Composition() {
             
              {/* CTA Button as a footer of the card */}
              <div className="p-6 bg-gray-50/50 border-t border-gray-200/80 text-center">
-                 <Link
-                    href="/kupit"
+                 <button
+                    onClick={handleOrderClick}
                     className="inline-flex items-center justify-center gap-2 bg-green-600 text-white py-3 px-8 rounded-lg font-semibold hover:bg-green-700 transition-colors group text-base"
                   >
                     Objednať kĺbovú výživu
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </Link>
+                  </button>
              </div>
 
           </div>
