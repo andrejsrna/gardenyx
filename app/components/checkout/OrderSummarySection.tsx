@@ -46,7 +46,7 @@ export default function OrderSummarySection({
   const total = subtotal + (shippingCost ?? 0);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm sticky top-4">
+    <div className="bg-white p-6 rounded-lg shadow-sm sticky top-20">
       <h2 className="text-xl font-semibold mb-4">Súhrn objednávky</h2>
       
       {/* Cart Items */}

@@ -152,6 +152,12 @@ export interface WordPressCategory {
   meta: Array<{ key: string; value: unknown; }>;
 }
 
+export interface WordPressMedia {
+  id: number;
+  source_url: string;
+  alt_text: string;
+}
+
 export interface PaginatedPosts {
   posts: WordPressPost[];
   totalPages: number;
@@ -545,6 +551,37 @@ export const getCategoryBySlug = async (slug: string): Promise<WordPressCategory
     return categories[0] || null;
   } catch (error) {
     logError(`getCategoryBySlug(${slug})`, error);
+    return null;
+  }
+};
+
+export interface WooCommerceProductCategory {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
+}
+
+export const getProductCategories = async (): Promise<WooCommerceProductCategory[]> => {
+  try {
+    const url = getWooCommerceUrl('products/categories', { per_page: 100 });
+    const response = await fetch(url, createFetchOptions());
+    return await handleApiResponse<WooCommerceProductCategory[]>(response, 'Failed to fetch product categories');
+  } catch (error) {
+    logError('getProductCategories', error);
+    return [];
+  }
+};
+
+export const getMediaDetails = async (id: number): Promise<WordPressMedia | null> => {
+  if (!id) return null;
+  
+  try {
+    const url = buildWordPressUrl(`media/${id}`);
+    const response = await fetch(url, createFetchOptions());
+    return await handleApiResponse<WordPressMedia>(response, `Failed to fetch media details for ID ${id}`);
+  } catch (error) {
+    logError(`getMediaDetails(${id})`, error);
     return null;
   }
 };

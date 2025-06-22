@@ -61,34 +61,32 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center border-2 rounded-lg bg-white justify-between">
-          <button
-            onClick={() => setQuantity(q => Math.max(1, q - 1))}
-            className="p-3 text-gray-600 hover:text-green-600 transition-colors"
-            aria-label="Znížiť množstvo"
-          >
-            <Minus className="w-5 h-5" />
-          </button>
-          <span className="text-center font-semibold text-lg">{quantity}</span>
-          <button
-            onClick={() => setQuantity(q => q + 1)}
-            className="p-3 text-gray-600 hover:text-green-600 transition-colors"
-            aria-label="Zvýšiť množstvo"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        </div>
-        
+    <div className="space-y-4">
+      <div className="flex items-center border-2 rounded-lg bg-white justify-between">
         <button
-          onClick={handleAddToCart}
-          className="w-full px-8 py-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg"
+          onClick={() => setQuantity(q => Math.max(1, q - 1))}
+          className="p-3 text-gray-600 hover:text-green-600 transition-colors"
+          aria-label="Znížiť množstvo"
         >
-          <ShoppingCart className="w-6 h-6" />
-          <span>Pridať do košíka</span>
+          <Minus className="w-5 h-5" />
+        </button>
+        <span className="text-center font-semibold text-lg">{quantity}</span>
+        <button
+          onClick={() => setQuantity(q => q + 1)}
+          className="p-3 text-gray-600 hover:text-green-600 transition-colors"
+          aria-label="Zvýšiť množstvo"
+        >
+          <Plus className="w-5 h-5" />
         </button>
       </div>
+      
+      <button
+        onClick={handleAddToCart}
+        className="w-full px-8 py-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg"
+      >
+        <ShoppingCart className="w-6 h-6" />
+        <span>Pridať do košíka</span>
+      </button>
 
       <div className="text-sm text-center text-gray-500">
         Na sklade: <span className="font-medium text-green-600">Dostupné</span>

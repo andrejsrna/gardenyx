@@ -74,7 +74,7 @@ export default function CTAWithContent() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">Doprava zadarmo</p>
-                    <p className="text-sm text-gray-500">Pri nákupe nad 40€</p>
+                    <p className="text-sm text-gray-500">Pri nákupe nad 39,99€</p>
                   </div>
                 </div>
 

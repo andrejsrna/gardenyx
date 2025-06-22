@@ -16,10 +16,10 @@ export async function generateMetadata(): Promise<Metadata> {
     
     return {
       title: parser.getTitle() || 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-      description: parser.getMetaTag('description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+      description: parser.getMetaTag('description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
       openGraph: {
         title: parser.getMetaTag('og:title') || 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-        description: parser.getMetaTag('og:description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+        description: parser.getMetaTag('og:description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
         url: parser.getMetaTag('og:url') || `${siteUrl}/kupit`,
         siteName: parser.getMetaTag('og:site_name') || 'Najsilnejšia kĺbová výživa',
         images: parser.getMetaTag('og:image') 
@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
       twitter: {
         card: 'summary_large_image',
         title: parser.getMetaTag('twitter:title') || 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-        description: parser.getMetaTag('twitter:description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+        description: parser.getMetaTag('twitter:description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
         images: parser.getMetaTag('twitter:image') 
           ? [{ url: parser.getMetaTag('twitter:image')! }]
           : [`${siteUrl}/og-image-shop.jpg`],
@@ -71,10 +71,10 @@ export async function generateMetadata(): Promise<Metadata> {
   // Fallback metadata if RankMath data is not available
   return {
     title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-    description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+    description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
     openGraph: {
       title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-      description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+      description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
       url: `${siteUrl}/kupit`,
       siteName: 'Najsilnejšia kĺbová výživa',
       images: [
@@ -90,7 +90,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: 'summary_large_image',
       title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
-      description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 24 hodín.',
+      description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
       images: [`${siteUrl}/og-image-shop.jpg`],
     },
     alternates: {

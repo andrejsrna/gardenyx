@@ -1,10 +1,11 @@
-import { getWooCommerceUrl, WooCommerceProduct } from '@/app/lib/wordpress';
+import { getWooCommerceUrl, WooCommerceProduct, getMediaDetails } from '@/app/lib/wordpress';
 import AddToCartButton from './AddToCartButton';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CheckCircle, CreditCard } from 'lucide-react';
 import ProductSchema from '@/app/components/seo/ProductSchema';
+import Composition from '@/app/components/Composition';
 
 interface ProductPageProps {
   params: Promise<{
@@ -93,17 +94,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
+  const mediaDetails = await getMediaDetails(product.images[0]?.id);
+  const imageUrl = mediaDetails?.source_url || product.images[0]?.src;
+
   const hasDiscount = product.sale_price !== '';
   const price = parseFloat(product.price);
   const regularPrice = parseFloat(product.regular_price);
   const discount = hasDiscount ? Math.round((1 - price / regularPrice) * 100) : 0;
 
   const benefits = [
-    'Doprava zadarmo nad 40€',
-    'Expresné doručenie do 24h',
+    'Doprava zadarmo nad 39€',
+    'Expresné doručenie do 48h',
     'Bezpečný nákup',
     '14 dní na vrátenie'
   ];
+
+const showComposition = ['Najsilnejšia kĺbová výživa', 'Najsilnejšej kĺbovej výživy', 'Joint Boost', 'JointBoost'].some(name => 
+  product.name.includes(name)
+);
 
   return (
     <>
@@ -111,14 +119,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <div className="min-h-screen bg-gray-50 py-8 md:py-12">
         <div className="container mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          <div className="grid md:grid-cols-2 gap-0">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
             {/* Left Column - Image */}
             <div className="relative aspect-square md:aspect-auto md:h-full bg-white p-8 flex items-center justify-center">
-              {product.images[0] && (
-                <div className="relative w-full h-full max-w-lg mx-auto">
+              {imageUrl && (
+                <div className="relative w-full h-full mx-auto">
                   <Image
-                    src={product.images[0].src}
-                    alt={product.images[0].alt || product.name}
+                    src={imageUrl}
+                    alt={product.images[0]?.alt || product.name}
                     fill
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -134,7 +142,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             {/* Right Column - Product Info */}
-            <div className="p-8 lg:p-12 flex flex-col h-full">
+            <div className="p-8 lg:p-12 flex flex-col h-full md:col-span-2">
               <div className="flex-1">
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
                   {product.name}
@@ -197,13 +205,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
 
         {/* Product Description */}
-        <div className="mt-8 bg-white rounded-2xl shadow-sm p-8 lg:p-12">
-          <h2 className="text-2xl font-bold mb-6">Popis produktu</h2>
-          <div 
-            className="prose prose-lg max-w-none prose-green"
-            dangerouslySetInnerHTML={{ __html: product.description }}
-          />
-        </div>
+        {!showComposition && product.description && (
+          <div className="mt-8 bg-white rounded-2xl shadow-sm p-8 lg:p-12">
+            <h2 className="text-2xl font-bold mb-6">Popis produktu</h2>
+            <div 
+              className="prose prose-lg max-w-none prose-green"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
+          </div>
+        )}
+
+        {showComposition && <Composition />}
       </div>
     </div>
     </>

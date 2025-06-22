@@ -86,28 +86,6 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
           </h3>
         </Link>
 
-        <div
-          className="text-sm text-gray-600 mb-3 line-clamp-2 flex-grow min-h-[2.5em]"
-          dangerouslySetInnerHTML={{ __html: product.short_description }}
-        />
-
-        {/* Dávkovanie info */}
-        <div className="bg-gray-50 rounded-lg p-2 mb-4">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1">
-              <span className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold">30</span>
-              <span className="text-gray-600">tabliet</span>
-            </div>
-            <div className="text-gray-400">•</div>
-            <div className="flex items-center gap-1">
-              <span className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold">1</span>
-              <span className="text-gray-600">denne</span>
-            </div>
-            <div className="text-gray-400">•</div>
-            <span className="text-green-600 font-medium">30 dní</span>
-          </div>
-        </div>
-
         <div className="mt-auto">
           <div className="flex items-baseline gap-2 mb-4">
             <span className="text-2xl font-bold text-gray-800">
@@ -120,25 +98,23 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-3">
             <Link
               href={`/produkt/${product.slug}`}
               onClick={handleViewDetail}
-              className="text-center px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm"
+              className="text-center w-full px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm"
             >
               Detail produktu
             </Link>
-            <div className="flex flex-col">
-              <button
-                onClick={() => handleAddToCart(product)}
-                className="text-center w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm shadow-md hover:shadow-lg"
-              >
-                Pridať do košíka
-              </button>
-              {appliedCoupon && (
-                <span className="text-xs text-green-700 text-center mt-1">so zľavovým kupónom</span>
-              )}
-            </div>
+            <button
+              onClick={() => handleAddToCart(product)}
+              className="text-center w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm shadow-md hover:shadow-lg"
+            >
+              Pridať do košíka
+            </button>
+            {appliedCoupon && (
+              <span className="text-xs text-green-700 text-center -mt-2">so zľavovým kupónom</span>
+            )}
           </div>
         </div>
       </div>
