@@ -108,40 +108,37 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
           </div>
         </div>
 
-        <div className="mt-auto"> {/* Ensure price and buttons are at the bottom */}
+        <div className="mt-auto">
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-2xl font-bold text-green-600">
+            <span className="text-2xl font-bold text-gray-800">
               {price.toFixed(2)} €
             </span>
             {hasDiscount && (
-              <span className="text-sm text-gray-500 line-through">
+              <span className="text-base text-gray-500 line-through">
                 {regularPrice.toFixed(2)} €
               </span>
             )}
           </div>
 
-          {appliedCoupon && (
-            <div className="bg-green-50 border border-green-100 rounded-lg p-2 mb-4 text-center">
-              <p className="text-sm text-green-700">
-                Kúpte so zľavovým kupónom
-              </p>
-            </div>
-          )}
-
-          <div className="flex items-center justify-between gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <Link
               href={`/produkt/${product.slug}`}
-              className="text-center px-4 py-2 border-2 border-green-600 text-green-600 font-medium rounded-lg hover:bg-green-600 hover:text-white transition-colors duration-200 text-sm"
               onClick={handleViewDetail}
+              className="text-center px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm"
             >
-              Detail
+              Detail produktu
             </Link>
-            <button
-              onClick={() => handleAddToCart(product)}
-              className="text-center px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm"
-            >
-              Kúpiť
-            </button>
+            <div className="flex flex-col">
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="text-center w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm shadow-md hover:shadow-lg"
+              >
+                Pridať do košíka
+              </button>
+              {appliedCoupon && (
+                <span className="text-xs text-green-700 text-center mt-1">so zľavovým kupónom</span>
+              )}
+            </div>
           </div>
         </div>
       </div>

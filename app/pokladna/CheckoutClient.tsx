@@ -1,7 +1,7 @@
 'use client';
 
 import * as Sentry from '@sentry/nextjs';
-import Script from 'next/script';
+import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { ZodError } from 'zod';
@@ -41,7 +41,7 @@ import { updateShippingFromBilling, translateFieldName } from '../lib/checkout/u
 import { useCheckoutForm } from '../hooks/checkout';
 
 export default function CheckoutClient() {
-  const { items, totalPrice, clearCart, addToCart, discountAmount } = useCart();
+  const { items, totalPrice, clearCart, addToCart, discountAmount, removeFromCart } = useCart();
   const { customerData } = useAuth();
   const { consent, hasConsented } = useCookieConsent();
 
@@ -500,6 +500,25 @@ export default function CheckoutClient() {
     image: item.image || undefined,
   }));
 
+  if (items.length === 0) {
+    return (
+      <div className="min-h-[50vh] bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-8 bg-white rounded-lg shadow-sm">
+          <h2 className="text-2xl font-semibold mb-4">Váš košík je prázdny</h2>
+          <p className="text-gray-600 mb-6">
+            Vyzerá to, že ste zatiaľ do košíka nič nepridali.
+          </p>
+          <Link
+            href="/kupit"
+            className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
+          >
+            Prejsť na produkty
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="min-h-screen bg-gray-50 py-8">
@@ -578,6 +597,7 @@ export default function CheckoutClient() {
                 isFormValid={isFormValid}
                 onSubmit={handleSubmit}
                 onCustomerNoteChange={handleCustomerNoteChange}
+                onRemoveItem={removeFromCart}
               />
             </div>
           </div>
@@ -621,12 +641,6 @@ export default function CheckoutClient() {
           </button>
         </div>
       )}
-
-      {/* Packeta script */}
-      <Script 
-        src="https://widget.packeta.com/v6/www/js/library.js" 
-        strategy="lazyOnload"
-      />
     </>
   );
 } 

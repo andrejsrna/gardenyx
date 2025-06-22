@@ -2,7 +2,10 @@ import { MetadataRoute } from 'next';
 import { WooCommerceProduct, WordPressPost, WordPressCategory } from './lib/wordpress';
 
 const BASE_URL = 'https://najsilnejsiaklbovavyziva.sk';
+
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'}/wp-json`;
+const WOO_CONSUMER_KEY = process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY || '';
+const WOO_CONSUMER_SECRET = process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET || '';
 
 // Helper function to fetch data from an API with revalidation
 async function fetchApiData<T>(url: string, errorMessage: string): Promise<T[]> {
@@ -20,7 +23,13 @@ async function fetchApiData<T>(url: string, errorMessage: string): Promise<T[]> 
 
 // Fetch all published WooCommerce products
 const getProducts = () => {
-  const url = `${API_BASE_URL}/wc/v3/products?per_page=100&status=publish`;
+  const params = new URLSearchParams({
+    per_page: '100',
+    status: 'publish',
+    consumer_key: WOO_CONSUMER_KEY,
+    consumer_secret: WOO_CONSUMER_SECRET,
+  });
+  const url = `${API_BASE_URL}/wc/v3/products?${params.toString()}`;
   return fetchApiData<WooCommerceProduct>(url, 'Failed to fetch products');
 };
 

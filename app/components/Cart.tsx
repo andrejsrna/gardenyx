@@ -188,8 +188,19 @@ export default function Cart({onCloseAction}: CartProps) {
 
                 <Link
                     href="/pokladna"
-                    onClick={onCloseAction}
-                    className="block w-full text-center px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors text-base shadow-sm"
+                    onClick={(e) => {
+                      if (totalItems === 0) {
+                        e.preventDefault();
+                      } else {
+                        onCloseAction();
+                      }
+                    }}
+                    className={`block w-full text-center px-4 py-3 font-semibold rounded-lg transition-colors text-base shadow-sm ${
+                      totalItems > 0
+                        ? 'bg-green-600 text-white hover:bg-green-700'
+                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    }`}
+                    aria-disabled={totalItems === 0}
                 >
                     Pokračovať do pokladne
                 </Link>

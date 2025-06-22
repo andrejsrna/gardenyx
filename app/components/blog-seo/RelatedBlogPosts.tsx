@@ -124,7 +124,7 @@ export default function RelatedBlogPosts({
   };
 
   return (
-    <section className={`bg-gray-50 rounded-2xl p-8 my-12 border border-gray-200 ${className}`}>
+    <section className={`bg-gray-50 rounded-2xl p-8 sm:my-0 md:my-12 border border-gray-200 ${className}`}>
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-3 flex items-center">
           <Star className="w-6 h-6 mr-2 text-green-600" />

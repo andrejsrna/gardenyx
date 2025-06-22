@@ -3,7 +3,7 @@ import AddToCartButton from './AddToCartButton';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, CreditCard } from 'lucide-react';
 import ProductSchema from '@/app/components/seo/ProductSchema';
 
 interface ProductPageProps {
@@ -140,18 +140,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   {product.name}
                 </h1>
 
-                <div className="flex items-baseline gap-3 mb-6">
-                  <span className="text-4xl font-bold text-green-600">
+                <div className="flex items-baseline gap-4 mb-6">
+                  <span className="text-4xl font-bold text-gray-800">
                     {price.toFixed(2)} €
                   </span>
                   {hasDiscount && (
-                    <span className="text-xl text-gray-400 line-through">
+                    <span className="text-2xl text-gray-400 line-through">
                       {regularPrice.toFixed(2)} €
-                    </span>
-                  )}
-                  {hasDiscount && (
-                    <span className="text-sm font-medium text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                      Ušetríte {((regularPrice - price)).toFixed(2)} €
                     </span>
                   )}
                 </div>
@@ -160,36 +155,41 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   className="prose prose-lg prose-green mb-8"
                   dangerouslySetInnerHTML={{ __html: product.short_description }}
                 />
-
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                  {benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-center gap-2 text-gray-600">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                      <span className="text-sm">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
               </div>
 
-              <div className="space-y-6">
+              <div className="mt-auto space-y-6">
                 <AddToCartButton product={product} />
+
+                <div className="border-t border-gray-200 pt-6 space-y-4">
+                  <div className="p-4 bg-green-50/50 rounded-lg border border-green-200/60">
+                    <div className="flex items-center gap-3">
+                      <svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
+                        <path d="M0 0H24V18H0V0Z" fill="white"/>
+                        <path d="M0 6H24V18H0V6Z" fill="#0D5EAF"/>
+                        <path d="M0 12H24V18H0V12Z" fill="#D72828"/>
+                        <path fillRule="evenodd" clipRule="evenodd" d="M12.7909 9.00002C12.7909 10.2801 11.7779 11.2941 10.5 11.2941C9.22213 11.2941 8.20911 10.2801 8.20911 9.00002C8.20911 7.71992 9.22213 6.70593 10.5 6.70593C11.7779 6.70593 12.7909 7.71992 12.7909 9.00002ZM6.38184 14.1177V9.64708C6.38184 9.64708 6.91366 7.23532 7.74548 6.1765C8.5773 5.11768 10.5 3.52944 10.5 3.52944C10.5 3.52944 12.4227 5.11768 13.2545 6.1765C14.0864 7.23532 14.6182 9.64708 14.6182 9.64708V14.1177H6.38184Z" fill="white" stroke="#D72828" strokeWidth="0.7"/>
+                        <path d="M10.5 9.00002C10.5 9.1768 10.3305 9.32355 10.1136 9.32355V10.1471C10.7955 10.1471 11.3455 9.62355 11.3455 9.00002H10.5Z" fill="#0D5EAF"/>
+                        <path d="M10.8864 8.67649C10.8864 8.85327 10.7168 9.00002 10.5 9.00002V9.82355C11.1818 9.82355 11.7318 9.30002 11.7318 8.67649H10.8864Z" fill="#0D5EAF"/>
+                      </svg>
+                      <p className="font-semibold text-green-800 text-base">
+                        Najsilnejšia kĺbová výživa je <span className="font-bold">slovenský produkt</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-3 pt-2">
+                    {benefits.map((benefit, index) => (
+                      <div key={index} className="flex items-center gap-2 text-gray-600">
+                        <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                        <span className="text-sm">{benefit}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 
                 <div className="text-sm text-gray-500 flex items-center justify-center gap-2">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-5 w-5" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7a4 4 0 00-8 0v4h8z" 
-                    />
-                  </svg>
-                  Bezpečná platba kartou alebo prevodom
+                  <CreditCard className="h-5 w-5" />
+                  <span>Platba kartou alebo na dobierku</span>
                 </div>
               </div>
             </div>

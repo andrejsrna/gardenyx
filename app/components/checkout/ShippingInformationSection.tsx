@@ -1,8 +1,7 @@
 'use client';
 
 import { ChangeEvent } from 'react';
-import type { FormData, AddressComponents } from '../../lib/checkout/types';
-import GooglePlacesAutocomplete from '../GooglePlacesAutocomplete';
+import type { FormData } from '../../lib/checkout/types';
 
 interface ShippingInformationSectionProps {
   formData: FormData;
@@ -22,25 +21,7 @@ export default function ShippingInformationSection({
   sameAsShipping,
   onInputChange,
   onSameAsShippingChange,
-  onFormDataChange,
 }: ShippingInformationSectionProps) {
-  const handleAddressSelect = (address: AddressComponents) => {
-    const fullAddress = `${address.route || ''} ${address.streetNumber || ''}`.trim();
-    const newShipping = {
-      ...formData.shipping,
-      address_1: fullAddress,
-      city: address.locality || formData.shipping.city,
-      postcode: address.postalCode || formData.shipping.postcode,
-    };
-    
-    const newFormData = {
-      ...formData,
-      shipping: newShipping,
-    };
-    
-    onFormDataChange(newFormData);
-  };
-
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
       <h2 className="text-xl font-semibold mb-4">Adresa doručenia</h2>
@@ -123,21 +104,18 @@ export default function ShippingInformationSection({
             <label htmlFor="shipping-address_1" className="block text-sm font-medium text-gray-700">
               Adresa <span className="text-red-500">*</span>
             </label>
-            <GooglePlacesAutocomplete
+            <input
+              id="shipping-address_1"
+              name="address_1"
+              type="text"
               value={formData.shipping.address_1}
-              onChange={(value) => {
-                const newFormData = {
-                  ...formData,
-                  shipping: { ...formData.shipping, address_1: value },
-                };
-                onFormDataChange(newFormData);
-              }}
-              onPlaceSelect={handleAddressSelect}
-              placeholder="Zadajte adresu doručenia"
+              onChange={(e) => onInputChange(e, 'shipping')}
+              placeholder="Názov ulice a číslo domu"
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
                 formErrors?.['shipping.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               required
+              autoComplete="shipping street-address"
             />
           </div>
 

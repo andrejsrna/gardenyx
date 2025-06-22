@@ -58,45 +58,46 @@ export default function ShippingMethodsSection({
       <div className="space-y-3">
         {shippingMethods.map((method) => (
           <div key={method.id} className="relative">
-            <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+            <label
+              className="flex p-4 border rounded-lg cursor-pointer transition-colors has-[:checked]:border-green-600 has-[:checked]:bg-green-50/50"
+            >
               <input
                 type="radio"
                 name="shipping_method"
                 value={method.id}
                 checked={formData.shipping_method === method.id}
                 onChange={(e) => onInputChange(e, 'root')}
-                className="text-green-600 focus:ring-green-500"
+                className="h-4 w-4 mt-1 text-green-600 focus:ring-green-500 border-gray-300"
                 required
               />
               <div className="ml-3 flex-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{method.icon}</span>
-                    <span className="font-medium text-gray-900">{method.title}</span>
-                  </div>
-                  <span className="font-semibold text-gray-900">
-                    {method.price === 0 ? 'Zadarmo' : `${method.price.toFixed(2)} €`}
-                  </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{method.icon}</span>
+                  <span className="font-medium text-gray-900">{method.title}</span>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{method.description}</p>
+                <p className="text-base font-bold text-green-600 mt-2">
+                  {method.price === 0 ? 'ZADARMO' : `${method.price.toFixed(2)} €`}
+                </p>
               </div>
             </label>
             
-            {/* Packeta point selection */}
             {method.id === 'packeta_pickup' && formData.shipping_method === 'packeta_pickup' && (
-              <div className="mt-3 ml-8 p-3 bg-gray-50 rounded-lg">
+              <div className="mt-3 pl-12 pr-4">
                 {selectedPacketaPoint ? (
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900">{selectedPacketaPoint.name}</p>
-                      <p className="text-sm text-gray-600">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 p-3 bg-white border rounded-md">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm text-gray-900 truncate" title={selectedPacketaPoint.name}>
+                        {selectedPacketaPoint.name}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate" title={`${selectedPacketaPoint.street}, ${selectedPacketaPoint.city}, ${selectedPacketaPoint.zip}`}>
                         {selectedPacketaPoint.street}, {selectedPacketaPoint.city}, {selectedPacketaPoint.zip}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={onPacketaPointSelect}
-                      className="text-green-600 hover:text-green-700 font-medium text-sm"
+                      className="text-green-600 hover:underline font-medium text-sm flex-shrink-0 self-start md:self-center"
                     >
                       Zmeniť
                     </button>

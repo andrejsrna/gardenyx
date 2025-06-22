@@ -2,15 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, Lightbulb } from 'lucide-react';
-
-interface ContentSuggestion {
-  type: 'ingredient' | 'product' | 'blog' | 'guide';
-  title: string;
-  href: string;
-  description: string;
-  isHighPriority?: boolean;
-  ctaText?: string;
-}
+import { ContentSuggestion } from '../../lib/blog-suggestions';
 
 interface InlineContentSuggestionsProps {
   suggestions: ContentSuggestion[];

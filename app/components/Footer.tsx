@@ -41,7 +41,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-gradient-to-b from-white to-green-50">
-      <div className="container mx-auto px-4 pt-16 pb-8">
+      <div className="container mx-auto px-8 pt-16 pb-8 sm:pb-24">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
           {/* Company Info */}
@@ -218,9 +218,22 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Copyright */}
-          <div className="text-sm text-gray-600">
-            <p>Copyright © {new Date().getFullYear()} Najsilnejšia kĺbová výživa. Všetky práva vyhradené.</p>
+          {/* Copyright & Badge */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-sm text-gray-600">
+              <p>Copyright © {new Date().getFullYear()} Najsilnejšia kĺbová výživa. Všetky práva vyhradené.</p>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-700">
+              <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="20" height="15" fill="white"/>
+                <rect y="5" width="20" height="5" fill="#0D47A1"/>
+                <rect y="10" width="20" height="5" fill="#D50000"/>
+                <path d="M6 5.5L4.5 9H3L5.5 2L8 9H6.5L6 5.5Z" fill="white" transform="translate(1.5 -1)"/>
+                <path d="M6 5.5L4.5 9H3L5.5 2L8 9H6.5L6 5.5Z" stroke="#0D47A1" stroke-width="0.6" transform="translate(1.5 -1)"/>
+                <circle cx="5.5" cy="4" r="2.5" fill="none" stroke="#D50000" stroke-width="1.2" transform="translate(1.5 -1)"/>
+              </svg>
+              <span>Slovenský produkt</span>
+            </div>
           </div>
         </div>
       </div>

@@ -20,6 +20,7 @@ interface OrderSummarySectionProps {
   isFormValid: boolean;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onCustomerNoteChange: (note: string) => void;
+  onRemoveItem: (id: number) => void;
 }
 
 export default function OrderSummarySection({
@@ -29,6 +30,7 @@ export default function OrderSummarySection({
   isFormValid,
   onSubmit,
   onCustomerNoteChange,
+  onRemoveItem,
 }: OrderSummarySectionProps) {
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
@@ -37,11 +39,11 @@ export default function OrderSummarySection({
     if (isFreeShipping) return 0;
     if (formData.shipping_method === 'packeta_pickup') return SHIPPING_COST_PACKETA_PICKUP;
     if (formData.shipping_method === 'packeta_home') return SHIPPING_COST_PACKETA_HOME;
-    return 0;
+    return null;
   };
   
   const shippingCost = getShippingCost();
-  const total = subtotal + shippingCost;
+  const total = subtotal + (shippingCost ?? 0);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm sticky top-4">
@@ -50,7 +52,7 @@ export default function OrderSummarySection({
       {/* Cart Items */}
       <div className="space-y-3 mb-4">
         {cartItems.map((item) => (
-          <div key={item.id} className="flex items-center gap-3">
+          <div key={item.id} className="flex items-center gap-3 group">
             <div className="relative w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs overflow-hidden">
               {item.image ? (
                 <Image 
@@ -68,9 +70,19 @@ export default function OrderSummarySection({
               <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
               <p className="text-xs text-gray-500">Množstvo: {item.quantity}</p>
             </div>
-            <div className="text-sm font-medium text-gray-900">
+            <div className="text-sm font-medium text-gray-900 pr-2">
               {(item.price * item.quantity).toFixed(2)} €
             </div>
+            <button 
+              type="button"
+              onClick={() => onRemoveItem(item.id)}
+              className="text-gray-400 hover:text-red-500 transition-colors"
+              aria-label={`Odstrániť ${item.name}`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         ))}
       </div>
@@ -86,7 +98,11 @@ export default function OrderSummarySection({
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Doprava</span>
           <span className="font-medium">
-            {shippingCost === 0 ? 'Zadarmo' : `${shippingCost.toFixed(2)} €`}
+            {shippingCost === null 
+              ? <span className="text-xs text-gray-500">Ešte ste si nevybrali dopravu</span> 
+              : shippingCost === 0 
+              ? 'Zadarmo' 
+              : `${shippingCost.toFixed(2)} €`}
           </span>
         </div>
         

@@ -46,11 +46,24 @@ export default function CTA() {
             </Link>
           </div>
 
-          {/* Optional: Add trust indicators */}
-          <div className="pt-8">
-            <p className="text-sm text-gray-500">
-              Certifikované RÚVZ ・ Slovenský produkt ・ Rýchle doručenie
-            </p>
+          {/* Trust Indicators */}
+          <div className="pt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+            <div className="flex items-center gap-2 text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm font-medium">Certifikované RÚVZ</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" />
+              </svg>
+              <span className="text-sm font-medium">Slovenský produkt</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Truck className="h-5 w-5 text-green-600" />
+              <span className="text-sm font-medium">Rýchle doručenie</span>
+            </div>
           </div>
         </div>
       </div>

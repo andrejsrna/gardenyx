@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import { cookies } from 'next/headers';
+import { Suspense } from 'react';
 import { Toaster } from 'sonner';
 import CookieConsent from './components/CookieConsent';
 import ExitIntentPopupLoader from './components/ExitIntentPopupLoader';
@@ -8,7 +8,6 @@ import FacebookPixel from './components/FacebookPixel';
 import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
-import GoogleMaps from './components/GoogleMaps';
 import Header from './components/Header';
 import OrganizationSchema from './components/seo/OrganizationSchema';
 import WebSiteSchema from './components/seo/WebSiteSchema';
@@ -56,19 +55,11 @@ export const metadata: Metadata = {
   }
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const consentCookie = cookieStore.get('cookieConsent');
-  let showConsentBanner = true;
-
-  if (consentCookie) {
-    showConsentBanner = false;
-  }
-
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
@@ -76,24 +67,25 @@ export default async function RootLayout({
         <WebSiteSchema />
       </head>
       <body className={`${inter.variable} antialiased`}>
-        <CookieConsentProvider>
-          <AuthProvider>
-            <CartProvider>
-              <Header />
-              <main>
-                {children}
-              </main>
-              <Footer />
-              <ExitIntentPopupLoader />
-              <Toaster/>
-              <FacebookPixel />
-              <GoogleAnalytics />
-              <GoogleAds />
-              <GoogleMaps />
-              {showConsentBanner && <CookieConsent />}
-            </CartProvider>
-          </AuthProvider>
-        </CookieConsentProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <CookieConsentProvider>
+            <AuthProvider>
+              <CartProvider>
+                <Header />
+                <main>
+                  {children}
+                </main>
+                <Footer />
+                <ExitIntentPopupLoader />
+                <Toaster/>
+                <FacebookPixel />
+                <GoogleAnalytics />
+                <GoogleAds />
+                <CookieConsent />
+              </CartProvider>
+            </AuthProvider>
+          </CookieConsentProvider>
+        </Suspense>
       </body>
     </html>
   );

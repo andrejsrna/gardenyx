@@ -17,6 +17,7 @@ import BlogAnalytics from '../components/blog-seo/BlogAnalytics';
 import { getBlogBreadcrumbs } from '../lib/internal-linking-data';
 import { parseHTML } from '../lib/html-parser';
 import { getPostBySlug, getRankMathSEO, WordPressPost } from '../lib/wordpress';
+import { FaWhatsapp } from 'react-icons/fa';
 
 if (process.env.NODE_ENV === 'development') {
   Sentry.captureException(new Error('Test error from Sentry integration'));
@@ -360,7 +361,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
         </div>
       </div>
 
-      <article className="max-w-4xl mx-auto px-4 py-12">
+      <article className="max-w-4xl mx-auto px-8 sm:my-0 sm:mt-12 mt-12 md:py-12">
         {headings.length > 1 && (
           <div className="mb-10">
             <TableOfContents headings={headings} />
@@ -399,15 +400,13 @@ export default async function BlogPost({ params }: { params: tParams }) {
               Facebook
             </a>
             <a
-              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL + '/' + slugPath)}&text=${encodeURIComponent(post.title.rendered)}`}
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.title.rendered + " " + process.env.NEXT_PUBLIC_SITE_URL + '/' + slugPath)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-              </svg>
-              Twitter
+              <FaWhatsapp className="w-5 h-5" />
+              WhatsApp
             </a>
           </div>
         </div>
@@ -435,8 +434,10 @@ export default async function BlogPost({ params }: { params: tParams }) {
         topic={postTopic}
       />
 
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <CTA />
+      <div className="max-w-4xl mx-auto px-4 sm:py-0 md:py-12">
+        <div className="sm:mt-0 md:mt-12 pt-8 border-t">
+          <CTA />
+        </div>
       </div>
 
       <Toast />

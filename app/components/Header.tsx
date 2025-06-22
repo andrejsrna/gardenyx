@@ -41,7 +41,7 @@ export default function Header() {
   }, [customerData]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b">
+    <header className="sticky top-0 z-40 bg-white border-b">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="relative z-10">
@@ -112,7 +112,7 @@ export default function Header() {
               href="/kupit"
               className="px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
             >
-              Kúpiť teraz
+              Naše produkty
             </Link>
           </nav>
 
@@ -141,83 +141,116 @@ export default function Header() {
             <CartButton />
 
             <button
-              className="lg:hidden relative z-10"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label={isMobileMenuOpen ? "Zavrieť menu" : "Otvoriť menu"}
+              className="lg:hidden"
+              onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Otvoriť menu"
             >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6 text-gray-600" />
-              ) : (
-                <Menu className="w-6 h-6 text-gray-600" />
-              )}
+              <Menu className="w-6 h-6 text-gray-600" />
             </button>
           </div>
         </div>
       </div>
 
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-white z-40 lg:hidden">
-          <div className="container mx-auto px-4 pt-20">
-            <nav className="flex flex-col gap-4">
-              <Link
-                href="/casto-kladene-otazky"
-                className="text-xl text-gray-600 py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Často kladené otázky
+        <div className="fixed inset-0 bg-white z-50 lg:hidden">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-between items-center h-16">
+              <Link href="/" className="relative" onClick={() => setIsMobileMenuOpen(false)}>
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  width={150}
+                  height={40}
+                  style={{ height: '40px', width: '150px', objectFit: 'contain' }}
+                  className="w-auto"
+                />
               </Link>
-              <Link
-                href="/uzivanie"
-                className="text-xl text-gray-600 py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Užívanie
-              </Link>
-              <div>
-                <button
-                  className="flex items-center justify-between w-full text-xl text-gray-600 py-2"
-                  onClick={() => setIsIngredientsOpen(!isIngredientsOpen)}
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/moj-ucet"
+                  className="group relative flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors"
+                  title={customerData ? `Prihlásený ako ${customerData.first_name || customerData.billing?.first_name}` : "Môj účet"}
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Zloženie
-                  <ChevronDown className={`w-5 h-5 transition-transform ${isIngredientsOpen ? 'rotate-180' : ''}`} />
+                  {isLoading ? (
+                    <div className="w-6 h-6 animate-pulse bg-gray-200 rounded-full" />
+                  ) : customerData ? (
+                    <UserIcon className="w-6 h-6" />
+                  ) : (
+                    <UserIcon className="w-6 h-6" />
+                  )}
+                </Link>
+                <CartButton />
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Zavrieť menu"
+                >
+                  <X className="w-6 h-6 text-gray-600" />
                 </button>
-                {isIngredientsOpen && (
-                  <div className="pl-4 space-y-2">
-                    {INGREDIENTS_SUBMENU.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block text-gray-600 py-2"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {item.title}
-                      </Link>
-                    ))}
-                  </div>
-                )}
               </div>
-              <Link
-                href="/blog"
-                className="text-xl text-gray-600 py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Blog
-              </Link>
-              <Link
-                href="/kontakt"
-                className="text-xl text-gray-600 py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Kontakt
-              </Link>
-              <Link
-                href="/kupit"
-                className="text-xl text-center bg-green-600 text-white py-3 rounded-lg mt-4"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Kúpiť teraz
-              </Link>
-            </nav>
+            </div>
+            <div className="pt-8">
+              <nav className="flex flex-col gap-4">
+                <Link
+                  href="/casto-kladene-otazky"
+                  className="text-xl text-gray-600 py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Často kladené otázky
+                </Link>
+                <Link
+                  href="/uzivanie"
+                  className="text-xl text-gray-600 py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Užívanie
+                </Link>
+                <div>
+                  <button
+                    className="flex items-center justify-between w-full text-xl text-gray-600 py-2"
+                    onClick={() => setIsIngredientsOpen(!isIngredientsOpen)}
+                  >
+                    Zloženie
+                    <ChevronDown className={`w-5 h-5 transition-transform ${isIngredientsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isIngredientsOpen && (
+                    <div className="pl-4 space-y-2">
+                      {INGREDIENTS_SUBMENU.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="block text-gray-600 py-2"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {item.title}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <Link
+                  href="/blog"
+                  className="text-xl text-gray-600 py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Blog
+                </Link>
+                <Link
+                  href="/kontakt"
+                  className="text-xl text-gray-600 py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Kontakt
+                </Link>
+                <Link
+                  href="/kupit"
+                  className="text-xl text-center bg-green-600 text-white py-3 rounded-lg mt-4"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Naše produkty
+                </Link>
+              </nav>
+            </div>
           </div>
         </div>
       )}

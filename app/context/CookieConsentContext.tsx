@@ -51,6 +51,7 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
   const handleSetConsent = (newConsent: CookieConsent) => {
     setConsent(newConsent);
     setHasConsented(true);
+    setModalOpen(false);
     localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
   };
 

@@ -1,10 +1,8 @@
 'use client';
 
 import { ChangeEvent } from 'react';
-import type { FormData, AddressComponents } from '../../lib/checkout/types';
+import type { FormData } from '../../lib/checkout/types';
 import { sanitizePhone } from '../../lib/utils/sanitize';
-import GooglePlacesAutocomplete from '../GooglePlacesAutocomplete';
-import { updateShippingFromBilling } from '../../lib/checkout/utils';
 
 interface BillingInformationSectionProps {
   formData: FormData;
@@ -44,24 +42,6 @@ export default function BillingInformationSection({
     
     onFormDataChange(newFormData);
     setPhoneError(null);
-  };
-
-  const handleAddressSelect = (address: AddressComponents) => {
-    const fullAddress = `${address.route || ''} ${address.streetNumber || ''}`.trim();
-    const newBilling = {
-      ...formData.billing,
-      address_1: fullAddress,
-      city: address.locality || formData.billing.city,
-      postcode: address.postalCode || formData.billing.postcode,
-    };
-    
-    const newFormData = {
-      ...formData,
-      billing: newBilling,
-      ...(sameAsShipping && { shipping: updateShippingFromBilling(newBilling, formData.shipping) }),
-    };
-    
-    onFormDataChange(newFormData);
   };
 
   return (
@@ -152,23 +132,18 @@ export default function BillingInformationSection({
           <label htmlFor="billing-address_1" className="block text-sm font-medium text-gray-700">
             Adresa <span className="text-red-500">*</span>
           </label>
-          <GooglePlacesAutocomplete
+          <input
+            id="billing-address_1"
+            name="address_1"
+            type="text"
             value={formData.billing.address_1}
-            onChange={(value) => {
-              const newBilling = { ...formData.billing, address_1: value };
-              const newFormData = {
-                ...formData,
-                billing: newBilling,
-                ...(sameAsShipping && { shipping: updateShippingFromBilling(newBilling, formData.shipping) }),
-              };
-              onFormDataChange(newFormData);
-            }}
-            onPlaceSelect={handleAddressSelect}
-            placeholder="Zadajte vašu adresu"
+            onChange={onSyncedFieldChange}
+            placeholder="Názov ulice a číslo domu"
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               formErrors?.['billing.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
             }`}
             required
+            autoComplete="street-address"
           />
         </div>
 

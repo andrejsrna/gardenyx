@@ -43,8 +43,9 @@ export default function SmartBreadcrumbs({
             
             {isLast ? (
               <span 
-                className="text-gray-900 font-medium"
+                className="text-gray-900 font-medium max-w-[200px] truncate"
                 aria-current="page"
+                title={item.name}
               >
                 {isHome && <Home className="w-4 h-4 inline mr-1" />}
                 {item.name}

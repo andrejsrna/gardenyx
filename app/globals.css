@@ -63,3 +63,8 @@ body {
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
 }
+
+/* Z-index fix for Google Places Autocomplete dropdown */
+.pac-container {
+    z-index: 9999 !important;
+}

@@ -62,30 +62,30 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center border-2 rounded-lg bg-white">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center border-2 rounded-lg bg-white justify-between">
           <button
             onClick={() => setQuantity(q => Math.max(1, q - 1))}
             className="p-3 text-gray-600 hover:text-green-600 transition-colors"
             aria-label="Znížiť množstvo"
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="w-5 h-5" />
           </button>
-          <span className="w-12 text-center font-medium">{quantity}</span>
+          <span className="text-center font-semibold text-lg">{quantity}</span>
           <button
             onClick={() => setQuantity(q => q + 1)}
             className="p-3 text-gray-600 hover:text-green-600 transition-colors"
             aria-label="Zvýšiť množstvo"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
           </button>
         </div>
         
         <button
           onClick={handleAddToCart}
-          className="flex-1 px-8 py-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+          className="w-full px-8 py-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg"
         >
-          <ShoppingCart className="w-5 h-5" />
+          <ShoppingCart className="w-6 h-6" />
           <span>Pridať do košíka</span>
         </button>
       </div>

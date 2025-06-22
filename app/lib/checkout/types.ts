@@ -77,4 +77,5 @@ export interface AddressComponents {
   locality?: string;
   postalCode?: string;
   country?: string;
+  formattedAddress?: string;
 } 
