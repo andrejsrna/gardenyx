@@ -131,6 +131,15 @@ function shouldApplyRateLimit(pathname: string): boolean {
 
 export async function middleware(request: NextRequest) {
   try {
+    // Force HTTPS in production
+    if (process.env.NODE_ENV === 'production') {
+      const url = request.nextUrl.clone();
+      if (url.protocol === 'http:') {
+        url.protocol = 'https:';
+        return NextResponse.redirect(url);
+      }
+    }
+
     if (request.method === 'OPTIONS') {
       return new NextResponse(null, { status: 200, headers: corsHeaders });
     }
@@ -154,10 +163,6 @@ export async function middleware(request: NextRequest) {
     const nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
-
-    if (process.env.NODE_ENV === 'production' && !request.url.startsWith('https')) {
-      return NextResponse.redirect(`https://${request.headers.get('host')}${request.nextUrl.pathname}`);
-    }
 
     const url = new URL(request.url);
     const sanitizedParams = sanitizeUrlParams(url);
