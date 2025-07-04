@@ -60,6 +60,49 @@ function makeYouTubeEmbedsResponsive(html: string): string {
   });
 }
 
+function makeInstagramEmbedsResponsive(html: string): string {
+  if (!html) return '';
+
+  // Pattern to match Instagram embed blockquotes
+  const instagramPattern = /<blockquote[^>]*class="instagram-media"[^>]*>[\s\S]*?<\/blockquote>/gi;
+
+  return html.replace(instagramPattern, (match) => {
+    return `
+      <div class="instagram-embed-container relative w-full max-w-2xl mx-auto my-8">
+        ${match}
+      </div>
+    `;
+  });
+}
+
+function makeFacebookEmbedsResponsive(html: string): string {
+  if (!html) return '';
+
+  // Pattern to match Facebook embed iframes
+  const facebookPattern = /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?facebook\.com\/plugins\/([^"'&?\/\s]+)[^>]*><\/iframe>/gi;
+
+  return html.replace(facebookPattern, (match, pluginType) => {
+    const widthMatch = match.match(/width=["'](\d+)["']/i);
+    const heightMatch = match.match(/height=["'](\d+)["']/i);
+
+    const width = widthMatch ? parseInt(widthMatch[1]) : 500;
+    const height = heightMatch ? parseInt(heightMatch[1]) : 300;
+    const aspectRatio = (height / width) * 100;
+
+    return `
+      <div class="facebook-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
+        <iframe
+          src="${match.match(/src=["']([^"']+)["']/i)?.[1] || ''}"
+          class="absolute top-0 left-0 w-full h-full border-0"
+          title="Facebook ${pluginType}"
+          allow="encrypted-media"
+          allowfullscreen>
+        </iframe>
+      </div>
+    `;
+  });
+}
+
 function createSlug(text: string): string {
   return text
     .toLowerCase()
@@ -267,6 +310,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
   });
 
   content = makeYouTubeEmbedsResponsive(content);
+  content = makeInstagramEmbedsResponsive(content);
+  content = makeFacebookEmbedsResponsive(content);
 
   const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
     year: 'numeric',

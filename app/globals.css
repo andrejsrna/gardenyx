@@ -19,6 +19,30 @@ body {
   max-width: 100%;
 }
 
+/* Instagram Responsive Embed */
+.instagram-embed-container {
+  @apply my-8 rounded-xl overflow-hidden shadow-lg;
+  max-width: 100%;
+}
+
+.instagram-embed-container blockquote.instagram-media {
+  @apply rounded-xl overflow-hidden;
+  margin: 0 !important;
+  max-width: 100% !important;
+  min-width: auto !important;
+  width: 100% !important;
+}
+
+/* Facebook Responsive Embed */
+.facebook-embed-container {
+  @apply my-8 rounded-xl overflow-hidden shadow-lg;
+  max-width: 100%;
+}
+
+.facebook-embed-container iframe {
+  @apply rounded-xl;
+}
+
 /* Table of Contents styling */
 #ez-toc-container {
   @apply bg-gray-50 p-6 rounded-lg mb-8;
