@@ -55,11 +55,12 @@ const CSP_DIRECTIVES = {
     'https://facebook.com', 'https://najsilnejsiaklbovavyziva.sk',
     'https://*.googletagmanager.com', 'https://www.googletagmanager.com',
     'https://cdn.najsilnejsiaklbovavyziva.sk', 'https://*.gstatic.com',
-    'https://maps.gstatic.com'
+    'https://maps.gstatic.com', 'https://upload.wikimedia.org'
   ],
   frameSrc: [
     "'self'", 'https://js.stripe.com',
-    'https://widget.packeta.com', 'https://backup.widget.packeta.com'
+    'https://widget.packeta.com', 'https://backup.widget.packeta.com',
+    'https://www.youtube.com', 'https://youtube.com'
   ],
   connectSrc: [
     "'self'", 'https://api.stripe.com', 'https://maps.googleapis.com',

@@ -63,7 +63,6 @@ function makeYouTubeEmbedsResponsive(html: string): string {
             src="https://www.youtube.com/embed/${videoId}?rel=0"
             class="absolute top-0 left-0 w-full h-full border-0"
             title="YouTube video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
           </iframe>
         </div>
