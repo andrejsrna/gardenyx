@@ -174,6 +174,73 @@ function makeGutenbergEmbedsResponsive(html: string): string {
   });
 }
 
+function makeWikipediaEmbedsBeautiful(html: string): string {
+  if (!html) return '';
+
+  // Pattern to match Wikipedia image embeds
+  const wikipediaPattern = /<a[^>]*title="([^"]*)"[^>]*href="https:\/\/commons\.wikimedia\.org\/[^"]*"[^>]*><img[^>]*width="(\d+)"[^>]*alt="([^"]*)"[^>]*src="([^"]*)"[^>]*><\/a>/gi;
+
+  return html.replace(wikipediaPattern, (match, title, width, alt, src) => {
+    // Clean up the title (remove HTML entities and extra info)
+    const cleanTitle = title
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/CC BY-SA \d+\.\d+.*$/, '') // Remove license info
+      .replace(/via Wikimedia Commons.*$/, '') // Remove "via Wikimedia Commons"
+      .trim();
+
+    // Extract author if present in title
+    const authorMatch = cleanTitle.match(/^([^,]+),/);
+    const author = authorMatch ? authorMatch[1].trim() : '';
+    const description = authorMatch ? cleanTitle.replace(/^[^,]+,/, '').trim() : cleanTitle;
+
+    return `
+      <div class="wikipedia-embed-container my-8">
+        <figure class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+          <div class="relative">
+            <img 
+              src="${src}" 
+              alt="${alt}" 
+              class="w-full h-auto object-cover"
+              loading="lazy"
+            />
+            <div class="absolute top-2 right-2">
+              <a 
+                href="https://commons.wikimedia.org/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 px-2 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs text-gray-600 hover:text-gray-800 transition-colors"
+                title="Wikimedia Commons"
+              >
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                CC
+              </a>
+            </div>
+          </div>
+          <figcaption class="p-4 bg-gray-50 border-t border-gray-200">
+            ${author ? `<div class="text-sm font-medium text-gray-900 mb-1">${author}</div>` : ''}
+            <div class="text-sm text-gray-600 mb-2">${description}</div>
+            <div class="flex items-center justify-between text-xs text-gray-500">
+              <span>Zdroj: Wikimedia Commons</span>
+              <a 
+                href="https://commons.wikimedia.org/wiki/File:${src.split('/').pop()?.split('?')[0]}" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="text-green-600 hover:text-green-700 underline"
+              >
+                Zobraziť originál
+              </a>
+            </div>
+          </figcaption>
+        </figure>
+      </div>
+    `;
+  });
+}
+
 function createSlug(text: string): string {
   return text
     .toLowerCase()
@@ -384,6 +451,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
   content = makeInstagramEmbedsResponsive(content);
   content = makeFacebookEmbedsResponsive(content);
   content = makeGutenbergEmbedsResponsive(content);
+  content = makeWikipediaEmbedsBeautiful(content);
 
   const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
     year: 'numeric',

@@ -53,6 +53,27 @@ body {
   @apply rounded-xl;
 }
 
+/* Wikipedia Beautiful Embed */
+.wikipedia-embed-container {
+  @apply my-8;
+}
+
+.wikipedia-embed-container figure {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.wikipedia-embed-container figure:hover {
+  @apply shadow-xl transform scale-[1.01];
+}
+
+.wikipedia-embed-container img {
+  @apply transition-transform duration-300 ease-in-out;
+}
+
+.wikipedia-embed-container figure:hover img {
+  @apply scale-[1.02];
+}
+
 /* Table of Contents styling */
 #ez-toc-container {
   @apply bg-gray-50 p-6 rounded-lg mb-8;
