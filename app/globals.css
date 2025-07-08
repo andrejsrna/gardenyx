@@ -43,6 +43,16 @@ body {
   @apply rounded-xl;
 }
 
+/* Gutenberg Responsive Embed */
+.gutenberg-embed-container {
+  @apply my-8 rounded-xl overflow-hidden shadow-lg;
+  max-width: 100%;
+}
+
+.gutenberg-embed-container iframe {
+  @apply rounded-xl;
+}
+
 /* Table of Contents styling */
 #ez-toc-container {
   @apply bg-gray-50 p-6 rounded-lg mb-8;

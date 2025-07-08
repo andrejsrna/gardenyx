@@ -36,70 +36,142 @@ function cleanHtmlContent(html: string): string {
 function makeYouTubeEmbedsResponsive(html: string): string {
   if (!html) return '';
 
-  const youtubePattern = /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:embed\/|watch\?v=)?([^"'&?\/\s]+)[^>]*><\/iframe>/gi;
+  // Enhanced pattern to match various YouTube embed formats
+  const youtubePatterns = [
+    // Standard YouTube iframe embeds
+    /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:embed\/|watch\?v=)?([^"'&?\/\s]+)[^>]*><\/iframe>/gi,
+    // YouTube short URLs
+    /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?youtu\.be\/([^"'&?\/\s]+)[^>]*><\/iframe>/gi,
+    // Gutenberg YouTube blocks
+    /<figure[^>]*class="[^"]*wp-block-embed-youtube[^"]*"[^>]*>[\s\S]*?<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:embed\/|watch\?v=)?([^"'&?\/\s]+)[^>]*><\/iframe>[\s\S]*?<\/figure>/gi
+  ];
 
-  return html.replace(youtubePattern, (match, videoId) => {
-    const widthMatch = match.match(/width=["'](\d+)["']/i);
-    const heightMatch = match.match(/height=["'](\d+)["']/i);
+  let processedHtml = html;
 
-    const width = widthMatch ? parseInt(widthMatch[1]) : 560;
-    const height = heightMatch ? parseInt(heightMatch[1]) : 315;
-    const aspectRatio = (height / width) * 100;
+  youtubePatterns.forEach((pattern) => {
+    processedHtml = processedHtml.replace(pattern, (match, videoId) => {
+      const widthMatch = match.match(/width=["'](\d+)["']/i);
+      const heightMatch = match.match(/height=["'](\d+)["']/i);
 
-    return `
-      <div class="youtube-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
-        <iframe
-          src="https://www.youtube.com/embed/${videoId}?rel=0"
-          class="absolute top-0 left-0 w-full h-full border-0"
-          title="YouTube video"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen>
-        </iframe>
-      </div>
-    `;
+      const width = widthMatch ? parseInt(widthMatch[1]) : 560;
+      const height = heightMatch ? parseInt(heightMatch[1]) : 315;
+      const aspectRatio = (height / width) * 100;
+
+      return `
+        <div class="youtube-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
+          <iframe
+            src="https://www.youtube.com/embed/${videoId}?rel=0"
+            class="absolute top-0 left-0 w-full h-full border-0"
+            title="YouTube video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      `;
+    });
   });
+
+  return processedHtml;
 }
 
 function makeInstagramEmbedsResponsive(html: string): string {
   if (!html) return '';
 
-  // Pattern to match Instagram embed blockquotes
-  const instagramPattern = /<blockquote[^>]*class="instagram-media"[^>]*>[\s\S]*?<\/blockquote>/gi;
+  // Enhanced pattern to match Instagram embed blockquotes and Gutenberg blocks
+  const instagramPatterns = [
+    // Standard Instagram embed blockquotes
+    /<blockquote[^>]*class="instagram-media"[^>]*>[\s\S]*?<\/blockquote>/gi,
+    // Gutenberg Instagram blocks
+    /<figure[^>]*class="[^"]*wp-block-embed-instagram[^"]*"[^>]*>[\s\S]*?<blockquote[^>]*class="instagram-media"[^>]*>[\s\S]*?<\/blockquote>[\s\S]*?<\/figure>/gi
+  ];
 
-  return html.replace(instagramPattern, (match) => {
-    return `
-      <div class="instagram-embed-container relative w-full max-w-2xl mx-auto my-8">
-        ${match}
-      </div>
-    `;
+  let processedHtml = html;
+
+  instagramPatterns.forEach((pattern) => {
+    processedHtml = processedHtml.replace(pattern, (match) => {
+      return `
+        <div class="instagram-embed-container relative w-full max-w-2xl mx-auto my-8">
+          ${match}
+        </div>
+      `;
+    });
   });
+
+  return processedHtml;
 }
 
 function makeFacebookEmbedsResponsive(html: string): string {
   if (!html) return '';
 
-  // Pattern to match Facebook embed iframes
-  const facebookPattern = /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?facebook\.com\/plugins\/([^"'&?\/\s]+)[^>]*><\/iframe>/gi;
+  // Enhanced pattern to match Facebook embed iframes and Gutenberg blocks
+  const facebookPatterns = [
+    // Standard Facebook embed iframes
+    /<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?facebook\.com\/plugins\/([^"'&?\/\s]+)[^>]*><\/iframe>/gi,
+    // Gutenberg Facebook blocks
+    /<figure[^>]*class="[^"]*wp-block-embed-facebook[^"]*"[^>]*>[\s\S]*?<iframe[^>]*src=["'](?:https?:\/\/)?(?:www\.)?facebook\.com\/plugins\/([^"'&?\/\s]+)[^>]*><\/iframe>[\s\S]*?<\/figure>/gi
+  ];
 
-  return html.replace(facebookPattern, (match, pluginType) => {
-    const widthMatch = match.match(/width=["'](\d+)["']/i);
-    const heightMatch = match.match(/height=["'](\d+)["']/i);
+  let processedHtml = html;
 
-    const width = widthMatch ? parseInt(widthMatch[1]) : 500;
-    const height = heightMatch ? parseInt(heightMatch[1]) : 300;
-    const aspectRatio = (height / width) * 100;
+  facebookPatterns.forEach((pattern) => {
+    processedHtml = processedHtml.replace(pattern, (match, pluginType) => {
+      const widthMatch = match.match(/width=["'](\d+)["']/i);
+      const heightMatch = match.match(/height=["'](\d+)["']/i);
 
-    return `
-      <div class="facebook-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
-        <iframe
-          src="${match.match(/src=["']([^"']+)["']/i)?.[1] || ''}"
-          class="absolute top-0 left-0 w-full h-full border-0"
-          title="Facebook ${pluginType}"
-          allow="encrypted-media"
-          allowfullscreen>
-        </iframe>
-      </div>
-    `;
+      const width = widthMatch ? parseInt(widthMatch[1]) : 500;
+      const height = heightMatch ? parseInt(heightMatch[1]) : 300;
+      const aspectRatio = (height / width) * 100;
+
+      return `
+        <div class="facebook-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
+          <iframe
+            src="${match.match(/src=["']([^"']+)["']/i)?.[1] || ''}"
+            class="absolute top-0 left-0 w-full h-full border-0"
+            title="Facebook ${pluginType}"
+            allow="encrypted-media"
+            allowfullscreen>
+          </iframe>
+        </div>
+      `;
+    });
+  });
+
+  return processedHtml;
+}
+
+function makeGutenbergEmbedsResponsive(html: string): string {
+  if (!html) return '';
+
+  // Handle generic Gutenberg embed blocks
+  const gutenbergEmbedPattern = /<figure[^>]*class="[^"]*wp-block-embed[^"]*"[^>]*>[\s\S]*?<\/figure>/gi;
+
+  return html.replace(gutenbergEmbedPattern, (match) => {
+    // Check if it's already processed by other functions
+    if (match.includes('youtube-embed-container') || 
+        match.includes('instagram-embed-container') || 
+        match.includes('facebook-embed-container')) {
+      return match;
+    }
+
+    // Extract the iframe from the Gutenberg block
+    const iframeMatch = match.match(/<iframe[^>]*>[\s\S]*?<\/iframe>/i);
+    if (iframeMatch) {
+      const iframe = iframeMatch[0];
+      const widthMatch = iframe.match(/width=["'](\d+)["']/i);
+      const heightMatch = iframe.match(/height=["'](\d+)["']/i);
+
+      const width = widthMatch ? parseInt(widthMatch[1]) : 500;
+      const height = heightMatch ? parseInt(heightMatch[1]) : 300;
+      const aspectRatio = (height / width) * 100;
+
+      return `
+        <div class="gutenberg-embed-container relative w-full overflow-hidden" style="padding-bottom: ${aspectRatio}%;">
+          ${iframe.replace(/width=["'][^"']*["']/i, 'class="absolute top-0 left-0 w-full h-full border-0"')}
+        </div>
+      `;
+    }
+
+    return match;
   });
 }
 
@@ -312,6 +384,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
   content = makeYouTubeEmbedsResponsive(content);
   content = makeInstagramEmbedsResponsive(content);
   content = makeFacebookEmbedsResponsive(content);
+  content = makeGutenbergEmbedsResponsive(content);
 
   const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
     year: 'numeric',
