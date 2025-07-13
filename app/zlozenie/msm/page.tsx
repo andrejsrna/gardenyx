@@ -1,9 +1,7 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, CheckCircle2, BookOpen } from 'lucide-react';
-import Accordion from '@/app/components/Accordion';
+import ClientAccordion from './ClientAccordion';
 import RelatedPostsByTag from '../../components/RelatedPostsByTag';
 import FAQSchema from '../../components/seo/FAQSchema';
 import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema';
@@ -138,7 +136,7 @@ export default function MsmPage() {
             <h2 className="text-2xl font-bold mb-8">Často kladené otázky</h2>
             <div className="space-y-4">
               {faqs.map((faq, index) => (
-                <Accordion
+                <ClientAccordion
                   key={index}
                   title={faq.question}
                   content={faq.answer}

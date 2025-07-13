@@ -175,7 +175,7 @@ const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.na
 const WORDPRESS_API_URL = `${WORDPRESS_URL}/wp-json/wp/v2`;
 const WOOCOMMERCE_API_URL = `${WORDPRESS_URL}/wp-json/wc/v3`;
 const POSTS_PER_PAGE = 9;
-const CACHE_DURATION = 3600;
+const CACHE_DURATION = 86400;
 
 const WOO_CONSUMER_KEY = process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY || '';
 const WOO_CONSUMER_SECRET = process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET || '';
