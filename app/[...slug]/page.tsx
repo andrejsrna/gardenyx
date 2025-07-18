@@ -241,6 +241,26 @@ function makeWikipediaEmbedsBeautiful(html: string): string {
   });
 }
 
+function addImageErrorHandling(html: string): string {
+  return html.replace(
+    /<figure([^>]*)>([\s\S]*?)<img([^>]+)>([\s\S]*?)<\/figure>/gi,
+    (match, figureAttrs, beforeImg, imgAttrs, afterImg) => {
+      const hasOnError = /onerror\s*=/i.test(imgAttrs);
+      if (hasOnError) return match;
+      
+      return `<figure${figureAttrs}>${beforeImg}<img${imgAttrs} onerror="this.closest('figure').style.display='none';" />${afterImg}</figure>`;
+    }
+  ).replace(
+    /<img([^>]+)>/gi,
+    (match, attributes) => {
+      const hasOnError = /onerror\s*=/i.test(attributes);
+      if (hasOnError) return match;
+      
+      return `<img${attributes} onerror="this.style.display='none';" />`;
+    }
+  );
+}
+
 function createSlug(text: string): string {
   return text
     .toLowerCase()
@@ -452,6 +472,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
   content = makeFacebookEmbedsResponsive(content);
   content = makeGutenbergEmbedsResponsive(content);
   content = makeWikipediaEmbedsBeautiful(content);
+  content = addImageErrorHandling(content);
 
   const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
     year: 'numeric',
@@ -497,7 +518,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
       </div>
       <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px]">
         {post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full featured-image-container">
             <Image
               src={post._embedded['wp:featuredmedia'][0].source_url}
               alt={post.title.rendered}
@@ -505,6 +526,12 @@ export default async function BlogPost({ params }: { params: tParams }) {
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
               priority
+              onError={() => {
+                const container = document.querySelector('.featured-image-container');
+                if (container) {
+                  container.innerHTML = '<div class="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800 flex items-center justify-center"><div class="text-white text-6xl">🌿</div></div>';
+                }
+              }}
             />
           </div>
         ) : (
