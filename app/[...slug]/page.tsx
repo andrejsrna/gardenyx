@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 import { decode } from 'html-entities';
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import BlogProductWidget from '../components/BlogProductWidget';
@@ -18,6 +17,7 @@ import { getBlogBreadcrumbs } from '../lib/internal-linking-data';
 import { parseHTML } from '../lib/html-parser';
 import { getPostBySlug, getRankMathSEO, WordPressPost } from '../lib/wordpress';
 import { FaWhatsapp } from 'react-icons/fa';
+import FeaturedImageWithFallback from '../components/FeaturedImageWithFallback';
 
 if (process.env.NODE_ENV === 'development') {
   Sentry.captureException(new Error('Test error from Sentry integration'));
@@ -518,20 +518,10 @@ export default async function BlogPost({ params }: { params: tParams }) {
       </div>
       <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px]">
         {post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
-          <div className="relative w-full h-full featured-image-container">
-            <Image
+          <div className="relative w-full h-full">
+            <FeaturedImageWithFallback
               src={post._embedded['wp:featuredmedia'][0].source_url}
               alt={post.title.rendered}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-              priority
-              onError={() => {
-                const container = document.querySelector('.featured-image-container');
-                if (container) {
-                  container.innerHTML = '<div class="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800 flex items-center justify-center"><div class="text-white text-6xl">🌿</div></div>';
-                }
-              }}
             />
           </div>
         ) : (
