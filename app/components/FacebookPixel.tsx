@@ -1,60 +1,60 @@
 'use client';
 
-import Script from 'next/script';
-// Removed useState as isLoaded is not currently used
-// import { useEffect, useState } from 'react';
-
-// Remove type declarations as they're defined in global.d.ts
+import { useEffect } from 'react';
 
 export default function FacebookPixel() {
-  // Early return if no Pixel ID
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  
+  useEffect(() => {
+    if (!pixelId) {
+      console.error('Facebook Pixel ID is not defined in environment variables');
+      return;
+    }
+
+    // Check if fbq already exists
+    if (typeof window !== 'undefined' && !window.fbq) {
+      // Load Facebook Pixel script
+      const script = document.createElement('script');
+      script.innerHTML = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+      `;
+      document.head.appendChild(script);
+
+      // Initialize pixel after script loads
+      script.onload = () => {
+        if (typeof window.fbq === 'function') {
+          window.fbq('init', pixelId);
+          window.fbq('track', 'PageView');
+          console.log('Facebook Pixel initialized successfully');
+        }
+      };
+    } else if (typeof window !== 'undefined' && window.fbq) {
+      // Pixel already loaded, just track pageview
+      window.fbq('track', 'PageView');
+    }
+  }, [pixelId]);
+
   if (!pixelId) {
-    console.error('Facebook Pixel ID is not defined in environment variables');
     return null;
   }
 
   return (
-    <>
-      {/* Facebook Pixel Base Code */}
-      <Script
-        id="fb-pixel-base"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-          `
-        }}
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style={{ display: 'none' }}
+        src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
+        alt=""
       />
-      {/* Facebook Pixel Init Code */}
-      <Script
-        id="fb-pixel-init"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            fbq('init', '${pixelId}');
-            fbq('track', 'PageView');
-          `
-        }}
-      />
-      <noscript>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          height="1"
-          width="1"
-          style={{ display: 'none' }}
-          src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
-          alt=""
-        />
-      </noscript>
-    </>
+    </noscript>
   );
 }
 
