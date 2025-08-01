@@ -1,5 +1,13 @@
-import { trackFbEvent } from '../components/FacebookPixel';
 import { event as gtagEvent } from '../components/GoogleAnalytics';
+
+// Dynamic import to avoid SSR issues - fire and forget to keep functions sync
+const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
+  if (typeof window === 'undefined') return;
+  
+  import('../components/FacebookPixel')
+    .then(({ trackFbEvent: fbTracker }) => fbTracker(eventName, params))
+    .catch(error => console.error('Error importing Facebook Pixel tracker:', error));
+};
 
 interface Product {
   id: number;
@@ -21,6 +29,11 @@ export const tracking = {
       value: product.price,
       currency: 'EUR',
       content_category: product.category,
+      // Enhanced metadata for better Event Match Quality
+      event_source_url: window.location.href,
+      ...(typeof window !== 'undefined' && typeof window.fbq === 'function' && {
+        external_id: 'user_' + Date.now(), // Unique user identifier
+      })
     };
 
     const gaParams = {
@@ -188,6 +201,12 @@ export const tracking = {
       order_id: orderId,
       tax: tax,
       shipping: shipping,
+      // Enhanced metadata for better tracking
+      event_source_url: window.location.href,
+      content_type: 'product',
+      ...(typeof window !== 'undefined' && typeof window.fbq === 'function' && {
+        external_id: 'order_' + orderId,
+      })
     };
 
     const gaParams = {

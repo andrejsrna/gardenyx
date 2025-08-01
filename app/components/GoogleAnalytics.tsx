@@ -3,29 +3,34 @@
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { useCookieConsent } from '../context/CookieConsentContext';
+import { getCookieConsentValue } from 'react-cookie-consent';
+import { hasConsentFor } from './CookieConsentBanner';
 
 export default function GoogleAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { consent, hasConsented } = useCookieConsent();
-
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   useEffect(() => {
-    if (hasConsented && consent.analytics && typeof window.gtag === 'function' && gaId) {
+    const cookieConsent = getCookieConsentValue('cookieConsent');
+    const hasAnalyticsConsent = hasConsentFor('analytics');
+
+    if (cookieConsent === 'true' && hasAnalyticsConsent && typeof window.gtag === 'function' && gaId) {
       window.gtag('config', gaId, {
         page_path: pathname + searchParams.toString(),
       });
     }
-  }, [hasConsented, consent.analytics, pathname, searchParams, gaId]);
+  }, [pathname, searchParams, gaId]);
 
   if (!gaId) {
     console.error('Google Analytics ID is not defined in environment variables');
     return null;
   }
 
-  if (!hasConsented || !consent.analytics) {
+  const cookieConsent = getCookieConsentValue('cookieConsent');
+  const hasAnalyticsConsent = hasConsentFor('analytics');
+
+  if (!cookieConsent || cookieConsent === 'false' || !hasAnalyticsConsent) {
     return null;
   }
 

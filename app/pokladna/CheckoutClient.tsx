@@ -42,7 +42,7 @@ import { useCheckoutForm } from '../hooks/checkout';
 export default function CheckoutClient() {
   const { items, totalPrice, clearCart, addToCart, discountAmount, removeFromCart } = useCart();
   const { customerData } = useAuth();
-  const { consent, hasConsented } = useCookieConsent();
+  const { hasConsented, consentDetails } = useCookieConsent();
 
   // Use our new custom hook for form management
   const {
@@ -113,7 +113,7 @@ export default function CheckoutClient() {
 
   // Load saved form data effect
   useEffect(() => {
-    if (!customerData && hasConsented && consent.necessary) {
+    if (!customerData && hasConsented && consentDetails?.necessary) {
       const savedData = localStorage.getItem('checkoutFormData');
       if (savedData) {
         try {
@@ -148,11 +148,11 @@ export default function CheckoutClient() {
         }
       }
     }
-  }, [customerData, hasConsented, consent.necessary, setFormData, setSameAsShipping]);
+  }, [customerData, hasConsented, consentDetails?.necessary, setFormData, setSameAsShipping]);
 
   // Save form data effect
   useEffect(() => {
-    if (!customerData && hasConsented && consent.necessary) {
+    if (!customerData && hasConsented && consentDetails?.necessary) {
       if (formData.billing.first_name || formData.billing.last_name || formData.billing.email) {
         const timer = setTimeout(() => {
           const dataToSave = {
@@ -168,7 +168,7 @@ export default function CheckoutClient() {
         return () => clearTimeout(timer);
       }
     }
-  }, [formData, customerData, hasConsented, consent.necessary]);
+  }, [formData, customerData, hasConsented, consentDetails?.necessary]);
 
   // Load customer data effect
   useEffect(() => {

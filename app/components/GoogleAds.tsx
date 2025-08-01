@@ -1,7 +1,8 @@
 'use client';
 
 import Script from 'next/script';
-import { useCookieConsent } from '../context/CookieConsentContext';
+import { getCookieConsentValue } from 'react-cookie-consent';
+import { hasConsentFor } from './CookieConsentBanner';
 
 const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID!;
 
@@ -13,9 +14,10 @@ declare global {
 }
 
 export default function GoogleAds() {
-  const { consent, hasConsented } = useCookieConsent();
+  const cookieConsent = getCookieConsentValue('cookieConsent');
+  const hasMarketingConsent = hasConsentFor('marketing');
 
-  if (!hasConsented || !consent.marketing) {
+  if (!cookieConsent || cookieConsent === 'false' || !hasMarketingConsent) {
     return null;
   }
 

@@ -3,10 +3,15 @@
 import { Facebook, Mail, MapPin, Phone, Instagram } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCookieConsent } from '../context/CookieConsentContext';
+import { resetCookieConsentValue } from 'react-cookie-consent';
 
 export default function Footer() {
-  const { openCookieManager } = useCookieConsent();
+  const openCookieManager = () => {
+    // Reset consent and reload page to show banner again
+    resetCookieConsentValue('cookieConsent');
+    localStorage.removeItem('cookieConsentDetails');
+    window.location.reload();
+  };
 
   const PAYMENT_METHODS = [
     {
@@ -252,8 +257,8 @@ export default function Footer() {
                 <rect y="5" width="20" height="5" fill="#0D47A1"/>
                 <rect y="10" width="20" height="5" fill="#D50000"/>
                 <path d="M6 5.5L4.5 9H3L5.5 2L8 9H6.5L6 5.5Z" fill="white" transform="translate(1.5 -1)"/>
-                <path d="M6 5.5L4.5 9H3L5.5 2L8 9H6.5L6 5.5Z" stroke="#0D47A1" stroke-width="0.6" transform="translate(1.5 -1)"/>
-                <circle cx="5.5" cy="4" r="2.5" fill="none" stroke="#D50000" stroke-width="1.2" transform="translate(1.5 -1)"/>
+                <path d="M6 5.5L4.5 9H3L5.5 2L8 9H6.5L6 5.5Z" stroke="#0D47A1" strokeWidth="0.6" transform="translate(1.5 -1)"/>
+                <circle cx="5.5" cy="4" r="2.5" fill="none" stroke="#D50000" strokeWidth="1.2" transform="translate(1.5 -1)"/>
               </svg>
               <span>Slovenský produkt</span>
             </div>

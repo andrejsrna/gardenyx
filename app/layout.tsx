@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from 'react';
 import { Toaster } from 'sonner';
-import CookieConsent from './components/CookieConsent';
+import CookieConsentBanner from './components/CookieConsentBanner';
 import ExitIntentPopupLoader from './components/ExitIntentPopupLoader';
 import FacebookPixel from './components/FacebookPixel';
 import Footer from './components/Footer';
@@ -69,9 +69,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} antialiased`}>
         <Suspense fallback={<div>Loading...</div>}>
-          <CookieConsentProvider>
-            <AuthProvider>
-              <CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <CookieConsentProvider>
                 <Header />
                 <main>
                   {children}
@@ -82,11 +82,10 @@ export default function RootLayout({
                 <FacebookPixel />
                 <GoogleAnalytics />
                 <GoogleAds />
-
-                <CookieConsent />
-              </CartProvider>
-            </AuthProvider>
-          </CookieConsentProvider>
+                <CookieConsentBanner />
+              </CookieConsentProvider>
+            </CartProvider>
+          </AuthProvider>
         </Suspense>
       </body>
     </html>
