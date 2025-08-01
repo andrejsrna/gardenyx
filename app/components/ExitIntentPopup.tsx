@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import ExitIntentModal from './ExitIntentModal';
+import { tracking } from '../lib/tracking';
 
 export default function ExitIntentPopup() {
   const [showModal, setShowModal] = useState(false);
@@ -18,6 +19,9 @@ export default function ExitIntentPopup() {
     setShowModal(true);
     setIsLoading(true);
 
+    // Track exit intent detection
+    tracking.custom('exit_intent_detected');
+
     try {
       const response = await fetch('/api/create-exit-coupon', {
         method: 'POST',
@@ -31,7 +35,8 @@ export default function ExitIntentPopup() {
         setCouponCode(code);
         localStorage.setItem('exitIntentShown', 'true');
 
-        window.gtag?.('event', 'exit_intent_offer_shown', {
+        // Track exit intent offer shown
+        tracking.custom('exit_intent_offer_shown', {
           coupon_code: code
         });
       } else {

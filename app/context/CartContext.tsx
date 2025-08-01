@@ -2,9 +2,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { trackFbEvent } from '../components/FacebookPixel';
+import { tracking } from '../lib/tracking';
 import { trackConversion } from '../components/GoogleAds';
-import { event as gtagEvent } from '../components/GoogleAnalytics';
 
 interface CartItem {
     id: number;
@@ -200,15 +199,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                 setLastSavedCart(cartKey);
 
                 if (items.length > 0) {
-                    gtagEvent('begin_checkout', {
-                        currency: 'EUR', value: currentSubtotal,
-                        items: items.map(item => ({
-                            item_id: item.id.toString(),
-                            item_name: item.name,
-                            price: item.price,
-                            quantity: item.quantity
-                        }))
-                    });
+                    tracking.initiateCheckout(items, currentSubtotal);
                 }
             }
         } else {
@@ -261,25 +252,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             const trackItem = updatedItems.find(i => i.id === itemWithOriginalPrice.id)!;
             const trackValue = trackItem.price * trackItem.quantity;
 
-            gtagEvent('add_to_cart', {
-                currency: 'EUR',
-                value: trackValue,
-                items: [{
-                    item_id: trackItem.id.toString(),
-                    item_name: trackItem.name,
-                    price: trackItem.price,
-                    quantity: trackItem.quantity
-                }]
-            });
-
-            trackFbEvent('AddToCart', {
-                content_ids: [trackItem.id.toString()],
-                content_name: trackItem.name,
-                value: trackValue,
-                currency: 'EUR',
-                contents: [{id: trackItem.id.toString(), quantity: trackItem.quantity}],
-                content_type: 'product'
-            });
+            tracking.addToCart(trackItem);
 
             if (!existingItem) {
                 trackConversion('c1xXCLfG9ZgZEJ2x7aU9', trackValue);
@@ -290,8 +263,12 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     }, [openCart]);
 
     const removeFromCart = useCallback((itemId: number) => {
+        const itemToRemove = items.find(item => item.id === itemId);
+        if (itemToRemove) {
+            tracking.removeFromCart(itemToRemove);
+        }
         setItems(prevItems => prevItems.filter(item => item.id !== itemId));
-    }, []);
+    }, [items]);
 
     const updateQuantity = useCallback((itemId: number, quantity: number) => {
         if (quantity < 1) {

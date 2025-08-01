@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext'; // Adjust path if necessary
 import type { WooCommerceProduct } from '../lib/wordpress'; // Adjust path if necessary
-import { trackFbEvent } from './FacebookPixel';
+import { tracking } from '../lib/tracking';
 
 interface ProductCardProps {
   product: WooCommerceProduct;
@@ -13,13 +13,11 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
   const { addToCart, appliedCoupon, openCart } = useCart();
 
   const handleAddToCart = (product: WooCommerceProduct) => {
-    // Track the add to cart event
-    trackFbEvent('AddToCart', {
-      content_name: product.name,
-      content_ids: [product.id],
-      content_type: 'product',
-      value: parseFloat(product.price),
-      currency: 'EUR'
+    tracking.addToCart({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      quantity: 1
     });
 
     addToCart({
@@ -30,18 +28,14 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
       quantity: 1
     });
     openCart();
-    // Consider adding a toast notification here for better UX
-    // import { toast } from 'sonner';
-    // toast.success(`${product.name} bol pridaný do košíka`);
   };
 
   const handleViewDetail = () => {
-    trackFbEvent('ViewContent', {
-      content_name: product.name,
-      content_ids: [product.id],
-      content_type: 'product',
-      value: parseFloat(product.price),
-      currency: 'EUR'
+    tracking.viewContent({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      quantity: 1
     });
   };
 

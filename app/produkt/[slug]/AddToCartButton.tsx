@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useCart } from '@/app/context/CartContext';
 import { WooCommerceProduct } from '@/app/lib/wordpress';
+import { tracking } from '@/app/lib/tracking';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { ShoppingCart, Minus, Plus } from 'lucide-react';
@@ -16,6 +17,13 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
+    tracking.addToCart({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      quantity: quantity
+    });
+
     addToCart({
       id: product.id,
       name: product.name,

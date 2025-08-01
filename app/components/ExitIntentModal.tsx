@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useCart } from '../context/CartContext';
+import { tracking } from '../lib/tracking';
 
 // Simple Countdown Timer Logic (embedded for simplicity)
 function CountdownDisplay({ initialSeconds, onComplete }: { initialSeconds: number; onComplete: () => void }) {
@@ -40,6 +41,12 @@ export default function ExitIntentModal({
 
   const handleApplyCoupon = () => {
     applyExitCoupon(code);
+    
+    // Track exit intent coupon applied
+    tracking.custom('exit_intent_coupon_applied', {
+      coupon_code: code
+    });
+    
     toast.success('Zľavový kód bol úspešne aplikovaný!');
     onCloseAction();
     router.push('/kupit');

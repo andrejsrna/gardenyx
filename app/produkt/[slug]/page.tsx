@@ -1,5 +1,6 @@
 import { getWooCommerceUrl, WooCommerceProduct, getMediaDetails } from '@/app/lib/wordpress';
 import AddToCartButton from './AddToCartButton';
+import ProductTracking from './ProductTracking';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -116,6 +117,7 @@ const showComposition = ['Najsilnejšia kĺbová výživa', 'Najsilnejšej kĺbo
   return (
     <>
       <ProductSchema product={product} />
+      <ProductTracking product={product} />
       <div className="min-h-screen bg-gray-50 py-8 md:py-12">
         <div className="container mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">

@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import Header from './components/Header';
+
 import OrganizationSchema from './components/seo/OrganizationSchema';
 import WebSiteSchema from './components/seo/WebSiteSchema';
 import { AuthProvider } from './context/AuthContext';
@@ -81,6 +82,7 @@ export default function RootLayout({
                 <FacebookPixel />
                 <GoogleAnalytics />
                 <GoogleAds />
+
                 <CookieConsent />
               </CartProvider>
             </AuthProvider>

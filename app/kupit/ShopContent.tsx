@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
+import CategoryTracking from '../components/CategoryTracking';
 import { WooCommerceProduct } from '../lib/wordpress';
 
 type ProductSection = {
@@ -126,6 +127,7 @@ export default function ShopContent() {
       {productSections.map((section) => (
         section.products.length > 0 && (
           <section key={section.taxonomy} className="space-y-6">
+            <CategoryTracking categoryName={section.title} products={section.products} />
             <h2 className="text-3xl font-bold">{section.title}</h2>
             <div className={`grid ${section.gridCols} gap-6`}>
               {section.products.map((product, index) => (

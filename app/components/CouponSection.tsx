@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { tracking } from '../lib/tracking';
 
 const CouponIcon = () => (
   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +33,10 @@ export default function CouponSection() {
     
     setIsLoading(true);
     try {
-      await applyCoupon(inputValue.trim());
+      const success = await applyCoupon(inputValue.trim());
+      if (success) {
+        tracking.custom('coupon_applied', { code: inputValue.trim() });
+      }
       setInputValue('');
     } finally {
       setIsLoading(false);

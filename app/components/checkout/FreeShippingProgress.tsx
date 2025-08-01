@@ -1,12 +1,30 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
+import { tracking } from '../../lib/tracking';
 
 interface FreeShippingProgressProps {
   totalPrice: number;
 }
 
 export default function FreeShippingProgress({ totalPrice }: FreeShippingProgressProps) {
+  const hasTrackedFreeShipping = useRef(false);
+
+  // Track when free shipping threshold is reached
+  useEffect(() => {
+    if (totalPrice >= FREE_SHIPPING_THRESHOLD && !hasTrackedFreeShipping.current) {
+      tracking.custom('free_shipping_threshold', {
+        value: totalPrice,
+        threshold: FREE_SHIPPING_THRESHOLD
+      });
+      hasTrackedFreeShipping.current = true;
+    } else if (totalPrice < FREE_SHIPPING_THRESHOLD) {
+      // Reset tracking when price goes below threshold
+      hasTrackedFreeShipping.current = false;
+    }
+  }, [totalPrice]);
+
   if (totalPrice >= FREE_SHIPPING_THRESHOLD) {
     return null;
   }

@@ -9,6 +9,7 @@ import { validatePassword } from '../lib/utils/password';
 import { sanitizeInput } from '../lib/utils/sanitize';
 import { z } from 'zod';
 import { useAuth } from '../context/AuthContext';
+import { tracking } from '../lib/tracking';
 
 // Helper component for required field label
 const RequiredLabel = ({ children }: { children: React.ReactNode }) => (
@@ -107,6 +108,8 @@ export default function RegistrationPage() {
       }
 
       await login(formData.email, formData.password);
+
+      tracking.completeRegistration('form');
 
       toast.success('Registrácia úspešná', {
         description: 'Boli ste automaticky prihlásený.'

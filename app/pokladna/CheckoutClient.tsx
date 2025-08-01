@@ -6,8 +6,7 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { ZodError } from 'zod';
 
-import { trackFbEvent } from '../components/FacebookPixel';
-import { event as gtagEvent } from '../components/GoogleAnalytics';
+import { tracking } from '../lib/tracking';
 import PacketaPointSelector from '../components/PacketaPointSelector';
 import StripePayment from '../components/StripePayment';
 import { useAuth } from '../context/AuthContext';
@@ -81,25 +80,7 @@ export default function CheckoutClient() {
   // Analytics tracking effect
   useEffect(() => {
     if (items.length > 0 && hasConsented && consent.analytics) {
-      const eventData = {
-        currency: 'EUR',
-        value: totalPrice,
-        items: items.map(item => ({
-          item_id: item.id.toString(),
-          item_name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-      };
-      gtagEvent('begin_checkout', eventData);
-
-      trackFbEvent('InitiateCheckout', {
-        content_ids: items.map(item => item.id.toString()),
-        contents: items.map(item => ({ id: item.id.toString(), quantity: item.quantity })),
-        value: totalPrice,
-        currency: 'EUR',
-        num_items: items.length,
-      });
+      tracking.initiateCheckout(items, totalPrice);
 
       Sentry.setContext('checkout', {
         items_count: items.length,
@@ -426,26 +407,7 @@ export default function CheckoutClient() {
       orderIdRef.current = result.order.id;
 
       if (hasConsented && consent.analytics) {
-        const purchaseEventData = {
-          transaction_id: result.order.id.toString(),
-          value: finalTotal,
-          currency: 'EUR',
-          items: items.map(item => ({
-            item_id: item.id.toString(),
-            item_name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-          })),
-        };
-        gtagEvent('purchase', purchaseEventData);
-
-        trackFbEvent('Purchase', {
-          content_ids: items.map(item => item.id.toString()),
-          contents: items.map(item => ({ id: item.id.toString(), quantity: item.quantity })),
-          value: finalTotal,
-          currency: 'EUR',
-          num_items: items.length,
-        });
+        tracking.purchase(result.order.id.toString(), items, finalTotal);
       }
 
       // Set processing state to show overlay

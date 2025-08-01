@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 import { WooCommerceProduct } from '../lib/wordpress';
-import { trackFbEvent } from './FacebookPixel';
+import { tracking } from '../lib/tracking';
 
 interface RecommendedProductsProps {
   products: WooCommerceProduct[];
@@ -15,13 +15,11 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
   const { addToCart } = useCart();
 
   const handleAddToCart = (product: WooCommerceProduct) => {
-    // Track the add to cart event with Facebook Pixel
-    trackFbEvent('AddToCart', {
-      content_name: product.name,
-      content_ids: [product.id],
-      content_type: 'product',
-      value: parseFloat(product.price),
-      currency: 'EUR'
+    tracking.addToCart({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      quantity: 1
     });
 
     addToCart({
@@ -69,12 +67,11 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
   };
 
   const handleViewDetail = (product: WooCommerceProduct) => {
-    trackFbEvent('ViewContent', {
-      content_name: product.name,
-      content_ids: [product.id],
-      content_type: 'product',
-      value: parseFloat(product.price),
-      currency: 'EUR'
+    tracking.viewContent({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      quantity: 1
     });
   };
 
