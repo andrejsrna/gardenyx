@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useCookieConsent } from '../context/CookieConsentContext';
 import { tracking } from '../lib/tracking';
 import { WooCommerceProduct } from '../lib/wordpress';
 
@@ -11,11 +10,8 @@ interface CategoryTrackingProps {
 }
 
 export default function CategoryTracking({ categoryName, products }: CategoryTrackingProps) {
-  const { consent, hasConsented } = useCookieConsent();
-
   useEffect(() => {
-    // Check both analytics (for GA) and marketing (for FB Pixel) consent
-    if (hasConsented && (consent.analytics || consent.marketing) && products) {
+    if (products) {
       const mappedProducts = products.map(product => ({
         id: product.id,
         name: product.name,
@@ -26,7 +22,7 @@ export default function CategoryTracking({ categoryName, products }: CategoryTra
 
       tracking.viewCategory(categoryName, mappedProducts);
     }
-  }, [categoryName, products, hasConsented, consent.analytics, consent.marketing]);
+  }, [categoryName, products]);
 
   return null;
 } 

@@ -79,8 +79,7 @@ export default function CheckoutClient() {
 
   // Analytics tracking effect
   useEffect(() => {
-    // Check both analytics (for GA) and marketing (for FB Pixel) consent
-    if (items.length > 0 && hasConsented && (consent.analytics || consent.marketing)) {
+    if (items.length > 0) {
       tracking.initiateCheckout(items, totalPrice);
 
       Sentry.setContext('checkout', {
@@ -89,7 +88,7 @@ export default function CheckoutClient() {
         currency: 'EUR',
       });
     }
-  }, [items, totalPrice, hasConsented, consent.analytics, consent.marketing]);
+  }, [items, totalPrice]);
 
   // Fetch recommended products effect
   useEffect(() => {
@@ -407,9 +406,7 @@ export default function CheckoutClient() {
       const result = await createOrder(orderData);
       orderIdRef.current = result.order.id;
 
-      if (hasConsented && (consent.analytics || consent.marketing)) {
-        tracking.purchase(result.order.id.toString(), items, finalTotal);
-      }
+      tracking.purchase(result.order.id.toString(), items, finalTotal);
 
       // Set processing state to show overlay
       setIsProcessingOrder(true);
@@ -439,7 +436,7 @@ export default function CheckoutClient() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [validateForm, formData, items, shippingCost, finalTotal, hasConsented, consent, clearCart, resetForm, customerData]);
+  }, [validateForm, formData, items, shippingCost, finalTotal, clearCart, resetForm, customerData]);
 
   // Check if form is valid for submit button
   const isFormValid = Boolean(formData.billing.first_name && 

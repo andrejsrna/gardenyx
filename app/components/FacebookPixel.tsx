@@ -3,19 +3,10 @@
 import Script from 'next/script';
 // Removed useState as isLoaded is not currently used
 // import { useEffect, useState } from 'react';
-import { useCookieConsent } from '../context/CookieConsentContext';
 
 // Remove type declarations as they're defined in global.d.ts
 
 export default function FacebookPixel() {
-  const { consent, hasConsented } = useCookieConsent();
-  // const [isLoaded, setIsLoaded] = useState(false); // Removed state
-
-  // Early return if no consent or no marketing consent
-  if (!hasConsented || !consent.marketing) {
-    return null;
-  }
-
   // Early return if no Pixel ID
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
   if (!pixelId) {
@@ -74,19 +65,6 @@ export const trackFbEvent = (eventName: string, params?: Record<string, unknown>
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
   if (!pixelId) {
     console.warn('Cannot track FB event - Pixel ID not configured');
-    return;
-  }
-
-  try {
-    const storedConsent = localStorage.getItem('cookieConsent');
-    if (!storedConsent) return;
-
-    const consentData = JSON.parse(storedConsent);
-    if (!consentData.marketing) {
-      return;
-    }
-  } catch (error) {
-    console.warn('Error checking cookie consent, skipping event tracking:', error);
     return;
   }
 
