@@ -13,7 +13,8 @@ export default function ProductTracking({ product }: ProductTrackingProps) {
   const { consent, hasConsented } = useCookieConsent();
 
   useEffect(() => {
-    if (hasConsented && consent.analytics) {
+    // Check both analytics (for GA) and marketing (for FB Pixel) consent
+    if (hasConsented && (consent.analytics || consent.marketing)) {
       tracking.viewContent({
         id: product.id,
         name: product.name,
@@ -22,7 +23,7 @@ export default function ProductTracking({ product }: ProductTrackingProps) {
         category: product.categories?.[0]?.name,
       });
     }
-  }, [product, hasConsented, consent.analytics]);
+  }, [product, hasConsented, consent.analytics, consent.marketing]);
 
   return null;
 } 

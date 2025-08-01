@@ -101,3 +101,30 @@ export const trackFbEvent = (eventName: string, params?: Record<string, unknown>
     console.error('Error tracking Facebook Pixel event:', error);
   }
 };
+
+// Test function to check Facebook Pixel status
+export const testFacebookPixel = () => {
+  if (typeof window === 'undefined') {
+    console.log('Test: Window not available (SSR)');
+    return;
+  }
+
+  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  console.log('Test: Pixel ID:', pixelId);
+
+  const storedConsent = localStorage.getItem('cookieConsent');
+  console.log('Test: Stored consent:', storedConsent);
+
+  if (storedConsent) {
+    try {
+      const consentData = JSON.parse(storedConsent);
+      console.log('Test: Parsed consent:', consentData);
+      console.log('Test: Marketing consent:', consentData.marketing);
+    } catch (error) {
+      console.log('Test: Error parsing consent:', error);
+    }
+  }
+
+  console.log('Test: Window.fbq type:', typeof window.fbq);
+  console.log('Test: Window.fbq function:', window.fbq);
+};

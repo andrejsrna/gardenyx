@@ -14,17 +14,19 @@ export default function CategoryTracking({ categoryName, products }: CategoryTra
   const { consent, hasConsented } = useCookieConsent();
 
   useEffect(() => {
-    if (hasConsented && consent.analytics && products) {
-      const convertedProducts = products.map(product => ({
+    // Check both analytics (for GA) and marketing (for FB Pixel) consent
+    if (hasConsented && (consent.analytics || consent.marketing) && products) {
+      const mappedProducts = products.map(product => ({
         id: product.id,
         name: product.name,
         price: parseFloat(product.price),
         quantity: 1,
-        category: product.categories?.[0]?.name
+        category: categoryName,
       }));
-      tracking.viewCategory(categoryName, convertedProducts);
+
+      tracking.viewCategory(categoryName, mappedProducts);
     }
-  }, [categoryName, products, hasConsented, consent.analytics]);
+  }, [categoryName, products, hasConsented, consent.analytics, consent.marketing]);
 
   return null;
 } 

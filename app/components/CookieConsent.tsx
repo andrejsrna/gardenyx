@@ -4,30 +4,11 @@ import { useState } from 'react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
 export default function CookieConsent() {
-  const { consent, setConsent, isModalOpen, setModalOpen } = useCookieConsent();
+  const { consent, setConsent, isModalOpen } = useCookieConsent();
   const [showDetails, setShowDetails] = useState(false);
 
-  const saveConsent = (newConsent: typeof consent) => {
-    setConsent(newConsent);
-
-    const consentString = JSON.stringify(newConsent);
-
-    try {
-      localStorage.setItem('cookieConsent', consentString);
-    } catch (error) {
-      console.error('Failed to set localStorage item:', error);
-    }
-
-    const expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
-    const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
-    document.cookie = `cookieConsent=${consentString}; path=/; expires=${expires.toUTCString()}; SameSite=Lax${secureFlag}`;
-    
-    setModalOpen(false);
-  };
-
   const handleAcceptAll = () => {
-    saveConsent({
+    setConsent({
       necessary: true,
       analytics: true,
       marketing: true,
@@ -35,7 +16,7 @@ export default function CookieConsent() {
   };
 
   const handleRejectAll = () => {
-    saveConsent({
+    setConsent({
       necessary: true,
       analytics: false,
       marketing: false,
@@ -43,7 +24,7 @@ export default function CookieConsent() {
   };
 
   const handleSavePreferences = () => {
-    saveConsent(consent);
+    setConsent(consent);
   };
 
   if (!isModalOpen) {

@@ -2,6 +2,7 @@
 
 import { useCookieConsent } from '../context/CookieConsentContext';
 import { tracking } from '../lib/tracking';
+import { useEffect } from 'react';
 
 interface SearchTrackingProps {
   searchTerm: string;
@@ -11,15 +12,16 @@ interface SearchTrackingProps {
 export default function SearchTracking({ searchTerm, resultsCount }: SearchTrackingProps) {
   const { consent, hasConsented } = useCookieConsent();
 
-  const handleSearch = () => {
-    if (hasConsented && consent.analytics) {
+  useEffect(() => {
+    // Check both analytics (for GA) and marketing (for FB Pixel) consent
+    if (hasConsented && (consent.analytics || consent.marketing)) {
       tracking.search(searchTerm, resultsCount);
     }
-  };
+  }, [searchTerm, resultsCount, hasConsented, consent.analytics, consent.marketing]);
 
   return (
     <button
-      onClick={handleSearch}
+      onClick={() => {}} // No-op to prevent button from being clickable
       className="hidden"
       aria-hidden="true"
     >

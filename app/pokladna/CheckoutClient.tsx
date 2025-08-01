@@ -79,7 +79,8 @@ export default function CheckoutClient() {
 
   // Analytics tracking effect
   useEffect(() => {
-    if (items.length > 0 && hasConsented && consent.analytics) {
+    // Check both analytics (for GA) and marketing (for FB Pixel) consent
+    if (items.length > 0 && hasConsented && (consent.analytics || consent.marketing)) {
       tracking.initiateCheckout(items, totalPrice);
 
       Sentry.setContext('checkout', {
@@ -88,7 +89,7 @@ export default function CheckoutClient() {
         currency: 'EUR',
       });
     }
-  }, [items, totalPrice, hasConsented, consent.analytics]);
+  }, [items, totalPrice, hasConsented, consent.analytics, consent.marketing]);
 
   // Fetch recommended products effect
   useEffect(() => {
@@ -406,7 +407,7 @@ export default function CheckoutClient() {
       const result = await createOrder(orderData);
       orderIdRef.current = result.order.id;
 
-      if (hasConsented && consent.analytics) {
+      if (hasConsented && (consent.analytics || consent.marketing)) {
         tracking.purchase(result.order.id.toString(), items, finalTotal);
       }
 
