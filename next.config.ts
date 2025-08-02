@@ -21,6 +21,10 @@ const nextConfig = {
         hostname: 'cdn.najsilnejsiaklbovavyziva.sk',
         protocol: 'https' as const,
       },
+      {
+        hostname: 'www.facebook.com',
+        protocol: 'https' as const,
+      },
     ],
   },
   experimental: {
