@@ -11,14 +11,17 @@ export async function POST(request: Request) {
   try {
     const { eventName, eventData, userData, pixelId } = await request.json();
     
-    const event = {
+    const event: any = {
       event_name: eventName,
       event_time: Math.floor(Date.now() / 1000),
       action_source: 'website',
       event_source_url: eventData.event_source_url || 'https://najsilnejsiaklbovavyziva.sk',
-      user_data: userData || {},
       custom_data: eventData || {},
     };
+
+    if (userData && Object.keys(userData).length > 0) {
+      event.user_data = userData;
+    }
 
     const response = await fetch(
       `https://graph.facebook.com/v17.0/${pixelId}/events`,
