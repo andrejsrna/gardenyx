@@ -21,11 +21,9 @@ const trackFbEventWithConversionAPI = async (
   trackFbEvent(eventName, params);
   
   // Server-side conversion API (for better reliability)
-  if (userData) {
+  if (userData && Object.keys(userData).length > 0) {
     const hashedUserData = hashUserData(userData);
     await sendFacebookConversionEvent(eventName, params || {}, hashedUserData, PIXEL_ID);
-  } else {
-    await sendFacebookConversionEvent(eventName, params || {}, {}, PIXEL_ID);
   }
 };
 
