@@ -3,6 +3,14 @@ import { NextResponse } from 'next/server';
 const ACCESS_TOKEN = process.env.FB_CONVERSION_API_ACCESS_TOKEN;
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
+interface TestResult {
+  test: string;
+  status: 'PASS' | 'FAIL' | 'ERROR';
+  data?: unknown;
+  error?: unknown;
+  httpStatus?: number;
+}
+
 export async function GET() {
   try {
     const diagnostics = {
@@ -13,7 +21,7 @@ export async function GET() {
         accessTokenLength: ACCESS_TOKEN ? ACCESS_TOKEN.length : 0,
         accessTokenPrefix: ACCESS_TOKEN ? ACCESS_TOKEN.substring(0, 10) + '...' : 'NOT SET',
       },
-      tests: []
+      tests: [] as TestResult[]
     };
 
     if (!ACCESS_TOKEN) {
@@ -57,7 +65,7 @@ export async function GET() {
       diagnostics.tests.push({
         test: 'Pixel Access',
         status: 'ERROR',
-        error: error.message
+        error: error instanceof Error ? error.message : String(error)
       });
     }
 
@@ -88,7 +96,7 @@ export async function GET() {
       diagnostics.tests.push({
         test: 'Token Permissions',
         status: 'ERROR',
-        error: error.message
+        error: error instanceof Error ? error.message : String(error)
       });
     }
 
@@ -119,7 +127,7 @@ export async function GET() {
       diagnostics.tests.push({
         test: 'Token Owner',
         status: 'ERROR',
-        error: error.message
+        error: error instanceof Error ? error.message : String(error)
       });
     }
 
@@ -128,7 +136,7 @@ export async function GET() {
   } catch (error) {
     return NextResponse.json({
       error: 'Diagnostic failed',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     }, { status: 500 });
   }
 }

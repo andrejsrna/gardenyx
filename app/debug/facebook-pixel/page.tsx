@@ -13,8 +13,8 @@ interface DiagnosticResult {
   tests: Array<{
     test: string;
     status: 'PASS' | 'FAIL' | 'ERROR';
-    data?: any;
-    error?: any;
+    data?: Record<string, unknown>;
+    error?: Record<string, unknown> | string;
     httpStatus?: number;
   }>;
   error?: string;
@@ -40,7 +40,7 @@ export default function FacebookPixelDebug() {
           accessTokenPrefix: 'ERROR'
         },
         tests: [],
-        error: `Failed to fetch diagnostics: ${error.message}`
+        error: `Failed to fetch diagnostics: ${error instanceof Error ? error.message : String(error)}`
       });
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ export default function FacebookPixelDebug() {
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
         <h2 className="font-semibold text-yellow-800 mb-2">⚠️ Current Issue</h2>
         <p className="text-yellow-700">
-          Facebook Conversion API error: Object with ID '206446962419006' does not exist, 
+          Facebook Conversion API error: Object with ID &apos;206446962419006&apos; does not exist, 
           cannot be loaded due to missing permissions, or does not support this operation.
         </p>
       </div>
@@ -128,7 +128,7 @@ export default function FacebookPixelDebug() {
                       <p className="text-sm text-gray-600 mb-2">HTTP Status: {test.httpStatus}</p>
                     )}
 
-                    {test.data && (
+                    {test.data != null && (
                       <details className="mt-2">
                         <summary className="cursor-pointer text-sm text-blue-600 hover:text-blue-800">
                           View Data
@@ -139,7 +139,7 @@ export default function FacebookPixelDebug() {
                       </details>
                     )}
 
-                    {test.error && (
+                    {test.error != null && (
                       <div className="mt-2 bg-red-50 p-3 rounded">
                         <p className="text-sm text-red-800 font-medium">Error:</p>
                         <pre className="text-xs text-red-700 mt-1 overflow-auto">
@@ -163,7 +163,7 @@ export default function FacebookPixelDebug() {
               </div>
               <div>
                 <h3 className="font-medium">2. Check Access Token</h3>
-                <p className="text-sm">Ensure your access token has 'ads_management' permission and belongs to the same Facebook account/Business Manager that owns the pixel</p>
+                <p className="text-sm">Ensure your access token has &apos;ads_management&apos; permission and belongs to the same Facebook account/Business Manager that owns the pixel</p>
               </div>
               <div>
                 <h3 className="font-medium">3. Generate New Access Token</h3>
