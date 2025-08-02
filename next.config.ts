@@ -69,23 +69,6 @@ const nextConfig = {
             value: 'Content-Type, Authorization'
           },
           {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self' https:",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google-analytics.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.net https://maps.googleapis.com https://js.stripe.com https://*.stripe.com https://*.sentry.io https://cdn.jsdelivr.net/npm/@widgetbot/crate@^3",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.stripe.com https://cdn.jsdelivr.net/npm/@widgetbot/crate@^3",
-              "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.stripe.com",
-              "img-src 'self' data: blob: https://*.stripe.com https://*.facebook.com https://www.facebook.com https://facebook.com https://www.google-analytics.com https://*.googletagmanager.com https://www.google.com https://*.doubleclick.net https://*.gstatic.com https://upload.wikimedia.org https://googleads.g.doubleclick.net",
-              "font-src 'self' https://fonts.gstatic.com https://*.stripe.com",
-              "connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.net https://maps.googleapis.com https://*.stripe.com https://api.stripe.com https://*.sentry.io wss://*.widgetbot.io https://api.packetery.com https://najsilnejsiaklbovavyziva.sk",
-              "frame-src 'self' https://*.stripe.com https://js.stripe.com https://hooks.stripe.com https://www.facebook.com https://facebook.com https://widgetbot.io https://www.youtube.com https://youtube.com https://*.googletagmanager.com https://widget.packeta.com https://backup.widget.packeta.com",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "frame-ancestors 'self'"
-            ].join('; ')
-          },
-          {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
           }
