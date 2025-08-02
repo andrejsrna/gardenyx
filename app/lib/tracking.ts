@@ -1,25 +1,19 @@
 import { event as gtagEvent } from '../components/GoogleAnalytics';
 import { sendFacebookConversionEvent, hashUserData } from './facebook-conversion';
-import { PIXEL_ID } from '../components/FacebookPixel';
 import { getCookie } from 'cookies-next';
 
-// Dynamic import to avoid SSR issues - fire and forget to keep functions sync
-const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
-  if (typeof window === 'undefined') return;
-  
-  import('../components/FacebookPixel')
-    .then(({ trackFbEvent: fbTracker }) => fbTracker(eventName, params))
-    .catch(error => console.error('Error importing Facebook Pixel tracker:', error));
-};
+const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
-// Track event with both client-side pixel and server-side conversion API
+// Track event with server-side conversion API only
 const trackFbEventWithConversionAPI = async (
   eventName: string, 
   params?: Record<string, unknown>,
   userData: Record<string, unknown> = {}
 ) => {
-  // Client-side pixel tracking (immediate)
-  trackFbEvent(eventName, params);
+  if (!PIXEL_ID) {
+    console.warn('Facebook Pixel ID not configured');
+    return;
+  }
 
   // Prepare user data for Conversion API
   const fbp = getCookie('_fbp')?.toString();
@@ -33,9 +27,17 @@ const trackFbEventWithConversionAPI = async (
     userData.fbc = fbc;
   }
   
-  // Server-side conversion API (for better reliability)
+  // Add external_id for better event deduplication
+  const timestamp = Date.now();
+  const eventParams = {
+    ...params,
+    external_id: `${eventName}_${timestamp}_${Math.random().toString(36).substr(2, 9)}`,
+    event_id: `${eventName}_${timestamp}`,
+  };
+  
+  // Server-side conversion API only
   const hashedUserData = hashUserData(userData);
-  await sendFacebookConversionEvent(eventName, params || {}, hashedUserData, PIXEL_ID);
+  await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
 };
 
 interface Product {
@@ -389,26 +391,6 @@ export const tracking = {
   completeRegistration: completeRegistrationWithConversionAPI,
 
   purchase: (orderId: string, products: Product[], totalValue: number, tax?: number, shipping?: number) => {
-    const fbParams = {
-      content_ids: products.map(p => p.id.toString()),
-      contents: products.map(p => ({ 
-        id: p.id.toString(), 
-        quantity: p.quantity || 1 
-      })),
-      value: totalValue,
-      currency: 'EUR',
-      num_items: products.length,
-      order_id: orderId,
-      tax: tax,
-      shipping: shipping,
-      // Enhanced metadata for better tracking
-      event_source_url: window.location.href,
-      content_type: 'product',
-      ...(typeof window !== 'undefined' && typeof window.fbq === 'function' && {
-        external_id: 'order_' + orderId,
-      })
-    };
-
     const gaParams = {
       transaction_id: orderId,
       value: totalValue,
@@ -424,7 +406,6 @@ export const tracking = {
       })),
     };
 
-    trackFbEvent('Purchase', fbParams);
     gtagEvent('purchase', gaParams);
   },
 
@@ -468,13 +449,12 @@ export const tracking = {
       })),
     };
 
-    // Track with both client-side pixel and server-side conversion API
+    // Track with server-side conversion API only
     await trackFbEventWithConversionAPI('Purchase', fbParams, userData);
     gtagEvent('purchase', gaParams);
   },
 
   custom: (eventName: string, params?: Record<string, unknown>) => {
-    trackFbEvent(eventName, params || {});
     gtagEvent(eventName, params || {});
   },
 };

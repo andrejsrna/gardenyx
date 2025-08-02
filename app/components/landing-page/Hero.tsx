@@ -1,14 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { trackFbEvent } from '../../components/FacebookPixel';
+import { trackServerSideEvent } from '../../lib/server-side-tracking';
 
 export default function Hero() {
   const handleOrderClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     
-    // Track click event through Facebook Pixel
-    trackFbEvent('Purchase Button Click', { content_name: 'Joint Boost Purchase Button' });
+    // Track click event through server-side conversion API
+    trackServerSideEvent('Purchase Button Click', { content_name: 'Joint Boost Purchase Button' });
     
     // Smooth scroll to products section
     const productsSection = document.getElementById('produkty');

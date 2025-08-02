@@ -11,17 +11,40 @@ export async function POST(request: Request) {
   try {
     const { eventName, eventData, userData, pixelId } = await request.json();
     
-    const event: any = {
+    // Extract IP address and user agent from request headers
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] || 
+                     request.headers.get('x-real-ip') || 
+                     request.headers.get('cf-connecting-ip') ||
+                     '127.0.0.1'; // fallback
+    
+    const userAgent = request.headers.get('user-agent') || '';
+    
+    // Enhance user data with IP and user agent
+    const enhancedUserData = {
+      ...userData,
+      client_ip_address: clientIp,
+      client_user_agent: userAgent,
+    };
+
+    // If we don't have good user data, add country as fallback
+    if (!enhancedUserData.em && !enhancedUserData.ph && !enhancedUserData.fn) {
+      enhancedUserData.country = 'sk'; // Slovakia - your target market
+    }
+    
+    const event: Record<string, unknown> = {
       event_name: eventName,
       event_time: Math.floor(Date.now() / 1000),
       action_source: 'website',
       event_source_url: eventData.event_source_url || 'https://najsilnejsiaklbovavyziva.sk',
-      custom_data: eventData || {},
+      custom_data: {
+        ...eventData,
+        currency: eventData.currency || 'EUR',
+        content_type: eventData.content_type || 'product',
+      },
     };
 
-    if (userData && Object.keys(userData).length > 0) {
-      event.user_data = userData;
-    }
+    // Always include user data (even if just IP and user agent)
+    event.user_data = enhancedUserData;
 
     const response = await fetch(
       `https://graph.facebook.com/v17.0/${pixelId}/events`,

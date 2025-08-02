@@ -2,11 +2,11 @@
 
 import { ArrowRight, Percent, Truck } from 'lucide-react';
 import Link from 'next/link';
-import { trackFbEvent } from './FacebookPixel';
+import { trackServerSideEvent } from '../lib/server-side-tracking';
 
 export default function CTA() {
   const handleBuyClick = () => {
-    trackFbEvent('Purchase Intent', { content_name: 'Main CTA Button' });
+    trackServerSideEvent('Purchase Intent', { content_name: 'Main CTA Button' });
   };
 
   return (

@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { Toaster } from 'sonner';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import ExitIntentPopupLoader from './components/ExitIntentPopupLoader';
-import FacebookPixel from './components/FacebookPixel';
+
 import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
@@ -79,7 +79,7 @@ export default function RootLayout({
                 <Footer />
                 <ExitIntentPopupLoader />
                 <Toaster/>
-                <FacebookPixel />
+
                 <GoogleAnalytics />
                 <GoogleAds />
                 <CookieConsentBanner />

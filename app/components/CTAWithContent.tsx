@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, Percent, Truck, Star, Shield, Clock, Check } from 'lucide-react';
-import { trackFbEvent } from './FacebookPixel';
+import { trackServerSideEvent } from '../lib/server-side-tracking';
 
 export default function CTAWithContent() {
   const benefits = [
@@ -29,7 +29,7 @@ export default function CTAWithContent() {
   ];
 
   const handleBuyClick = () => {
-    trackFbEvent('Purchase Intent', { content_name: 'Premium CTA Button' });
+    trackServerSideEvent('Purchase Intent', { content_name: 'Premium CTA Button' });
   };
 
   return (

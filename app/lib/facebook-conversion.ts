@@ -1,3 +1,5 @@
+import { createHash } from 'crypto';
+
 export async function sendFacebookConversionEvent(
   eventName: string,
   eventData: Record<string, unknown> = {},
@@ -42,39 +44,55 @@ export async function sendFacebookConversionEvent(
   }
 }
 
+function sha256Hash(value: string): string {
+  return createHash('sha256').update(value.toLowerCase().trim()).digest('hex');
+}
+
 export function hashUserData(data: Record<string, unknown>): Record<string, unknown> {
   const hashedData: Record<string, unknown> = {};
   
-  if (data.email) {
-    hashedData.em = data.email; // Facebook expects hashed email
+  if (data.email && typeof data.email === 'string') {
+    hashedData.em = sha256Hash(data.email);
   }
   
-  if (data.phone) {
-    hashedData.ph = data.phone; // Facebook expects hashed phone
+  if (data.phone && typeof data.phone === 'string') {
+    // Remove all non-numeric characters and add country code if missing
+    const cleanPhone = data.phone.replace(/\D/g, '');
+    const phoneWithCountry = cleanPhone.startsWith('421') ? cleanPhone : `421${cleanPhone}`;
+    hashedData.ph = sha256Hash(phoneWithCountry);
   }
   
-  if (data.firstName) {
-    hashedData.fn = data.firstName; // Facebook expects hashed first name
+  if (data.firstName && typeof data.firstName === 'string') {
+    hashedData.fn = sha256Hash(data.firstName);
   }
   
-  if (data.lastName) {
-    hashedData.ln = data.lastName; // Facebook expects hashed last name
+  if (data.lastName && typeof data.lastName === 'string') {
+    hashedData.ln = sha256Hash(data.lastName);
   }
   
-  if (data.city) {
-    hashedData.ct = data.city; // Facebook expects hashed city
+  if (data.city && typeof data.city === 'string') {
+    hashedData.ct = sha256Hash(data.city);
   }
   
-  if (data.state) {
-    hashedData.st = data.state; // Facebook expects hashed state
+  if (data.state && typeof data.state === 'string') {
+    hashedData.st = sha256Hash(data.state);
   }
   
-  if (data.zip) {
-    hashedData.zp = data.zip; // Facebook expects hashed zip
+  if (data.zip && typeof data.zip === 'string') {
+    hashedData.zp = sha256Hash(data.zip);
   }
   
-  if (data.country) {
-    hashedData.country = data.country; // Facebook expects hashed country
+  if (data.country && typeof data.country === 'string') {
+    hashedData.country = sha256Hash(data.country);
+  }
+  
+  // Pass through non-hashable parameters
+  if (data.fbp) {
+    hashedData.fbp = data.fbp;
+  }
+  
+  if (data.fbc) {
+    hashedData.fbc = data.fbc;
   }
   
   return hashedData;
