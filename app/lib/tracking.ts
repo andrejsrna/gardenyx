@@ -1,6 +1,7 @@
 import { event as gtagEvent } from '../components/GoogleAnalytics';
 import { sendFacebookConversionEvent, hashUserData } from './facebook-conversion';
 import { PIXEL_ID } from '../components/FacebookPixel';
+import { getCookie } from 'cookies-next';
 
 // Dynamic import to avoid SSR issues - fire and forget to keep functions sync
 const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
@@ -15,16 +16,26 @@ const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
 const trackFbEventWithConversionAPI = async (
   eventName: string, 
   params?: Record<string, unknown>,
-  userData?: Record<string, unknown>
+  userData: Record<string, unknown> = {}
 ) => {
   // Client-side pixel tracking (immediate)
   trackFbEvent(eventName, params);
+
+  // Prepare user data for Conversion API
+  const fbp = getCookie('_fbp')?.toString();
+  const fbc = getCookie('_fbc')?.toString();
+  
+  if (fbp) {
+    userData.fbp = fbp;
+  }
+
+  if (fbc) {
+    userData.fbc = fbc;
+  }
   
   // Server-side conversion API (for better reliability)
-  if (userData && Object.keys(userData).length > 0) {
-    const hashedUserData = hashUserData(userData);
-    await sendFacebookConversionEvent(eventName, params || {}, hashedUserData, PIXEL_ID);
-  }
+  const hashedUserData = hashUserData(userData);
+  await sendFacebookConversionEvent(eventName, params || {}, hashedUserData, PIXEL_ID);
 };
 
 interface Product {
