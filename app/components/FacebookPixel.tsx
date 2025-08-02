@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import { getCookieConsentValue } from 'react-cookie-consent';
 import { hasConsentFor } from './CookieConsentBanner';
+import Image from 'next/image';
+
+export const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
 export default function FacebookPixel() {
-  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
@@ -13,8 +15,8 @@ export default function FacebookPixel() {
   }, []);
 
   useEffect(() => {
-    if (!isClient || !pixelId) {
-      if (!pixelId) {
+    if (!isClient || !PIXEL_ID) {
+      if (!PIXEL_ID) {
         console.error('Facebook Pixel ID is not defined in environment variables');
       }
       return;
@@ -37,7 +39,7 @@ export default function FacebookPixel() {
           debug: process.env.NODE_ENV === 'development',
         };
 
-        ReactPixel.default.init(pixelId, undefined, options);
+        ReactPixel.default.init(PIXEL_ID, undefined, options);
         ReactPixel.default.pageView();
         
         console.log('Facebook Pixel initialized successfully with react-facebook-pixel');
@@ -45,19 +47,19 @@ export default function FacebookPixel() {
         console.error('Error initializing Facebook Pixel:', error);
       }
     });
-  }, [pixelId, isClient]);
+  }, [isClient]);
 
-  if (!pixelId) {
+  if (!PIXEL_ID) {
     return null;
   }
 
   return (
     <noscript>
-      <img
+      <Image
         height="1"
         width="1"
         style={{ display: 'none' }}
-        src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
+        src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
         alt=""
       />
     </noscript>
@@ -68,8 +70,7 @@ export default function FacebookPixel() {
 export const trackFbEvent = async (eventName: string, params?: Record<string, unknown>) => {
   if (typeof window === 'undefined') return;
 
-  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
-  if (!pixelId) {
+  if (!PIXEL_ID) {
     console.warn('Cannot track FB event - Pixel ID not configured');
     return;
   }
@@ -99,8 +100,7 @@ export const testFacebookPixel = async () => {
     return;
   }
 
-  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
-  console.log('Test: Pixel ID:', pixelId);
+  console.log('Test: Pixel ID:', PIXEL_ID);
 
   const cookieConsent = getCookieConsentValue('cookieConsent');
   console.log('Test: Cookie consent value:', cookieConsent);

@@ -1,4 +1,6 @@
 import { event as gtagEvent } from '../components/GoogleAnalytics';
+import { sendFacebookConversionEvent, hashUserData } from './facebook-conversion';
+import { PIXEL_ID } from '../components/FacebookPixel';
 
 // Dynamic import to avoid SSR issues - fire and forget to keep functions sync
 const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
@@ -7,6 +9,24 @@ const trackFbEvent = (eventName: string, params?: Record<string, unknown>) => {
   import('../components/FacebookPixel')
     .then(({ trackFbEvent: fbTracker }) => fbTracker(eventName, params))
     .catch(error => console.error('Error importing Facebook Pixel tracker:', error));
+};
+
+// Track event with both client-side pixel and server-side conversion API
+const trackFbEventWithConversionAPI = async (
+  eventName: string, 
+  params?: Record<string, unknown>,
+  userData?: Record<string, unknown>
+) => {
+  // Client-side pixel tracking (immediate)
+  trackFbEvent(eventName, params);
+  
+  // Server-side conversion API (for better reliability)
+  if (userData) {
+    const hashedUserData = hashUserData(userData);
+    await sendFacebookConversionEvent(eventName, params || {}, hashedUserData, PIXEL_ID);
+  } else {
+    await sendFacebookConversionEvent(eventName, params || {}, {}, PIXEL_ID);
+  }
 };
 
 interface Product {
@@ -228,6 +248,51 @@ export const tracking = {
     gtagEvent('purchase', gaParams);
   },
 
+  // Enhanced purchase tracking with Conversion API
+  purchaseWithConversionAPI: async (
+    orderId: string, 
+    products: Product[], 
+    totalValue: number, 
+    userData?: Record<string, unknown>,
+    tax?: number, 
+    shipping?: number
+  ) => {
+    const fbParams = {
+      content_ids: products.map(p => p.id.toString()),
+      contents: products.map(p => ({ 
+        id: p.id.toString(), 
+        quantity: p.quantity || 1 
+      })),
+      value: totalValue,
+      currency: 'EUR',
+      num_items: products.length,
+      order_id: orderId,
+      tax: tax,
+      shipping: shipping,
+      event_source_url: window.location.href,
+      content_type: 'product',
+    };
+
+    const gaParams = {
+      transaction_id: orderId,
+      value: totalValue,
+      currency: 'EUR',
+      tax: tax,
+      shipping: shipping,
+      items: products.map(p => ({
+        item_id: p.id.toString(),
+        item_name: p.name,
+        price: p.price,
+        quantity: p.quantity || 1,
+        item_category: p.category,
+      })),
+    };
+
+    // Track with both client-side pixel and server-side conversion API
+    await trackFbEventWithConversionAPI('Purchase', fbParams, userData);
+    gtagEvent('purchase', gaParams);
+  },
+
   search: (searchTerm: string, resultsCount?: number) => {
     const fbParams = {
       search_string: searchTerm,
@@ -305,6 +370,7 @@ export const tracking = {
       value: value,
     };
 
+
     trackFbEvent('Lead', fbParams);
     gtagEvent('generate_lead', gaParams);
   },
@@ -328,4 +394,4 @@ export const tracking = {
     trackFbEvent(eventName, params || {});
     gtagEvent(eventName, params || {});
   },
-}; 
+};
