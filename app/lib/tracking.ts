@@ -38,175 +38,346 @@ interface Product {
   variant?: string;
 }
 
+// Enhanced viewContent tracking with Conversion API
+const viewContentWithConversionAPI = async (
+  product: Product,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_name: product.name,
+    content_ids: [product.id.toString()],
+    content_type: 'product',
+    value: product.price,
+    currency: 'EUR',
+    content_category: product.category,
+    // Enhanced metadata for better Event Match Quality
+    event_source_url: window.location.href,
+    ...(typeof window !== 'undefined' && typeof window.fbq === 'function' && {
+      external_id: 'user_' + Date.now(), // Unique user identifier
+    })
+  };
+
+  const gaParams = {
+    currency: 'EUR',
+    value: product.price,
+    items: [{
+      item_id: product.id.toString(),
+      item_name: product.name,
+      price: product.price,
+      quantity: product.quantity || 1,
+      item_category: product.category,
+      item_variant: product.variant,
+    }],
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('ViewContent', fbParams, userData);
+  gtagEvent('view_item', gaParams);
+};
+
+// Enhanced addToCart tracking with Conversion API
+const addToCartWithConversionAPI = async (
+  product: Product,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_name: product.name,
+    content_ids: [product.id.toString()],
+    content_type: 'product',
+    value: product.price * (product.quantity || 1),
+    currency: 'EUR',
+    content_category: product.category,
+  };
+
+  const gaParams = {
+    currency: 'EUR',
+    value: product.price * (product.quantity || 1),
+    items: [{
+      item_id: product.id.toString(),
+      item_name: product.name,
+      price: product.price,
+      quantity: product.quantity || 1,
+      item_category: product.category,
+      item_variant: product.variant,
+    }],
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('AddToCart', fbParams, userData);
+  gtagEvent('add_to_cart', gaParams);
+}
+
+// Enhanced removeFromCart tracking with Conversion API
+const removeFromCartWithConversionAPI = async (
+  product: Product,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_name: product.name,
+    content_ids: [product.id.toString()],
+    content_type: 'product',
+    value: product.price * (product.quantity || 1),
+    currency: 'EUR',
+  };
+
+  const gaParams = {
+    currency: 'EUR',
+    value: product.price * (product.quantity || 1),
+    items: [{
+      item_id: product.id.toString(),
+      item_name: product.name,
+      price: product.price,
+      quantity: product.quantity || 1,
+    }],
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('RemoveFromCart', fbParams, userData);
+  gtagEvent('remove_from_cart', gaParams);
+}
+
+// Enhanced initiateCheckout tracking with Conversion API
+const initiateCheckoutWithConversionAPI = async (
+  products: Product[],
+  totalValue: number,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_ids: products.map(p => p.id.toString()),
+    contents: products.map(p => ({ 
+      id: p.id.toString(), 
+      quantity: p.quantity || 1 
+    })),
+    value: totalValue,
+    currency: 'EUR',
+    num_items: products.length,
+  };
+
+  const gaParams = {
+    currency: 'EUR',
+    value: totalValue,
+    items: products.map(p => ({
+      item_id: p.id.toString(),
+      item_name: p.name,
+      price: p.price,
+      quantity: p.quantity || 1,
+      item_category: p.category,
+    })),
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('InitiateCheckout', fbParams, userData);
+  gtagEvent('begin_checkout', gaParams);
+}
+
+// Enhanced addShippingInfo tracking with Conversion API
+const addShippingInfoWithConversionAPI = async (
+  products: Product[],
+  totalValue: number,
+  shippingTier: string,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_ids: products.map(p => p.id.toString()),
+    contents: products.map(p => ({ 
+      id: p.id.toString(), 
+      quantity: p.quantity || 1 
+    })),
+    value: totalValue,
+    currency: 'EUR',
+    shipping_tier: shippingTier,
+  };
+
+  const gaParams = {
+    currency: 'EUR',
+    value: totalValue,
+    shipping_tier: shippingTier,
+    items: products.map(p => ({
+      item_id: p.id.toString(),
+      item_name: p.name,
+      price: p.price,
+      quantity: p.quantity || 1,
+    })),
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('AddShippingInfo', fbParams, userData);
+  gtagEvent('add_shipping_info', gaParams);
+}
+
+// Enhanced addPaymentInfo tracking with Conversion API
+const addPaymentInfoWithConversionAPI = async (
+  products: Product[],
+  totalValue: number,
+  paymentType: string,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_ids: products.map(p => p.id.toString()),
+    contents: products.map(p => ({ 
+      id: p.id.toString(), 
+      quantity: p.quantity || 1 
+    })),
+    value: totalValue,
+    currency: 'EUR',
+    payment_type: paymentType,
+  };
+
+  const gaParams = {
+    currency: 'EUR',
+    value: totalValue,
+    payment_type: paymentType,
+    items: products.map(p => ({
+      item_id: p.id.toString(),
+      item_name: p.name,
+      price: p.price,
+      quantity: p.quantity || 1,
+    })),
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('AddPaymentInfo', fbParams, userData);
+  gtagEvent('add_payment_info', gaParams);
+}
+
+// Enhanced search tracking with Conversion API
+const searchWithConversionAPI = async (
+  searchTerm: string,
+  resultsCount?: number,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    search_string: searchTerm,
+    content_category: 'search',
+  };
+
+  const gaParams = {
+    search_term: searchTerm,
+    results_count: resultsCount,
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('Search', fbParams, userData);
+  gtagEvent('search', gaParams);
+}
+
+// Enhanced viewCategory tracking with Conversion API
+const viewCategoryWithConversionAPI = async (
+  categoryName: string,
+  products?: Product[],
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_name: categoryName,
+    content_category: categoryName,
+    content_type: 'product_group',
+    contents: products?.map(p => ({ 
+      id: p.id.toString(), 
+      quantity: 1 
+    })),
+  };
+
+  const gaParams = {
+    item_list_name: categoryName,
+    items: products?.map(p => ({
+      item_id: p.id.toString(),
+      item_name: p.name,
+      price: p.price,
+      item_category: categoryName,
+    })),
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('ViewCategory', fbParams, userData);
+  gtagEvent('view_item_list', gaParams);
+}
+
+// Enhanced addToWishlist tracking with Conversion API
+const addToWishlistWithConversionAPI = async (
+  product: Product,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_name: product.name,
+    content_ids: [product.id.toString()],
+    content_type: 'product',
+    value: product.price,
+    currency: 'EUR',
+  };
+
+  const gaParams = {
+    currency: 'EUR',
+    value: product.price,
+    items: [{
+      item_id: product.id.toString(),
+      item_name: product.name,
+      price: product.price,
+      quantity: 1,
+    }],
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('AddToWishlist', fbParams, userData);
+  gtagEvent('add_to_wishlist', gaParams);
+}
+
+// Enhanced lead tracking with Conversion API
+const leadWithConversionAPI = async (
+  formName: string,
+  value?: number,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_name: formName,
+    value: value,
+    currency: 'EUR',
+  };
+
+  const gaParams = {
+    event_category: 'engagement',
+    event_label: formName,
+    value: value,
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('Lead', fbParams, userData);
+  gtagEvent('generate_lead', gaParams);
+}
+
+// Enhanced completeRegistration tracking with Conversion API
+const completeRegistrationWithConversionAPI = async (
+  method: string,
+  userData?: Record<string, unknown>
+) => {
+  const fbParams = {
+    content_name: 'registration',
+    status: true,
+    registration_source: method,
+  };
+
+  const gaParams = {
+    method: method,
+  };
+
+  // Track with both client-side pixel and server-side conversion API
+  await trackFbEventWithConversionAPI('CompleteRegistration', fbParams, userData);
+  gtagEvent('sign_up', gaParams);
+}
+
 
 
 export const tracking = {
-  viewContent: (product: Product) => {
-    const fbParams = {
-      content_name: product.name,
-      content_ids: [product.id.toString()],
-      content_type: 'product',
-      value: product.price,
-      currency: 'EUR',
-      content_category: product.category,
-      // Enhanced metadata for better Event Match Quality
-      event_source_url: window.location.href,
-      ...(typeof window !== 'undefined' && typeof window.fbq === 'function' && {
-        external_id: 'user_' + Date.now(), // Unique user identifier
-      })
-    };
-
-    const gaParams = {
-      currency: 'EUR',
-      value: product.price,
-      items: [{
-        item_id: product.id.toString(),
-        item_name: product.name,
-        price: product.price,
-        quantity: product.quantity || 1,
-        item_category: product.category,
-        item_variant: product.variant,
-      }],
-    };
-
-    trackFbEvent('ViewContent', fbParams);
-    gtagEvent('view_item', gaParams);
-  },
-
-  addToCart: (product: Product) => {
-    const fbParams = {
-      content_name: product.name,
-      content_ids: [product.id.toString()],
-      content_type: 'product',
-      value: product.price * (product.quantity || 1),
-      currency: 'EUR',
-      content_category: product.category,
-    };
-
-    const gaParams = {
-      currency: 'EUR',
-      value: product.price * (product.quantity || 1),
-      items: [{
-        item_id: product.id.toString(),
-        item_name: product.name,
-        price: product.price,
-        quantity: product.quantity || 1,
-        item_category: product.category,
-        item_variant: product.variant,
-      }],
-    };
-
-    trackFbEvent('AddToCart', fbParams);
-    gtagEvent('add_to_cart', gaParams);
-  },
-
-  removeFromCart: (product: Product) => {
-    const fbParams = {
-      content_name: product.name,
-      content_ids: [product.id.toString()],
-      content_type: 'product',
-      value: product.price * (product.quantity || 1),
-      currency: 'EUR',
-    };
-
-    const gaParams = {
-      currency: 'EUR',
-      value: product.price * (product.quantity || 1),
-      items: [{
-        item_id: product.id.toString(),
-        item_name: product.name,
-        price: product.price,
-        quantity: product.quantity || 1,
-      }],
-    };
-
-    trackFbEvent('RemoveFromCart', fbParams);
-    gtagEvent('remove_from_cart', gaParams);
-  },
-
-  initiateCheckout: (products: Product[], totalValue: number) => {
-    const fbParams = {
-      content_ids: products.map(p => p.id.toString()),
-      contents: products.map(p => ({ 
-        id: p.id.toString(), 
-        quantity: p.quantity || 1 
-      })),
-      value: totalValue,
-      currency: 'EUR',
-      num_items: products.length,
-    };
-
-    const gaParams = {
-      currency: 'EUR',
-      value: totalValue,
-      items: products.map(p => ({
-        item_id: p.id.toString(),
-        item_name: p.name,
-        price: p.price,
-        quantity: p.quantity || 1,
-        item_category: p.category,
-      })),
-    };
-
-    trackFbEvent('InitiateCheckout', fbParams);
-    gtagEvent('begin_checkout', gaParams);
-  },
-
-  addShippingInfo: (products: Product[], totalValue: number, shippingTier: string) => {
-    const fbParams = {
-      content_ids: products.map(p => p.id.toString()),
-      contents: products.map(p => ({ 
-        id: p.id.toString(), 
-        quantity: p.quantity || 1 
-      })),
-      value: totalValue,
-      currency: 'EUR',
-      shipping_tier: shippingTier,
-    };
-
-    const gaParams = {
-      currency: 'EUR',
-      value: totalValue,
-      shipping_tier: shippingTier,
-      items: products.map(p => ({
-        item_id: p.id.toString(),
-        item_name: p.name,
-        price: p.price,
-        quantity: p.quantity || 1,
-      })),
-    };
-
-    trackFbEvent('AddShippingInfo', fbParams);
-    gtagEvent('add_shipping_info', gaParams);
-  },
-
-  addPaymentInfo: (products: Product[], totalValue: number, paymentType: string) => {
-    const fbParams = {
-      content_ids: products.map(p => p.id.toString()),
-      contents: products.map(p => ({ 
-        id: p.id.toString(), 
-        quantity: p.quantity || 1 
-      })),
-      value: totalValue,
-      currency: 'EUR',
-      payment_type: paymentType,
-    };
-
-    const gaParams = {
-      currency: 'EUR',
-      value: totalValue,
-      payment_type: paymentType,
-      items: products.map(p => ({
-        item_id: p.id.toString(),
-        item_name: p.name,
-        price: p.price,
-        quantity: p.quantity || 1,
-      })),
-    };
-
-    trackFbEvent('AddPaymentInfo', fbParams);
-    gtagEvent('add_payment_info', gaParams);
-  },
+  viewContent: viewContentWithConversionAPI,
+  addToCart: addToCartWithConversionAPI,
+  removeFromCart: removeFromCartWithConversionAPI,
+  initiateCheckout: initiateCheckoutWithConversionAPI,
+  addShippingInfo: addShippingInfoWithConversionAPI,
+  addPaymentInfo: addPaymentInfoWithConversionAPI,
+  search: searchWithConversionAPI,
+  viewCategory: viewCategoryWithConversionAPI,
+  addToWishlist: addToWishlistWithConversionAPI,
+  lead: leadWithConversionAPI,
+  completeRegistration: completeRegistrationWithConversionAPI,
 
   purchase: (orderId: string, products: Product[], totalValue: number, tax?: number, shipping?: number) => {
     const fbParams = {
@@ -291,103 +462,6 @@ export const tracking = {
     // Track with both client-side pixel and server-side conversion API
     await trackFbEventWithConversionAPI('Purchase', fbParams, userData);
     gtagEvent('purchase', gaParams);
-  },
-
-  search: (searchTerm: string, resultsCount?: number) => {
-    const fbParams = {
-      search_string: searchTerm,
-      content_category: 'search',
-    };
-
-    const gaParams = {
-      search_term: searchTerm,
-      results_count: resultsCount,
-    };
-
-    trackFbEvent('Search', fbParams);
-    gtagEvent('search', gaParams);
-  },
-
-  viewCategory: (categoryName: string, products?: Product[]) => {
-    const fbParams = {
-      content_name: categoryName,
-      content_category: categoryName,
-      content_type: 'product_group',
-      contents: products?.map(p => ({ 
-        id: p.id.toString(), 
-        quantity: 1 
-      })),
-    };
-
-    const gaParams = {
-      item_list_name: categoryName,
-      items: products?.map(p => ({
-        item_id: p.id.toString(),
-        item_name: p.name,
-        price: p.price,
-        item_category: categoryName,
-      })),
-    };
-
-    trackFbEvent('ViewCategory', fbParams);
-    gtagEvent('view_item_list', gaParams);
-  },
-
-  addToWishlist: (product: Product) => {
-    const fbParams = {
-      content_name: product.name,
-      content_ids: [product.id.toString()],
-      content_type: 'product',
-      value: product.price,
-      currency: 'EUR',
-    };
-
-    const gaParams = {
-      currency: 'EUR',
-      value: product.price,
-      items: [{
-        item_id: product.id.toString(),
-        item_name: product.name,
-        price: product.price,
-        quantity: 1,
-      }],
-    };
-
-    trackFbEvent('AddToWishlist', fbParams);
-    gtagEvent('add_to_wishlist', gaParams);
-  },
-
-  lead: (formName: string, value?: number) => {
-    const fbParams = {
-      content_name: formName,
-      value: value,
-      currency: 'EUR',
-    };
-
-    const gaParams = {
-      event_category: 'engagement',
-      event_label: formName,
-      value: value,
-    };
-
-
-    trackFbEvent('Lead', fbParams);
-    gtagEvent('generate_lead', gaParams);
-  },
-
-  completeRegistration: (method: string) => {
-    const fbParams = {
-      content_name: 'registration',
-      status: true,
-      registration_source: method,
-    };
-
-    const gaParams = {
-      method: method,
-    };
-
-    trackFbEvent('CompleteRegistration', fbParams);
-    gtagEvent('sign_up', gaParams);
   },
 
   custom: (eventName: string, params?: Record<string, unknown>) => {
