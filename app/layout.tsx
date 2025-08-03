@@ -8,6 +8,7 @@ import ExitIntentPopupLoader from './components/ExitIntentPopupLoader';
 import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import FacebookPixel from './components/FacebookPixel';
 import Header from './components/Header';
 
 import OrganizationSchema from './components/seo/OrganizationSchema';
@@ -81,6 +82,7 @@ export default function RootLayout({
                 <Toaster/>
 
                 <GoogleAnalytics />
+                <FacebookPixel />
                 <GoogleAds />
                 <CookieConsentBanner />
               </CookieConsentProvider>

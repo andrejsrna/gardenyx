@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
+import { createHash } from 'crypto';
 
 const ACCESS_TOKEN = process.env.FB_CONVERSION_API_ACCESS_TOKEN;
+
+function sha256Hash(value: string): string {
+  return createHash('sha256').update(value.toLowerCase().trim()).digest('hex');
+}
 
 export async function POST(request: Request) {
   if (!ACCESS_TOKEN) {
@@ -28,7 +33,7 @@ export async function POST(request: Request) {
 
     // If we don't have good user data, add country as fallback
     if (!enhancedUserData.em && !enhancedUserData.ph && !enhancedUserData.fn) {
-      enhancedUserData.country = 'sk'; // Slovakia - your target market
+      enhancedUserData.country = sha256Hash('sk'); // Slovakia - your target market
     }
     
     const event: Record<string, unknown> = {

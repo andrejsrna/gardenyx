@@ -1,10 +1,11 @@
 import { event as gtagEvent } from '../components/GoogleAnalytics';
+import { fbq } from '../components/FacebookPixel';
 import { sendFacebookConversionEvent, hashUserData } from './facebook-conversion';
 import { getCookie } from 'cookies-next';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
-// Track event with server-side conversion API only
+// Track event with both client-side pixel and server-side conversion API
 const trackFbEventWithConversionAPI = async (
   eventName: string, 
   params?: Record<string, unknown>,
@@ -35,7 +36,8 @@ const trackFbEventWithConversionAPI = async (
     event_id: `${eventName}_${timestamp}`,
   };
   
-  // Server-side conversion API only
+  // Track with both client-side pixel and server-side conversion API
+  fbq('track', eventName, params);
   const hashedUserData = hashUserData(userData);
   await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
 };
@@ -449,7 +451,7 @@ export const tracking = {
       })),
     };
 
-    // Track with server-side conversion API only
+    // Track with both client-side pixel and server-side conversion API
     await trackFbEventWithConversionAPI('Purchase', fbParams, userData);
     gtagEvent('purchase', gaParams);
   },
