@@ -72,7 +72,7 @@ export async function POST(request: Request) {
             clientSecret: paymentIntent.client_secret,
             paymentIntentId: paymentIntent.id
         });
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('[PaymentIntent API] Error during processing:', error);
 
         if (error instanceof z.ZodError) {
@@ -80,10 +80,11 @@ export async function POST(request: Request) {
             return NextResponse.json({error: 'Invalid request data', details: error.issues}, {status: 400});
         }
 
-        if (error && typeof error === 'object' && 'type' in (error as any) && 'statusCode' in (error as any)) {
-            const stripeType = (error as any)?.type as string | undefined;
-            const stripeMessage = (error as any)?.message as string | undefined;
-            const status = stripeType === 'StripeAuthenticationError' ? 401 : ((error as any)?.statusCode || 400);
+        const maybeStripeError = error as { type?: string; message?: string; statusCode?: number } | undefined;
+        if (maybeStripeError && typeof maybeStripeError === 'object' && ('type' in maybeStripeError || 'statusCode' in maybeStripeError)) {
+            const stripeType = maybeStripeError.type;
+            const stripeMessage = maybeStripeError.message;
+            const status = stripeType === 'StripeAuthenticationError' ? 401 : (maybeStripeError.statusCode || 400);
             return NextResponse.json(
                 {error: stripeMessage || 'Stripe error'},
                 {status}

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { rateLimit } from '@/app/lib/utils/rateLimit';
+import type Stripe from 'stripe';
 
 const stripe = getStripe();
 
@@ -34,7 +35,8 @@ export async function POST(
       let orderId: string | undefined;
       try {
         const pi = await stripe.paymentIntents.retrieve(id);
-        orderId = (pi.metadata as any)?.order_id as string | undefined;
+        const md = (pi.metadata as Stripe.Metadata) || undefined;
+        orderId = md ? md['order_id'] : undefined;
       } catch {}
 
       await stripe.paymentIntents.cancel(id);
@@ -48,8 +50,8 @@ export async function POST(
         } catch {}
       }
       return NextResponse.json({ success: true });
-    } catch (stripeError) {
-      const err = stripeError as any;
+    } catch (stripeError: unknown) {
+      const err = stripeError as { statusCode?: number; message?: string } | undefined;
       const status = err?.statusCode || 400;
       const message = err?.message || 'Failed to cancel payment intent';
       return NextResponse.json({ error: message }, { status });

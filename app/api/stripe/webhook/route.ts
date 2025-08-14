@@ -21,16 +21,18 @@ export async function POST(request: Request) {
 
     const rawBody = await request.text();
 
-    let event: any;
+    let event: unknown;
     try {
       event = stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
-    } catch (err) {
+    } catch {
       return NextResponse.json({ error: 'Signature verification failed' }, { status: 400 });
     }
 
-    switch (event.type) {
+    const typedEvent = event as { type: string; data: { object: unknown } };
+
+    switch (typedEvent.type) {
       case 'payment_intent.succeeded': {
-        const pi = event.data.object as { id: string; amount_received?: number; metadata?: Record<string, string | undefined> };
+        const pi = typedEvent.data.object as { id: string; amount_received?: number; metadata?: Record<string, string | undefined> };
         const orderId = pi.metadata?.order_id;
         if (orderId) {
           try {
@@ -63,7 +65,7 @@ export async function POST(request: Request) {
         break;
       }
       case 'payment_intent.payment_failed': {
-        const pi = event.data.object as { id: string; metadata?: Record<string, string | undefined> };
+        const pi = typedEvent.data.object as { id: string; metadata?: Record<string, string | undefined> };
         const orderId = pi.metadata?.order_id;
         if (orderId) {
           try {
@@ -80,7 +82,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Webhook handler error' }, { status: 500 });
   }
 }
