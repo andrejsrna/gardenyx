@@ -14,13 +14,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    let parsed: any = null;
+    let parsed: unknown = null;
     try {
       parsed = await request.json();
     } catch {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
-    const { eventName, eventData, userData, pixelId } = parsed || {};
+    const { eventName, eventData, userData, pixelId } = (parsed as { eventName?: string; eventData?: Record<string, unknown>; userData?: Record<string, unknown>; pixelId?: string }) || {};
     if (!eventName || !pixelId) {
       return NextResponse.json({ error: 'Missing required fields: eventName or pixelId' }, { status: 400 });
     }
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const userAgent = request.headers.get('user-agent') || '';
     
     // Enhance user data with IP and user agent
-    const enhancedUserData: Record<string, any> = {
+    const enhancedUserData: Record<string, unknown> = {
       ...userData,
       client_ip_address: clientIp,
       client_user_agent: userAgent,
@@ -45,15 +45,16 @@ export async function POST(request: Request) {
       enhancedUserData.country = sha256Hash('sk'); // Slovakia - your target market
     }
     
+    const safeEventData = (eventData ?? {}) as Record<string, unknown>;
     const event: Record<string, unknown> = {
       event_name: eventName,
       event_time: Math.floor(Date.now() / 1000),
       action_source: 'website',
-      event_source_url: eventData.event_source_url || 'https://najsilnejsiaklbovavyziva.sk',
+      event_source_url: (safeEventData.event_source_url as string) || 'https://najsilnejsiaklbovavyziva.sk',
       custom_data: {
-        ...eventData,
-        currency: eventData.currency || 'EUR',
-        content_type: eventData.content_type || 'product',
+        ...safeEventData,
+        currency: (safeEventData.currency as string) || 'EUR',
+        content_type: (safeEventData.content_type as string) || 'product',
       },
     };
 
