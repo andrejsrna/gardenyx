@@ -1,15 +1,10 @@
 import { logError } from '@/app/lib/utils/logger';
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+import { getStripe } from '@/app/lib/stripe';
+import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import { rateLimit } from '@/app/lib/utils/rateLimit';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not defined');
-}
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-07-30.basil',
-  timeout: 10000, // 10 second timeout
-});
+const stripe = getStripe();
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -18,6 +13,8 @@ export async function POST(
   props: { params: RouteParams }
 ) {
   try {
+    const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0]?.trim() || 'unknown';
+    await rateLimit(ip, 'payment');
     const { id } = await props.params;
     if (!id) {
       return NextResponse.json(
@@ -27,24 +24,35 @@ export async function POST(
     }
 
     try {
+      const wc = new WooCommerceRestApi({
+        url: process.env.WORDPRESS_URL!,
+        consumerKey: process.env.WC_CONSUMER_KEY!,
+        consumerSecret: process.env.WC_CONSUMER_SECRET!,
+        version: 'wc/v3'
+      });
+
+      let orderId: string | undefined;
+      try {
+        const pi = await stripe.paymentIntents.retrieve(id);
+        orderId = (pi.metadata as any)?.order_id as string | undefined;
+      } catch {}
+
       await stripe.paymentIntents.cancel(id);
+
+      if (orderId) {
+        try {
+          await wc.put(`orders/${orderId}`, {
+            status: 'cancelled',
+            customer_note: 'Platba bola zrušená.'
+          });
+        } catch {}
+      }
       return NextResponse.json({ success: true });
     } catch (stripeError) {
-      console.error('[Stripe] API Error:', stripeError);
-      if (stripeError instanceof Stripe.errors.StripeError) {
-        return NextResponse.json(
-          { error: stripeError.message },
-          { status: stripeError.statusCode || 500 }
-        );
-      }
-      const genericError = new Error(
-        stripeError instanceof Error ? stripeError.message : 'Unknown payment intent cancellation error'
-      );
-      console.error('[Stripe] Non-Stripe Error:', genericError);
-      return NextResponse.json(
-        { error: genericError.message },
-        { status: 500 }
-      );
+      const err = stripeError as any;
+      const status = err?.statusCode || 400;
+      const message = err?.message || 'Failed to cancel payment intent';
+      return NextResponse.json({ error: message }, { status });
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to cancel payment intent';

@@ -1,61 +1,72 @@
 import {NextResponse} from 'next/server';
-import Stripe from 'stripe';
 import {z} from 'zod';
+import { getStripe } from '@/app/lib/stripe';
+import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import { rateLimit } from '@/app/lib/utils/rateLimit';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-    console.error('CRITICAL: STRIPE_SECRET_KEY is not defined at module load time.');
-}
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-    apiVersion: '2025-07-30.basil',
-    typescript: true,
-    appInfo: {
-        name: 'NKV Shop',
-        version: '1.0.0',
-        url: process.env.NEXT_PUBLIC_SITE_URL
-    },
-    telemetry: false
-});
+const stripe = getStripe();
 
 const requestSchema = z.object({
-    amount: z.number().positive(),
-    currency: z.string().default('eur'),
+    orderId: z.string().regex(/^\d+$/, 'orderId must be numeric'),
     metadata: z.object({
-        order_id: z.string(),
         customer_email: z.string().email().nullish()
-    })
+    }).optional()
+});
+
+const wc = new WooCommerceRestApi({
+    url: process.env.WORDPRESS_URL!,
+    consumerKey: process.env.WC_CONSUMER_KEY!,
+    consumerSecret: process.env.WC_CONSUMER_SECRET!,
+    version: 'wc/v3'
 });
 
 export async function POST(request: Request) {
-    if (!process.env.STRIPE_SECRET_KEY) {
-        console.error('[PaymentIntent API] STRIPE_SECRET_KEY is missing inside POST handler.');
-        return NextResponse.json({error: 'Server configuration error'}, {status: 500});
-    }
-
     try {
+        const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0]?.trim() || 'unknown';
+        await rateLimit(ip, 'payment');
         const body = await request.json();
 
         const validatedData = requestSchema.parse(body);
+        const orderId = validatedData.orderId;
 
-        const amountInCents = Math.round(validatedData.amount * 100);
+        const orderResponse = await wc.get(`orders/${orderId}`);
+        const order = orderResponse.data as { total?: string; status?: string };
+        const total = Number(order.total || '0');
+        if (!Number.isFinite(total) || total <= 0) {
+            return NextResponse.json({ error: 'Invalid order total' }, { status: 400 });
+        }
+        if (order.status && !['pending', 'on-hold', 'processing'].includes(order.status)) {
+            return NextResponse.json({ error: 'Order not eligible for payment' }, { status: 400 });
+        }
+        const amountInCents = Math.round(total * 100);
 
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amountInCents,
-            currency: validatedData.currency,
+            currency: 'eur',
             automatic_payment_methods: {
                 enabled: true,
             },
             metadata: {
-                order_id: validatedData.metadata.order_id,
-                ...(validatedData.metadata.customer_email && {
+                order_id: orderId,
+                ...(validatedData.metadata?.customer_email && {
                     customer_email: validatedData.metadata.customer_email
                 })
             },
             statement_descriptor_suffix: 'NKV SHOP',
-            ...(validatedData.metadata.customer_email && {
+            ...(validatedData.metadata?.customer_email && {
                 receipt_email: validatedData.metadata.customer_email
             })
+        }, {
+            idempotencyKey: `payment_intent_${orderId}`
         });
+
+        try {
+            await wc.put(`orders/${orderId}`, {
+                meta_data: [
+                    { key: '_stripe_payment_intent_id', value: paymentIntent.id }
+                ]
+            });
+        } catch {}
 
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,
@@ -69,11 +80,12 @@ export async function POST(request: Request) {
             return NextResponse.json({error: 'Invalid request data', details: error.issues}, {status: 400});
         }
 
-        if (error instanceof Stripe.errors.StripeError) {
-            console.error(`[PaymentIntent API] Stripe Error (${error.type}): ${error.message}`);
-            const status = error.type === 'StripeAuthenticationError' ? 401 : (error.statusCode || 400);
+        if (error && typeof error === 'object' && 'type' in (error as any) && 'statusCode' in (error as any)) {
+            const stripeType = (error as any)?.type as string | undefined;
+            const stripeMessage = (error as any)?.message as string | undefined;
+            const status = stripeType === 'StripeAuthenticationError' ? 401 : ((error as any)?.statusCode || 400);
             return NextResponse.json(
-                {error: error.message},
+                {error: stripeMessage || 'Stripe error'},
                 {status}
             );
         }

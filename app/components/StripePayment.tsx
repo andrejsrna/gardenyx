@@ -12,9 +12,7 @@ import { toast } from 'sonner';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-interface StripePaymentProps {
-  amount: number;
-}
+type StripePaymentProps = Record<string, never>;
 
 function CheckoutForm() {
   const stripe = useStripe();
@@ -138,7 +136,7 @@ function CheckoutForm() {
   );
 }
 
-export default function StripePayment({ amount }: StripePaymentProps) {
+export default function StripePayment({}: StripePaymentProps) {
   const [clientSecret, setClientSecret] = useState<string | undefined>();
 
   useEffect(() => {
@@ -155,10 +153,8 @@ export default function StripePayment({ amount }: StripePaymentProps) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            amount,
-            currency: 'eur',
+            orderId,
             metadata: {
-              order_id: orderId,
               customer_email: customerEmail || undefined
             }
           }),
@@ -183,10 +179,8 @@ export default function StripePayment({ amount }: StripePaymentProps) {
       }
     };
 
-    if (amount > 0) {
-      initializePayment();
-    }
-  }, [amount]);
+    initializePayment();
+  }, []);
 
   const options: StripeElementsOptions | undefined = useMemo(() => {
     if (!clientSecret) {
@@ -229,10 +223,7 @@ export default function StripePayment({ amount }: StripePaymentProps) {
         },
       },
       locale: 'sk',
-      loader: 'always',
-      partnerAttributionId: 'nkv_front_001',
-      allowsButtonClick: true,
-      cookies: 'samesite-strict'
+      loader: 'always'
     };
   }, [clientSecret]);
 

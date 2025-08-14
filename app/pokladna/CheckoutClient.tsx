@@ -363,7 +363,67 @@ export default function CheckoutClient() {
     }
 
     if (formData.payment_method === 'stripe') {
-      setShowStripePayment(true);
+      setIsSubmitting(true);
+      setPaymentError(null);
+
+      try {
+        const orderData: WooCommerceOrder = {
+          status: 'pending',
+          billing: formData.billing,
+          shipping: formData.shipping,
+          shipping_method: formData.shipping_method,
+          payment_method: formData.payment_method,
+          payment_method_title: 'Platba kartou',
+          meta_data: [
+            ...formData.meta_data,
+            ...(formData.customer_note ? [{ key: '_customer_note', value: formData.customer_note }] : []),
+            ...(formData.is_business ? [
+              { key: 'billing_ic', value: formData.billing.ic || '' },
+              { key: 'billing_dic', value: formData.billing.dic || '' },
+              { key: 'billing_dic_dph', value: formData.billing.dic_dph || '' },
+            ] : []),
+            ...(formData.consents.marketing ? [{ key: '_marketing_consent', value: 'yes' }] : []),
+          ],
+          line_items: items.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity,
+          })),
+          shipping_lines: shippingCost > 0 ? [{
+            method_id: formData.shipping_method,
+            method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
+            total: shippingCost.toFixed(2),
+          }] : [],
+        };
+
+        if (formData.create_account && customerData === null) {
+          orderData.customer_id = undefined;
+        }
+
+        const result = await createOrder(orderData);
+        orderIdRef.current = result.order.id;
+        try {
+          sessionStorage.setItem('lastOrderId', String(result.order.id));
+          sessionStorage.setItem('customerEmail', formData.billing.email);
+        } catch {}
+
+        setShowStripePayment(true);
+      } catch (error: unknown) {
+        logError('Error creating order (Stripe flow)', {
+          error: error instanceof Error ? error : new Error(String(error)),
+          timestamp: new Date().toISOString()
+        });
+        if (error instanceof Error) {
+          setPaymentError({
+            type: 'order_creation_error',
+            message: error.message || 'Nastala chyba pri vytváraní objednávky',
+          });
+          toast.error(`Chyba pri vytváraní objednávky: ${error.message}`);
+        }
+        setIsSubmitting(false);
+        return;
+      } finally {
+        setIsSubmitting(false);
+      }
       return;
     }
 
@@ -583,9 +643,7 @@ export default function CheckoutClient() {
       )}
 
       {showStripePayment && (
-        <StripePayment
-          amount={finalTotal * 100}
-        />
+        <StripePayment />
       )}
 
       {/* Payment error display */}
