@@ -29,7 +29,7 @@ export default function CreateAccountSection({
           onChange={(e) => onInputChange(e, 'root')}
           className="rounded border-gray-300 text-green-600 focus:ring-green-500"
         />
-        <span className="text-sm font-medium text-gray-700">Vytvoriť používateľský účet</span>
+        <span className="text-sm font-medium text-gray-700">Vytvoriť zákaznícky účet</span>
       </label>
       
       {formData.create_account && (
@@ -48,7 +48,7 @@ export default function CreateAccountSection({
                 formErrors?.['account_password'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               required={formData.create_account}
-              placeholder="Zadajte heslo pre váš účet"
+              placeholder="Zadajte heslo k vášmu účtu"
               minLength={8}
               autoComplete="new-password"
             />
@@ -70,9 +70,7 @@ export default function CreateAccountSection({
               )}
             </button>
           </div>
-          <p className="mt-1 text-xs text-gray-500">
-            Heslo musí mať aspoň 8 znakov.
-          </p>
+          <p className="mt-1 text-xs text-gray-500">Heslo musí mať minimálne 8 znakov.</p>
         </div>
       )}
     </div>

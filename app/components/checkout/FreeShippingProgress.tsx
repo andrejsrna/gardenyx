@@ -35,7 +35,7 @@ export default function FreeShippingProgress({ totalPrice }: FreeShippingProgres
   return (
     <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
       <p className="text-green-700 mb-3">
-        Nakúpte ešte za <span className="font-bold">{remaining.toFixed(2)} €</span> a máte dopravu zadarmo!
+        Nakúpte ešte za <span className="font-bold">{remaining.toFixed(2)} €</span> a získate dopravu zdarma.
       </p>
       
       {/* Progress bar */}

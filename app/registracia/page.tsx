@@ -39,7 +39,7 @@ export default function RegistrationPage() {
     consents: {
       terms: false,
       privacy: false,
-      marketing: false
+      marketing: true
     }
   });
 

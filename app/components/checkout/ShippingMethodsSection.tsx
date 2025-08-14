@@ -3,6 +3,7 @@
 import { ChangeEvent } from 'react';
 import type { FormData, PacketaPoint } from '../../lib/checkout/types';
 import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME, FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
+import Link from 'next/link';
 
 interface ShippingMethodsSectionProps {
   formData: FormData;
@@ -45,13 +46,19 @@ export default function ShippingMethodsSection({
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Spôsob dopravy</h2>
+      <h2 className="text-xl font-semibold mb-2">Spôsob dopravy</h2>
+      <div className="mb-4">
+        <Link href="/doprava-a-platba#ako-funguje-packeta" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-800 underline">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+          </svg>
+          <span>Ako funguje Packeta?</span>
+        </Link>
+      </div>
       
       {isFreeShipping && (
         <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-green-700 font-medium">
-            🎉 Gratulujem! Máte bezplatnú dopravu
-          </p>
+          <p className="text-green-700 font-medium">Máte nárok na dopravu zdarma.</p>
         </div>
       )}
       
@@ -66,7 +73,12 @@ export default function ShippingMethodsSection({
                 name="shipping_method"
                 value={method.id}
                 checked={formData.shipping_method === method.id}
-                onChange={(e) => onInputChange(e, 'root')}
+                onChange={(e) => {
+                  onInputChange(e, 'root');
+                  if (method.id === 'packeta_pickup' && !selectedPacketaPoint) {
+                    onPacketaPointSelect();
+                  }
+                }}
                 className="h-4 w-4 mt-1 text-green-600 focus:ring-green-500 border-gray-300"
                 required
               />
@@ -77,7 +89,7 @@ export default function ShippingMethodsSection({
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{method.description}</p>
                 <p className="text-base font-bold text-green-600 mt-2">
-                  {method.price === 0 ? 'ZADARMO' : `${method.price.toFixed(2)} €`}
+                  {method.price === 0 ? 'Zadarmo' : `${method.price.toFixed(2)} €`}
                 </p>
               </div>
             </label>
@@ -123,7 +135,7 @@ export default function ShippingMethodsSection({
       
       {formErrors?.['shipping_method'] && (
         <p className="mt-2 text-sm text-red-600">
-          Prosím vyberte spôsob dopravy
+          Prosím, vyberte spôsob dopravy
         </p>
       )}
     </div>

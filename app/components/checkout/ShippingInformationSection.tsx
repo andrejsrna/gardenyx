@@ -35,9 +35,7 @@ export default function ShippingInformationSection({
             onChange={onSameAsShippingChange}
             className="rounded border-gray-300 text-green-600 focus:ring-green-500"
           />
-          <span className="text-sm font-medium text-gray-700">
-            Adresa doručenia je rovnaká ako fakturačná adresa
-          </span>
+          <span className="text-sm font-medium text-gray-700">Doručovacia adresa je rovnaká ako fakturačná</span>
         </label>
       </div>
       
@@ -52,6 +50,7 @@ export default function ShippingInformationSection({
               id="shipping-first_name"
               name="first_name"
               type="text"
+              placeholder="Jan"
               value={formData.shipping.first_name}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -71,6 +70,7 @@ export default function ShippingInformationSection({
               id="shipping-last_name"
               name="last_name"
               type="text"
+              placeholder="Novák"
               value={formData.shipping.last_name}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -83,13 +83,12 @@ export default function ShippingInformationSection({
 
           {/* Company (optional) */}
           <div className="md:col-span-2">
-            <label htmlFor="shipping-company" className="block text-sm font-medium text-gray-700">
-              Názov firmy (nepovinné)
-            </label>
+            <label htmlFor="shipping-company" className="block text-sm font-medium text-gray-700">Názov firmy (voliteľné)</label>
             <input
               id="shipping-company"
               name="company"
               type="text"
+              placeholder="Názov firmy"
               value={formData.shipping.company}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -108,9 +107,9 @@ export default function ShippingInformationSection({
               id="shipping-address_1"
               name="address_1"
               type="text"
+              placeholder="Názov ulice a číslo domu"
               value={formData.shipping.address_1}
               onChange={(e) => onInputChange(e, 'shipping')}
-              placeholder="Názov ulice a číslo domu"
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
                 formErrors?.['shipping.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
@@ -121,19 +120,17 @@ export default function ShippingInformationSection({
 
           {/* Address 2 (Apartment/Suite) */}
           <div className="md:col-span-2">
-            <label htmlFor="shipping-address_2" className="block text-sm font-medium text-gray-700">
-              Doplnková adresa
-            </label>
+            <label htmlFor="shipping-address_2" className="block text-sm font-medium text-gray-700">Doplnková adresa</label>
             <input
               id="shipping-address_2"
               name="address_2"
               type="text"
+              placeholder="Číslo bytu"
               value={formData.shipping.address_2 || ''}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
                 formErrors?.['shipping.address_2'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
-              placeholder="Názov ulice, číslo domu, číslo miesta"
               autoComplete="shipping address-line2"
             />
           </div>
@@ -147,6 +144,7 @@ export default function ShippingInformationSection({
               id="shipping-city"
               name="city"
               type="text"
+              placeholder="Bratislava"
               value={formData.shipping.city}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -170,7 +168,7 @@ export default function ShippingInformationSection({
               onChange={(e) => onInputChange(e, 'shipping')}
               pattern="\d{5}"
               maxLength={5}
-              placeholder="XXXXX"
+              placeholder="01000"
               title="PSČ musí obsahovať 5 číslic"
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
                 formErrors?.['shipping.postcode'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''

@@ -2,6 +2,7 @@
 
 import { ChangeEvent } from 'react';
 import type { FormData } from '../../lib/checkout/types';
+import { HandCoins } from 'lucide-react';
 
 interface PaymentMethodsSectionProps {
   formData: FormData;
@@ -21,28 +22,22 @@ export default function PaymentMethodsSection({
     {
       id: 'stripe',
       title: 'Platobná karta',
-      description: 'Visa, Mastercard, American Express',
+      description:
+        'Zaplatíte takmer všetkými kartami (Visa, Mastercard a ďalšie). Platbu bezpečne spracováva spoločnosť Stripe.',
       icon: (
-        <div className="flex gap-1">
-          <div className="w-8 h-5 bg-blue-600 rounded-sm flex items-center justify-center">
-            <span className="text-white text-xs font-bold">VISA</span>
-          </div>
-          <div className="w-8 h-5 bg-red-500 rounded-sm flex items-center justify-center">
-            <span className="text-white text-xs font-bold">MC</span>
-          </div>
-        </div>
+        <svg className="w-6 h-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2" ry="2" />
+          <path d="M3 10h18" />
+          <path d="M7 15h5" />
+        </svg>
       ),
       recommended: false,
     },
     {
       id: 'cod',
       title: 'Dobierka',
-      description: 'Platba v hotovosti alebo kartou pri prevzatí',
-      icon: (
-        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
+      description: 'Zaplatíte pri doručení (hotovosť alebo karta u kuriéra/výdajného miesta). Pri Z‑BOXe je potrebné uhradiť dobierku vopred online (aplikácia alebo platobný odkaz).',
+      icon: <HandCoins className="w-6 h-6 text-gray-600" aria-hidden="true" />,
       recommended: false,
     },
   ];
@@ -110,7 +105,7 @@ export default function PaymentMethodsSection({
       
       {formErrors?.['payment_method'] && (
         <p className="mt-2 text-sm text-red-600">
-          Prosím vyberte spôsob platby
+          Prosím, vyberte spôsob platby
         </p>
       )}
       

@@ -90,6 +90,58 @@ export default function DopravaAPlatbaPage() {
             </div>
           </section>
 
+          {/* Ako funguje Packeta */}
+          <section id="ako-funguje-packeta" className="mb-16">
+            <h2 className="text-2xl font-bold mb-6">Ako funguje Packeta?</h2>
+            <div className="space-y-6 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+              <div>
+                <h3 className="font-semibold mb-2">Doručenie na výdajné miesto</h3>
+                <p className="text-gray-600">
+                  Pri voľbe „Packeta – Výdajné miesto“ si v pokladni vyberiete najbližšie odberné miesto. 
+                  Po odovzdaní zásielky dopravcovi dostanete e‑mail a SMS s kódom pre vyzdvihnutie. 
+                  Balík býva bežne pripravený na vyzdvihnutie do 1–2 pracovných dní. Na vyzdvihnutie máte zvyčajne 7 dní.
+                </p>
+                <ul className="mt-3 list-disc pl-5 text-gray-600 space-y-1">
+                  <li>Z‑BOX otvoríte cez mobilnú aplikáciu Packeta alebo zadaním číselného kódu.</li>
+                  <li>Pri dobierke je potrebné zaplatiť vopred online (v aplikácii alebo cez platobný odkaz v SMS/e‑maile).</li>
+                  <li>Platba priamo v Z‑BOXe ani v hotovosti na mieste nie je podporovaná.</li>
+                  <li>Úložnú dobu zásielky si viete predĺžiť v aplikácii.</li>
+                  <li>Stav zásielky môžete sledovať na webe alebo v mobilnej aplikácii.</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Doručenie domov kuriérom</h3>
+                <p className="text-gray-600">
+                  Pri voľbe „Packeta – Doručenie domov“ vám kuriér doručí zásielku priamo na vašu adresu. 
+                  O termíne doručenia budete informovaní cez SMS/e‑mail s možnosťou zmeny termínu alebo adresy.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Sledovanie zásielky</h3>
+                <p className="text-gray-600">
+                  Stav zásielky je možné sledovať cez trackovací link, ktorý vám pošleme v potvrdení objednávky.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Poplatky a doprava zdarma</h3>
+                <p className="text-gray-600">
+                  Presné ceny dopravy uvidíte v pokladni podľa zvoleného spôsobu doručenia. 
+                  Pri nákupe nad stanovený limit poskytujeme dopravu zdarma.
+                </p>
+              </div>
+              <div className="pt-2">
+                <Link 
+                  href="https://www.packeta.sk/zakaznicky-servis#t3ppiy#NR2E0X" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-green-700 hover:text-green-800 underline"
+                >
+                  Viac informácií na webe Packeta (Zákaznícky servis)
+                </Link>
+              </div>
+            </div>
+          </section>
+
           {/* CTA Section */}
           <section className="bg-green-50 rounded-2xl p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">

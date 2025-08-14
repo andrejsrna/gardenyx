@@ -34,6 +34,9 @@ export default function OrderSummarySection({
 }: OrderSummarySectionProps) {
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const VAT_RATE = 0.19;
+  const netSubtotal = subtotal / (1 + VAT_RATE);
+  const vatAmount = subtotal - netSubtotal;
   
   const getShippingCost = () => {
     if (isFreeShipping) return 0;
@@ -47,7 +50,8 @@ export default function OrderSummarySection({
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm sticky top-20">
-      <h2 className="text-xl font-semibold mb-4">Súhrn objednávky</h2>
+      <h2 className="text-xl font-semibold mb-2">Súhrn objednávky</h2>
+      <div className="text-xs text-gray-500 mb-4">Ceny sú uvedené vrátane DPH 19%.</div>
       
       {/* Cart Items */}
       <div className="space-y-3 mb-4">
@@ -90,8 +94,16 @@ export default function OrderSummarySection({
       <div className="border-t pt-4 space-y-2">
         {/* Subtotal */}
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Medzisúčet</span>
+          <span className="text-gray-600">Medzisúčet (vrátane DPH 19%)</span>
           <span className="font-medium">{subtotal.toFixed(2)} €</span>
+        </div>
+        <div className="flex justify-between text-xs text-gray-500">
+          <span>Základ bez DPH</span>
+          <span>{netSubtotal.toFixed(2)} €</span>
+        </div>
+        <div className="flex justify-between text-xs text-gray-500">
+          <span>DPH (19%)</span>
+          <span>{vatAmount.toFixed(2)} €</span>
         </div>
         
         {/* Shipping */}
@@ -99,7 +111,7 @@ export default function OrderSummarySection({
           <span className="text-gray-600">Doprava</span>
           <span className="font-medium">
             {shippingCost === null 
-              ? <span className="text-xs text-gray-500">Ešte ste si nevybrali dopravu</span> 
+              ? <span className="text-xs text-gray-500">Spôsob dopravy zatiaľ nebol vybraný</span> 
               : shippingCost === 0 
               ? 'Zadarmo' 
               : `${shippingCost.toFixed(2)} €`}
@@ -109,7 +121,7 @@ export default function OrderSummarySection({
         {/* Free shipping progress */}
         {!isFreeShipping && subtotal > 0 && (
           <div className="text-xs text-gray-500">
-            Nakúpte ešte za {(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} € a máte dopravu zadarmo
+            Nakúpte ešte za {(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} € a získate dopravu zdarma
           </div>
         )}
       </div>
@@ -154,7 +166,7 @@ export default function OrderSummarySection({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span>Spracovávam objednávku...</span>
+              <span>Objednávka sa spracúva...</span>
             </div>
           ) : (
             <span>Dokončiť objednávku • {total.toFixed(2)} €</span>

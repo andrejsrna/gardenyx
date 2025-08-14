@@ -15,7 +15,7 @@ const INITIAL_FORM_DATA: FormData = {
   is_business: false,
   create_account: false,
   account_password: '',
-  consents: { terms: false, privacy: false, marketing: false },
+  consents: { termsAndPrivacy: false, marketing: true },
 };
 
 export function useCheckoutForm() {

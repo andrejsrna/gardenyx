@@ -222,7 +222,7 @@ export default function CheckoutClient() {
       quantity: 1,
       image: product.images?.[0]?.src || undefined,
     });
-    toast.success(`${product.name} bol pridaný do košíka!`);
+    toast.success(`${product.name} bol pridaný do košíka.`);
   }, [addToCart]);
 
   // Packeta point selection
@@ -313,15 +313,12 @@ export default function CheckoutClient() {
       if (formData.shipping_method === 'packeta_pickup') {
         const hasPacketaPoint = formData.meta_data.some(item => item.key === '_packeta_point_id');
         if (!hasPacketaPoint) {
-          throw new Error('Prosím vyberte výdajné miesto Packeta');
+          throw new Error('Prosím, vyberte výdajné miesto Packeta.');
         }
       }
 
-      if (!formData.consents.terms) {
-        throw new Error('Musíte súhlasiť s obchodnými podmienkami');
-      }
-      if (!formData.consents.privacy) {
-        throw new Error('Musíte súhlasiť so spracovaním osobných údajov');
+      if (!formData.consents.termsAndPrivacy) {
+        throw new Error('Je potrebné súhlasiť s obchodnými podmienkami a zásadami ochrany osobných údajov.');
       }
 
       checkoutFormSchema.parse(sanitizedData);
@@ -343,7 +340,7 @@ export default function CheckoutClient() {
         const translatedField = translateFieldName(firstError.path.join('.'));
         toast.error(`${translatedField}: ${firstError.message}`);
       } else {
-        toast.error(error instanceof Error ? error.message : 'Chyba pri validácii formulára');
+        toast.error(error instanceof Error ? error.message : 'Chyba pri validácii formulára.');
       }
       return false;
     }
@@ -440,8 +437,7 @@ export default function CheckoutClient() {
     formData.billing.postcode && 
     formData.shipping_method && 
     formData.payment_method && 
-    formData.consents.terms && 
-    formData.consents.privacy);
+    formData.consents.termsAndPrivacy);
 
   // Cart items in the format expected by OrderSummarySection
   const cartItems = items.map(item => ({
@@ -464,7 +460,7 @@ export default function CheckoutClient() {
             href="/kupit"
             className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
           >
-            Prejsť na produkty
+            Zobraziť produkty
           </Link>
         </div>
       </div>
@@ -486,14 +482,12 @@ export default function CheckoutClient() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Platba úspešná!</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Platba bola úspešná</h2>
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
-            <span className="text-gray-600">Presmerovávame vás...</span>
+            <span className="text-gray-600">Prebieha presmerovanie...</span>
           </div>
-          <p className="text-sm text-gray-500">
-            Vaša objednávka bola úspešne spracovaná
-          </p>
+          <p className="text-sm text-gray-500">Vaša objednávka bola úspešne spracovaná.</p>
         </div>
       </div>
     );
@@ -589,8 +583,8 @@ export default function CheckoutClient() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 shadow-xl max-w-md mx-4 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Spracúvame vašu objednávku</h3>
-            <p className="text-gray-600">Prosím čakajte, prebieha presmerovanie...</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Objednávka sa spracúva</h3>
+            <p className="text-gray-600">Prosím, čakajte. Prebieha presmerovanie.</p>
           </div>
         </div>
       )}

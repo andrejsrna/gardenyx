@@ -50,11 +50,8 @@ export const checkoutFormSchema = z.object({
     value: z.string()
   })),
   consents: z.object({
-    terms: z.boolean().refine(val => val === true, {
-      message: 'Musíte súhlasiť s obchodnými podmienkami'
-    }),
-    privacy: z.boolean().refine(val => val === true, {
-      message: 'Musíte súhlasiť so spracovaním osobných údajov'
+    termsAndPrivacy: z.boolean().refine(val => val === true, {
+      message: 'Je potrebné súhlasiť s obchodnými podmienkami a zásadami ochrany osobných údajov'
     }),
     marketing: z.boolean().optional(),
   }),

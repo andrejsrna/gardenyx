@@ -57,6 +57,7 @@ export default function BillingInformationSection({
             id="billing-first_name"
             name="first_name"
             type="text"
+            placeholder="Jan"
             value={formData.billing.first_name}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -76,6 +77,7 @@ export default function BillingInformationSection({
             id="billing-last_name"
             name="last_name"
             type="text"
+            placeholder="Novák"
             value={formData.billing.last_name}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -89,19 +91,19 @@ export default function BillingInformationSection({
         {/* Email */}
         <div>
           <label htmlFor="billing-email" className="block text-sm font-medium text-gray-700">
-            Email <span className="text-red-500">*</span>
+            E‑mail <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-email"
             name="email"
             type="email"
+            placeholder="jan.novak@gmail.com"
             value={formData.billing.email}
             onChange={(e) => onInputChange(e, 'billing')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               formErrors?.['billing.email'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
             }`}
             required
-            placeholder="vas@email.sk"
             autoComplete="email"
           />
         </div>
@@ -117,7 +119,7 @@ export default function BillingInformationSection({
             type="tel"
             value={formData.billing.phone}
             onChange={handlePhoneChange}
-            placeholder="+421 XXX XXX XXX"
+            placeholder="0904123456 alebo +421904123456"
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               phoneError ? 'border-red-500' : ''
             } ${formErrors?.['billing.phone'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
@@ -149,9 +151,7 @@ export default function BillingInformationSection({
 
         {/* Address 2 (Apartment/Suite) */}
         <div className="md:col-span-2">
-          <label htmlFor="billing-address_2" className="block text-sm font-medium text-gray-700">
-            Doplnková adresa
-          </label>
+          <label htmlFor="billing-address_2" className="block text-sm font-medium text-gray-700">Doplnková adresa</label>
           <input
             id="billing-address_2"
             name="address_2"
@@ -161,7 +161,7 @@ export default function BillingInformationSection({
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               formErrors?.['billing.address_2'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
             }`}
-            placeholder="Názov ulice, číslo domu, číslo miesta"
+            placeholder="Názov ulice, číslo domu, číslo bytu"
             aria-label="Doplnková adresa"
           />
         </div>
@@ -175,6 +175,7 @@ export default function BillingInformationSection({
             id="billing-city"
             name="city"
             type="text"
+            placeholder="Bratislava"
             value={formData.billing.city}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -198,7 +199,7 @@ export default function BillingInformationSection({
             onChange={onSyncedFieldChange}
             pattern="\d{5}"
             maxLength={5}
-            placeholder="XXXXX"
+            placeholder="01000"
             title="PSČ musí obsahovať 5 číslic"
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               formErrors?.['billing.postcode'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''

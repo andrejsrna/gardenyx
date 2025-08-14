@@ -46,8 +46,7 @@ export interface FormData {
   create_account: boolean;
   account_password?: string;
   consents: {
-    terms: boolean;
-    privacy: boolean;
+    termsAndPrivacy: boolean;
     marketing: boolean;
   };
 }
