@@ -6,7 +6,14 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CheckCircle, CreditCard } from 'lucide-react';
 import ProductSchema from '@/app/components/seo/ProductSchema';
+import BreadcrumbSchema from '@/app/components/seo/BreadcrumbSchema';
 import Composition from '@/app/components/Composition';
+import ProductBenefits from '@/app/components/product/ProductBenefits';
+import UsageGuidelines from '@/app/components/product/UsageGuidelines';
+import Suitability from '@/app/components/product/Suitability';
+import EvidenceAndTesting from '@/app/components/product/EvidenceAndTesting';
+import Comparsion from '@/app/components/landing-page/Comparsion';
+import BuyNowCTA from './BuyNowCTA';
 
 interface ProductPageProps {
   params: Promise<{
@@ -114,9 +121,17 @@ const showComposition = ['Najsilnejšia kĺbová výživa', 'Najsilnejšej kĺbo
   product.name.includes(name)
 );
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  const breadcrumbItems = [
+    { name: 'Domov', url: siteUrl || '/' },
+    { name: 'Kúpiť', url: `${siteUrl}/kupit` },
+    { name: product.name, url: `${siteUrl}/produkt/${product.slug}` },
+  ];
+
   return (
     <>
       <ProductSchema product={product} />
+      <BreadcrumbSchema items={breadcrumbItems} />
       <ProductTracking product={product} />
       <div className="min-h-screen bg-gray-50 py-8 md:py-12">
         <div className="container mx-auto px-4">
@@ -218,6 +233,16 @@ const showComposition = ['Najsilnejšia kĺbová výživa', 'Najsilnejšej kĺbo
         )}
 
         {showComposition && <Composition />}
+
+        <div className="mt-8 grid grid-cols-1 gap-6">
+          <ProductBenefits />
+          <UsageGuidelines />
+          <Suitability />
+          <EvidenceAndTesting />
+          <Comparsion />
+        </div>
+
+        <BuyNowCTA product={product} />
       </div>
     </div>
     </>

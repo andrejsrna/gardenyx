@@ -4,6 +4,7 @@ import { getCategoryBySlug, getPaginatedPosts } from '../../../lib/wordpress';
 import CategoryHeader from '@/app/components/blog/category/CategoryHeader';
 import PostList from '@/app/components/blog/PostList';
 import CategoryPagination from '@/app/components/blog/category/CategoryPagination';
+import BreadcrumbSchema from '@/app/components/seo/BreadcrumbSchema';
 
 type tParams = Promise<{ slug: string }>;
 type tSearchParams = Promise<{ page?: string }>;
@@ -13,8 +14,9 @@ interface CategoryPageProps {
   searchParams: tSearchParams;
 }
 
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const { page } = await searchParams;
   const category = await getCategoryBySlug(slug);
 
   if (!category) {
@@ -28,6 +30,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const description = category.description || `Prečítajte si všetky články v kategórii ${category.name}.`;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const categoryUrl = `${siteUrl}/blog/kategoria/${slug}`;
+  const canonical = page && parseInt(page, 10) > 1 ? `${categoryUrl}?page=${page}` : categoryUrl;
 
   return {
     title,
@@ -46,11 +49,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       description,
     },
     alternates: {
-      canonical: categoryUrl,
-    },
-    robots: {
-      index: true,
-      follow: true,
+      canonical,
     },
   };
 }
@@ -71,8 +70,16 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     category: category.id,
   });
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  const breadcrumbItems = [
+    { name: 'Domov', url: siteUrl || '/' },
+    { name: 'Blog', url: `${siteUrl}/blog` },
+    { name: category.name, url: `${siteUrl}/blog/kategoria/${slug}` },
+  ];
+
   return (
     <div className="container mx-auto px-4 py-12">
+      <BreadcrumbSchema items={breadcrumbItems} />
       <CategoryHeader category={category} />
 
       {posts.length > 0 ? (

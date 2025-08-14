@@ -23,7 +23,7 @@ interface PageProps {
 }
 
 const generateDefaultImage = (siteUrl: string) => ({
-    url: `${siteUrl}/og-image.jpg`,
+    url: `${siteUrl}/logo.png`,
     width: 1200,
     height: 630,
 });
@@ -44,7 +44,7 @@ const createBaseMetadata = (siteUrl: string, title: string, description: string)
         card: 'summary_large_image',
         title,
         description,
-        images: [`${siteUrl}/og-image.jpg`],
+        images: [`${siteUrl}/logo.png`],
     },
     alternates: {
         canonical: `${siteUrl}/blog`,
@@ -99,23 +99,37 @@ const createMetadataFromSEO = (parser: ReturnType<typeof parseHTML>, siteUrl: st
 const createDefaultMetadata = (siteUrl: string): Metadata => 
     createBaseMetadata(siteUrl, DEFAULT_TITLE, DEFAULT_DESCRIPTION);
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ searchParams }: { searchParams: tSearchParams }): Promise<Metadata> {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    
+    const { page, search, tag } = await searchParams;
+
     if (!siteUrl) return createDefaultMetadata('');
 
+    let base: Metadata;
     try {
         const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/blog`);
-        
         if (seoData) {
             const parser = parseHTML(seoData.head);
-            return createMetadataFromSEO(parser, siteUrl);
+            base = createMetadataFromSEO(parser, siteUrl);
+        } else {
+            base = createDefaultMetadata(siteUrl);
         }
     } catch (error) {
         console.error('Error fetching SEO data:', error);
+        base = createDefaultMetadata(siteUrl);
     }
 
-    return createDefaultMetadata(siteUrl);
+    const pageParam = page && parseInt(page, 10) > 1 ? `page=${page}` : '';
+    const tagParam = tag ? `tag=${tag}` : '';
+    const query = [tagParam, pageParam].filter(Boolean).join('&');
+    const canonical = query ? `${siteUrl}/blog?${query}` : `${siteUrl}/blog`;
+    const robots = search ? { index: false, follow: true } : { index: true, follow: true };
+
+    return {
+        ...base,
+        alternates: { canonical },
+        robots,
+    };
 }
 
 const getDescriptionText = (tagName?: string, searchQuery?: string, totalPosts?: number) => {

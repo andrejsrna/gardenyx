@@ -57,7 +57,7 @@ export default function RegistrationPage() {
       setErrors(prev => ({ ...prev, [field]: '' }));
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setErrors(prev => ({ ...prev, [field]: error.errors[0].message }));
+        setErrors(prev => ({ ...prev, [field]: error.issues[0].message }));
       }
     }
   };
@@ -119,7 +119,7 @@ export default function RegistrationPage() {
       
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const validationErrors = error.errors.reduce((acc, err) => {
+        const validationErrors = error.issues.reduce((acc, err) => {
           const field = err.path[0] as string;
           acc[field] = err.message;
           return acc;
@@ -129,7 +129,7 @@ export default function RegistrationPage() {
         toast.error('Nesprávne vyplnené údaje', {
           description: (
             <ul className="list-disc pl-4 mt-2 space-y-1">
-              {error.errors.map((err, index) => (
+              {error.issues.map((err, index) => (
                 <li key={index}>{err.message}</li>
               ))}
             </ul>

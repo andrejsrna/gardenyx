@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
               height: parseInt(parser.getMetaTag('og:image:height') || '630'),
             }]
           : [{
-              url: `${siteUrl}/og-image.jpg`,
+              url: `${siteUrl}/logo.png`,
               width: 1200,
               height: 630,
             }],
@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
         description: parser.getMetaTag('twitter:description') || 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
         images: parser.getMetaTag('twitter:image') 
           ? [{ url: parser.getMetaTag('twitter:image')! }]
-          : [`${siteUrl}/og-image.jpg`],
+          : [`${siteUrl}/logo.png`],
       },
       alternates: {
         canonical: parser.getCanonical() || siteUrl,
@@ -79,7 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Najsilnejšia kĺbová výživa',
       images: [
         {
-          url: `${siteUrl}/og-image.jpg`,
+          url: `${siteUrl}/logo.png`,
           width: 1200,
           height: 630,
         },
@@ -91,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: 'Najsilnejšia kĺbová výživa',
       description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
-      images: [`${siteUrl}/og-image.jpg`],
+      images: [`${siteUrl}/logo.png`],
     },
     alternates: {
       canonical: siteUrl,

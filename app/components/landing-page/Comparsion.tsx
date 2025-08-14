@@ -1,87 +1,16 @@
-import { CheckCircle2, HelpCircle, Package, Tablet } from 'lucide-react';
+import { CheckCircle2, HelpCircle } from 'lucide-react';
+import { defaultOurProduct, defaultCompetitors, DisplayProduct } from './comparisonData';
 
-const ourProduct = {
-  name: 'Joint Boost',
-  price: '14,99 €',
-  discountNote: 'Množstevná zľava dostupná',
-  form: 'Tablety',
-  icon: Tablet,
-  ingredients: [
-    { name: 'Glukozamín', amount: '200 mg', present: true },
-    { name: 'Chondroitín', amount: '100 mg', present: true },
-    { name: 'MSM', amount: '100 mg', present: true },
-    { name: 'Vitamín C', amount: '40 mg', present: true },
-    { name: 'Kolagén (Typ II)', amount: '40 mg', present: true },
-    { name: 'Kurkuma', amount: '10 mg', present: true },
-    { name: 'Čierne korenie (Piperín)', amount: '5 mg', present: true },
-    { name: 'Kyselina hyalurónová', amount: '10 mg', present: true },
-    { name: 'Boswellia Serrata', amount: '5 mg', present: true },
-    { name: 'Kolagén (Typ I)', amount: '-', present: false },
-    { name: 'Extrakt z boswéllie', amount: '5 mg', present: true },
-    { name: 'Extrakt z rebríčka obyčajného', amount: '-', present: false },
-    { name: 'Natívny kolagén typu II', amount: '-', present: false },
-    { name: 'Vitamín K1', amount: '-', present: false },
-    { name: 'Vitamín D3', amount: '-', present: false },
-  ],
-};
+interface Props {
+  products?: DisplayProduct[];
+}
 
-const competitors = [
-  {
-    name: 'Konkurent A',
-    price: '53,67 €',
-    discountNote: '',
-    form: 'Prášok',
-    icon: Package,
-    ingredients: [
-      { name: 'MSM', amount: '979 mg', present: true },
-      { name: 'Glukozamín', amount: '782,5 mg', present: true },
-      { name: 'Chondroitín', amount: '326 mg', present: true },
-      { name: 'Kolagén (Typ II)', amount: '11,25 mg', present: true },
-      { name: 'Kolagén (Typ I)', amount: '7,5 mg', present: true },
-      { name: 'Vitamín C', amount: '9,65 mg', present: true },
-      { name: 'Kurkuma', amount: '-', present: false },
-      { name: 'Čierne korenie (Piperín)', amount: '-', present: false },
-      { name: 'Kyselina hyalurónová', amount: '-', present: false },
-      { name: 'Boswellia Serrata', amount: '-', present: false },
-      { name: 'Extrakt z boswéllie', amount: '-', present: false },
-      { name: 'Extrakt z rebríčka obyčajného', amount: '-', present: false },
-      { name: 'Natívny kolagén typu II', amount: '-', present: false },
-      { name: 'Vitamín K1', amount: '-', present: false },
-      { name: 'Vitamín D3', amount: '-', present: false },
-    ],
-  },
-  {
-    name: 'Konkurent B',
-    price: '14,65 €',
-    discountNote: '',
-    form: 'Tablety',
-    icon: Tablet,
-    ingredients: [
-      { name: 'Extrakt z boswéllie', amount: '250 mg', present: true },
-      { name: 'Extrakt z rebríčka obyčajného', amount: '30 mg', present: true },
-      { name: 'Kolagén (Typ I)', amount: '20 mg', present: true },
-      { name: 'Kolagén (Typ II)', amount: '20 mg', present: true },
-      { name: 'Natívny kolagén typu II', amount: '40 μg', present: true },
-      { name: 'Vitamín C', amount: '20 mg', present: true },
-      { name: 'Vitamín K1', amount: '101 μg', present: true },
-      { name: 'Vitamín D3', amount: '4,5 μg', present: true },
-      { name: 'Glukozamín', amount: '-', present: false },
-      { name: 'Chondroitín', amount: '-', present: false },
-      { name: 'MSM', amount: '-', present: false },
-      { name: 'Kurkuma', amount: '-', present: false },
-      { name: 'Čierne korenie (Piperín)', amount: '-', present: false },
-      { name: 'Kyselina hyalurónová', amount: '-', present: false },
-      { name: 'Boswellia Serrata', amount: '250 mg', present: true },
-    ],
-  },
-];
+const productsToCompareDefault = [defaultOurProduct, ...defaultCompetitors];
 
-const productsToCompare = [ourProduct, ...competitors];
-
-export default function Comparsion() {
+export default function Comparsion({ products = productsToCompareDefault }: Props) {
   const allIngredientNames = Array.from(
     new Set(
-      productsToCompare.flatMap((p) => p.ingredients.map((i) => i.name))
+      products.flatMap((p) => p.ingredients.map((i) => i.name))
     )
   ).sort((a, b) => a.localeCompare(b));
 
@@ -104,7 +33,7 @@ export default function Comparsion() {
                 >
                   Zložka
                 </th>
-                {productsToCompare.map((product, index) => (
+                {products.map((product, index) => (
                   <th
                     key={product.name}
                     scope="col"
@@ -127,7 +56,7 @@ export default function Comparsion() {
                     <td className={`px-4 md:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 sticky left-0 z-10 ${isEven ? 'bg-white' : 'bg-gray-50/50'}`}>
                       {ingredientName}
                     </td>
-                    {productsToCompare.map((product, productIndex) => {
+                    {products.map((product, productIndex) => {
                       const ingredient = product.ingredients.find(i => i.name === ingredientName);
                       return (
                         <td
@@ -152,7 +81,7 @@ export default function Comparsion() {
               })}
               <tr className="bg-gray-100">
                 <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100 z-10">Forma produktu</td>
-                {productsToCompare.map((product, productIndex) => (
+                {products.map((product, productIndex) => (
                   <td
                     key={`${product.name}-form`}
                     className={`px-4 md:px-6 py-4 whitespace-nowrap text-sm text-center border-l border-gray-200 ${productIndex === 0 ? 'font-medium bg-green-50/30' : ''}`}
@@ -163,7 +92,7 @@ export default function Comparsion() {
               </tr>
               <tr className="bg-gray-100">
                 <td className="px-4 md:px-6 py-4 text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100 z-10">Cena</td>
-                {productsToCompare.map((product, productIndex) => (
+                {products.map((product, productIndex) => (
                   <td
                     key={`${product.name}-price`}
                     className={`px-4 md:px-6 py-4 text-sm text-center border-l border-gray-200 ${productIndex === 0 ? 'bg-green-50/30' : ''}`}
@@ -181,7 +110,7 @@ export default function Comparsion() {
 
         {/* Mobile Cards - Hidden on medium+ */}
         <div className="block md:hidden space-y-8">
-          {productsToCompare.map((product, productIndex) => (
+          {products.map((product, productIndex) => (
             <div key={product.name} className={`rounded-xl shadow-lg border ${productIndex === 0 ? 'border-green-300 bg-green-50/30' : 'border-gray-200 bg-white'}`}>
               {/* Card Header */}
               <div className={`p-4 rounded-t-xl ${productIndex === 0 ? 'bg-green-100' : 'bg-gray-50'} border-b ${productIndex === 0 ? 'border-green-200' : 'border-gray-200'}`}>

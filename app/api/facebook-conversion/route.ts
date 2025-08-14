@@ -14,7 +14,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { eventName, eventData, userData, pixelId } = await request.json();
+    let parsed: any = null;
+    try {
+      parsed = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
+    const { eventName, eventData, userData, pixelId } = parsed || {};
+    if (!eventName || !pixelId) {
+      return NextResponse.json({ error: 'Missing required fields: eventName or pixelId' }, { status: 400 });
+    }
     
     // Extract IP address and user agent from request headers
     const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] || 
@@ -25,7 +34,7 @@ export async function POST(request: Request) {
     const userAgent = request.headers.get('user-agent') || '';
     
     // Enhance user data with IP and user agent
-    const enhancedUserData = {
+    const enhancedUserData: Record<string, any> = {
       ...userData,
       client_ip_address: clientIp,
       client_user_agent: userAgent,

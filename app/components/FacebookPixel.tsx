@@ -48,15 +48,7 @@ export default function FacebookPixel() {
           fbq('track', 'PageView');
         `}
       </Script>
-      <noscript>
-        <img
-          height="1"
-          width="1"
-          style={{ display: 'none' }}
-          src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
-          alt=""
-        />
-      </noscript>
+      {/* noscript is rendered server-side in RootLayout to avoid hydration issues */}
     </>
   );
 }

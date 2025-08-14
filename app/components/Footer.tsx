@@ -4,11 +4,13 @@ import { Facebook, Mail, MapPin, Phone, Instagram } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { resetCookieConsentValue } from 'react-cookie-consent';
+import { deleteCookie } from 'cookies-next';
 
 export default function Footer() {
   const openCookieManager = () => {
-    // Reset consent and reload page to show banner again
-    resetCookieConsentValue('cookieConsent');
+    resetCookieConsentValue();
+    deleteCookie('cookieConsent', { path: '/' });
+    deleteCookie('CookieConsent', { path: '/' });
     localStorage.removeItem('cookieConsentDetails');
     window.location.reload();
   };

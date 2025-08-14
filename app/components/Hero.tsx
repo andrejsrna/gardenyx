@@ -1,4 +1,5 @@
 import { Award, Check, Clock, Pill } from 'lucide-react';
+import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Hero() {
@@ -21,16 +22,34 @@ export default function Hero() {
               </span>
 
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                Najsilnejšia
-                <br />
-                kĺbová výživa
+                Podpora kĺbov, na ktorú sa môžete spoľahnúť
               </h1>
 
               <p className="text-lg text-green-50/90 max-w-xl">
-                Najsilnejšia kĺbová výživa je vytvorená s použitím špičkovej vedeckej technológie
-                a obsahuje vyváženú kombináciu prírodných zložiek, ako sú glukozamín,
-                chondroitín, MSM a kolagén.
+                Zmysluplné zloženie, jasné dávkovanie, férová komunikácia. Od roku 2023 bez
+                negatívnych ohlasov.
               </p>
+
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2">
+                <Link
+                  href="/kupit"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-green-700 font-medium hover:bg-green-50 transition-colors"
+                >
+                  Pozrieť produkty
+                </Link>
+                <Link
+                  href="https://www.youtube.com/watch?v=wgRs0hHTfDo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/30 text-white hover:bg-white/10 transition-colors"
+                >
+                  Ako to funguje
+                </Link>
+              </div>
+
+              <div className="text-green-50/80 text-sm pt-3">
+                200+ objednávok od 2023 · 0 reklamácií · Overené platby
+              </div>
             </div>
 
             {/* Stats Grid */}

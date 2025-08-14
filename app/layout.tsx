@@ -65,6 +65,10 @@ export default function RootLayout({
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
+        <link rel="preconnect" href={process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'} />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'} />
+        <link rel="preconnect" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
+        <link rel="dns-prefetch" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
         <OrganizationSchema />
         <WebSiteSchema />
       </head>
@@ -73,6 +77,13 @@ export default function RootLayout({
           <AuthProvider>
             <CartProvider>
               <CookieConsentProvider>
+                {process.env.NEXT_PUBLIC_FB_PIXEL_ID ? (
+                  <noscript
+                    dangerouslySetInnerHTML={{
+                      __html: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FB_PIXEL_ID}&ev=PageView&noscript=1" alt="" />`,
+                    }}
+                  />
+                ) : null}
                 <Header />
                 <main>
                   {children}

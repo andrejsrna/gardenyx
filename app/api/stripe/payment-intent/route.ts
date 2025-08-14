@@ -7,7 +7,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-    apiVersion: '2025-02-24.acacia',
+    apiVersion: '2025-07-30.basil',
     typescript: true,
     appInfo: {
         name: 'NKV Shop',
@@ -65,8 +65,8 @@ export async function POST(request: Request) {
         console.error('[PaymentIntent API] Error during processing:', error);
 
         if (error instanceof z.ZodError) {
-            console.error('[PaymentIntent API] Validation Error:', error.errors);
-            return NextResponse.json({error: 'Invalid request data', details: error.errors}, {status: 400});
+            console.error('[PaymentIntent API] Validation Error:', error.issues);
+            return NextResponse.json({error: 'Invalid request data', details: error.issues}, {status: 400});
         }
 
         if (error instanceof Stripe.errors.StripeError) {

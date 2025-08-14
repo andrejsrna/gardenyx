@@ -335,7 +335,7 @@ export default function CheckoutClient() {
     } catch (error) {
       if (error instanceof ZodError) {
         const fieldErrors: Record<string, string[]> = {};
-        error.errors.forEach((err) => {
+        error.issues.forEach((err) => {
           const path = err.path.join('.');
           if (!fieldErrors[path]) {
             fieldErrors[path] = [];
@@ -344,7 +344,7 @@ export default function CheckoutClient() {
         });
         setFormErrors(fieldErrors);
 
-        const firstError = error.errors[0];
+        const firstError = error.issues[0];
         const translatedField = translateFieldName(firstError.path.join('.'));
         toast.error(`${translatedField}: ${firstError.message}`);
       } else {
