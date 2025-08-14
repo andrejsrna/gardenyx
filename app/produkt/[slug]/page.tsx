@@ -88,8 +88,7 @@ async function getProduct(slug: string) {
 
     const products = await response.json();
     return products[0]; // WooCommerce returns an array, we want the first item
-  } catch (error) {
-    console.error('Error fetching product:', error);
+  } catch {
     return null;
   }
 }

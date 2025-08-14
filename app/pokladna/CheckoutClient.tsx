@@ -12,7 +12,7 @@ import StripePayment from '../components/StripePayment';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useCookieConsent } from '../context/CookieConsentContext';
-import { logError } from '../lib/utils/logger';
+
 import { validatePassword } from '../lib/utils/password';
 import { sanitizeInput, sanitizePhone, sanitizePostcode } from '../lib/utils/sanitize';
 import { checkoutFormSchema } from '../lib/validations/checkout';
@@ -63,6 +63,7 @@ export default function CheckoutClient() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
   const [showStripePayment, setShowStripePayment] = useState(false);
+  const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
   const [showPacketaSelector, setShowPacketaSelector] = useState(false);
   const [paymentError, setPaymentError] = useState<PaymentError | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
@@ -97,10 +98,7 @@ export default function CheckoutClient() {
         const products = await getProducts({ include: RECOMMENDED_PRODUCT_IDS });
         setRecommendedProducts(products);
       } catch (error: unknown) {
-        logError('Error fetching recommended products', {
-          error: error instanceof Error ? error : new Error(String(error)),
-          timestamp: new Date().toISOString()
-        });
+        Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
       }
     };
 
@@ -140,10 +138,7 @@ export default function CheckoutClient() {
             setSameAsShipping(true);
           }
         } catch (error) {
-          logError('Error parsing saved checkout data', {
-            error,
-            timestamp: new Date().toISOString()
-          });
+          Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
           localStorage.removeItem('checkoutFormData');
         }
       }
@@ -363,67 +358,7 @@ export default function CheckoutClient() {
     }
 
     if (formData.payment_method === 'stripe') {
-      setIsSubmitting(true);
-      setPaymentError(null);
-
-      try {
-        const orderData: WooCommerceOrder = {
-          status: 'pending',
-          billing: formData.billing,
-          shipping: formData.shipping,
-          shipping_method: formData.shipping_method,
-          payment_method: formData.payment_method,
-          payment_method_title: 'Platba kartou',
-          meta_data: [
-            ...formData.meta_data,
-            ...(formData.customer_note ? [{ key: '_customer_note', value: formData.customer_note }] : []),
-            ...(formData.is_business ? [
-              { key: 'billing_ic', value: formData.billing.ic || '' },
-              { key: 'billing_dic', value: formData.billing.dic || '' },
-              { key: 'billing_dic_dph', value: formData.billing.dic_dph || '' },
-            ] : []),
-            ...(formData.consents.marketing ? [{ key: '_marketing_consent', value: 'yes' }] : []),
-          ],
-          line_items: items.map(item => ({
-            product_id: item.id,
-            quantity: item.quantity,
-          })),
-          shipping_lines: shippingCost > 0 ? [{
-            method_id: formData.shipping_method,
-            method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
-            total: shippingCost.toFixed(2),
-          }] : [],
-        };
-
-        if (formData.create_account && customerData === null) {
-          orderData.customer_id = undefined;
-        }
-
-        const result = await createOrder(orderData);
-        orderIdRef.current = result.order.id;
-        try {
-          sessionStorage.setItem('lastOrderId', String(result.order.id));
-          sessionStorage.setItem('customerEmail', formData.billing.email);
-        } catch {}
-
-        setShowStripePayment(true);
-      } catch (error: unknown) {
-        logError('Error creating order (Stripe flow)', {
-          error: error instanceof Error ? error : new Error(String(error)),
-          timestamp: new Date().toISOString()
-        });
-        if (error instanceof Error) {
-          setPaymentError({
-            type: 'order_creation_error',
-            message: error.message || 'Nastala chyba pri vytváraní objednávky',
-          });
-          toast.error(`Chyba pri vytváraní objednávky: ${error.message}`);
-        }
-        setIsSubmitting(false);
-        return;
-      } finally {
-        setIsSubmitting(false);
-      }
+      setShowStripePayment(true);
       return;
     }
 
@@ -479,10 +414,7 @@ export default function CheckoutClient() {
         window.location.href = `/objednavka/uspesna/${result.order.id}`;
       }, 100);
     } catch (error: unknown) {
-      logError('Error creating order', {
-        error: error instanceof Error ? error : new Error(String(error)),
-        timestamp: new Date().toISOString()
-      });
+      Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
 
       setIsProcessingOrder(false); // Reset processing state on error
 
@@ -520,7 +452,7 @@ export default function CheckoutClient() {
     image: item.image || undefined,
   }));
 
-  if (items.length === 0) {
+  if (items.length === 0 && !isPaymentSuccessful) {
     return (
       <div className="min-h-[50vh] bg-gray-50 flex items-center justify-center">
         <div className="text-center p-8 bg-white rounded-lg shadow-sm">
@@ -534,6 +466,34 @@ export default function CheckoutClient() {
           >
             Prejsť na produkty
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+
+  if (items.length === 0 && isPaymentSuccessful) {
+    // Scroll na vrch stránky
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-8 shadow-xl max-w-md mx-4 text-center">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Platba úspešná!</h2>
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
+            <span className="text-gray-600">Presmerovávame vás...</span>
+          </div>
+          <p className="text-sm text-gray-500">
+            Vaša objednávka bola úspešne spracovaná
+          </p>
         </div>
       </div>
     );
@@ -643,7 +603,75 @@ export default function CheckoutClient() {
       )}
 
       {showStripePayment && (
-        <StripePayment />
+        <StripePayment
+          items={items.map(i => ({ 
+            id: Number(i.id), 
+            quantity: Number(i.quantity) 
+          })).filter(i => i.id > 0 && i.quantity > 0)}
+          shippingMethod={formData.shipping_method}
+          discountAmount={Math.max(0, Number(discountAmount) || 0)}
+          billing={formData.billing}
+          shipping={formData.shipping}
+          isBusiness={Boolean(formData.is_business)}
+          customerNote={formData.customer_note?.slice(0, 500) || ''}
+          marketingConsent={Boolean(formData.consents.marketing)}
+          onSuccess={() => {
+            try {
+              setIsPaymentSuccessful(true);
+              
+              // Scroll na vrch pre lepší UX
+              if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+              
+              Sentry.addBreadcrumb({
+                category: 'payment',
+                message: 'Payment success callback initiated',
+                level: 'info',
+              });
+
+              setTimeout(() => {
+                try {
+                  clearCart();
+                  resetForm();
+                  localStorage.removeItem('checkoutFormData');
+                  setShowStripePayment(false);
+                } catch (cleanupError) {
+                  Sentry.captureException(cleanupError, {
+                    extra: { phase: 'payment_success_cleanup' }
+                  });
+                }
+              }, 50);
+            } catch (successError) {
+              Sentry.captureException(successError, {
+                extra: { phase: 'payment_success_callback' }
+              });
+            }
+          }}
+          onError={(error) => {
+            try {
+              Sentry.captureMessage('Stripe payment error', {
+                level: 'error',
+                extra: { error, timestamp: new Date().toISOString() }
+              });
+
+              setPaymentError({
+                type: 'stripe_error',
+                message: error,
+              });
+              setShowStripePayment(false);
+              setIsPaymentSuccessful(false);
+            } catch {
+              setPaymentError({
+                type: 'stripe_error',
+                message: 'Nastala chyba pri spracovaní platby.',
+              });
+              setShowStripePayment(false);
+              setIsPaymentSuccessful(false);
+            }
+          }}
+          onClose={() => setShowStripePayment(false)}
+        />
       )}
 
       {/* Payment error display */}

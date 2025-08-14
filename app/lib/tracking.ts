@@ -12,7 +12,6 @@ const trackFbEventWithConversionAPI = async (
   userData: Record<string, unknown> = {}
 ) => {
   if (!PIXEL_ID) {
-    console.warn('Facebook Pixel ID not configured');
     return;
   }
 
@@ -37,7 +36,7 @@ const trackFbEventWithConversionAPI = async (
   };
   
   // Track with both client-side pixel and server-side conversion API
-  fbq('track', eventName, params);
+  fbq('track', eventName, eventParams);
   const hashedUserData = hashUserData(userData);
   await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
 };

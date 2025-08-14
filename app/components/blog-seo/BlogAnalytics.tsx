@@ -136,11 +136,6 @@ function trackEvent(eventName: string, parameters: Record<string, unknown> = {})
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', eventName, parameters);
   }
-  
-  // Also track to console in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`📊 Analytics Event: ${eventName}`, parameters);
-  }
 }
 
 // Helper function to track SEO-specific metrics

@@ -39,7 +39,6 @@ export async function GET() {
     }
 
     // Test 1: Check if pixel exists and we have access
-    console.log('Testing Facebook Pixel access...');
     try {
       const pixelResponse = await fetch(
         `https://graph.facebook.com/v17.0/${PIXEL_ID}?fields=id,name,creation_time&access_token=${ACCESS_TOKEN}`
@@ -70,7 +69,6 @@ export async function GET() {
     }
 
     // Test 2: Check access token permissions
-    console.log('Testing access token permissions...');
     try {
       const permissionsResponse = await fetch(
         `https://graph.facebook.com/v17.0/me/permissions?access_token=${ACCESS_TOKEN}`
@@ -101,7 +99,6 @@ export async function GET() {
     }
 
     // Test 3: Get user/app info
-    console.log('Testing token owner info...');
     try {
       const userResponse = await fetch(
         `https://graph.facebook.com/v17.0/me?access_token=${ACCESS_TOKEN}`

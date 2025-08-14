@@ -38,8 +38,7 @@ export default function OrderStatusPage(props: OrderSuccessProps) {
         if (params.status === 'success') {
           clearCart();
         }
-      } catch (error) {
-        console.error('Error fetching order:', error);
+      } catch {
         router.push('/objednavka/neuspesna');
       } finally {
         setIsLoading(false);

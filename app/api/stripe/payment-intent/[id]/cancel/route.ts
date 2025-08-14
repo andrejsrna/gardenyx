@@ -65,7 +65,6 @@ export async function POST(
       type: error instanceof Error ? error.constructor.name : typeof error
     };
 
-    console.error('[API Error]:', errorDetails);
     logError('Stripe Payment Intent Cancel', errorDetails);
 
     return NextResponse.json(

@@ -3,6 +3,7 @@ import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { getStripe } from '@/app/lib/stripe';
 
 const stripe = getStripe();
+const creatingByPi = new Set<string>();
 
 const api = new WooCommerceRestApi({
   url: process.env.WORDPRESS_URL!,
@@ -36,10 +37,11 @@ export async function POST(request: Request) {
         const orderId = pi.metadata?.order_id;
         if (orderId) {
           try {
+            
             const orderResponse = await api.get(`orders/${orderId}`);
             const order = orderResponse.data as { total?: string };
-            const total = Number(order.total || '0');
-            const expectedCents = Math.round(total * 100);
+            const totalAmount = Number(order.total || '0');
+            const expectedCents = Math.round(totalAmount * 100);
             if (Number.isFinite(expectedCents) && expectedCents > 0 && typeof pi.amount_received === 'number') {
               if (pi.amount_received !== expectedCents) {
                 try {
@@ -56,11 +58,66 @@ export async function POST(request: Request) {
             }
             await api.put(`orders/${orderId}`, {
               status: 'processing',
+              transaction_id: pi.id,
               meta_data: [
                 { key: '_stripe_payment_intent_id', value: pi.id }
               ]
             });
-          } catch {}
+            
+          } catch {  }
+        } else {
+          try {
+            const cartSignature = pi.metadata?.cart_signature;
+            if (!cartSignature) { 
+               
+              break; 
+            }
+            if (creatingByPi.has(pi.id)) {
+              
+              break;
+            }
+            creatingByPi.add(pi.id);
+            try {
+              
+              const existing = await api.get('orders', {
+                per_page: 100,
+                orderby: 'date',
+                order: 'desc',
+                status: ['pending', 'processing', 'on-hold', 'completed']
+              });
+              const orders = Array.isArray(existing.data) ? existing.data as Array<{ id: number; transaction_id?: string; meta_data?: Array<{ key: string; value: string }> }> : [];
+              const match = orders.find(o => o.transaction_id === pi.id || o.meta_data?.some(m => m.key === '_stripe_payment_intent_id' && m.value === pi.id));
+              if (match?.id) break;
+            } catch {
+              break;
+            }
+            const decoded = JSON.parse(Buffer.from(cartSignature, 'base64').toString('utf8')) as { li: Array<{ product_id: number; quantity: number }>; sm: string; d: number };
+            const b = pi.metadata?.b ? JSON.parse(Buffer.from(pi.metadata.b, 'base64').toString('utf8')) : undefined;
+            const s = pi.metadata?.s ? JSON.parse(Buffer.from(pi.metadata.s, 'base64').toString('utf8')) : undefined;
+            const ib = pi.metadata?.ib === 'true';
+            const mc = pi.metadata?.mc === 'true';
+            const cn = pi.metadata?.cn || '';
+
+            await api.post('orders', {
+              status: 'processing',
+              transaction_id: pi.id,
+              billing: b,
+              shipping: s,
+              payment_method: 'stripe',
+              payment_method_title: 'Platba kartou',
+              line_items: decoded.li.map(i => ({ product_id: i.product_id, quantity: i.quantity })),
+              meta_data: [
+                { key: '_stripe_payment_intent_id', value: pi.id },
+                ...(ib ? [{ key: 'billing_ic', value: b?.ic || '' }, { key: 'billing_dic', value: b?.dic || '' }, { key: 'billing_dic_dph', value: b?.dic_dph || '' }] : []),
+                ...(mc ? [{ key: '_marketing_consent', value: 'yes' }] : []),
+                ...(cn ? [{ key: '_customer_note', value: cn }] : [])
+              ]
+            });
+            
+          } catch {  }
+          finally {
+            creatingByPi.delete(pi.id);
+          }
         }
         break;
       }

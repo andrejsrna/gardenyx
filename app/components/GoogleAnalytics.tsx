@@ -23,7 +23,6 @@ export default function GoogleAnalytics() {
   }, [pathname, searchParams, gaId]);
 
   if (!gaId) {
-    console.error('Google Analytics ID is not defined in environment variables');
     return null;
   }
 
@@ -57,18 +56,14 @@ export const event = (action: string, params?: Record<string, unknown>) => {
 
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
   if (!gaId) {
-    console.warn('Cannot track GA event - GA ID not configured');
     return;
   }
 
   try {
     if (typeof window.gtag === 'function') {
       window.gtag('event', action, params);
-      console.log('Google Analytics event tracked:', action, params);
-    } else {
-      console.warn('Cannot track GA event - gtag not available');
     }
-  } catch (error) {
-    console.error('Error tracking Google Analytics event:', error);
+  } catch {
+    // Error tracking Google Analytics event
   }
 };

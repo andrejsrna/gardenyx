@@ -8,9 +8,7 @@ export default function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Check if we already have consent
     const existingConsent = getCookieConsentValue('cookieConsent');
-    console.log('Existing cookie consent:', existingConsent);
     
     if (!existingConsent) {
       setIsVisible(true);
@@ -18,39 +16,14 @@ export default function CookieConsentBanner() {
   }, []);
 
   const handleAcceptAll = () => {
-    console.log('User accepted all cookies');
-    
-    // Store detailed consent data
-    const consentData = {
-      necessary: true,
-      analytics: true,
-      marketing: true,
-      timestamp: new Date().toISOString(),
-    };
-    
-    localStorage.setItem('cookieConsentDetails', JSON.stringify(consentData));
     setIsVisible(false);
-    
-    // Reload page to initialize tracking scripts
     window.location.reload();
   };
 
   const handleDeclineAll = () => {
-    console.log('User declined optional cookies');
-    
-    // Store detailed consent data - only necessary
-    const consentData = {
-      necessary: true,
-      analytics: false,
-      marketing: false,
-      timestamp: new Date().toISOString(),
-    };
-    
-    localStorage.setItem('cookieConsentDetails', JSON.stringify(consentData));
     setIsVisible(false);
   };
 
-  // Custom component for more control
   if (isVisible) {
     return (
       <CookieConsent
@@ -141,20 +114,17 @@ export default function CookieConsentBanner() {
   return null;
 }
 
-// Helper function to get consent details
 export const getCookieConsentDetails = () => {
   if (typeof window === 'undefined') return null;
   
   try {
     const details = localStorage.getItem('cookieConsentDetails');
     return details ? JSON.parse(details) : null;
-  } catch (error) {
-    console.error('Error reading cookie consent details:', error);
+  } catch {
     return null;
   }
 };
 
-// Helper function to check specific consent types
 export const hasConsentFor = (type: 'necessary' | 'analytics' | 'marketing'): boolean => {
   const details = getCookieConsentDetails();
   return details ? details[type] === true : false;

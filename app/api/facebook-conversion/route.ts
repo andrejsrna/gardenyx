@@ -9,7 +9,6 @@ function sha256Hash(value: string): string {
 
 export async function POST(request: Request) {
   if (!ACCESS_TOKEN) {
-    console.error('Missing Facebook Conversion API configuration');
     return NextResponse.json({ error: 'Configuration missing' }, { status: 500 });
   }
 
@@ -78,15 +77,12 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Facebook Conversion API Error:', errorData);
       return NextResponse.json({ error: 'Facebook API error', details: errorData }, { status: response.status });
     }
 
     const result = await response.json();
-    console.log('Facebook Conversion API Success:', result);
     return NextResponse.json(result);
-  } catch (error) {
-    console.error('Facebook Conversion API Error:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to send event' }, { status: 500 });
   }
 }

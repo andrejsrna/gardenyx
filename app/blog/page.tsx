@@ -114,8 +114,7 @@ export async function generateMetadata({ searchParams }: { searchParams: tSearch
         } else {
             base = createDefaultMetadata(siteUrl);
         }
-    } catch (error) {
-        console.error('Error fetching SEO data:', error);
+    } catch {
         base = createDefaultMetadata(siteUrl);
     }
 

@@ -21,7 +21,6 @@ export default function FacebookPixel() {
   }, [pathname, searchParams, pixelId]);
 
   if (!pixelId) {
-    console.error('Facebook Pixel ID is not defined in environment variables');
     return null;
   }
 
@@ -58,18 +57,13 @@ export const fbq = (action: string, eventName: string, params?: Record<string, u
 
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
   if (!pixelId) {
-    console.warn('Cannot track Facebook event - Pixel ID not configured');
     return;
   }
 
   try {
     if (typeof window.fbq === 'function') {
       window.fbq(action, eventName, params);
-      console.log('Facebook Pixel event tracked:', action, eventName, params);
-    } else {
-      console.warn('Cannot track Facebook event - fbq not available');
     }
-  } catch (error) {
-    console.error('Error tracking Facebook event:', error);
+  } catch {
   }
 }; 

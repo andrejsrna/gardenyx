@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import SuccessTracking from '../SuccessTracking';
 
 interface PageProps {
   params: Promise<{
@@ -21,11 +22,21 @@ async function getOrderMetadata(orderId: string) {
 
     const order = await response.json();
     return {
+      id: order.id,
       meta_data: order.meta_data,
-      notes: order.notes || []
+      notes: order.notes || [],
+      total: Number(order.total || '0'),
+      tax: Number(order.total_tax || '0'),
+      shipping_total: Number(order.shipping_total || '0'),
+      line_items: Array.isArray(order.line_items) ? order.line_items.map((li: { product_id: number; name: string; price: string; quantity: number; category?: string }) => ({
+        id: li.product_id as number,
+        name: li.name as string,
+        price: Number(li.price || '0'),
+        quantity: Number(li.quantity || 1),
+        category: li.category || undefined,
+      })) : []
     };
-  } catch (error) {
-    console.error('Error fetching order metadata:', error);
+  } catch {
     return null;
   }
 }
@@ -67,8 +78,7 @@ async function sendTrackingEmail(orderId: string, trackingNumber: string) {
     }
 
     return true;
-  } catch (error) {
-    console.error('Error sending tracking email:', error);
+  } catch {
     return false;
   }
 }
@@ -87,6 +97,15 @@ export default async function OrderSuccessPage({ params }: PageProps) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
+      {orderData && (
+        <SuccessTracking
+          orderId={orderId}
+          total={orderData.total}
+          tax={orderData.tax}
+          shipping={orderData.shipping_total}
+          items={orderData.line_items}
+        />
+      )}
       <div className="bg-white rounded-lg shadow-sm p-8">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">

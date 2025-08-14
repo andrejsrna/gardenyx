@@ -25,21 +25,17 @@ export async function sendFacebookConversionEvent(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Facebook Conversion API error:', response.status, errorText);
       try {
-        const errorJson = JSON.parse(errorText);
-        console.error('Parsed error:', errorJson);
+        JSON.parse(errorText);
       } catch {
         // Not a JSON response
       }
       return false;
     }
 
-    const result = await response.json();
-    console.log('Facebook Conversion API success:', result);
+    await response.json();
     return true;
-  } catch (error) {
-    console.error('Error sending Facebook Conversion API event:', error);
+  } catch {
     return false;
   }
 }

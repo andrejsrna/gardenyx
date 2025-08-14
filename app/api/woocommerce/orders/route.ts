@@ -35,6 +35,7 @@ interface MetaData {
 interface OrderData {
     shipping_method: string;
     payment_method: string;
+    status?: string;
     shipping: {
         first_name: string;
         last_name: string;
@@ -91,8 +92,7 @@ function generateOrderHash(orderData: OrderData): string {
         billing_phone: orderData.billing.phone,
         line_items: orderData.line_items,
         shipping_method: orderData.shipping_method,
-        payment_method: orderData.payment_method,
-        timestamp: new Date().toISOString().slice(0, 16) // Presnosť na minúty - 5-minútové okno na odoslanie
+        payment_method: orderData.payment_method
     });
 
     // Vytvorenie hash-u
@@ -104,10 +104,10 @@ async function findExistingOrder(idempotencyKey: string) {
     try {
         // Hľadáme objednávku s daným idempotency_key v meta_data
         const response = await api.get('orders', {
-            per_page: 5, // Optimalizácia - kontrolujeme len niekoľko najnovších objednávok
+            per_page: 100,
             orderby: 'date',
             order: 'desc',
-            status: ['pending', 'processing', 'completed']
+            status: ['pending', 'processing', 'on-hold', 'completed']
         });
 
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
@@ -123,7 +123,6 @@ async function findExistingOrder(idempotencyKey: string) {
 
         return null;
     } catch (error) {
-        console.error('Error finding existing order:', error);
         return null;
     }
 }
@@ -342,7 +341,7 @@ export async function POST(request: Request) {
         delete orderData.idempotency_key;
         const finalPayload = {
             ...orderData,
-            status: 'processing'
+            status: orderData.status || 'pending'
         };
         const response = await api.post('orders', finalPayload);
 
@@ -352,18 +351,20 @@ export async function POST(request: Request) {
 
         const newOrder = response.data as WooCommerceOrder;
 
-        if (orderData.shipping_method === 'packeta_pickup' || orderData.shipping_method === 'packeta_home') {
+        if (
+            (orderData.shipping_method === 'packeta_pickup' || orderData.shipping_method === 'packeta_home') &&
+            orderData.payment_method !== 'stripe' &&
+            finalPayload.status === 'processing'
+        ) {
             try {
                 await createPacketaPacket(orderData, newOrder.id, Number(newOrder.total));
-            } catch (packetaError) {
-                console.error(`Failed to create Packeta packet for order #${newOrder.id}:`, packetaError);
+                } catch (packetaError) {
                 try {
                     await api.put(`orders/${newOrder.id}`, {
                         status: 'on-hold', // Or a custom status
                         customer_note: `Automatické vytvorenie zásielky v Packete zlyhalo. Prosím, skontrolujte manuálne. Chyba: ${(packetaError instanceof Error ? packetaError.message : String(packetaError))}`
                     });
                 } catch (updateError) {
-                    console.error(`Failed to update order status after Packeta failure for order #${newOrder.id}:`, updateError);
                 }
             }
         }
@@ -374,7 +375,6 @@ export async function POST(request: Request) {
         });
 
     } catch (error: unknown) {
-        console.error('Order creation process error:', error);
 
         const err = error as WooCommerceError;
 

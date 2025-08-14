@@ -9,6 +9,7 @@ import ExitIntentPopupLoader from './components/ExitIntentPopupLoader';
 import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import Posthog from './components/Posthog';
 import FacebookPixel from './components/FacebookPixel';
 import Header from './components/Header';
 
@@ -94,6 +95,7 @@ export default function RootLayout({
                 <Toaster/>
 
                 <GoogleAnalytics />
+                <Posthog />
                 <FacebookPixel />
                 <GoogleAds />
                 <CookieConsentBanner />

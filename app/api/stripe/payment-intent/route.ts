@@ -1,5 +1,6 @@
 import {NextResponse} from 'next/server';
 import {z} from 'zod';
+import crypto from 'crypto';
 import { getStripe } from '@/app/lib/stripe';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { rateLimit } from '@/app/lib/utils/rateLimit';
@@ -7,10 +8,18 @@ import { rateLimit } from '@/app/lib/utils/rateLimit';
 const stripe = getStripe();
 
 const requestSchema = z.object({
-    orderId: z.string().regex(/^\d+$/, 'orderId must be numeric'),
-    metadata: z.object({
-        customer_email: z.string().email().nullish()
-    }).optional()
+    cart: z.object({
+        line_items: z.array(z.object({ product_id: z.number(), quantity: z.number().positive() })),
+        shipping_method: z.string()
+    }),
+    discountAmount: z.number().nonnegative().default(0),
+    customer: z.object({
+        billing: z.any(),
+        shipping: z.any(),
+        is_business: z.boolean(),
+        customer_note: z.string().optional(),
+        marketing_consent: z.boolean().optional()
+    })
 });
 
 const wc = new WooCommerceRestApi({
@@ -27,56 +36,90 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         const validatedData = requestSchema.parse(body);
-        const orderId = validatedData.orderId;
-
-        const orderResponse = await wc.get(`orders/${orderId}`);
-        const order = orderResponse.data as { total?: string; status?: string };
-        const total = Number(order.total || '0');
+        const shippingCost = 0;
+        const productsTotal = await (async () => {
+            let sum = 0;
+            try {
+                const ids = validatedData.cart.line_items.map(li => li.product_id);
+                const uniqueIds = Array.from(new Set(ids));
+                const res = await wc.get('products', { include: uniqueIds.join(',') });
+                const products = Array.isArray(res.data) ? res.data as Array<{ id: number; price: string }> : [];
+                const priceMap = new Map<number, number>();
+                for (const p of products) {
+                    priceMap.set(p.id, Number(p.price || '0'));
+                }
+                for (const li of validatedData.cart.line_items) {
+                    sum += (priceMap.get(li.product_id) || 0) * li.quantity;
+                }
+            } catch {}
+            return sum;
+        })();
+        const total = Math.max(0, productsTotal + shippingCost - validatedData.discountAmount);
         if (!Number.isFinite(total) || total <= 0) {
-            return NextResponse.json({ error: 'Invalid order total' }, { status: 400 });
-        }
-        if (order.status && !['pending', 'on-hold', 'processing'].includes(order.status)) {
-            return NextResponse.json({ error: 'Order not eligible for payment' }, { status: 400 });
+            return NextResponse.json({ error: 'Invalid cart total' }, { status: 400 });
         }
         const amountInCents = Math.round(total * 100);
 
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: amountInCents,
-            currency: 'eur',
-            automatic_payment_methods: {
-                enabled: true,
-            },
-            metadata: {
-                order_id: orderId,
-                ...(validatedData.metadata?.customer_email && {
-                    customer_email: validatedData.metadata.customer_email
-                })
-            },
-            statement_descriptor_suffix: 'NKV SHOP',
-            ...(validatedData.metadata?.customer_email && {
-                receipt_email: validatedData.metadata.customer_email
-            })
-        }, {
-            idempotencyKey: `payment_intent_${orderId}`
-        });
+        const cartSignature = Buffer.from(JSON.stringify({ li: validatedData.cart.line_items, sm: validatedData.cart.shipping_method, d: validatedData.discountAmount })).toString('base64');
+        const receiptEmail = validatedData.customer.billing?.email as string | undefined;
+        const timestamp = Math.floor(Date.now() / 1000); // Use seconds to allow some deduplication within same second
+        const idempotencyKey = crypto.createHash('sha256').update(`${cartSignature}|${receiptEmail || ''}|${amountInCents}|${timestamp}`).digest('hex');
 
         try {
-            await wc.put(`orders/${orderId}`, {
-                meta_data: [
-                    { key: '_stripe_payment_intent_id', value: paymentIntent.id }
-                ]
-            });
-        } catch {}
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amountInCents,
+                currency: 'eur',
+                automatic_payment_methods: {
+                    enabled: true,
+                },
+                metadata: {
+                    cart_signature: cartSignature,
+                    b: Buffer.from(JSON.stringify(validatedData.customer.billing || {})).toString('base64'),
+                    s: Buffer.from(JSON.stringify(validatedData.customer.shipping || {})).toString('base64'),
+                    ib: String(Boolean(validatedData.customer.is_business)),
+                    mc: String(Boolean(validatedData.customer.marketing_consent)),
+                    cn: (validatedData.customer.customer_note || '').slice(0, 480)
+                },
+                statement_descriptor_suffix: 'NKV SHOP',
+                receipt_email: receiptEmail
+            }, { idempotencyKey });
 
-        return NextResponse.json({
-            clientSecret: paymentIntent.client_secret,
-            paymentIntentId: paymentIntent.id
-        });
+            return NextResponse.json({
+                clientSecret: paymentIntent.client_secret,
+                paymentIntentId: paymentIntent.id
+            });
+        } catch (stripeError: unknown) {
+            // If idempotency key conflict, try to find existing payment intent
+            if (stripeError && typeof stripeError === 'object' && 'code' in stripeError && stripeError.code === 'idempotency_key_in_use') {
+                // Search for recent payment intents with same cart signature
+                try {
+                    const paymentIntents = await stripe.paymentIntents.list({
+                        limit: 10,
+                        created: { gte: Math.floor(Date.now() / 1000) - 3600 } // Last hour
+                    });
+                    
+                    const existingPI = paymentIntents.data.find(pi => 
+                        pi.metadata.cart_signature === cartSignature &&
+                        pi.amount === amountInCents &&
+                        pi.receipt_email === receiptEmail
+                    );
+                    
+                    if (existingPI) {
+                        return NextResponse.json({
+                            clientSecret: existingPI.client_secret,
+                            paymentIntentId: existingPI.id
+                        });
+                    }
+                } catch {
+                    // Silent error handling
+                }
+            }
+            
+            throw stripeError; // Re-throw the original error
+        }
     } catch (error: unknown) {
-        console.error('[PaymentIntent API] Error during processing:', error);
 
         if (error instanceof z.ZodError) {
-            console.error('[PaymentIntent API] Validation Error:', error.issues);
             return NextResponse.json({error: 'Invalid request data', details: error.issues}, {status: 400});
         }
 
@@ -92,7 +135,6 @@ export async function POST(request: Request) {
         }
 
         const errorMessage = error instanceof Error ? error.message : 'Internal server error';
-        console.error(`[PaymentIntent API] Generic Error: ${errorMessage}`);
         return NextResponse.json(
             {error: errorMessage},
             {status: 500}

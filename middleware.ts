@@ -36,7 +36,9 @@ const corsHeaders = {
 const ALLOWED_PARAMS = new Set([
   'ad_id', 'pixel', 'key', 'page', 'search', 'tag', 'include',
   'fbclid', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign',
-  'utm_term', 'utm_content'
+  'utm_term', 'utm_content',
+  // Needed for Stripe success + internal lookups
+  'id', 'payment_intent', 'payment_intent_client_secret'
 ]);
 
 const CSP_DIRECTIVES = {
@@ -47,6 +49,7 @@ const CSP_DIRECTIVES = {
     'https://connect.facebook.net', 'https://js.stripe.com',
     'https://www.googletagmanager.com', 'https://widget.packeta.com',
     'https://backup.widget.packeta.com', 'https://maps.googleapis.com'
+    , 'https://eu-assets.i.posthog.com'
   ],
   styleSrc: ["'self'", "'unsafe-inline'"],
   imgSrc: [
@@ -68,7 +71,7 @@ const CSP_DIRECTIVES = {
     'https://admin.najsilnejsiaklbovavyziva.sk',
     'https://*.facebook.net', 'https://*.facebook.com',
     'https://connect.facebook.net', 'https://*.sentry.io',
-    'https://*.ingest.sentry.io'
+    'https://*.ingest.sentry.io', 'https://eu.i.posthog.com'
   ],
   fontSrc: ["'self'"],
   workerSrc: ["'self'", 'blob:', 'https://js.stripe.com']
@@ -82,7 +85,6 @@ function generateCSPHeader() {
 
 function handleErrorResponse(error: unknown, corsHeaders: Record<string, string>) {
   if (error instanceof Error && error.message.includes('rate limit')) {
-    console.warn('Rate limit error in middleware:', error.message);
     return new NextResponse(
       JSON.stringify({ 
         error: 'Too many requests',
@@ -100,7 +102,6 @@ function handleErrorResponse(error: unknown, corsHeaders: Record<string, string>
     );
   }
 
-  console.error('Middleware error:', error);
   return new NextResponse(
     JSON.stringify({ error: 'Internal Server Error' }),
     {
