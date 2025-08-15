@@ -38,7 +38,6 @@ export async function trackServerSideEvent(
     const hashedUserData = hashUserData(userData);
     await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
     
-    console.log('Server-side tracking event sent:', eventName, eventParams);
   } catch (error) {
     console.error('Error sending server-side tracking event:', error);
   }

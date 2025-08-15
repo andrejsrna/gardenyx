@@ -74,14 +74,10 @@ interface OrderData {
 }
 
 async function createPacketaPacket(orderId: string, orderData: OrderData): Promise<{ success: boolean; packetId?: string; barcode?: string; barcodeText?: string; message?: string } | null> {
-  try {
-    console.log(`[Packeta] Attempting to create packet for order ${orderId}`);
-    
-    // Check if Packeta packet already exists
+  try { 
     const existingPacketId = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_packet_id')?.value;
     if (existingPacketId) {
       const existingBarcode = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_barcode')?.value;
-      console.log(`[Packeta] Packet already exists for order ${orderId}: ${existingPacketId}`);
       return {
         success: true,
         packetId: existingPacketId,
@@ -96,29 +92,24 @@ async function createPacketaPacket(orderId: string, orderData: OrderData): Promi
     );
 
     if (!isPacketaShipment) {
-      console.log(`[Packeta] Not a Packeta shipment for order ${orderId}`);
       return null;
     }
 
     // Check if order is in correct status
     if (orderData?.status !== 'processing' && orderData?.status !== 'completed') {
-      console.log(`[Packeta] Order ${orderId} not in correct status: ${orderData?.status}`);
       return null;
     }
 
     const isHomeDelivery = orderData?.shipping_lines?.some((line: { method_id: string }) => line.method_id === 'packeta_home');
     const addressId = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_point_id')?.value;
 
-    // Prepare Packeta request data with fallbacks
     const firstName = orderData?.shipping?.first_name || orderData?.billing?.first_name || '';
     const lastName = orderData?.shipping?.last_name || orderData?.billing?.last_name || '';
     const email = orderData?.billing?.email || orderData?.shipping?.email || '';
     const phone = (orderData?.billing?.phone || orderData?.shipping?.phone || '').replace(/\s/g, '');
     const company = orderData?.shipping?.company || orderData?.billing?.company;
     
-    console.log(`[Packeta] Using data - Name: "${firstName}", Surname: "${lastName}", Email: "${email}", Phone: "${phone}"`);
     
-    // Validate required fields
     if (!firstName || !lastName) {
       console.error(`[Packeta] Missing required name fields for order ${orderId}. First name: "${firstName}", Last name: "${lastName}"`);
       return null;
@@ -159,9 +150,6 @@ async function createPacketaPacket(orderId: string, orderData: OrderData): Promi
       return null;
     }
 
-    console.log(`[Packeta] Creating packet with data:`, JSON.stringify(packetaData, null, 2));
-
-    // Call Packeta API directly
     const packetaResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'}/api/packeta/create-packet`, {
       method: 'POST',
       headers: {
@@ -199,7 +187,6 @@ async function createPacketaPacket(orderId: string, orderData: OrderData): Promi
           ]
         })
       });
-      console.log(`[Packeta] Updated order ${orderId} with tracking data`);
 
     } catch (updateError) {
       console.error('[Packeta] Failed to update order with tracking data:', updateError);
@@ -235,12 +222,10 @@ export default async function OrderSuccessPage({ params }: PageProps) {
 
   // Create Packeta packet if needed (for both COD and card payments)
   if (isPacketaShipment && !packetaId && orderData?.status === 'processing') {
-    console.log(`[Packeta] Order ${orderId} is Packeta shipment without packet, creating...`);
     const packetResult = await createPacketaPacket(orderId, orderData as unknown as OrderData);
     if (packetResult?.success) {
       packetaId = packetResult.packetId;
       packetaBarcode = packetResult.barcode;
-      console.log(`[Packeta] Successfully created packet ${packetaId} for order ${orderId}`);
     }
   }
 
