@@ -609,6 +609,7 @@ export default function CheckoutClient() {
           isBusiness={Boolean(formData.is_business)}
           customerNote={formData.customer_note?.slice(0, 500) || ''}
           marketingConsent={Boolean(formData.consents.marketing)}
+          metaData={formData.meta_data}
           onSuccess={() => {
             try {
               setIsPaymentSuccessful(true);

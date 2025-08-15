@@ -18,7 +18,11 @@ const requestSchema = z.object({
         shipping: z.any(),
         is_business: z.boolean(),
         customer_note: z.string().optional(),
-        marketing_consent: z.boolean().optional()
+        marketing_consent: z.boolean().optional(),
+        meta_data: z.array(z.object({
+            key: z.string(),
+            value: z.string()
+        })).optional()
     })
 });
 
@@ -78,7 +82,8 @@ export async function POST(request: Request) {
                     s: Buffer.from(JSON.stringify(validatedData.customer.shipping || {})).toString('base64'),
                     ib: String(Boolean(validatedData.customer.is_business)),
                     mc: String(Boolean(validatedData.customer.marketing_consent)),
-                    cn: (validatedData.customer.customer_note || '').slice(0, 480)
+                    cn: (validatedData.customer.customer_note || '').slice(0, 480),
+                    md: validatedData.customer.meta_data ? Buffer.from(JSON.stringify(validatedData.customer.meta_data)).toString('base64') : ''
                 },
                 statement_descriptor_suffix: 'NKV SHOP',
                 receipt_email: receiptEmail

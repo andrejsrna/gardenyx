@@ -353,7 +353,6 @@ export async function POST(request: Request) {
 
         if (
             (orderData.shipping_method === 'packeta_pickup' || orderData.shipping_method === 'packeta_home') &&
-            orderData.payment_method !== 'stripe' &&
             finalPayload.status === 'processing'
         ) {
             try {

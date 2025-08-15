@@ -64,6 +64,9 @@ export async function POST(request: Request) {
       const ib = md.ib === 'true';
       const mc = md.mc === 'true';
       const cn = md.cn || '';
+      const metaData = md.md ? JSON.parse(Buffer.from(md.md, 'base64').toString('utf8')) : [];
+      
+
 
       const created = await api.post('orders', {
         status: 'processing',
@@ -73,11 +76,17 @@ export async function POST(request: Request) {
         payment_method: 'stripe',
         payment_method_title: 'Platba kartou',
         line_items: decoded.li.map(i => ({ product_id: i.product_id, quantity: i.quantity })),
+        shipping_lines: decoded.sm === 'packeta_pickup' || decoded.sm === 'packeta_home' ? [{
+          method_id: decoded.sm,
+          method_title: decoded.sm === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
+          total: '0.00'
+        }] : [],
         meta_data: [
           { key: '_stripe_payment_intent_id', value: pi.id },
           ...(ib ? [{ key: 'billing_ic', value: b?.ic || '' }, { key: 'billing_dic', value: b?.dic || '' }, { key: 'billing_dic_dph', value: b?.dic_dph || '' }] : []),
           ...(mc ? [{ key: '_marketing_consent', value: 'yes' }] : []),
-          ...(cn ? [{ key: '_customer_note', value: cn }] : [])
+          ...(cn ? [{ key: '_customer_note', value: cn }] : []),
+          ...metaData
         ]
       });
       const orderId = created.data?.id as number | undefined;

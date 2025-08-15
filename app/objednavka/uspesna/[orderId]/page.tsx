@@ -13,7 +13,7 @@ async function getOrderMetadata(orderId: string) {
       headers: {
         'Authorization': `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET}`).toString('base64')}`
       },
-      next: { revalidate: 60 } // Cache for 1 minute
+      cache: 'no-store' // No cache to get fresh data
     });
     
     if (!response.ok) {
@@ -21,13 +21,19 @@ async function getOrderMetadata(orderId: string) {
     }
 
     const order = await response.json();
+    
     return {
       id: order.id,
+      status: order.status,
+      payment_method: order.payment_method,
       meta_data: order.meta_data,
       notes: order.notes || [],
       total: Number(order.total || '0'),
       tax: Number(order.total_tax || '0'),
       shipping_total: Number(order.shipping_total || '0'),
+      shipping_lines: order.shipping_lines || [],
+      shipping: order.shipping || {},
+      billing: order.billing || {},
       line_items: Array.isArray(order.line_items) ? order.line_items.map((li: { product_id: number; name: string; price: string; quantity: number; category?: string }) => ({
         id: li.product_id as number,
         name: li.name as string,
@@ -41,59 +47,204 @@ async function getOrderMetadata(orderId: string) {
   }
 }
 
-async function sendTrackingEmail(orderId: string, trackingNumber: string) {
+interface OrderData {
+  id: number;
+  status: string;
+  payment_method: string;
+  total: string | number;
+  meta_data: Array<{ key: string; value: string }>;
+  shipping_lines: Array<{ method_id: string; method_title: string }>;
+  shipping: {
+    first_name?: string;
+    last_name?: string;
+    company?: string;
+    address_1?: string;
+    city?: string;
+    postcode?: string;
+    email?: string;
+    phone?: string;
+  };
+  billing: {
+    first_name?: string;
+    last_name?: string;
+    company?: string;
+    email?: string;
+    phone?: string;
+  };
+}
+
+async function createPacketaPacket(orderId: string, orderData: OrderData): Promise<{ success: boolean; packetId?: string; barcode?: string; barcodeText?: string; message?: string } | null> {
   try {
-    // First, add a flag to meta_data to prevent duplicate emails
-    await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wc/v3/orders/${orderId}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET}`).toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        meta_data: [
-          {
-            key: 'tracking_email_sent',
-            value: 'true'
-          }
-        ]
-      })
-    });
-
-    // Then send the tracking note
-    const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wc/v3/orders/${orderId}/notes`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET}`).toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        note: `Sledovanie zásielky: https://tracking.app.packeta.com/sk/${trackingNumber}\nČíslo zásielky: ${trackingNumber}`,
-        customer_note: true // This will trigger an email to the customer
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to send tracking email');
+    console.log(`[Packeta] Attempting to create packet for order ${orderId}`);
+    
+    // Check if Packeta packet already exists
+    const existingPacketId = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_packet_id')?.value;
+    if (existingPacketId) {
+      const existingBarcode = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_barcode')?.value;
+      console.log(`[Packeta] Packet already exists for order ${orderId}: ${existingPacketId}`);
+      return {
+        success: true,
+        packetId: existingPacketId,
+        barcode: existingBarcode,
+        message: 'Packet already exists'
+      };
     }
 
-    return true;
-  } catch {
-    return false;
+    // Check if this is a Packeta shipment
+    const isPacketaShipment = orderData?.shipping_lines?.some((line: { method_id: string }) => 
+      line.method_id === 'packeta_pickup' || line.method_id === 'packeta_home'
+    );
+
+    if (!isPacketaShipment) {
+      console.log(`[Packeta] Not a Packeta shipment for order ${orderId}`);
+      return null;
+    }
+
+    // Check if order is in correct status
+    if (orderData?.status !== 'processing' && orderData?.status !== 'completed') {
+      console.log(`[Packeta] Order ${orderId} not in correct status: ${orderData?.status}`);
+      return null;
+    }
+
+    const isHomeDelivery = orderData?.shipping_lines?.some((line: { method_id: string }) => line.method_id === 'packeta_home');
+    const addressId = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_point_id')?.value;
+
+    // Prepare Packeta request data with fallbacks
+    const firstName = orderData?.shipping?.first_name || orderData?.billing?.first_name || '';
+    const lastName = orderData?.shipping?.last_name || orderData?.billing?.last_name || '';
+    const email = orderData?.billing?.email || orderData?.shipping?.email || '';
+    const phone = (orderData?.billing?.phone || orderData?.shipping?.phone || '').replace(/\s/g, '');
+    const company = orderData?.shipping?.company || orderData?.billing?.company;
+    
+    console.log(`[Packeta] Using data - Name: "${firstName}", Surname: "${lastName}", Email: "${email}", Phone: "${phone}"`);
+    
+    // Validate required fields
+    if (!firstName || !lastName) {
+      console.error(`[Packeta] Missing required name fields for order ${orderId}. First name: "${firstName}", Last name: "${lastName}"`);
+      return null;
+    }
+    
+    if (!email && !phone) {
+      console.error(`[Packeta] Missing contact information for order ${orderId}. Email: "${email}", Phone: "${phone}"`);
+      return null;
+    }
+    
+    const packetaData: Record<string, unknown> = {
+      orderId: orderId,
+      name: firstName,
+      surname: lastName,
+      company: company,
+      email: email,
+      phone: phone,
+      value: Number(orderData?.total || '0'),
+      weight: 0.5, // Default weight
+      ...(orderData?.payment_method === 'cod' && { cod: Number(orderData?.total || '0') })
+    };
+
+    if (isHomeDelivery) {
+      const addressParts = (orderData?.shipping?.address_1 || '').trim().match(/^(.+?)(\d+(?:\/\d+)?)$/);
+      const street = addressParts ? addressParts[1].trim() : orderData?.shipping?.address_1 || '';
+      const houseNumber = addressParts ? addressParts[2] : '';
+      
+      packetaData.address = {
+        street: street,
+        houseNumber: houseNumber,
+        city: orderData?.shipping?.city || '',
+        zip: orderData?.shipping?.postcode || ''
+      };
+    } else if (addressId) {
+      packetaData.addressId = addressId;
+    } else {
+      console.error(`[Packeta] Missing pickup point information for order ${orderId}`);
+      return null;
+    }
+
+    console.log(`[Packeta] Creating packet with data:`, JSON.stringify(packetaData, null, 2));
+
+    // Call Packeta API directly
+    const packetaResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'}/api/packeta/create-packet`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(packetaData)
+    });
+
+    if (!packetaResponse.ok) {
+      const errorText = await packetaResponse.text();
+      console.error('[Packeta] API call failed:', errorText);
+      return null;
+    }
+
+    const packetaResult = await packetaResponse.json();
+
+    if (!packetaResult.success) {
+      console.error('[Packeta] Packet creation failed:', packetaResult);
+      return null;
+    }
+
+    // Update order with Packeta tracking data and send tracking email
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/wc/v3/orders/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY}:${process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET}`).toString('base64')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          meta_data: [
+            { key: '_packeta_packet_id', value: packetaResult.packetId },
+            { key: '_packeta_barcode', value: packetaResult.barcode },
+            { key: '_packeta_barcode_text', value: packetaResult.barcodeText }
+          ]
+        })
+      });
+      console.log(`[Packeta] Updated order ${orderId} with tracking data`);
+
+    } catch (updateError) {
+      console.error('[Packeta] Failed to update order with tracking data:', updateError);
+      // Continue even if update fails, packet was created
+    }
+
+    return {
+      success: true,
+      packetId: packetaResult.packetId,
+      barcode: packetaResult.barcode,
+      barcodeText: packetaResult.barcodeText
+    };
+
+  } catch (error) {
+    console.error('[Packeta] Error creating packet:', error);
+    return null;
   }
 }
+
+
 
 export default async function OrderSuccessPage({ params }: PageProps) {
   const { orderId } = await params;
   const orderData = await getOrderMetadata(orderId);
-  const packetaId = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_packet_id')?.value;
-  const packetaBarcode = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_barcode')?.value;
-  const trackingEmailSent = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === 'tracking_email_sent')?.value === 'true';
+  
+  let packetaId = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_packet_id')?.value;
+  let packetaBarcode = orderData?.meta_data?.find((meta: { key: string; value: string }) => meta.key === '_packeta_barcode')?.value;
 
-  // Send tracking email if we have a tracking number and haven't sent it before
-  if (packetaBarcode && !trackingEmailSent) {
-    await sendTrackingEmail(orderId, packetaBarcode);
+  // Check if this is a Packeta shipment that doesn't have a packet yet
+  const isPacketaShipment = orderData?.shipping_lines?.some((line: { method_id: string }) => 
+    line.method_id === 'packeta_pickup' || line.method_id === 'packeta_home'
+  );
+
+  // Create Packeta packet if needed (for both COD and card payments)
+  if (isPacketaShipment && !packetaId && orderData?.status === 'processing') {
+    console.log(`[Packeta] Order ${orderId} is Packeta shipment without packet, creating...`);
+    const packetResult = await createPacketaPacket(orderId, orderData as unknown as OrderData);
+    if (packetResult?.success) {
+      packetaId = packetResult.packetId;
+      packetaBarcode = packetResult.barcode;
+      console.log(`[Packeta] Successfully created packet ${packetaId} for order ${orderId}`);
+    }
   }
+
+  // Note: Packeta will send tracking email automatically, no need for manual emails
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">

@@ -433,6 +433,7 @@ interface StripePaymentProps {
   isBusiness: boolean;
   customerNote?: string;
   marketingConsent: boolean;
+  metaData?: Array<{ key: string; value: string }>;
   onSuccess?: () => void;
   onError?: (error: string) => void;
   onClose?: () => void;
@@ -447,6 +448,7 @@ export default function StripePayment({
   isBusiness, 
   customerNote, 
   marketingConsent,
+  metaData,
   onSuccess, 
   onError,
   onClose 
@@ -497,8 +499,9 @@ export default function StripePayment({
       is_business: Boolean(isBusiness),
       customer_note: customerNote || '',
       marketing_consent: Boolean(marketingConsent),
+      meta_data: metaData || [],
     },
-  }), [stableItems, shippingMethod, discountAmount, billing, shipping, isBusiness, customerNote, marketingConsent]);
+  }), [stableItems, shippingMethod, discountAmount, billing, shipping, isBusiness, customerNote, marketingConsent, metaData]);
 
   // Create a signature for the cart to detect changes
   const currentCartSignature = useMemo(() => 
