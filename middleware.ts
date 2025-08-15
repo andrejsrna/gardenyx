@@ -166,6 +166,11 @@ export async function middleware(request: NextRequest) {
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
 
+    if (!request.url) {
+      console.error('[Middleware] Request URL is null or undefined');
+      return NextResponse.next();
+    }
+
     const url = new URL(request.url);
     const sanitizedParams = sanitizeUrlParams(url);
     const originalParamsString = url.search ? url.search.substring(1) : '';

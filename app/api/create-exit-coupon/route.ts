@@ -15,6 +15,10 @@ const redisUrl = process.env.REDIS_URL || '';
 const redisPassword = process.env.REDIS_PASSWORD || '';
 
 // Extract host and port from Redis URL
+if (!redisUrl) {
+  throw new Error('REDIS_URL environment variable is not set');
+}
+
 const url = new URL(redisUrl);
 const host = url.hostname;
 const port = url.port;

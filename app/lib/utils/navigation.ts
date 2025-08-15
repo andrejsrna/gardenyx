@@ -7,6 +7,10 @@ const MAX_PARAM_LENGTH = 100;
  */
 export function safeHistoryUpdate(url: string | URL, state?: Record<string, unknown>) {
   try {
+    if (!url) {
+      console.error('[Navigation] URL is null or undefined');
+      return;
+    }
     const urlObj = new URL(url, window.location.origin);
 
     // Validate URL length

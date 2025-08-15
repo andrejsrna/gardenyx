@@ -15,6 +15,9 @@ const api = new WooCommerceRestApi({
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
+    if (!request.url) {
+      return NextResponse.json({ error: 'Invalid request URL' }, { status: 400 });
+    }
     const url = new URL(request.url);
     const id = body.id || url.searchParams.get('id');
     if (!id || typeof id !== 'string') {

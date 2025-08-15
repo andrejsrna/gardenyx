@@ -34,6 +34,9 @@ const api = new WooCommerceRestApi({
 });
 
 export async function GET(request: Request) {
+    if (!request.url) {
+        return NextResponse.json({ error: 'Invalid request URL' }, { status: 400 });
+    }
     const {searchParams} = new URL(request.url);
     const taxonomy = searchParams.get('taxonomy');
     const include = searchParams.get('include');
