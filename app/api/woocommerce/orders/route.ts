@@ -339,9 +339,15 @@ export async function POST(request: Request) {
             }
         }
         delete orderData.idempotency_key;
+        // Ensure correct status based on payment method
+        // For COD orders, we want the order to go straight to "processing"
+        const desiredStatus = orderData.payment_method === 'cod'
+            ? 'processing'
+            : (orderData.status || 'pending');
+
         const finalPayload = {
             ...orderData,
-            status: orderData.status || 'pending'
+            status: desiredStatus
         };
         const response = await api.post('orders', finalPayload);
 
