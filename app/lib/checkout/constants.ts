@@ -1,6 +1,6 @@
-export const FREE_SHIPPING_THRESHOLD = 39;
-export const SHIPPING_COST_PACKETA_PICKUP = 2.9;
-export const SHIPPING_COST_PACKETA_HOME = 3.8;
+export const FREE_SHIPPING_THRESHOLD = 29;
+export const SHIPPING_COST_PACKETA_PICKUP = 2.9; // základ bez DPH
+export const SHIPPING_COST_PACKETA_HOME = 3.8;   // základ bez DPH
 export const RECOMMENDED_PRODUCT_IDS = '839,680,669,47';
 
 export const INITIAL_BILLING_INFO = {

@@ -204,14 +204,15 @@ export default function CheckoutClient() {
   const getShippingCost = useCallback(() => {
     if (totalPrice >= FREE_SHIPPING_THRESHOLD) return 0;
     switch (formData.shipping_method) {
-      case 'packeta_pickup': return 2.9;
-      case 'packeta_home': return 3.8;
+      case 'packeta_pickup': return 2.9; // základ bez DPH
+      case 'packeta_home': return 3.8;   // základ bez DPH
       default: return 0;
     }
   }, [totalPrice, formData.shipping_method]);
 
-  const shippingCost = getShippingCost();
-  const finalTotal = parseFloat((totalPrice + shippingCost - discountAmount).toFixed(2));
+  const shippingCostBase = getShippingCost(); // základ bez DPH
+  const shippingCostWithVat = shippingCostBase * 1.19; // s DPH
+  const finalTotal = parseFloat((totalPrice + shippingCostWithVat - discountAmount).toFixed(2));
 
   // Add to cart handler for recommended products
   const handleAddToCart = useCallback((product: WooCommerceProduct) => {
@@ -384,10 +385,12 @@ export default function CheckoutClient() {
           product_id: item.id,
           quantity: item.quantity,
         })),
-        shipping_lines: shippingCost > 0 ? [{
+        shipping_lines: shippingCostBase > 0 ? [{
           method_id: formData.shipping_method,
           method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
-          total: shippingCost.toFixed(2),
+          total: shippingCostBase.toFixed(2),
+          total_tax: (shippingCostBase * 0.19).toFixed(2),
+          taxes: []
         }] : [],
       };
 
@@ -425,7 +428,7 @@ export default function CheckoutClient() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [validateForm, formData, items, shippingCost, finalTotal, clearCart, resetForm, customerData]);
+  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData]);
 
   // Check if form is valid for submit button
   const isFormValid = Boolean(formData.billing.first_name && 

@@ -7,6 +7,11 @@ import { rateLimit } from '@/app/lib/utils/rateLimit';
 
 const stripe = getStripe();
 
+// Shipping pricing configuration (keep in sync with client constants)
+const FREE_SHIPPING_THRESHOLD = 29;
+const SHIPPING_COST_PACKETA_PICKUP = 2.9;
+const SHIPPING_COST_PACKETA_HOME = 3.8;
+
 const requestSchema = z.object({
     cart: z.object({
         line_items: z.array(z.object({ product_id: z.number(), quantity: z.number().positive() })),
@@ -40,7 +45,7 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         const validatedData = requestSchema.parse(body);
-        const shippingCost = 0;
+        // shipping cost is computed after productsTotal; placeholder removed
         const productsTotal = await (async () => {
             let sum = 0;
             try {
@@ -58,7 +63,24 @@ export async function POST(request: Request) {
             } catch {}
             return sum;
         })();
-        const total = Math.max(0, productsTotal + shippingCost - validatedData.discountAmount);
+        // Recalculate shipping based on actual productsTotal
+        let computedShippingCostBase = 0; // základ bez DPH
+        const subtotalAfterDiscount = Math.max(0, productsTotal - validatedData.discountAmount);
+        if (subtotalAfterDiscount < FREE_SHIPPING_THRESHOLD) {
+            if (validatedData.cart.shipping_method === 'packeta_home') {
+                computedShippingCostBase = SHIPPING_COST_PACKETA_HOME;
+            } else if (validatedData.cart.shipping_method === 'packeta_pickup') {
+                computedShippingCostBase = SHIPPING_COST_PACKETA_PICKUP;
+            } else {
+                computedShippingCostBase = 0; // Unknown or free shipping methods
+            }
+        } else {
+            computedShippingCostBase = 0; // Free shipping applies
+        }
+        
+        const computedShippingCost = computedShippingCostBase * 1.19; // s DPH
+
+        const total = Math.max(0, productsTotal + computedShippingCost - validatedData.discountAmount);
         if (!Number.isFinite(total) || total <= 0) {
             return NextResponse.json({ error: 'Invalid cart total' }, { status: 400 });
         }
@@ -83,7 +105,10 @@ export async function POST(request: Request) {
                     ib: String(Boolean(validatedData.customer.is_business)),
                     mc: String(Boolean(validatedData.customer.marketing_consent)),
                     cn: (validatedData.customer.customer_note || '').slice(0, 480),
-                    md: validatedData.customer.meta_data ? Buffer.from(JSON.stringify(validatedData.customer.meta_data)).toString('base64') : ''
+                    md: validatedData.customer.meta_data ? Buffer.from(JSON.stringify(validatedData.customer.meta_data)).toString('base64') : '',
+                    sc: computedShippingCost.toFixed(2), // shipping cost in EUR as string (gross)
+                    sct: computedShippingCostBase.toFixed(2), // net shipping total (base)
+                    sctx: (computedShippingCostBase * 0.19).toFixed(2) // shipping tax
                 },
                 statement_descriptor_suffix: 'NKV SHOP',
                 receipt_email: receiptEmail

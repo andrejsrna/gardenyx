@@ -20,11 +20,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid webhook config' }, { status: 400 });
     }
 
-    const rawBody = await request.text();
+    // Use arrayBuffer instead of text() to avoid stream issues
+    const rawBody = await request.arrayBuffer();
+    const rawBodyBuffer = Buffer.from(rawBody);
 
     let event: unknown;
     try {
-      event = stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
+      event = stripe.webhooks.constructEvent(rawBodyBuffer, signature, endpointSecret);
     } catch {
       return NextResponse.json({ error: 'Signature verification failed' }, { status: 400 });
     }
@@ -98,6 +100,9 @@ export async function POST(request: Request) {
             const mc = pi.metadata?.mc === 'true';
             const cn = pi.metadata?.cn || '';
             const md = pi.metadata?.md ? JSON.parse(Buffer.from(pi.metadata.md, 'base64').toString('utf8')) : [];
+            const sc = typeof pi.metadata?.sc === 'string' ? pi.metadata.sc : '0.00'; // gross
+            const sct = typeof pi.metadata?.sct === 'string' ? pi.metadata.sct : undefined; // net
+            const sctx = typeof pi.metadata?.sctx === 'string' ? pi.metadata.sctx : undefined; // tax
             
 
 
@@ -112,7 +117,9 @@ export async function POST(request: Request) {
               shipping_lines: decoded.sm === 'packeta_pickup' || decoded.sm === 'packeta_home' ? [{
                 method_id: decoded.sm,
                 method_title: decoded.sm === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
-                total: '0.00'
+                total: sct || (Number(sc) / 1.19).toFixed(2),
+                total_tax: sctx || (Number(sc) * 0.19 / 1.19).toFixed(2),
+                taxes: []
               }] : [],
               meta_data: [
                 { key: '_stripe_payment_intent_id', value: pi.id },

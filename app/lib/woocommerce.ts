@@ -63,7 +63,7 @@ interface WooCommerceOrderBase {
   meta_data?: MetaData[];
   status?: string; // e.g., 'pending', 'processing', 'completed'
   customer_note?: string;
-  // shipping_lines?: Array<{ method_id: string; method_title: string; total: string; }>; // Add if needed
+  // shipping_lines?: Array<{ method_id: string; method_title: string; total: string; total_tax?: string; taxes?: Array<unknown> }>; // Add if needed
 }
 
 // Specific type for data required when creating an order

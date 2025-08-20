@@ -68,6 +68,9 @@ export async function POST(request: Request) {
       const mc = md.mc === 'true';
       const cn = md.cn || '';
       const metaData = md.md ? JSON.parse(Buffer.from(md.md, 'base64').toString('utf8')) : [];
+      const sc = typeof md.sc === 'string' ? md.sc : '0.00'; // gross shipping
+      const sct = typeof md.sct === 'string' ? md.sct : undefined; // net shipping
+      const sctx = typeof md.sctx === 'string' ? md.sctx : undefined; // shipping tax
       
 
 
@@ -82,7 +85,9 @@ export async function POST(request: Request) {
         shipping_lines: decoded.sm === 'packeta_pickup' || decoded.sm === 'packeta_home' ? [{
           method_id: decoded.sm,
           method_title: decoded.sm === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
-          total: '0.00'
+          total: sct || (Number(sc) / 1.19).toFixed(2),
+          total_tax: sctx || (Number(sc) * 0.19 / 1.19).toFixed(2),
+          taxes: []
         }] : [],
         meta_data: [
           { key: '_stripe_payment_intent_id', value: pi.id },

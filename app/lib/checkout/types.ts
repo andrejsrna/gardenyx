@@ -67,7 +67,7 @@ export interface WooCommerceOrder {
   payment_method_title: string;
   meta_data: Array<{ key: string; value: string }>;
   line_items: Array<{ product_id: number; quantity: number }>;
-  shipping_lines: Array<{ method_id: string; method_title: string; total: string }>;
+  shipping_lines: Array<{ method_id: string; method_title: string; total: string; total_tax?: string; taxes?: Array<unknown> }>;
 }
 
 export interface AddressComponents {

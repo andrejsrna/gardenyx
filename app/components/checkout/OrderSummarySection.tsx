@@ -38,15 +38,18 @@ export default function OrderSummarySection({
   const netSubtotal = subtotal / (1 + VAT_RATE);
   const vatAmount = subtotal - netSubtotal;
   
-  const getShippingCost = () => {
+  const getShippingCostBase = () => {
     if (isFreeShipping) return 0;
     if (formData.shipping_method === 'packeta_pickup') return SHIPPING_COST_PACKETA_PICKUP;
     if (formData.shipping_method === 'packeta_home') return SHIPPING_COST_PACKETA_HOME;
     return null;
   };
   
-  const shippingCost = getShippingCost();
-  const total = subtotal + (shippingCost ?? 0);
+  const shippingCostBase = getShippingCostBase(); // základ bez DPH
+  const shippingCostWithVat = shippingCostBase ? shippingCostBase * 1.19 : 0; // s DPH
+  const shippingVat = shippingCostBase ? shippingCostBase * 0.19 : 0; // len DPH
+  const totalVat = vatAmount + shippingVat;
+  const total = subtotal + shippingCostWithVat;
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm sticky top-20">
@@ -103,20 +106,32 @@ export default function OrderSummarySection({
         </div>
         <div className="flex justify-between text-xs text-gray-500">
           <span>DPH (19%)</span>
-          <span>{vatAmount.toFixed(2)} €</span>
+          <span>{totalVat.toFixed(2)} €</span>
         </div>
         
         {/* Shipping */}
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Doprava</span>
+          <span className="text-gray-600">Doprava (vrátane DPH)</span>
           <span className="font-medium">
-            {shippingCost === null 
+            {shippingCostBase === null 
               ? <span className="text-xs text-gray-500">Spôsob dopravy zatiaľ nebol vybraný</span> 
-              : shippingCost === 0 
+              : shippingCostBase === 0 
               ? 'Zadarmo' 
-              : `${shippingCost.toFixed(2)} €`}
+              : `${shippingCostWithVat.toFixed(2)} €`}
           </span>
         </div>
+        {shippingCostBase !== null && shippingCostBase > 0 && (
+          <>
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>Základ bez DPH</span>
+              <span>{shippingCostBase.toFixed(2)} €</span>
+            </div>
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>DPH dopravy (19%)</span>
+              <span>{shippingVat.toFixed(2)} €</span>
+            </div>
+          </>
+        )}
         
         {/* Free shipping progress */}
         {!isFreeShipping && subtotal > 0 && (
