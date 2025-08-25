@@ -7,13 +7,24 @@ import CookieConsent, { getCookieConsentValue } from 'react-cookie-consent';
 export default function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
 
+  // Temporary guard for Seznam browser (Android) crash: "Cannot read properties of null (reading 'touches')"
+  // Likely caused by a third-party listener inside react-cookie-consent or the browser itself.
+  // Skip rendering the banner on Seznam to avoid the crash; this defaults to no optional cookies loaded.
+  const isSeznamBrowser = typeof navigator !== 'undefined' && /SeznamBrowser|Seznam|Szn/i.test(navigator.userAgent || '');
+
   useEffect(() => {
+    if (isSeznamBrowser) {
+      // Debug log; remove after verifying fix
+      console.warn('[CookieConsentBanner] Skipping banner on Seznam browser to avoid touch event crash');
+      setIsVisible(false);
+      return;
+    }
     const existingConsent = getCookieConsentValue('cookieConsent');
     
     if (!existingConsent) {
       setIsVisible(true);
     }
-  }, []);
+  }, [isSeznamBrowser]);
 
   const handleAcceptAll = () => {
     setIsVisible(false);
@@ -24,7 +35,7 @@ export default function CookieConsentBanner() {
     setIsVisible(false);
   };
 
-  if (isVisible) {
+  if (!isSeznamBrowser && isVisible) {
     return (
       <CookieConsent
         location="bottom"
