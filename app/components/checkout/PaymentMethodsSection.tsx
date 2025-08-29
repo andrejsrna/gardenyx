@@ -25,7 +25,7 @@ export default function PaymentMethodsSection({
       description:
         'Zaplatíte takmer všetkými kartami (Visa, Mastercard a ďalšie). Platbu bezpečne spracováva spoločnosť Stripe.',
       icon: (
-        <svg className="w-6 h-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+        <svg className="w-6 h-6 shrink-0 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
           <rect x="3" y="5" width="18" height="14" rx="2" ry="2" />
           <path d="M3 10h18" />
           <path d="M7 15h5" />
@@ -37,7 +37,7 @@ export default function PaymentMethodsSection({
       id: 'cod',
       title: 'Dobierka',
       description: 'Zaplatíte pri doručení (hotovosť alebo karta u kuriéra/výdajného miesta). Pri Z‑BOXe je potrebné uhradiť dobierku vopred online (aplikácia alebo platobný odkaz).',
-      icon: <HandCoins className="w-6 h-6 text-gray-600" aria-hidden="true" />,
+      icon: <HandCoins className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
       recommended: false,
     },
   ];

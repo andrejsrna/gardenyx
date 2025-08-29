@@ -4,6 +4,7 @@ import { ChangeEvent } from 'react';
 import type { FormData, PacketaPoint } from '../../lib/checkout/types';
 import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME, FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
 import Link from 'next/link';
+import { Package, Truck } from 'lucide-react';
 
 interface ShippingMethodsSectionProps {
   formData: FormData;
@@ -33,14 +34,14 @@ export default function ShippingMethodsSection({
       title: 'Packeta - Výdajné miesto',
       price: isFreeShipping ? 0 : SHIPPING_COST_PACKETA_PICKUP,
       description: 'Doručenie na výdajné miesto Packeta',
-      icon: '📦',
+      icon: <Package className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
     },
     {
       id: 'packeta_home',
       title: 'Packeta - Doručenie domov',
       price: isFreeShipping ? 0 : SHIPPING_COST_PACKETA_HOME,
       description: 'Doručenie kuriérom priamo na adresu',
-      icon: '🚚',
+      icon: <Truck className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
     },
   ];
 
@@ -83,8 +84,8 @@ export default function ShippingMethodsSection({
                 required
               />
               <div className="ml-3 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{method.icon}</span>
+                <div className="flex items-center gap-3">
+                  {method.icon}
                   <span className="font-medium text-gray-900">{method.title}</span>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{method.description}</p>
