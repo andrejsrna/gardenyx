@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useCart } from '../context/CartContext'; // Adjust path if necessary
 import type { WooCommerceProduct } from '../lib/wordpress'; // Adjust path if necessary
 import { tracking } from '../lib/tracking';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
 
 interface ProductCardProps {
   product: WooCommerceProduct;
@@ -13,6 +14,13 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
   const { addToCart, appliedCoupon, openCart } = useCart();
 
   const handleAddToCart = (product: WooCommerceProduct) => {
+    // Check if sales are suspended
+    if (isSalesSuspendedClient()) {
+      const message = getSalesSuspensionMessageClient();
+      alert(message);
+      return;
+    }
+
     tracking.addToCart({
       id: product.id,
       name: product.name,
@@ -43,6 +51,7 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
   const price = parseFloat(product.price);
   const regularPrice = parseFloat(product.regular_price);
   const discount = hasDiscount ? Math.round((1 - price / regularPrice) * 100) : 0;
+  const isSalesSuspended = isSalesSuspendedClient();
 
   return (
     <article className="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-shadow duration-300 flex flex-col">
@@ -102,9 +111,14 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
             </Link>
             <button
               onClick={() => handleAddToCart(product)}
-              className="text-center w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm shadow-md hover:shadow-lg"
+              disabled={isSalesSuspended}
+              className={`text-center w-full px-4 py-3 font-semibold rounded-lg transition-colors duration-200 text-sm shadow-md ${
+                isSalesSuspended 
+                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                  : 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg'
+              }`}
             >
-              Pridať do košíka
+              {isSalesSuspended ? 'Predaje pozastavené' : 'Pridať do košíka'}
             </button>
             {appliedCoupon && (
               <span className="text-xs text-green-700 text-center -mt-2">so zľavovým kupónom</span>

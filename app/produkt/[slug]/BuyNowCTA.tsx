@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { CreditCard } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import type { WooCommerceProduct } from '@/app/lib/wordpress';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@/app/lib/utils/sales-suspension';
 
 interface Props {
   product: WooCommerceProduct;
@@ -12,8 +13,16 @@ interface Props {
 export default function BuyNowCTA({ product }: Props) {
   const router = useRouter();
   const { addToCart, closeCart } = useCart();
+  const isSalesSuspended = isSalesSuspendedClient();
 
   const handleBuyNow = () => {
+    // Check if sales are suspended
+    if (isSalesSuspendedClient()) {
+      const message = getSalesSuspensionMessageClient();
+      alert(message);
+      return;
+    }
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -29,10 +38,15 @@ export default function BuyNowCTA({ product }: Props) {
     <div className="mt-8 flex justify-center">
       <button
         onClick={handleBuyNow}
-        className="inline-flex items-center gap-2 px-8 py-4 text-lg font-medium text-white bg-green-600 rounded-full hover:bg-green-700 transition-colors"
+        disabled={isSalesSuspended}
+        className={`inline-flex items-center gap-2 px-8 py-4 text-lg font-medium rounded-full transition-colors ${
+          isSalesSuspended 
+            ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+            : 'text-white bg-green-600 hover:bg-green-700'
+        }`}
       >
         <CreditCard className="w-5 h-5" />
-        Kúpiť teraz – prejsť do pokladne
+        {isSalesSuspended ? 'Predaje pozastavené' : 'Kúpiť teraz – prejsť do pokladne'}
       </button>
     </div>
   );

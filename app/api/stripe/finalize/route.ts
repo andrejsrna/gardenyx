@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 
 const stripe = getStripe();
 const creatingByPi = new Set<string>();
@@ -14,6 +15,14 @@ const api = new WooCommerceRestApi({
 
 export async function POST(request: Request) {
   try {
+    // Check if sales are suspended
+    if (isSalesSuspended()) {
+      return NextResponse.json(
+        { error: getSalesSuspensionMessage() },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json().catch(() => ({}));
     if (!request.url) {
       return NextResponse.json({ error: 'Invalid request URL' }, { status: 400 });

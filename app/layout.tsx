@@ -12,12 +12,14 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 import Posthog from './components/Posthog';
 import FacebookPixel from './components/FacebookPixel';
 import Header from './components/Header';
+import SalesSuspensionBanner from './components/SalesSuspensionBanner';
 
 import OrganizationSchema from './components/seo/OrganizationSchema';
 import WebSiteSchema from './components/seo/WebSiteSchema';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { CookieConsentProvider } from './context/CookieConsentContext';
+import { isSalesSuspended, getSalesSuspensionMessage } from './lib/utils/sales-suspension';
 import "./globals.css";
 
 const inter = Inter({
@@ -71,6 +73,14 @@ export default function RootLayout({
         <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'} />
         <link rel="preconnect" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
         <link rel="dns-prefetch" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.__SALES_SUSPENDED__ = ${isSalesSuspended()};
+              window.__SALES_SUSPENSION_MESSAGE__ = ${JSON.stringify(getSalesSuspensionMessage())};
+            `,
+          }}
+        />
         <OrganizationSchema />
         <WebSiteSchema />
       </head>
@@ -86,6 +96,7 @@ export default function RootLayout({
                     }}
                   />
                 ) : null}
+                <SalesSuspensionBanner />
                 <Header />
                 <main>
                   {children}

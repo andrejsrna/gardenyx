@@ -141,11 +141,22 @@ async function fetchWooApi<T>(endpoint: string, options: RequestInit = {}, isMut
     // Consider adding other security headers if needed
   }
 
+  // Small helper to support timeout
+  const fetchWithTimeout = async (resource: string, init: RequestInit, timeoutMs: number) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const resp = await fetch(resource, { ...init, signal: controller.signal });
+      return resp;
+    } finally {
+      clearTimeout(id);
+    }
+  };
+
+  const isGetRequest = !options.method || options.method.toUpperCase() === 'GET';
+
   try {
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+    const response = await fetchWithTimeout(url, { ...options, headers }, isGetRequest ? 8000 : 15000);
 
     if (!response.ok) {
       let errorData;
@@ -168,6 +179,45 @@ async function fetchWooApi<T>(endpoint: string, options: RequestInit = {}, isMut
 
     return await response.json() as T;
   } catch (error) {
+    // If GET and transient network error, retry once
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isAbort = error instanceof Error && (error.name === 'AbortError');
+    const looksTransient = isAbort || /Load failed|NetworkError|TypeError/i.test(errorMessage);
+
+    if (isGetRequest && looksTransient) {
+      console.warn(`Woo API transient error on GET ${endpoint}, retrying once...`, { error: errorMessage });
+      try {
+        // small jitter before retry
+        await new Promise(res => setTimeout(res, 300));
+        const retryResp = await fetchWithTimeout(url, { ...options, headers }, 9000);
+        if (!retryResp.ok) {
+          let retryErrData;
+          try { retryErrData = await retryResp.json(); } catch {}
+          throw new ApiError(
+            retryErrData?.message || `API request failed with status ${retryResp.status}`,
+            retryResp.status,
+            retryErrData
+          );
+        }
+        if (retryResp.status === 204 || retryResp.headers.get('content-length') === '0') {
+          return undefined as T;
+        }
+        return await retryResp.json() as T;
+      } catch (retryError) {
+        const msg = retryError instanceof Error ? retryError.message : String(retryError);
+        console.error(`Woo API retry failed (${options.method || 'GET'} ${endpoint}):`, msg);
+        if (retryError instanceof ApiError) {
+          return Promise.reject(retryError);
+        }
+        const apiError = new ApiError(
+          msg || 'An unknown API error occurred',
+          0,
+          retryError
+        );
+        return Promise.reject(apiError);
+      }
+    }
+
     // Log the error or handle it as needed
     console.error(`WooCommerce API Error (${options.method || 'GET'} ${endpoint}):`, error);
 

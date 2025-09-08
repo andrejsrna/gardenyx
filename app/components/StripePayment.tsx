@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/nextjs';
 import { usePaymentStore } from '../stores/paymentStore';
 
 import { tracking } from '../lib/tracking';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
 
 
 const logPaymentEvent = (type: string, data: Record<string, unknown>) => {
@@ -105,6 +106,14 @@ function StripePaymentForm({ clientSecret, onSuccess, onError }: StripePaymentFo
 
   const handleSubmitWithPolling = useCallback(async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // Check if sales are suspended
+    if (isSalesSuspendedClient()) {
+      const message = getSalesSuspensionMessageClient();
+      toast.error(message);
+      onError?.(message);
+      return;
+    }
 
     if (!stripe || !elements) {
       logPaymentEvent('error_stripe_not_initialized', { 

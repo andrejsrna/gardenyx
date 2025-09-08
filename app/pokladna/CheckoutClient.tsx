@@ -12,6 +12,7 @@ import StripePayment from '../components/StripePayment';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useCookieConsent } from '../context/CookieConsentContext';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
 
 import { validatePassword } from '../lib/utils/password';
 import { sanitizeInput, sanitizePhone, sanitizePostcode } from '../lib/utils/sanitize';
@@ -98,7 +99,16 @@ export default function CheckoutClient() {
         const products = await getProducts({ include: RECOMMENDED_PRODUCT_IDS });
         setRecommendedProducts(products);
       } catch (error: unknown) {
-        Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
+        const message = error instanceof Error ? error.message : String(error);
+        // Reduce noise for transient client-side fetch errors
+        if (/Load failed|NetworkError|TypeError|AbortError/i.test(message)) {
+          Sentry.captureMessage('Recommended products fetch transient failure', {
+            level: 'info',
+            extra: { message }
+          });
+        } else {
+          Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
+        }
       }
     };
 
@@ -351,6 +361,13 @@ export default function CheckoutClient() {
   const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Check if sales are suspended
+    if (isSalesSuspendedClient()) {
+      const message = getSalesSuspensionMessageClient();
+      toast.error(message);
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -440,7 +457,8 @@ export default function CheckoutClient() {
     formData.billing.postcode && 
     formData.shipping_method && 
     formData.payment_method && 
-    formData.consents.termsAndPrivacy);
+    formData.consents.termsAndPrivacy &&
+    !isSalesSuspendedClient()); // Add sales suspension check
 
   // Cart items in the format expected by OrderSummarySection
   const cartItems = items.map(item => ({

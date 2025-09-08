@@ -7,6 +7,8 @@ declare global {
       GA_API_SECRET: string;
       NEXT_PUBLIC_GOOGLE_ADS_ID: string;
       NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: string;
+      SALES_SUSPENDED: string;
+      SALES_SUSPENSION_MESSAGE: string;
     }
   }
 }

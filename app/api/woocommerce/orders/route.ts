@@ -4,6 +4,7 @@ import {cookies} from 'next/headers';
 import {NextResponse} from 'next/server';
 import {Builder, Parser} from 'xml2js';
 import {logError} from '../../../lib/utils/logger';
+import { isSalesSuspended, getSalesSuspensionMessage } from '../../../lib/utils/sales-suspension';
 
 interface PacketaResponse {
     response: {
@@ -300,6 +301,14 @@ function calculateTotalWeight(lineItems: Array<{ product_id: number; quantity: n
 
 export async function POST(request: Request) {
     try {
+        // Check if sales are suspended
+        if (isSalesSuspended()) {
+            return NextResponse.json(
+                { message: getSalesSuspensionMessage() },
+                { status: 503 }
+            );
+        }
+
         // Získame dáta objednávky
         const orderData: OrderRequestWithIdempotencyKey = await request.json();
 

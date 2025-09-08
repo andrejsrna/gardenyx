@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { toast } from 'sonner';
 import { tracking } from '../lib/tracking';
 import { trackConversion } from '../components/GoogleAds';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
 
 interface CartItem {
     id: number;
@@ -232,6 +233,13 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     };
 
     const addToCart = useCallback((item: CartItem) => {
+        // Check if sales are suspended
+        if (isSalesSuspendedClient()) {
+            const message = getSalesSuspensionMessageClient();
+            toast.error(message);
+            return;
+        }
+
         const itemWithOriginalPrice = {...item, price: item.price};
 
         setItems(prevItems => {

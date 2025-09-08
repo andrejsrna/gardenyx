@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { getStripe } from '@/app/lib/stripe';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { rateLimit } from '@/app/lib/utils/rateLimit';
+import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 
 const stripe = getStripe();
 
@@ -40,6 +41,14 @@ const wc = new WooCommerceRestApi({
 
 export async function POST(request: Request) {
     try {
+        // Check if sales are suspended
+        if (isSalesSuspended()) {
+            return NextResponse.json(
+                { error: getSalesSuspensionMessage() },
+                { status: 503 }
+            );
+        }
+
         const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0]?.trim() || 'unknown';
         await rateLimit(ip, 'payment');
         const body = await request.json();

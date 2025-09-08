@@ -4,6 +4,7 @@ import { FormEvent } from 'react';
 import Image from 'next/image';
 import type { FormData } from '../../lib/checkout/types';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
+import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
 
 interface CartItem {
   id: number;
@@ -34,6 +35,7 @@ export default function OrderSummarySection({
 }: OrderSummarySectionProps) {
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const isSalesSuspended = isSalesSuspendedClient();
   const VAT_RATE = 0.19;
   const netSubtotal = subtotal / (1 + VAT_RATE);
   const vatAmount = subtotal - netSubtotal;
@@ -168,9 +170,9 @@ export default function OrderSummarySection({
       <form onSubmit={onSubmit} className="mt-6">
         <button
           type="submit"
-          disabled={!isFormValid || isLoading}
+          disabled={!isFormValid || isLoading || isSalesSuspended}
           className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 ${
-            isFormValid && !isLoading
+            isFormValid && !isLoading && !isSalesSuspended
               ? 'bg-green-600 hover:bg-green-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl'
               : 'bg-gray-400 cursor-not-allowed'
           }`}
@@ -183,6 +185,8 @@ export default function OrderSummarySection({
               </svg>
               <span>Objednávka sa spracúva...</span>
             </div>
+          ) : isSalesSuspended ? (
+            <span>Predaje pozastavené</span>
           ) : (
             <span>Dokončiť objednávku • {total.toFixed(2)} €</span>
           )}

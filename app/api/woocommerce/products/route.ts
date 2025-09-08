@@ -24,16 +24,23 @@ interface WooCommerceError extends Error {
     };
 }
 
-// Initialize WooCommerce API
-const api = new WooCommerceRestApi({
-    url: process.env.NEXT_PUBLIC_WORDPRESS_URL!,
-    consumerKey: process.env.WC_CONSUMER_KEY!,
-    consumerSecret: process.env.WC_CONSUMER_SECRET!,
-    version: 'wc/v3',
-    queryStringAuth: true
-});
-
 export async function GET(request: Request) {
+    // Guard against missing environment configuration
+    if (!process.env.WORDPRESS_URL || !process.env.WC_CONSUMER_KEY || !process.env.WC_CONSUMER_SECRET) {
+        return NextResponse.json(
+            { message: 'WooCommerce API is not configured' },
+            { status: 500 }
+        );
+    }
+
+    // Initialize WooCommerce API (inside handler to avoid init with missing envs)
+    const api = new WooCommerceRestApi({
+        url: process.env.WORDPRESS_URL!,
+        consumerKey: process.env.WC_CONSUMER_KEY!,
+        consumerSecret: process.env.WC_CONSUMER_SECRET!,
+        version: 'wc/v3',
+        queryStringAuth: true
+    });
     if (!request.url) {
         return NextResponse.json({ error: 'Invalid request URL' }, { status: 400 });
     }
