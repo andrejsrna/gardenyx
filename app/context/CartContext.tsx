@@ -39,7 +39,7 @@ interface CartContextType {
     applyCoupon: (code: string) => Promise<boolean>;
     removeCoupon: () => void;
     exitCoupon: string | null;
-    applyExitCoupon: (code: string) => void;
+    applyExitCoupon: (code: string) => Promise<boolean>;
     isCartOpen: boolean;
     openCart: () => void;
     closeCart: () => void;
@@ -107,16 +107,21 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     }, [items, appliedCoupon, removeCoupon]);
 
     const applyExitCoupon = useCallback(async (code: string) => {
-        if (!code || items.length === 0) return;
+        if (!code) return false;
+        if (items.length === 0) {
+            toast.error('Pridajte produkty do košíka pre aplikáciu kupónu.');
+            return false;
+        }
         await new Promise(resolve => setTimeout(resolve, 500));
         try {
             const success = await applyCoupon(code);
             if (success) {
                 setExitCoupon(code);
-            } else {
             }
+            return success;
         } catch (error) {
             console.error('[CartContext] Error during applyExitCoupon -> applyCoupon call:', error);
+            return false;
         }
     }, [items, applyCoupon]);
 

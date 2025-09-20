@@ -9,11 +9,18 @@ export default function ExitIntentPopup() {
   const [showModal, setShowModal] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasTriggeredThisSession, setHasTriggeredThisSession] = useState(false);
+  const [hasMetTimeRequirement, setHasMetTimeRequirement] = useState(false);
+  const [hasMetScrollRequirement, setHasMetScrollRequirement] = useState(false);
   const isCreatingCoupon = useRef(false);
   const exitIntentTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const sessionTriggeredRef = useRef(false);
   const pathname = usePathname();
 
   const COOLDOWN_HOURS = 72;
+  const MIN_TIME_ON_PAGE_MS = 15000;
+  const MIN_SCROLL_DISTANCE = 200;
 
   const isMobileDevice = () => {
     if (typeof window === 'undefined') return false;
@@ -44,13 +51,35 @@ export default function ExitIntentPopup() {
     }
   };
 
-  const triggerExitIntent = useCallback(async () => {
-    if (isCreatingCoupon.current || isWithinCooldown()) {
+  const triggerExitIntent = useCallback(async (options?: { force?: boolean }) => {
+    if (isCreatingCoupon.current) {
+      return;
+    }
+
+    if (!options?.force) {
+      if (sessionTriggeredRef.current || hasTriggeredThisSession) {
+        return;
+      }
+
+      if (isWithinCooldown() || !hasMetTimeRequirement || !hasMetScrollRequirement) {
+        return;
+      }
+    }
+
+    sessionTriggeredRef.current = true;
+    setHasTriggeredThisSession(true);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('exitIntentTriggered', 'true');
+    }
+
+    if (isWithinCooldown() && !options?.force) {
       return;
     }
     isCreatingCoupon.current = true;
     setShowModal(true);
     setIsLoading(true);
+    setErrorMessage(null);
+    setCouponCode('');
 
     // Track exit intent detection
     tracking.custom('exit_intent_detected');
@@ -74,26 +103,24 @@ export default function ExitIntentPopup() {
         });
       } else {
         console.error('Failed to create exit coupon:', response.status, await response.text());
-        setShowModal(false);
-        localStorage.setItem('exitIntentLastShownAt', String(Date.now()));
+        setErrorMessage('Nepodarilo sa vytvoriť kupón. Skúste to prosím znova.');
       }
     } catch (error) {
       console.error('Failed to show exit intent:', error);
-      setShowModal(false);
-      localStorage.setItem('exitIntentLastShownAt', String(Date.now()));
+      setErrorMessage('Ups, niečo sa pokazilo. Skúste to prosím znova.');
     } finally {
       setIsLoading(false);
       isCreatingCoupon.current = false;
     }
-  }, []);
+  }, [hasMetScrollRequirement, hasMetTimeRequirement, hasTriggeredThisSession]);
 
   useEffect(() => {
-    if (isMobileDevice() || isSuppressedPath(pathname) || isWithinCooldown()) {
+    if (isMobileDevice() || isSuppressedPath(pathname)) {
       return;
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (showModal || isCreatingCoupon.current || isWithinCooldown()) {
+      if (showModal || isCreatingCoupon.current) {
         return;
       }
       if (e.clientY < 10) {
@@ -128,6 +155,34 @@ export default function ExitIntentPopup() {
     };
   }, [showModal, pathname, triggerExitIntent]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const triggered = sessionStorage.getItem('exitIntentTriggered') === 'true';
+    sessionTriggeredRef.current = triggered;
+    setHasTriggeredThisSession(triggered);
+
+    const timer = window.setTimeout(() => {
+      setHasMetTimeRequirement(true);
+    }, MIN_TIME_ON_PAGE_MS);
+
+    const handleScroll = () => {
+      if (window.scrollY >= MIN_SCROLL_DISTANCE) {
+        setHasMetScrollRequirement(true);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <>
       {showModal && (
@@ -137,8 +192,16 @@ export default function ExitIntentPopup() {
             localStorage.setItem('exitIntentLastShownAt', String(Date.now()));
             tracking.custom('exit_intent_dismissed');
             setShowModal(false);
+            setErrorMessage(null);
+            setCouponCode('');
           }}
           isLoading={isLoading}
+          errorMessage={errorMessage}
+          onRetry={() => {
+            if (!isCreatingCoupon.current) {
+              triggerExitIntent({ force: true });
+            }
+          }}
         />
       )}
     </>

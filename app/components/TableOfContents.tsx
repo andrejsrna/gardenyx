@@ -70,20 +70,28 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       >
         <nav className="p-4" aria-label="Obsah článku">
           <ul className="space-y-2">
-            {headings.map((heading, index) => (
-              <li
-                key={index}
-                className={`pl-${(heading.level - 1) * 4} transition-colors duration-150`}
-              >
-                <Link
-                  href={`#${heading.id}`}
-                  onClick={(e) => handleLinkClick(e, heading.id)}
-                  className="block py-1.5 px-3 text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-all duration-150"
+            {headings.map((heading, index) => {
+              const indentationClass = heading.level <= 2
+                ? 'pl-0'
+                : heading.level === 3
+                ? 'pl-4'
+                : 'pl-8';
+
+              return (
+                <li
+                  key={index}
+                  className={`${indentationClass} transition-colors duration-150`}
                 >
-                  {heading.text}
-                </Link>
-              </li>
-            ))}
+                  <Link
+                    href={`#${heading.id}`}
+                    onClick={(e) => handleLinkClick(e, heading.id)}
+                    className="block py-1.5 px-3 text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-all duration-150"
+                  >
+                    {heading.text}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </div>

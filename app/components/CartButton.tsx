@@ -35,14 +35,14 @@ export default function CartButton() {
       {isCartOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            className="fixed inset-0 z-40 bg-gradient-to-b from-transparent via-slate-900/45 to-slate-950/60 backdrop-blur-[2px]"
             onClick={closeCart}
           />
           <div
             className={`
               fixed top-16 left-4 right-4 max-h-[75vh] overflow-y-auto
               sm:absolute sm:right-0 sm:left-auto sm:top-full sm:mt-2 sm:max-h-none sm:w-96
-              bg-white rounded-lg shadow-xl z-50
+              z-50 rounded-lg bg-white shadow-xl
             `}
           >
             <Cart onCloseAction={closeCart} />

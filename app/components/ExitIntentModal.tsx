@@ -30,26 +30,43 @@ function CountdownDisplay({ initialSeconds, onComplete }: { initialSeconds: numb
 export default function ExitIntentModal({
   code,
   onCloseAction,
-  isLoading = false
+  isLoading = false,
+  errorMessage,
+  onRetry
 }: {
   code: string;
   onCloseAction: () => void;
   isLoading?: boolean;
+  errorMessage?: string | null;
+  onRetry?: () => void;
 }) {
   const router = useRouter();
   const { applyExitCoupon } = useCart();
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
-  const handleApplyCoupon = () => {
-    applyExitCoupon(code);
-    
-    // Track exit intent coupon applied
-    tracking.custom('exit_intent_coupon_applied', {
-      coupon_code: code
-    });
-    
-    toast.success('Zľavový kód bol úspešne aplikovaný!');
-    onCloseAction();
-    router.push('/kupit');
+  const handleApplyCoupon = async () => {
+    if (isApplyingCoupon) {
+      return;
+    }
+
+    setIsApplyingCoupon(true);
+    try {
+      const success = await applyExitCoupon(code);
+      if (!success) {
+        return;
+      }
+
+      // Track exit intent coupon applied
+      tracking.custom('exit_intent_coupon_applied', {
+        coupon_code: code
+      });
+
+      toast.success('Zľavový kód bol úspešne aplikovaný!');
+      onCloseAction();
+      router.push('/kupit');
+    } finally {
+      setIsApplyingCoupon(false);
+    }
   };
 
   return (
@@ -66,7 +83,31 @@ export default function ExitIntentModal({
 
           <div className="text-center space-y-4">
             <h3 className="text-2xl font-bold text-gray-900"><span role="img" aria-label="gift">🎁</span> Zastavte sa!</h3>
-            {isLoading ? (
+            {errorMessage ? (
+              <div className="space-y-4">
+                <p className="text-red-600 font-semibold">
+                  {errorMessage}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Skúste to prosím znova alebo pokračujte bez zľavy.
+                </p>
+                <div className="space-y-2">
+                  <button
+                    onClick={onRetry}
+                    className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                  >
+                    Skúsiť znova vytvoriť kupón
+                  </button>
+
+                  <button
+                    onClick={onCloseAction}
+                    className="w-full text-gray-500 py-2 rounded-lg hover:text-gray-700 hover:bg-gray-100 transition-colors text-sm font-medium"
+                  >
+                    Pokračovať bez kupónu
+                  </button>
+                </div>
+              </div>
+            ) : isLoading ? (
               <div className="space-y-3">
                 <p className="text-gray-600">
                   Vytváram pre vás špeciálny kupón...
@@ -103,9 +144,10 @@ export default function ExitIntentModal({
                 <div className="space-y-3 pt-2">
                   <button
                     onClick={handleApplyCoupon}
-                    className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                    disabled={isApplyingCoupon || !code}
+                    className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Použiť zľavu a pokračovať v nákupe
+                    {isApplyingCoupon ? 'Aplikujem kupón...' : 'Použiť zľavu a pokračovať v nákupe'}
                   </button>
 
                   <button

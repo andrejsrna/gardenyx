@@ -8,9 +8,11 @@ import { toast } from 'sonner';
 
 interface BlogProductWidgetProps {
   productIds: number[];
+  title?: string;
+  description?: string;
 }
 
-export default function BlogProductWidget({ productIds }: BlogProductWidgetProps) {
+export default function BlogProductWidget({ productIds, title, description }: BlogProductWidgetProps) {
   const [products, setProducts] = useState<WooCommerceProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addToCart } = useCart();
@@ -52,10 +54,10 @@ export default function BlogProductWidget({ productIds }: BlogProductWidgetProps
     <div className="bg-gradient-to-br from-green-50 to-white rounded-2xl p-8 shadow-lg border border-green-100">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-gray-900 mb-2">
-          Odporúčané produkty pre vás
+          {title || 'Odporúčané produkty pre vás'}
         </h3>
         <p className="text-gray-600">
-          Vybrali sme pre vás produkty, ktoré vám pomôžu s vašimi problémami
+          {description || 'Vybrali sme pre vás produkty, ktoré vám pomôžu s vašimi problémami'}
         </p>
       </div>
 

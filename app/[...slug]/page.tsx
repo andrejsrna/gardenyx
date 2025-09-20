@@ -16,8 +16,9 @@ import BlogAnalytics from '../components/blog-seo/BlogAnalytics';
 import { getBlogBreadcrumbs } from '../lib/internal-linking-data';
 import { parseHTML } from '../lib/html-parser';
 import { getPostBySlug, getRankMathSEO, WordPressPost } from '../lib/wordpress';
-import { FaWhatsapp } from 'react-icons/fa';
+import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
 import FeaturedImageWithFallback from '../components/FeaturedImageWithFallback';
+import CopyLinkButton from '../components/CopyLinkButton';
 
 if (process.env.NODE_ENV === 'development') {
   Sentry.captureException(new Error('Test error from Sentry integration'));
@@ -272,7 +273,56 @@ function createSlug(text: string): string {
     .replace(/-+/g, '-'); // Replace multiple dashes with single dashes
 }
 
-function detectPostTopic(post: WordPressPost): string {
+type PostTopic = 'ingredient-science' | 'nutrition-tips' | 'joint-health';
+
+function splitContentForProductCTA(html: string): { before: string; after: string } | null {
+  if (!html) return null;
+
+  const headingRegex = /<h2[^>]*>[\s\S]*?<\/h2>/gi;
+  let headingMatch: RegExpExecArray | null;
+  let headingCount = 0;
+  let injectionIndex: number | null = null;
+
+  while ((headingMatch = headingRegex.exec(html)) !== null) {
+    headingCount += 1;
+
+    if (headingMatch.index === undefined || headingCount < 5) {
+      continue;
+    }
+
+    injectionIndex = headingMatch.index;
+    break;
+  }
+
+  if (!injectionIndex) {
+    const paragraphRegex = /<p[^>]*>[\s\S]*?<\/p>/gi;
+    let match: RegExpExecArray | null;
+    let count = 0;
+
+    while ((match = paragraphRegex.exec(html)) !== null) {
+      count += 1;
+      if (match.index === undefined) {
+        continue;
+      }
+
+      if (count === 6) {
+        injectionIndex = match.index;
+        break;
+      }
+    }
+  }
+
+  if (injectionIndex === null || injectionIndex < 0 || injectionIndex >= html.length) {
+    return null;
+  }
+
+  return {
+    before: html.slice(0, injectionIndex),
+    after: html.slice(injectionIndex),
+  };
+}
+
+function detectPostTopic(post: WordPressPost): PostTopic {
   const content = (post.content.rendered + post.title.rendered).toLowerCase();
   
   if (content.includes('glukozamín') || content.includes('chondroitín') || content.includes('msm')) {
@@ -285,6 +335,30 @@ function detectPostTopic(post: WordPressPost): string {
   
   return 'joint-health';
 }
+
+const PRODUCT_RECOMMENDATIONS: Record<PostTopic, { ids: number[]; title: string; description: string }> = {
+  'joint-health': {
+    ids: [824, 49, 684],
+    title: 'Top produkty na podporu kĺbov',
+    description: 'Tieto doplnky vybrané našimi odborníkmi zlepší pružnosť a znížia bolesť kĺbov.'
+  },
+  'ingredient-science': {
+    ids: [49, 824, 684],
+    title: 'Kombinácia účinných látok',
+    description: 'Pozrite sa na produkty, ktoré obsahujú glukozamín, chondroitín a ďalšie vedecky podložené zložky.'
+  },
+  'nutrition-tips': {
+    ids: [684, 49, 824],
+    title: 'Výživa, ktorá sa stará o vaše kĺby',
+    description: 'Doplňte svoju stravu produktmi, ktoré podporujú regeneráciu a výživu kĺbov zvnútra.'
+  }
+};
+
+const DEFAULT_PRODUCT_RECOMMENDATION = {
+  ids: [49, 684, 824],
+  title: 'Odporúčané produkty pre vás',
+  description: 'Vybrali sme pre vás produkty, ktoré vám pomôžu s vašimi problémami'
+};
 
 export async function generateMetadata({ params }: { params: tParams }): Promise<Metadata> {
   const { slug } = await params;
@@ -439,9 +513,10 @@ export default async function BlogPost({ params }: { params: tParams }) {
   }
 
   let content = post.content.rendered;
+  const plainTextContent = cleanHtmlContent(post.content.rendered);
 
   const headings: { id: string; text: string; level: number }[] = [];
-  const headingRegex = /<h(2)([^>]*)>([\s\S]*?)<\/h2>/gi;
+  const headingRegex = /<h([2-4])([^>]*)>([\s\S]*?)<\/h\1>/gi;
 
   const replacements: { original: string; replacement: string }[] = [];
 
@@ -480,22 +555,40 @@ export default async function BlogPost({ params }: { params: tParams }) {
     day: 'numeric',
   });
 
-  const wordCount = content.split(/\s+/).length;
-  const readTime = Math.ceil(wordCount / 200);
+  const wordCount = plainTextContent
+    .split(/\s+/)
+    .map((word) => word.trim())
+    .filter(Boolean).length;
+  const readTime = Math.max(1, Math.ceil(wordCount / 200));
   const postTopic = detectPostTopic(post);
+  const productRecommendation = PRODUCT_RECOMMENDATIONS[postTopic] || DEFAULT_PRODUCT_RECOMMENDATION;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk';
+  const articleUrl = `${siteUrl}/${slugPath}`;
+  const plainTitle = decode(post.title.rendered.replace(/<[^>]*>/g, ''));
+  const contentSplit = splitContentForProductCTA(content);
+  const articleBodyClasses = `prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-headings:scroll-mt-28
+                     prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:underline
+                     prose-img:rounded-lg prose-img:shadow-lg prose-strong:text-gray-900
+                     prose-blockquote:border-green-600 prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-6
+                     prose-ul:list-disc prose-ol:list-decimal
+                     [&_figure]:!mx-auto [&_figure_img]:!mx-auto [&_figure_figcaption]:text-center
+                     [&_img]:!relative [&_img]:!h-auto [&_img]:!w-auto`;
 
   const breadcrumbItems = [
-    { name: 'Domov', url: 'https://najsilnejsiaklbovavyziva.sk' },
-    { name: 'Blog', url: 'https://najsilnejsiaklbovavyziva.sk/blog' },
-    { name: decode(post.title.rendered.replace(/<[^>]*>/g, '')), url: `https://najsilnejsiaklbovavyziva.sk/${slugPath}` }
+    { name: 'Domov', url: siteUrl },
+    { name: 'Blog', url: `${siteUrl}/blog` },
+    { name: plainTitle, url: articleUrl }
   ];
 
   const smartBreadcrumbs = getBlogBreadcrumbs(
-    decode(post.title.rendered.replace(/<[^>]*>/g, '')),
+    plainTitle,
     slugPath
   );
 
   const categories = post._embedded?.['wp:term']?.[0] || [];
+  const tags = post._embedded?.['wp:term']?.[1] || [];
+  const categoryNames = categories.map((category) => category.name).filter(Boolean);
+  const tagNames = tags.map((tag) => tag.name).filter(Boolean);
 
   return (
     <>
@@ -503,8 +596,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
         post={post} 
         readTime={readTime}
         wordCount={wordCount}
-        categories={['Zdravie kĺbov']}
-        tags={[]}
+        categories={categoryNames}
+        tags={tagNames}
       />
       <BreadcrumbSchema items={breadcrumbItems} />
       
@@ -516,12 +609,15 @@ export default async function BlogPost({ params }: { params: tParams }) {
           className="text-sm"
         />
       </div>
-      <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px]">
+      <div className="relative w-full h-[45vh] min-h-[320px] md:h-[60vh] md:min-h-[400px] max-h-[600px]">
         {post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
           <div className="relative w-full h-full">
             <FeaturedImageWithFallback
               src={post._embedded['wp:featuredmedia'][0].source_url}
               alt={post.title.rendered}
+              priority
+              sizes="100vw"
+              className="object-cover"
             />
           </div>
         ) : (
@@ -570,28 +666,69 @@ export default async function BlogPost({ params }: { params: tParams }) {
           </div>
         )}
 
-        <div
-          className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-headings:scroll-mt-28
-                     prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:underline
-                     prose-img:rounded-lg prose-img:shadow-lg prose-strong:text-gray-900
-                     prose-blockquote:border-green-600 prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-6
-                     prose-ul:list-disc prose-ol:list-decimal
-                     [&_figure]:!mx-auto [&_figure_img]:!mx-auto [&_figure_figcaption]:text-center
-                     [&_img]:!relative [&_img]:!h-auto [&_img]:!w-auto"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+        {contentSplit ? (
+          <>
+            <div
+              className={articleBodyClasses}
+              dangerouslySetInnerHTML={{ __html: contentSplit.before }}
+            />
+            <div className="my-12">
+              <BlogProductWidget 
+                productIds={productRecommendation.ids}
+                title={productRecommendation.title}
+                description={productRecommendation.description}
+              />
+            </div>
+            {contentSplit.after.trim() && (
+              <div
+                className={articleBodyClasses}
+                dangerouslySetInnerHTML={{ __html: contentSplit.after }}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <div
+              className={articleBodyClasses}
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+            <div className="my-12">
+              <BlogProductWidget 
+                productIds={productRecommendation.ids}
+                title={productRecommendation.title}
+                description={productRecommendation.description}
+              />
+            </div>
+          </>
+        )}
 
-        <div className="my-12">
-          <BlogProductWidget productIds={[49, 684, 824]} />
+        <div className="mt-12 rounded-2xl border border-green-100 bg-green-50/70 p-6 sm:p-8 flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-600 text-white text-2xl font-semibold">
+            AS
+          </div>
+          <div className="flex-1 space-y-3">
+            <p className="text-sm font-semibold uppercase tracking-widest text-green-700">Autor článku</p>
+            <h3 className="text-2xl font-bold text-gray-900">Andrej Srna</h3>
+            <p className="text-gray-700">
+              Som nadšenec pre zdravie kĺbov a každý týždeň posielam praktické tipy a prístup k exkluzívnym zľavám.
+              Pridajte sa k môjmu newsletteru a nezmeškáte nové články ani tajné akcie.
+            </p>
+          </div>
+          <Link
+            href="/#newsletter"
+            className="inline-flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 text-white font-semibold shadow-sm hover:bg-green-700 transition-colors"
+          >
+            Chcem tipy e-mailom
+          </Link>
         </div>
 
         {/* Related Posts Section will be shown after the article */}
 
         <div className="mt-12 pt-8 border-t">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Zdieľať článok</h3>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL + '/' + slugPath)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -602,7 +739,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
               Facebook
             </a>
             <a
-              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.title.rendered + " " + process.env.NEXT_PUBLIC_SITE_URL + '/' + slugPath)}`}
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${plainTitle} ${articleUrl}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
@@ -610,6 +747,16 @@ export default async function BlogPost({ params }: { params: tParams }) {
               <FaWhatsapp className="w-5 h-5" />
               WhatsApp
             </a>
+            <a
+              href={`https://t.me/share/url?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(plainTitle)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors"
+            >
+              <FaTelegramPlane className="w-5 h-5" />
+              Telegram
+            </a>
+            <CopyLinkButton url={articleUrl} className="bg-gray-100 text-gray-700 hover:bg-gray-200" />
           </div>
         </div>
       </article>
@@ -618,8 +765,8 @@ export default async function BlogPost({ params }: { params: tParams }) {
       <div className="max-w-4xl mx-auto px-4">
         <BlogDataProvider 
           currentPostId={post.id}
-          postTitle={decode(post.title.rendered.replace(/<[^>]*>/g, ''))}
-          postContent={cleanHtmlContent(post.content.rendered)}
+          postTitle={plainTitle}
+          postContent={plainTextContent}
           postExcerpt={cleanHtmlContent(post.excerpt.rendered)}
           maxPosts={9}
           layout="list"
@@ -629,7 +776,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
       {/* Blog Analytics Tracking */}
       <BlogAnalytics
         postId={post.id}
-        postTitle={decode(post.title.rendered.replace(/<[^>]*>/g, ''))}
+        postTitle={plainTitle}
         postSlug={slugPath}
         readTime={readTime}
         wordCount={wordCount}

@@ -7,12 +7,18 @@ interface FeaturedImageWithFallbackProps {
   src: string;
   alt: string;
   className?: string;
+  priority?: boolean;
+  sizes?: string;
+  blurDataURL?: string;
 }
 
 export default function FeaturedImageWithFallback({ 
   src, 
   alt, 
-  className = "object-cover" 
+  className = "object-cover",
+  priority = false,
+  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw',
+  blurDataURL
 }: FeaturedImageWithFallbackProps) {
   const [hasError, setHasError] = useState(false);
 
@@ -29,10 +35,12 @@ export default function FeaturedImageWithFallback({
       src={src}
       alt={alt}
       fill
-      sizes="(max-width: 768px) 100vw, 50vw"
+      sizes={sizes}
       className={className}
-      priority
+      priority={priority}
+      placeholder={blurDataURL ? 'blur' : undefined}
+      blurDataURL={blurDataURL}
       onError={() => setHasError(true)}
     />
   );
-} 
+}
