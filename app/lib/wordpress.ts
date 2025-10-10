@@ -260,6 +260,39 @@ export const getPaginatedPosts = async ({
   category,
 }: GetPaginatedPostsOptions = {}): Promise<PaginatedPosts> => {
   try {
+    // Use Relevanssi endpoint when search query is present
+    if (search) {
+      const params: Record<string, string | number> = {
+        s: search,
+        per_page: POSTS_PER_PAGE,
+        page,
+      };
+      
+      if (tags) {
+        params.tags = tags;
+      }
+      if (category) {
+        params.categories = category;
+      }
+      
+      // Build Relevanssi endpoint URL
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        searchParams.append(key, value.toString());
+      });
+      
+      const url = `${WORDPRESS_URL}/wp-json/relevanssi/v1/search?${searchParams.toString()}`;
+      
+      const response = await fetch(url, createFetchOptions());
+      
+      const posts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch search results from Relevanssi');
+      const totalPosts = parseInt(response.headers.get('X-WP-Total') || '0');
+      const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0');
+
+      return { posts, totalPages, totalPosts };
+    }
+    
+    // Use standard WordPress REST API for non-search queries
     const params: Record<string, string | number> = {
       _embed: '',
       per_page: POSTS_PER_PAGE,
@@ -267,9 +300,7 @@ export const getPaginatedPosts = async ({
       orderby: 'date',
       order: 'desc'
     };
-    if (search) {
-      params.search = search;
-    }
+    
     if (tags) {
       params.tags = tags;
     }
