@@ -181,6 +181,8 @@ function makeWikipediaEmbedsBeautiful(html: string): string {
   // Pattern to match Wikipedia image embeds
   const wikipediaPattern = /<a[^>]*title="([^"]*)"[^>]*href="https:\/\/commons\.wikimedia\.org\/[^"]*"[^>]*><img[^>]*width="(\d+)"[^>]*alt="([^"]*)"[^>]*src="([^"]*)"[^>]*><\/a>/gi;
 
+  let isFirstImage = true;
+
   return html.replace(wikipediaPattern, (match, title, width, alt, src) => {
     // Clean up the title (remove HTML entities and extra info)
     const cleanTitle = title
@@ -196,6 +198,10 @@ function makeWikipediaEmbedsBeautiful(html: string): string {
     const author = authorMatch ? authorMatch[1].trim() : '';
     const description = authorMatch ? cleanTitle.replace(/^[^,]+,/, '').trim() : cleanTitle;
 
+    // Use eager loading for first image to optimize LCP
+    const loadingAttr = isFirstImage ? 'eager' : 'lazy';
+    isFirstImage = false;
+
     return `
       <div class="wikipedia-embed-container my-8">
         <figure class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
@@ -204,7 +210,7 @@ function makeWikipediaEmbedsBeautiful(html: string): string {
               src="${src}" 
               alt="${alt}" 
               class="w-full h-auto object-cover"
-              loading="lazy"
+              loading="${loadingAttr}"
             />
             <div class="absolute top-2 right-2">
               <a 

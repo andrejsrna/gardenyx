@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { WordPressPost } from '@/app/lib/wordpress';
 
-const PostCard = ({ post }: { post: WordPressPost }) => {
+const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {
     const slug = post.link.split('/').filter(Boolean).pop();
     const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
         year: 'numeric',
@@ -10,6 +10,7 @@ const PostCard = ({ post }: { post: WordPressPost }) => {
         day: 'numeric',
     });
     const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    const isPriority = index < 3; // First 3 images should have priority
 
     return (
         <article className="bg-white rounded-lg shadow-md overflow-hidden group">
@@ -22,6 +23,8 @@ const PostCard = ({ post }: { post: WordPressPost }) => {
                             fill
                             sizes="(max-width: 768px) 100vw, 50vw, 33vw"
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            loading={isPriority ? "eager" : "lazy"}
+                            fetchPriority={isPriority ? "high" : undefined}
                         />
                     </div>
                 </Link>
@@ -54,8 +57,8 @@ const PostCard = ({ post }: { post: WordPressPost }) => {
 export default function PostList({ posts }: { posts: WordPressPost[] }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map(post => (
-                <PostCard key={post.id} post={post} />
+            {posts.map((post, index) => (
+                <PostCard key={post.id} post={post} index={index} />
             ))}
         </div>
     );

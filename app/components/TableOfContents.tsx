@@ -24,24 +24,29 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   const handleLinkClick = (event: MouseEvent<HTMLAnchorElement>, targetId: string) => {
     // We don't prevent default, allowing the browser to navigate to the anchor first.
     
-    // We then run a correction check after a delay to account for any layout shifts.
-    setTimeout(() => {
-      const targetElement = document.getElementById(targetId);
-      if (!targetElement) return;
+    // Use requestAnimationFrame to batch layout reads and avoid forced reflow
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const targetElement = document.getElementById(targetId);
+        if (!targetElement) return;
 
-      const headerHeight = 120; // Estimated height of the sticky header in pixels.
-      const targetRect = targetElement.getBoundingClientRect();
-
-      // If the element is hidden or partially hidden behind the sticky header...
-      if (targetRect.top < headerHeight) {
-        // ...scroll again to the correct position.
-        const offsetPosition = window.pageYOffset + targetRect.top - headerHeight;
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth',
-        });
-      }
-    }, 300); // A generous delay to ensure layout is stable.
+        const headerHeight = 120; // Estimated height of the sticky header in pixels.
+        
+        // Batch all layout reads together before any writes
+        const targetRect = targetElement.getBoundingClientRect();
+        const currentScroll = window.pageYOffset;
+        
+        // If the element is hidden or partially hidden behind the sticky header...
+        if (targetRect.top < headerHeight) {
+          // ...scroll again to the correct position.
+          const offsetPosition = currentScroll + targetRect.top - headerHeight;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
+        }
+      }, 300); // A generous delay to ensure layout is stable.
+    });
 
     // Close the accordion
     setIsOpen(false);

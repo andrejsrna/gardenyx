@@ -13,6 +13,7 @@ import Posthog from './components/Posthog';
 import FacebookPixel from './components/FacebookPixel';
 import Header from './components/Header';
 import SalesSuspensionBanner from './components/SalesSuspensionBanner';
+import Loading from './loading';
 
 import OrganizationSchema from './components/seo/OrganizationSchema';
 import WebSiteSchema from './components/seo/WebSiteSchema';
@@ -85,7 +86,7 @@ export default function RootLayout({
         <WebSiteSchema />
       </head>
       <body className={`${inter.variable} antialiased`}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading />}>
           <AuthProvider>
             <CartProvider>
               <CookieConsentProvider>

@@ -38,6 +38,7 @@ export default function FeaturedImageWithFallback({
       sizes={sizes}
       className={className}
       priority={priority}
+      fetchPriority={priority ? "high" : undefined}
       placeholder={blurDataURL ? 'blur' : undefined}
       blurDataURL={blurDataURL}
       onError={() => setHasError(true)}
