@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 
+// Force dynamic rendering - this page needs cookies/session
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Registrácia | Najsilnejšia kĺbová výživa',
   description: 'Vytvorte si účet a získajte prístup k svojim objednávkam.',
