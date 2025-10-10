@@ -1,6 +1,7 @@
 import CheckoutClient from './CheckoutClient';
 
-// This is now a Server Component by default (no 'use client')
+// Force dynamic rendering - this page needs cookies/localStorage/cart
+export const dynamic = 'force-dynamic';
 
 export default function CheckoutPage() {
   return (
