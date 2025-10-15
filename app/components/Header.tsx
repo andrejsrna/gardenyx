@@ -20,6 +20,7 @@ const INGREDIENTS_SUBMENU = [
 ];
 
 const PRIMARY_LINKS = [
+  { title: 'Joint Boost', href: '/joint-boost' },
   { title: 'Často kladené otázky', href: '/casto-kladene-otazky' },
   { title: 'Užívanie', href: '/uzivanie' },
 ];

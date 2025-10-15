@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import { Suspense } from 'react';
 import { Toaster } from 'sonner';
 import CookieConsentBanner from './components/CookieConsentBanner';
-import ExitIntentPopupLoader from './components/ExitIntentPopupLoader';
 
 import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
@@ -103,7 +102,6 @@ export default function RootLayout({
                   {children}
                 </main>
                 <Footer />
-                <ExitIntentPopupLoader />
                 <Toaster/>
 
                 <GoogleAnalytics />
