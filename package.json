@@ -10,7 +10,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export:wp-posts": "node scripts/export-wordpress-posts.js"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
@@ -30,6 +31,7 @@
     "html-entities": "^2.6.0",
     "iron-session": "^8.0.4",
     "isomorphic-dompurify": "^2.26.0",
+    "gray-matter": "^4.0.3",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.539.0",
     "next": "^15.5.4",
@@ -40,6 +42,9 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "resend": "^6.0.1",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-html": "^16.0.1",
     "sonner": "^2.0.7",
     "stripe": "^18.4.0",
     "xml2js": "^0.6.2",

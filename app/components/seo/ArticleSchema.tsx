@@ -6,6 +6,14 @@ interface ArticleSchemaProps {
 
 export default function ArticleSchema({ post }: ArticleSchemaProps) {
   const cleanText = (html: string) => html.replace(/(<([^>]+)>)/gi, '');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk';
+  const authorName = post._embedded?.['author']?.[0]?.name || 'Náš tím';
+  const updatedDate = post.meta?.updated || post.date;
+  const canonicalUrl = post.meta?.canonicalUrl
+    ? post.meta.canonicalUrl.startsWith('http')
+      ? post.meta.canonicalUrl
+      : `${siteUrl}${post.meta.canonicalUrl.startsWith('/') ? post.meta.canonicalUrl : `/${post.meta.canonicalUrl}`}`
+    : `${siteUrl}/${post.slug}`;
   
   const structuredData = {
     "@context": "https://schema.org",
@@ -14,7 +22,7 @@ export default function ArticleSchema({ post }: ArticleSchemaProps) {
     "description": cleanText(post.excerpt.rendered),
     "author": {
       "@type": "Person",
-      "name": "Andrej Srna"
+      "name": cleanText(authorName)
     },
     "publisher": {
       "@type": "Organization",
@@ -25,10 +33,10 @@ export default function ArticleSchema({ post }: ArticleSchemaProps) {
       }
     },
     "datePublished": post.date,
-    "dateModified": post.date,
+    "dateModified": updatedDate,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://najsilnejsiaklbovavyziva.sk/blog/${post.slug}`
+      "@id": canonicalUrl
     },
     ...(post._embedded?.['wp:featuredmedia']?.[0]?.source_url && {
       "image": {

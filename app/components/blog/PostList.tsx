@@ -3,7 +3,8 @@ import Link from 'next/link';
 import type { WordPressPost } from '@/app/lib/wordpress';
 
 const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {
-    const slug = post.link.split('/').filter(Boolean).pop();
+    const slug = post.slug || post.link.split('/').filter(Boolean).pop() || '';
+    const href = slug.startsWith('/') ? slug : `/${slug}`;
     const formattedDate = new Date(post.date).toLocaleDateString('sk-SK', {
         year: 'numeric',
         month: 'long',
@@ -15,7 +16,7 @@ const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {
     return (
         <article className="bg-white rounded-lg shadow-md overflow-hidden group">
             {featuredImage && (
-                <Link href={`/${slug}`}>
+                <Link href={href}>
                     <div className="relative h-48">
                         <Image
                             src={featuredImage}
@@ -34,7 +35,7 @@ const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {
                     {formattedDate}
                 </time>
                 <h2 className="text-xl font-semibold mb-2 flex-grow">
-                    <Link href={`/${slug}`} className="hover:text-green-600 transition-colors">
+                    <Link href={href} className="hover:text-green-600 transition-colors">
                         <span dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
                     </Link>
                 </h2>
@@ -43,7 +44,7 @@ const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {
                     dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
                 />
                 <Link
-                    href={`/${slug}`}
+                    href={href}
                     className="text-green-600 font-medium hover:underline inline-flex items-center self-start"
                 >
                     Čítať viac <span className="ml-1">→</span>

@@ -16,13 +16,13 @@ export default async function RecentPosts() {
         
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {posts.map((post: WordPressPost) => {
-            // Extract the slug from the WordPress link
-            const slug = post.link.split('/').filter(Boolean).pop();
-            
+            const slug = post.slug || post.link.split('/').filter(Boolean).pop() || '';
+            const href = slug.startsWith('/') ? slug : `/${slug}`;
+
             return (
               <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 {post._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
-                  <Link href={`/${slug}`}>
+                  <Link href={href}>
                     <div className="relative h-48">
                       <Image
                         src={post._embedded['wp:featuredmedia'][0].source_url}
@@ -36,7 +36,7 @@ export default async function RecentPosts() {
                 )}
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">
-                    <Link href={`/${slug}`} className="hover:text-green-600 transition-colors">
+                    <Link href={href} className="hover:text-green-600 transition-colors">
                       <span dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
                     </Link>
                   </h3>
@@ -45,7 +45,7 @@ export default async function RecentPosts() {
                     dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
                   />
                   <Link 
-                    href={`/${slug}`}
+                    href={href}
                     className="text-green-600 font-medium hover:underline inline-flex items-center"
                   >
                     Čítať viac <span className="ml-1">→</span>

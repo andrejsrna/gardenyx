@@ -366,6 +366,47 @@ const DEFAULT_PRODUCT_RECOMMENDATION = {
   description: 'Vybrali sme pre vás produkty, ktoré vám pomôžu s vašimi problémami'
 };
 
+const buildLocalPostMetadata = (post: WordPressPost, slugPath: string): Metadata => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  const baseTitle = cleanHtmlContent(post.title.rendered);
+  const baseDescription = cleanHtmlContent(post.excerpt.rendered);
+  const meta = post.meta ?? {};
+
+  const title = cleanHtmlContent(meta.seoTitle || baseTitle);
+  const description = cleanHtmlContent(meta.seoDescription || baseDescription);
+  const image = meta.seoImage || post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+  const canonical = meta.canonicalUrl || (siteUrl ? `${siteUrl}/${slugPath}` : `/${slugPath}`);
+  const ogImages = image ? [{ url: image }] : undefined;
+  const twitterImages = image ? [image] : undefined;
+  const robots = meta.noindex
+    ? { index: false, follow: true }
+    : { index: true, follow: true };
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: siteUrl ? `${siteUrl}/${slugPath}` : `/${slugPath}`,
+      siteName: 'Najsilnejšia kĺbová výživa',
+      images: ogImages,
+      locale: 'sk_SK',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: twitterImages,
+    },
+    alternates: {
+      canonical,
+    },
+    robots,
+  };
+};
+
 export async function generateMetadata({ params }: { params: tParams }): Promise<Metadata> {
   const { slug } = await params;
   const slugPath = slug.join('/');
@@ -377,6 +418,10 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
         title: 'Stránka nenájdená',
         description: 'Požadovaná stránka nebola nájdená.',
       };
+    }
+
+    if (post.meta?.isLocal) {
+      return buildLocalPostMetadata(post, slugPath);
     }
 
     const postDate = new Date(post.date);
@@ -518,6 +563,16 @@ export default async function BlogPost({ params }: { params: tParams }) {
     notFound();
   }
 
+  const meta = post.meta ?? {};
+  const authorName = post._embedded?.['author']?.[0]?.name || 'Náš tím';
+  const authorInitials = authorName
+    .split(' ')
+    .map((part) => part.trim()[0])
+    .filter(Boolean)
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   let content = post.content.rendered;
   const plainTextContent = cleanHtmlContent(post.content.rendered);
 
@@ -565,11 +620,16 @@ export default async function BlogPost({ params }: { params: tParams }) {
     .split(/\s+/)
     .map((word) => word.trim())
     .filter(Boolean).length;
-  const readTime = Math.max(1, Math.ceil(wordCount / 200));
+  const readTime = meta.readingTimeMinutes ?? Math.max(1, Math.ceil(wordCount / 200));
   const postTopic = detectPostTopic(post);
   const productRecommendation = PRODUCT_RECOMMENDATIONS[postTopic] || DEFAULT_PRODUCT_RECOMMENDATION;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk';
   const articleUrl = `${siteUrl}/${slugPath}`;
+  const canonicalUrl = meta.canonicalUrl
+    ? meta.canonicalUrl.startsWith('http')
+      ? meta.canonicalUrl
+      : `${siteUrl}${meta.canonicalUrl.startsWith('/') ? meta.canonicalUrl : `/${meta.canonicalUrl}`}`
+    : articleUrl;
   const plainTitle = decode(post.title.rendered.replace(/<[^>]*>/g, ''));
   const contentSplit = splitContentForProductCTA(content);
   const articleBodyClasses = `prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-headings:scroll-mt-28
@@ -710,11 +770,11 @@ export default async function BlogPost({ params }: { params: tParams }) {
 
         <div className="mt-12 rounded-2xl border border-green-100 bg-green-50/70 p-6 sm:p-8 flex flex-col md:flex-row gap-6 md:items-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-600 text-white text-2xl font-semibold">
-            AS
+            {authorInitials || 'AS'}
           </div>
           <div className="flex-1 space-y-3">
             <p className="text-sm font-semibold uppercase tracking-widest text-green-700">Autor článku</p>
-            <h3 className="text-2xl font-bold text-gray-900">Andrej Srna</h3>
+            <h3 className="text-2xl font-bold text-gray-900">{authorName}</h3>
             <p className="text-gray-700">
               Som nadšenec pre zdravie kĺbov a každý týždeň posielam praktické tipy a prístup k exkluzívnym zľavám.
               Pridajte sa k môjmu newsletteru a nezmeškáte nové články ani tajné akcie.
@@ -734,7 +794,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Zdieľať článok</h3>
           <div className="flex flex-wrap gap-4">
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(canonicalUrl)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -745,7 +805,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
               Facebook
             </a>
             <a
-              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${plainTitle} ${articleUrl}`)}`}
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${plainTitle} ${canonicalUrl}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
@@ -754,7 +814,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
               WhatsApp
             </a>
             <a
-              href={`https://t.me/share/url?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(plainTitle)}`}
+              href={`https://t.me/share/url?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(plainTitle)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors"
@@ -762,7 +822,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
               <FaTelegramPlane className="w-5 h-5" />
               Telegram
             </a>
-            <CopyLinkButton url={articleUrl} className="bg-gray-100 text-gray-700 hover:bg-gray-200" />
+            <CopyLinkButton url={canonicalUrl} className="bg-gray-100 text-gray-700 hover:bg-gray-200" />
           </div>
         </div>
       </article>

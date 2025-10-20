@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { WooCommerceProduct, WordPressPost, WordPressCategory } from './lib/wordpress';
+import { getLocalPosts as getLocalWordPressPosts, getLocalCategories as getLocalWordPressCategories } from './lib/local-posts';
 
 const BASE_URL = 'https://najsilnejsiaklbovavyziva.sk';
 
@@ -82,10 +83,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Fetch all dynamic data in parallel
-  const [products, posts, categories] = await Promise.all([
+  const [products, posts, categories, localPosts, localCategories] = await Promise.all([
     getProducts(),
     getPosts(),
     getCategories(),
+    getLocalWordPressPosts(),
+    getLocalWordPressCategories(),
   ]);
 
   const productUrls = products.map((product) => ({
@@ -95,19 +98,53 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const postUrls = posts.map((post) => ({
-    url: `${siteUrl}/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }));
+  const postUrlMap = new Map<string, MetadataRoute.Sitemap[number]>();
 
-  const categoryUrls = categories.map((category) => ({
-    url: `${siteUrl}/blog/kategoria/${category.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
+  posts.forEach((post) => {
+    const url = `${siteUrl}/${post.slug}`;
+    postUrlMap.set(url, {
+      url,
+      lastModified: new Date(post.date),
+      changeFrequency: 'monthly' as MetadataRoute.Sitemap[0]['changeFrequency'],
+      priority: 0.6,
+    });
+  });
+
+  localPosts.forEach((post) => {
+    const url = `${siteUrl}/${post.slug}`;
+    postUrlMap.set(url, {
+      url,
+      lastModified: new Date(post.meta?.updated || post.date),
+      changeFrequency: 'monthly' as MetadataRoute.Sitemap[0]['changeFrequency'],
+      priority: 0.6,
+    });
+  });
+
+  const postUrls = Array.from(postUrlMap.values());
+
+  const categoryUrlMap = new Map<string, MetadataRoute.Sitemap[number]>();
+
+  categories.forEach((category) => {
+    const url = `${siteUrl}/blog/kategoria/${category.slug}`;
+    categoryUrlMap.set(url, {
+      url,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as MetadataRoute.Sitemap[0]['changeFrequency'],
+      priority: 0.7,
+    });
+  });
+
+  localCategories.forEach((category) => {
+    const url = `${siteUrl}/blog/kategoria/${category.slug}`;
+    categoryUrlMap.set(url, {
+      url,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as MetadataRoute.Sitemap[0]['changeFrequency'],
+      priority: 0.7,
+    });
+  });
+
+  const categoryUrls = Array.from(categoryUrlMap.values());
 
   return [
     ...staticRoutes,

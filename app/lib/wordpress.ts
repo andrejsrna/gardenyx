@@ -1,168 +1,44 @@
-export interface RankMathSEOResponse {
-  head: string;
-}
+import type {
+  CheckoutFormData,
+  PaginatedPosts,
+  PaymentGateway,
+  RankMathSEOResponse,
+  ShippingMethod,
+  WooCommerceOrder,
+  WooCommerceProduct,
+  WordPressCategory,
+  WordPressMedia,
+  WordPressPost,
+  WordPressTag,
+} from './wordpress-types';
 
-export interface WordPressPost {
-  id: number;
-  date: string;
-  title: {
-    rendered: string;
-  };
-  content: {
-    rendered: string;
-  };
-  excerpt: {
-    rendered: string;
-  };
-  link: string;
-  slug: string;
-  featured_media: number;
-  _embedded?: {
-    'author': [{ name: string; }];
-    'wp:featuredmedia'?: Array<{
-      source_url: string;
-    }>;
-    'wp:term'?: WordPressCategory[][];
-  };
-}
+import {
+  filterLocalPosts,
+  getLocalCategories as getAllLocalCategories,
+  getLocalCategoryBySlug,
+  getLocalPostById,
+  getLocalPostBySlug,
+  getLocalPosts as getAllLocalPosts,
+  getLocalTags as getAllLocalTags,
+  getLocalTagBySlug,
+  isLocalCategoryId,
+  isLocalPostId,
+  isLocalTagId,
+} from './local-posts';
 
-export interface WooCommerceProduct {
-  id: number;
-  name: string;
-  slug: string;
-  permalink: string;
-  price: string;
-  regular_price: string;
-  sale_price: string;
-  description: string;
-  short_description: string;
-  date_created: string;
-  date_modified: string;
-  images: Array<{
-    id: number;
-    src: string;
-    alt: string;
-  }>;
-  categories: Array<{
-    id: number;
-    name: string;
-    slug: string;
-  }>;
-}
-
-export interface ShippingMethod {
-  id: string;
-  title: string;
-  description: string;
-  enabled: boolean;
-  method_id: string;
-  method_title: string;
-  settings?: {
-    cost?: {
-      value: string;
-    };
-  };
-}
-
-export interface PaymentGateway {
-  id: string;
-  title: string;
-  description: string;
-  enabled: boolean;
-  method_title: string;
-  method_description: string;
-  settings?: Record<string, unknown>;
-}
-
-interface BaseAddress {
-  first_name: string;
-  last_name: string;
-  company?: string;
-  address_1: string;
-  address_2?: string;
-  city: string;
-  state?: string;
-  postcode: string;
-  country: string;
-}
-
-interface BillingAddress extends BaseAddress {
-  email: string;
-  phone: string;
-  ic?: string;
-  dic?: string;
-  dic_dph?: string;
-}
-
-export interface CheckoutFormData {
-  status?: string;
-  currency?: string;
-  customer_note?: string;
-  billing: BillingAddress;
-  shipping: BaseAddress;
-  shipping_method: string;
-  payment_method: string;
-  payment_method_title?: string;
-  meta_data?: Array<{
-    key: string;
-    value: string;
-  }>;
-  line_items: Array<{
-    product_id: number;
-    quantity: number;
-  }>;
-  shipping_lines: Array<{
-    method_id: string;
-    method_title: string;
-    total: string;
-    meta_data?: Array<{
-      key: string;
-      value: string;
-    }>;
-  }>;
-  set_paid?: boolean;
-  is_business?: boolean;
-}
-
-export interface WooCommerceOrder extends Omit<CheckoutFormData, 'is_business'> {
-  status: string;
-  customer_id?: number;
-  billing: Required<BillingAddress>;
-  shipping: Required<BaseAddress>;
-  shipping_method: string;
-  payment_method: string;
-}
-
-export interface WordPressTag {
-  id: number;
-  name: string;
-  slug: string;
-  count: number;
-}
-
-export interface WordPressCategory {
-  id: number;
-  count: number;
-  description: string;
-  link: string;
-  name: string;
-  slug: string;
-  taxonomy: string;
-  parent: number;
-  meta: Array<{ key: string; value: unknown; }>;
-}
-
-export interface WordPressMedia {
-  id: number;
-  source_url: string;
-  alt_text: string;
-}
-
-export interface PaginatedPosts {
-  posts: WordPressPost[];
-  totalPages: number;
-  totalPosts: number;
-}
+export type {
+  CheckoutFormData,
+  PaginatedPosts,
+  PaymentGateway,
+  RankMathSEOResponse,
+  ShippingMethod,
+  WooCommerceOrder,
+  WooCommerceProduct,
+  WordPressCategory,
+  WordPressMedia,
+  WordPressPost,
+  WordPressTag,
+} from './wordpress-types';
 
 interface GetPaginatedPostsOptions {
   page?: number;
@@ -195,6 +71,39 @@ const logError = (context: string, error: unknown): void => {
   console.error(`Error in ${context}:`, error);
 };
 
+const sortPostsByDateDesc = (a: WordPressPost, b: WordPressPost): number =>
+  new Date(b.date).getTime() - new Date(a.date).getTime();
+
+const mergeUniquePosts = (...groups: WordPressPost[][]): WordPressPost[] => {
+  const seen = new Set<string>();
+  const merged: WordPressPost[] = [];
+
+  groups.forEach((group) => {
+    group.forEach((post) => {
+      const key = post.slug || String(post.id);
+      if (seen.has(key)) return;
+      seen.add(key);
+      merged.push(post);
+    });
+  });
+
+  return merged;
+};
+
+const mergeAndSortPosts = (...groups: WordPressPost[][]): WordPressPost[] =>
+  mergeUniquePosts(...groups).sort(sortPostsByDateDesc);
+
+const sliceForPage = (posts: WordPressPost[], page: number, perPage: number): WordPressPost[] => {
+  const start = (page - 1) * perPage;
+  return posts.slice(start, start + perPage);
+};
+
+const getCategoryIdsFromPost = (post: WordPressPost): number[] =>
+  post._embedded?.['wp:term']?.[0]?.map((category) => category.id) ?? [];
+
+const getTagIdsFromPost = (post: WordPressPost): number[] =>
+  (post._embedded?.['wp:term']?.slice(1).flat() ?? []).map((term) => term.id);
+
 export const getWooCommerceUrl = (endpoint: string, queryParams: Record<string, string | number> = {}): string => {
   const params = new URLSearchParams();
   
@@ -219,25 +128,156 @@ const buildWordPressUrl = (endpoint: string, params: Record<string, string | num
   return `${WORDPRESS_API_URL}/${endpoint}${queryString ? `?${queryString}` : ''}`;
 };
 
+const shouldFetchWordPressPosts = (category?: number, tags?: number): boolean => {
+  const categoryIsLocal = typeof category === 'number' && isLocalCategoryId(category);
+  const tagIsLocal = typeof tags === 'number' && isLocalTagId(tags);
+  return !categoryIsLocal && !tagIsLocal;
+};
+
+const collectStandardWordPressPosts = async (
+  options: GetPaginatedPostsOptions,
+  perPage: number,
+): Promise<{ posts: WordPressPost[]; totalPosts: number; totalPages: number; }> => {
+  const { page = 1, tags, category } = options;
+
+  const params: Record<string, string | number> = {
+    _embed: '',
+    per_page: perPage,
+    orderby: 'date',
+    order: 'desc',
+  };
+
+  if (tags && !isLocalTagId(tags)) {
+    params.tags = tags;
+  }
+  if (category && !isLocalCategoryId(category)) {
+    params.categories = category;
+  }
+
+  const aggregated: WordPressPost[] = [];
+  let totalPosts = 0;
+  let totalPages = 0;
+
+  for (let currentPage = 1; currentPage <= page; currentPage += 1) {
+    params.page = currentPage;
+    const url = buildWordPressUrl('posts', params);
+    const response = await fetch(url, createFetchOptions());
+
+    if (!response.ok) {
+      if (response.status === 400) {
+        break;
+      }
+      throw new Error(`Failed to fetch paginated posts: ${response.status}`);
+    }
+
+    const pagePosts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch paginated posts');
+    aggregated.push(...pagePosts);
+
+    if (currentPage === 1) {
+      totalPosts = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+      totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+    }
+
+    if (currentPage >= totalPages) {
+      break;
+    }
+  }
+
+  return { posts: aggregated, totalPosts, totalPages };
+};
+
+const collectSearchWordPressPosts = async (
+  options: GetPaginatedPostsOptions,
+  perPage: number,
+): Promise<{ posts: WordPressPost[]; totalPosts: number; totalPages: number; }> => {
+  const { search = '', page = 1, tags, category } = options;
+
+  if (!search) {
+    return { posts: [], totalPosts: 0, totalPages: 0 };
+  }
+
+  const aggregated: WordPressPost[] = [];
+  let totalPosts = 0;
+  let totalPages = 0;
+
+  for (let currentPage = 1; currentPage <= page; currentPage += 1) {
+    const params = new URLSearchParams();
+    params.append('s', search);
+    params.append('per_page', perPage.toString());
+    params.append('page', currentPage.toString());
+    params.append('_embed', 'true');
+
+    if (tags && !isLocalTagId(tags)) {
+      params.append('tags', tags.toString());
+    }
+    if (category && !isLocalCategoryId(category)) {
+      params.append('categories', category.toString());
+    }
+
+    const url = `${WORDPRESS_URL}/wp-json/relevanssi/v1/search?${params.toString()}`;
+    const response = await fetch(url, createFetchOptions());
+
+    if (!response.ok) {
+      if (response.status === 400) {
+        break;
+      }
+      throw new Error(`Failed to fetch search results from Relevanssi: ${response.status}`);
+    }
+
+    const pagePosts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch search results from Relevanssi');
+    aggregated.push(...pagePosts);
+
+    if (currentPage === 1) {
+      totalPosts = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+      totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+    }
+
+    if (currentPage >= totalPages) {
+      break;
+    }
+  }
+
+  return { posts: aggregated, totalPosts, totalPages };
+};
+
+const collectWordPressPosts = async (
+  options: GetPaginatedPostsOptions,
+  perPage: number,
+): Promise<{ posts: WordPressPost[]; totalPosts: number; totalPages: number; }> => {
+  if (options.search) {
+    return collectSearchWordPressPosts(options, perPage);
+  }
+  return collectStandardWordPressPosts(options, perPage);
+};
+
 export const getLatestPosts = async (count: number = 3): Promise<WordPressPost[]> => {
   try {
+    const localPosts = (await getAllLocalPosts()).slice(0, count * 2);
+
     const url = buildWordPressUrl('posts', {
       _embed: '',
-      per_page: count,
+      per_page: Math.max(count, POSTS_PER_PAGE),
       orderby: 'date',
       order: 'desc'
     });
     
     const response = await fetch(url, createFetchOptions());
-    return await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch latest posts');
+    const wordpressPosts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch latest posts');
+
+    return mergeAndSortPosts(localPosts, wordpressPosts).slice(0, count);
   } catch (error) {
     logError('getLatestPosts', error);
-    return [];
+    return (await getAllLocalPosts()).slice(0, count);
   }
 };
 
 export const getPostBySlug = async (slug: string): Promise<WordPressPost | null> => {
   try {
+    const localPost = await getLocalPostBySlug(slug);
+    if (localPost) {
+      return localPost;
+    }
+
     const url = buildWordPressUrl('posts', {
       _embed: '',
       slug
@@ -260,66 +300,60 @@ export const getPaginatedPosts = async ({
   category,
 }: GetPaginatedPostsOptions = {}): Promise<PaginatedPosts> => {
   try {
-    // Use Relevanssi endpoint when search query is present
-    if (search) {
-      const params: Record<string, string | number> = {
-        s: search,
-        per_page: POSTS_PER_PAGE,
+    const perPage = POSTS_PER_PAGE;
+    const includeLocal =
+      (!category || isLocalCategoryId(category)) &&
+      (!tags || isLocalTagId(tags));
+
+    const localPosts = includeLocal
+      ? await filterLocalPosts({
+          search,
+          categoryId: category && isLocalCategoryId(category) ? category : undefined,
+          tagId: tags && isLocalTagId(tags) ? tags : undefined,
+        })
+      : [];
+
+    let wordpressPosts: WordPressPost[] = [];
+    let wordpressTotalPosts = 0;
+    let wordpressTotalPages = 0;
+
+    if (shouldFetchWordPressPosts(category, tags)) {
+      const wpOptions: GetPaginatedPostsOptions = {
         page,
+        search,
+        tags: tags && !isLocalTagId(tags) ? tags : undefined,
+        category: category && !isLocalCategoryId(category) ? category : undefined,
       };
-      
-      if (tags) {
-        params.tags = tags;
-      }
-      if (category) {
-        params.categories = category;
-      }
-      
-      // Build Relevanssi endpoint URL
-      const searchParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        searchParams.append(key, value.toString());
-      });
-      
-      const url = `${WORDPRESS_URL}/wp-json/relevanssi/v1/search?${searchParams.toString()}`;
-      
-      const response = await fetch(url, createFetchOptions());
-      
-      const posts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch search results from Relevanssi');
-      const totalPosts = parseInt(response.headers.get('X-WP-Total') || '0');
-      const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0');
 
-      return { posts, totalPages, totalPosts };
+      const results = await collectWordPressPosts(wpOptions, perPage);
+      wordpressPosts = results.posts;
+      wordpressTotalPosts = results.totalPosts;
+      wordpressTotalPages = results.totalPages;
     }
-    
-    // Use standard WordPress REST API for non-search queries
-    const params: Record<string, string | number> = {
-      _embed: '',
-      per_page: POSTS_PER_PAGE,
-      page,
-      orderby: 'date',
-      order: 'desc'
+
+    const combinedTotalPosts = wordpressTotalPosts + localPosts.length;
+    const combinedTotalPages = combinedTotalPosts === 0 ? 0 : Math.ceil(combinedTotalPosts / perPage);
+
+    const combinedPosts = mergeAndSortPosts(localPosts, wordpressPosts);
+    const paginatedPosts = sliceForPage(combinedPosts, page, perPage);
+
+    return {
+      posts: paginatedPosts,
+      totalPages: combinedTotalPages,
+      totalPosts: combinedTotalPosts,
     };
-    
-    if (tags) {
-      params.tags = tags;
-    }
-    if (category) {
-      params.categories = category;
-    }
-    
-    const url = buildWordPressUrl('posts', params);
-    
-    const response = await fetch(url, createFetchOptions());
-    
-    const posts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch paginated posts');
-    const totalPosts = parseInt(response.headers.get('X-WP-Total') || '0');
-    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0');
-
-    return { posts, totalPages, totalPosts };
   } catch (error) {
     logError('getPaginatedPosts', error);
-    return { posts: [], totalPages: 0, totalPosts: 0 };
+    const fallbackLocal = await filterLocalPosts({
+      search,
+      categoryId: category && isLocalCategoryId(category) ? category : undefined,
+      tagId: tags && isLocalTagId(tags) ? tags : undefined,
+    });
+    return {
+      posts: sliceForPage(fallbackLocal, page, POSTS_PER_PAGE),
+      totalPages: fallbackLocal.length === 0 ? 0 : Math.ceil(fallbackLocal.length / POSTS_PER_PAGE),
+      totalPosts: fallbackLocal.length,
+    };
   }
 };
 
@@ -415,6 +449,11 @@ export const getRankMathSEO = async (url: string): Promise<RankMathSEOResponse |
 
 export const getTagBySlug = async (slug: string): Promise<WordPressTag | null> => {
   try {
+    const localTag = await getLocalTagBySlug(slug);
+    if (localTag) {
+      return localTag;
+    }
+
     const url = buildWordPressUrl('tags', { slug });
     const response = await fetch(url, createFetchOptions());
     
@@ -434,35 +473,82 @@ export const getTagBySlug = async (slug: string): Promise<WordPressTag | null> =
 
 export const getAllTags = async (): Promise<WordPressTag[]> => {
   try {
-    const url = buildWordPressUrl('tags', {
-      per_page: 100,
-      orderby: 'count',
-      order: 'desc',
-      hide_empty: 'true',
+    const [localTags, wordpressResponse] = await Promise.all([
+      getAllLocalTags(),
+      fetch(
+        buildWordPressUrl('tags', {
+          per_page: 100,
+          orderby: 'count',
+          order: 'desc',
+          hide_empty: 'true',
+        }),
+        createFetchOptions(),
+      ),
+    ]);
+
+    let wordpressTags: WordPressTag[] = [];
+    if (wordpressResponse.ok) {
+      wordpressTags = await handleApiResponse<WordPressTag[]>(wordpressResponse, 'Failed to fetch tags');
+    } else if (wordpressResponse.status !== 404) {
+      throw new Error(`Failed to fetch tags: ${wordpressResponse.status}`);
+    }
+
+    const merged = new Map<string, WordPressTag>();
+    localTags.forEach((tag) => merged.set(tag.slug, tag));
+
+    wordpressTags.forEach((tag) => {
+      const existing = merged.get(tag.slug);
+      if (existing) {
+        merged.set(tag.slug, { ...existing, count: existing.count + tag.count });
+      } else {
+        merged.set(tag.slug, tag);
+      }
     });
-    const response = await fetch(url, createFetchOptions());
-    return await handleApiResponse<WordPressTag[]>(response, 'Failed to fetch tags');
+
+    return Array.from(merged.values()).sort((a, b) => b.count - a.count);
   } catch (error) {
     logError('getAllTags', error);
-    return [];
+    return getAllLocalTags();
   }
 };
 
 export const getCategories = async (): Promise<WordPressCategory[]> => {
-	try {
-	  const url = buildWordPressUrl('categories', {
-		per_page: 100,
-		orderby: 'count',
-		order: 'desc',
-		hide_empty: 'true',
-	  });
-	  const response = await fetch(url, createFetchOptions());
-	  return await handleApiResponse<WordPressCategory[]>(response, 'Failed to fetch categories');
-	} catch (error) {
-	  logError('getCategories', error);
-	  return [];
-	}
-  };
+  try {
+    const [localCategories, wordpressResponse] = await Promise.all([
+      getAllLocalCategories(),
+      fetch(
+        buildWordPressUrl('categories', {
+          per_page: 100,
+          orderby: 'count',
+          order: 'desc',
+          hide_empty: 'true',
+        }),
+        createFetchOptions(),
+      ),
+    ]);
+
+    let wordpressCategories: WordPressCategory[] = [];
+    if (wordpressResponse.ok) {
+      wordpressCategories = await handleApiResponse<WordPressCategory[]>(wordpressResponse, 'Failed to fetch categories');
+    } else if (wordpressResponse.status !== 404) {
+      throw new Error(`Failed to fetch categories: ${wordpressResponse.status}`);
+    }
+
+    const merged = new Map<string, WordPressCategory>();
+    localCategories.forEach((category) => merged.set(category.slug, category));
+
+    wordpressCategories.forEach((category) => {
+      if (!merged.has(category.slug)) {
+        merged.set(category.slug, category);
+      }
+    });
+
+    return Array.from(merged.values()).sort((a, b) => b.count - a.count);
+  } catch (error) {
+    logError('getCategories', error);
+    return getAllLocalCategories();
+  }
+};
 
 // Get related posts based on current post categories or tags
 export const getRelatedPosts = async (
@@ -472,30 +558,87 @@ export const getRelatedPosts = async (
   tags?: number[]
 ): Promise<WordPressPost[]> => {
   try {
-    const params: Record<string, string | number> = {
-      _embed: '',
-      per_page: limit + 1, // Get one extra to exclude current post
-      orderby: 'date',
-      order: 'desc',
-      exclude: currentPostId
-    };
+    const localPosts = await getAllLocalPosts();
+    const currentLocalPost = isLocalPostId(currentPostId)
+      ? localPosts.find((post) => post.id === currentPostId) ?? null
+      : null;
 
-    // Priority: use categories if available, otherwise use tags
-    if (categories && categories.length > 0) {
-      params.categories = categories.join(',');
-    } else if (tags && tags.length > 0) {
-      params.tags = tags.join(',');
+    const requestedLocalCategoryIds = (categories ?? []).filter(isLocalCategoryId);
+    const requestedLocalTagIds = (tags ?? []).filter(isLocalTagId);
+    const requestedWordPressCategoryIds = (categories ?? []).filter((id) => !isLocalCategoryId(id));
+    const requestedWordPressTagIds = (tags ?? []).filter((id) => !isLocalTagId(id));
+
+    const effectiveLocalCategoryIds =
+      requestedLocalCategoryIds.length > 0
+        ? requestedLocalCategoryIds
+        : currentLocalPost
+          ? getCategoryIdsFromPost(currentLocalPost)
+          : [];
+
+    const effectiveLocalTagIds =
+      requestedLocalTagIds.length > 0
+        ? requestedLocalTagIds
+        : currentLocalPost
+          ? getTagIdsFromPost(currentLocalPost)
+          : [];
+
+    let localMatches = localPosts.filter((post) => post.id !== currentPostId);
+
+    if (effectiveLocalCategoryIds.length > 0) {
+      localMatches = localMatches.filter((post) => {
+        const categoryIds = getCategoryIdsFromPost(post);
+        return categoryIds.some((id) => effectiveLocalCategoryIds.includes(id));
+      });
+    } else if (effectiveLocalTagIds.length > 0) {
+      localMatches = localMatches.filter((post) => {
+        const tagIds = getTagIdsFromPost(post);
+        return tagIds.some((id) => effectiveLocalTagIds.includes(id));
+      });
     }
 
-    const url = buildWordPressUrl('posts', params);
-    const response = await fetch(url, createFetchOptions(1800)); // Cache for 30 minutes
-    
-    const posts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch related posts');
-    
-    // Filter out current post and limit results
-    return posts
-      .filter(post => post.id !== currentPostId)
-      .slice(0, limit);
+    localMatches = localMatches.slice(0, limit);
+
+    const needAdditionalPosts = localMatches.length < limit;
+    const shouldFetchWordPress =
+      needAdditionalPosts ||
+      !isLocalPostId(currentPostId) ||
+      requestedWordPressCategoryIds.length > 0 ||
+      requestedWordPressTagIds.length > 0;
+
+    let wordpressMatches: WordPressPost[] = [];
+
+    if (shouldFetchWordPress) {
+      const params: Record<string, string | number> = {
+        _embed: '',
+        per_page: limit + Math.max(1, limit - localMatches.length) + 1,
+        orderby: 'date',
+        order: 'desc',
+      };
+
+      if (!isLocalPostId(currentPostId)) {
+        params.exclude = currentPostId;
+      }
+
+      if (requestedWordPressCategoryIds.length > 0) {
+        params.categories = requestedWordPressCategoryIds.join(',');
+      } else if (requestedWordPressTagIds.length > 0) {
+        params.tags = requestedWordPressTagIds.join(',');
+      }
+
+      const url = buildWordPressUrl('posts', params);
+      const response = await fetch(url, createFetchOptions(1800));
+
+      if (response.ok) {
+        wordpressMatches = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch related posts');
+      }
+    }
+
+    const combined = mergeAndSortPosts(
+      localMatches,
+      wordpressMatches.filter((post) => post.id !== currentPostId),
+    );
+
+    return combined.slice(0, limit);
   } catch (error) {
     logError(`getRelatedPosts(${currentPostId})`, error);
     return [];
@@ -508,38 +651,69 @@ export const getPostsByCategory = async (
   limit: number = 6,
   excludePostId?: number
 ): Promise<WordPressPost[]> => {
+  const localCategory = await getLocalCategoryBySlug(categorySlug);
+  const localPosts = localCategory
+    ? (await filterLocalPosts({ categoryId: localCategory.id }))
+        .filter((post) => post.id !== excludePostId)
+        .slice(0, limit)
+    : [];
+
   try {
-    // First get category ID by slug
-    const categoryUrl = buildWordPressUrl('categories', { slug: categorySlug });
-    const categoryResponse = await fetch(categoryUrl, createFetchOptions());
-    const categories = await handleApiResponse<Array<{ id: number }>>(categoryResponse, 'Failed to fetch category');
-    
-    if (!categories.length) return [];
+    let wordpressPosts: WordPressPost[] = [];
 
-    const params: Record<string, string | number> = {
-      _embed: '',
-      per_page: limit,
-      categories: categories[0].id,
-      orderby: 'date',
-      order: 'desc'
-    };
+    const categoryResponse = await fetch(
+      buildWordPressUrl('categories', { slug: categorySlug }),
+      createFetchOptions(),
+    );
 
-    if (excludePostId) {
-      params.exclude = excludePostId;
+    let wordpressCategoryId: number | null = null;
+
+    if (categoryResponse.ok) {
+      const categories = await handleApiResponse<Array<{ id: number }>>(
+        categoryResponse,
+        'Failed to fetch category',
+      );
+      wordpressCategoryId = categories[0]?.id ?? null;
+    } else if (categoryResponse.status !== 404) {
+      throw new Error(`Failed to fetch category: ${categoryResponse.status}`);
     }
 
-    const url = buildWordPressUrl('posts', params);
-    const response = await fetch(url, createFetchOptions(1800));
-    
-    return await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch posts by category');
+    if (wordpressCategoryId) {
+      const params: Record<string, string | number> = {
+        _embed: '',
+        per_page: limit + Math.max(0, limit - localPosts.length),
+        categories: wordpressCategoryId,
+        orderby: 'date',
+        order: 'desc',
+      };
+
+      if (excludePostId) {
+        params.exclude = excludePostId;
+      }
+
+      const response = await fetch(buildWordPressUrl('posts', params), createFetchOptions(1800));
+
+      if (response.ok) {
+        wordpressPosts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch posts by category');
+      }
+    }
+
+    const combined = mergeAndSortPosts(
+      localPosts,
+      wordpressPosts.filter((post) => post.id !== excludePostId),
+    );
+
+    return combined.slice(0, limit);
   } catch (error) {
     logError(`getPostsByCategory(${categorySlug})`, error);
-    return [];
+    return localPosts;
   }
 };
 
 // Get popular posts (by comment count or custom meta)
 export const getPopularPosts = async (limit: number = 6): Promise<WordPressPost[]> => {
+  const localPosts = (await getAllLocalPosts()).slice(0, limit);
+
   try {
     const url = buildWordPressUrl('posts', {
       _embed: '',
@@ -549,16 +723,23 @@ export const getPopularPosts = async (limit: number = 6): Promise<WordPressPost[
     });
     
     const response = await fetch(url, createFetchOptions(3600)); // Cache for 1 hour
-    return await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch popular posts');
+    const wordpressPosts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch popular posts');
+
+    return mergeUniquePosts(wordpressPosts, localPosts).slice(0, limit);
   } catch (error) {
     logError('getPopularPosts', error);
-    return [];
+    return localPosts;
   }
 };
 
 // Enhanced function to get posts with categories and tags data
 export const getPostWithMetadata = async (slug: string): Promise<WordPressPost | null> => {
   try {
+    const localPost = await getLocalPostBySlug(slug);
+    if (localPost) {
+      return localPost;
+    }
+
     const url = buildWordPressUrl('posts', {
       _embed: '',
       slug
@@ -576,6 +757,11 @@ export const getPostWithMetadata = async (slug: string): Promise<WordPressPost |
 
 export const getCategoryBySlug = async (slug: string): Promise<WordPressCategory | null> => {
   try {
+    const localCategory = await getLocalCategoryBySlug(slug);
+    if (localCategory) {
+      return localCategory;
+    }
+
     const url = buildWordPressUrl('categories', { slug });
     const response = await fetch(url, createFetchOptions());
     const categories = await handleApiResponse<WordPressCategory[]>(response, 'Failed to fetch category by slug');

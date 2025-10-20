@@ -37,14 +37,15 @@ const getPostCountText = (count: number): string => {
 };
 
 const PostCard = ({ post }: { post: WordPressPost }) => {
-  const slug = post.link.split('/').filter(Boolean).pop();
+  const slug = post.slug || post.link.split('/').filter(Boolean).pop() || '';
+  const href = slug.startsWith('/') ? slug : `/${slug}`;
   const formattedDate = formatDate(post.date);
   const hasFeaturedImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
 
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col transition-shadow hover:shadow-lg">
       {hasFeaturedImage && (
-        <Link href={`/${slug}`} aria-label={`Prečítať článok ${post.title.rendered}`}>
+        <Link href={href} aria-label={`Prečítať článok ${post.title.rendered}`}>
           <div className="relative h-48 w-full">
             <Image
               src={post._embedded?.['wp:featuredmedia']?.[0]?.source_url || ''}
@@ -61,12 +62,12 @@ const PostCard = ({ post }: { post: WordPressPost }) => {
           {formattedDate}
         </time>
         <h3 className="text-lg font-semibold mb-3 flex-grow">
-          <Link href={`/${slug}`} className="hover:text-green-600 transition-colors line-clamp-2">
+          <Link href={href} className="hover:text-green-600 transition-colors line-clamp-2">
             <span dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
           </Link>
         </h3>
         <Link
-          href={`/${slug}`}
+          href={href}
           className="mt-auto inline-flex items-center text-green-700 font-medium hover:underline self-start"
           aria-label={`Pokračovať v čítaní ${post.title.rendered}`}
         >
