@@ -103,6 +103,27 @@ body {
   @apply shadow-xl transform scale-[1.02] rounded-2xl;
 }
 
+/* Responsive tables in blog content */
+.prose table {
+  @apply block w-full overflow-x-auto whitespace-nowrap border border-gray-200 rounded-xl shadow-sm;
+}
+
+.prose table thead {
+  @apply bg-emerald-50 text-left;
+}
+
+.prose table th {
+  @apply px-4 py-3 text-sm font-semibold text-gray-700 border border-emerald-100;
+}
+
+.prose table td {
+  @apply px-4 py-3 text-sm text-gray-600 border border-gray-200;
+}
+
+.prose table tbody tr:nth-child(even) {
+  @apply bg-gray-50/70;
+}
+
 @keyframes slide-up {
   0% {
     opacity: 0;

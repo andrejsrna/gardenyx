@@ -638,7 +638,9 @@ export default async function BlogPost({ params }: { params: tParams }) {
                      prose-blockquote:border-green-600 prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-6
                      prose-ul:list-disc prose-ol:list-decimal
                      [&_figure]:!mx-auto [&_figure_img]:!mx-auto [&_figure_figcaption]:text-center
-                     [&_img]:!relative [&_img]:!h-auto [&_img]:!w-auto`;
+                     [&_img]:!relative [&_img]:!h-auto [&_img]:!w-auto
+                     [&_table]:w-full [&_table]:border [&_table]:border-gray-200 [&_table]:rounded-xl
+                     [&_table th]:bg-emerald-50 [&_table th]:text-sm [&_table td]:text-sm [&_table]:min-w-[640px]`;
 
   const breadcrumbItems = [
     { name: 'Domov', url: siteUrl },
@@ -734,10 +736,12 @@ export default async function BlogPost({ params }: { params: tParams }) {
 
         {contentSplit ? (
           <>
-            <div
-              className={articleBodyClasses}
-              dangerouslySetInnerHTML={{ __html: contentSplit.before }}
-            />
+            <div className="overflow-x-auto pb-4 w-full">
+              <div
+                className={articleBodyClasses}
+                dangerouslySetInnerHTML={{ __html: contentSplit.before }}
+              />
+            </div>
             <div className="my-12">
               <BlogProductWidget 
                 productIds={productRecommendation.ids}
@@ -746,18 +750,22 @@ export default async function BlogPost({ params }: { params: tParams }) {
               />
             </div>
             {contentSplit.after.trim() && (
-              <div
-                className={articleBodyClasses}
-                dangerouslySetInnerHTML={{ __html: contentSplit.after }}
-              />
+              <div className="overflow-x-auto pb-4 w-full">
+                <div
+                  className={articleBodyClasses}
+                  dangerouslySetInnerHTML={{ __html: contentSplit.after }}
+                />
+              </div>
             )}
           </>
         ) : (
           <>
-            <div
-              className={articleBodyClasses}
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
+            <div className="overflow-x-auto pb-4 w-full">
+              <div
+                className={articleBodyClasses}
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </div>
             <div className="my-12">
               <BlogProductWidget 
                 productIds={productRecommendation.ids}

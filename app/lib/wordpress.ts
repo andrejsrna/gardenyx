@@ -60,14 +60,34 @@ const createFetchOptions = (revalidate: number = CACHE_DURATION) => ({
   next: { revalidate }
 });
 
+class WordPressTimeoutError extends Error {
+  status?: number;
+
+  constructor(message: string, status?: number) {
+    super(message);
+    this.name = 'WordPressTimeoutError';
+    this.status = status;
+  }
+}
+
+const isGatewayTimeoutStatus = (status?: number): boolean =>
+  status === 524 || status === 504 || status === 502;
+
 const handleApiResponse = async <T>(response: Response, errorMessage: string): Promise<T> => {
   if (!response.ok) {
+    if (isGatewayTimeoutStatus(response.status)) {
+      throw new WordPressTimeoutError(`${errorMessage}: ${response.status}`, response.status);
+    }
     throw new Error(`${errorMessage}: ${response.status}`);
   }
   return response.json();
 };
 
 const logError = (context: string, error: unknown): void => {
+  if (error instanceof WordPressTimeoutError) {
+    console.warn(`WordPress timeout in ${context}:`, error.message);
+    return;
+  }
   console.error(`Error in ${context}:`, error);
 };
 
@@ -163,11 +183,8 @@ const collectStandardWordPressPosts = async (
     const url = buildWordPressUrl('posts', params);
     const response = await fetch(url, createFetchOptions());
 
-    if (!response.ok) {
-      if (response.status === 400) {
-        break;
-      }
-      throw new Error(`Failed to fetch paginated posts: ${response.status}`);
+    if (response.status === 400) {
+      break;
     }
 
     const pagePosts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch paginated posts');
@@ -217,11 +234,8 @@ const collectSearchWordPressPosts = async (
     const url = `${WORDPRESS_URL}/wp-json/relevanssi/v1/search?${params.toString()}`;
     const response = await fetch(url, createFetchOptions());
 
-    if (!response.ok) {
-      if (response.status === 400) {
-        break;
-      }
-      throw new Error(`Failed to fetch search results from Relevanssi: ${response.status}`);
+    if (response.status === 400) {
+      break;
     }
 
     const pagePosts = await handleApiResponse<WordPressPost[]>(response, 'Failed to fetch search results from Relevanssi');
@@ -276,6 +290,10 @@ export const getPostBySlug = async (slug: string): Promise<WordPressPost | null>
     const localPost = await getLocalPostBySlug(slug);
     if (localPost) {
       return localPost;
+    }
+
+    if (slug.startsWith('.well-known')) {
+      return null;
     }
 
     const url = buildWordPressUrl('posts', {

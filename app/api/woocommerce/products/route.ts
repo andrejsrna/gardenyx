@@ -82,6 +82,13 @@ export async function GET(request: Request) {
                 message: wcError.message
             });
 
+            if (wcError.response?.status && [502, 504, 524].includes(wcError.response.status)) {
+                return NextResponse.json(
+                    { message: 'WooCommerce server is taking too long to respond. Please try again shortly.' },
+                    { status: 504 }
+                );
+            }
+
             return NextResponse.json(
                 {message: wcError.response?.data?.message || 'Failed to fetch products'},
                 {status: wcError.response?.status || 500}
