@@ -68,15 +68,36 @@ export default function Cart({onCloseAction}: CartProps) {
         <div className="flex flex-col h-full max-h-[80vh] bg-white rounded-lg shadow-lg">
             {/* Header */}
             <div className="p-4 border-b border-gray-200 flex-shrink-0">
-                {!isLoading && userName && (
-                    <div className="mb-2">
-          <span
-              className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-            Ahoj, {userName}!
-          </span>
+                <div className="flex items-start justify-between gap-4">
+                    <div>
+                        {!isLoading && userName && (
+                            <span className="mb-1 inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                Ahoj, {userName}!
+                            </span>
+                        )}
+                        <h2 className="text-lg font-semibold text-gray-900">Košík ({totalItems})</h2>
                     </div>
-                )}
-                <h2 className="text-lg font-semibold text-gray-900">Košík ({totalItems})</h2>
+                    <button
+                        onClick={onCloseAction}
+                        aria-label="Zavrieť košík"
+                        className="rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="h-5 w-5"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             {/* Scrollable items */}

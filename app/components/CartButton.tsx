@@ -1,11 +1,14 @@
 'use client';
 
 import { ShoppingCart } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useCart } from '../context/CartContext';
 import Cart from './Cart';
 
 export default function CartButton() {
   const { totalItems, isCartOpen, openCart, closeCart } = useCart();
+  const cartContainerRef = useRef<HTMLDivElement>(null);
+  const cartButtonRef = useRef<HTMLButtonElement>(null);
 
   const toggleCart = () => {
     if (isCartOpen) {
@@ -15,9 +18,30 @@ export default function CartButton() {
     }
   };
 
+  useEffect(() => {
+    if (!isCartOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const cartElement = cartContainerRef.current;
+      const buttonElement = cartButtonRef.current;
+      const target = event.target as Node;
+
+      if (!cartElement || cartElement.contains(target)) return;
+      if (buttonElement && buttonElement.contains(target)) return;
+
+      closeCart();
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [isCartOpen, closeCart]);
+
   return (
     <div className="relative">
       <button
+        ref={cartButtonRef}
         data-cart-button
         onClick={toggleCart}
         className="relative p-2 text-gray-600 hover:text-green-600 transition-colors"
@@ -37,8 +61,10 @@ export default function CartButton() {
           <div
             className="fixed inset-0 z-40 bg-gradient-to-b from-transparent via-slate-900/45 to-slate-950/60 backdrop-blur-[2px]"
             onClick={closeCart}
+            role="presentation"
           />
           <div
+            ref={cartContainerRef}
             className={`
               fixed top-16 left-4 right-4 max-h-[75vh] overflow-y-auto
               sm:absolute sm:right-0 sm:left-auto sm:top-full sm:mt-2 sm:max-h-none sm:w-96

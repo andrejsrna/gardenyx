@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import CartButton from './CartButton';
 
 const INGREDIENTS_SUBMENU = [
@@ -32,6 +33,7 @@ const SECONDARY_LINKS = [
 
 export default function Header() {
   const { customerData, isLoading } = useAuth();
+  const { closeCart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isIngredientsOpen, setIsIngredientsOpen] = useState(false);
   const [customerName, setCustomerName] = useState<string>('používateľ');
@@ -41,6 +43,7 @@ export default function Header() {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
+      setIsIngredientsOpen(false);
     }
   }, [isMobileMenuOpen]);
 
@@ -146,7 +149,10 @@ export default function Header() {
 
             <button
               className="rounded-full bg-white/70 p-2 shadow-sm ring-1 ring-emerald-100 transition-all duration-200 hover:bg-white lg:hidden"
-              onClick={() => setIsMobileMenuOpen(true)}
+              onClick={() => {
+                closeCart();
+                setIsMobileMenuOpen(true);
+              }}
               aria-label="Otvoriť menu"
             >
               <Menu className="w-6 h-6 text-emerald-600" />
@@ -156,9 +162,9 @@ export default function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-gradient-to-b from-white via-white to-emerald-50 lg:hidden">
+        <div className="fixed inset-0 z-50 flex min-h-screen flex-col bg-gradient-to-b from-white via-white to-emerald-50 lg:hidden">
           <div className="container mx-auto px-4">
-            <div className="flex justify-between items-center h-20">
+            <div className="flex h-20 items-center justify-between">
               <Link href="/" className="relative" onClick={() => setIsMobileMenuOpen(false)}>
                 <Image
                   src="/logo.png"
@@ -173,15 +179,13 @@ export default function Header() {
                 <Link
                   href="/moj-ucet"
                   className="group relative flex items-center gap-2 rounded-full bg-white/70 p-2 text-slate-600 transition-all hover:text-emerald-700"
-                  title={customerData ? `Prihlásený ako ${customerData.first_name || customerData.billing?.first_name}` : "Môj účet"}
+                  title={customerData ? `Prihlásený ako ${customerData.first_name || customerData.billing?.first_name}` : 'Môj účet'}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {isLoading ? (
-                    <div className="w-6 h-6 animate-pulse bg-gray-200 rounded-full" />
-                  ) : customerData ? (
-                    <UserIcon className="w-6 h-6" />
+                    <div className="h-6 w-6 animate-pulse rounded-full bg-gray-200" />
                   ) : (
-                    <UserIcon className="w-6 h-6" />
+                    <UserIcon className="h-6 w-6" />
                   )}
                 </Link>
                 <CartButton />
@@ -190,71 +194,75 @@ export default function Header() {
                   aria-label="Zavrieť menu"
                   className="rounded-full bg-white/70 p-2 text-emerald-600 shadow-sm ring-1 ring-emerald-100 transition-all duration-200 hover:bg-white"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="h-6 w-6" />
                 </button>
               </div>
             </div>
-            <div className="pb-12">
-              <nav className="flex flex-col gap-2">
-                {PRIMARY_LINKS.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-2xl bg-white/70 px-4 py-3 text-lg font-semibold text-slate-700 shadow-sm ring-1 ring-emerald-100 transition-all hover:bg-white"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.title}
-                  </Link>
-                ))}
-                <div className="rounded-2xl bg-white/70 px-4 py-3 shadow-sm ring-1 ring-emerald-100">
-                  <button
-                    className="flex w-full items-center justify-between text-lg font-semibold text-slate-700"
-                    onClick={() => setIsIngredientsOpen(!isIngredientsOpen)}
-                  >
-                    Zloženie
-                    <ChevronDown className={`w-5 h-5 transition-transform ${isIngredientsOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isIngredientsOpen && (
-                    <div className="mt-3 space-y-2 border-t border-emerald-100 pt-3">
-                      <Link
-                        href="/zlozenie"
-                        className="block rounded-xl px-3 py-2 text-base font-medium text-emerald-700 transition-colors hover:bg-emerald-50"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Všetky zložky
-                      </Link>
-                      {INGREDIENTS_SUBMENU.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="block rounded-xl px-3 py-2 text-base font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          {item.title}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {SECONDARY_LINKS.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-2xl bg-white/70 px-4 py-3 text-lg font-semibold text-slate-700 shadow-sm ring-1 ring-emerald-100 transition-all hover:bg-white"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.title}
-                  </Link>
-                ))}
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            <nav className="container mx-auto flex flex-col gap-2 px-4 pb-12">
+              {PRIMARY_LINKS.map((item) => (
                 <Link
-                  href="/kupit"
-                  className="mt-6 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 px-6 py-3 text-lg font-semibold text-white shadow-lg shadow-emerald-200/50 transition-transform duration-200 hover:-translate-y-0.5"
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-2xl bg-white/70 px-4 py-3 text-lg font-semibold text-slate-700 shadow-sm ring-1 ring-emerald-100 transition-all hover:bg-white"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Naše produkty
+                  {item.title}
                 </Link>
-              </nav>
-            </div>
+              ))}
+
+              <div className="rounded-2xl bg-white/70 px-4 py-3 shadow-sm ring-1 ring-emerald-100">
+                <button
+                  className="flex w-full items-center justify-between text-lg font-semibold text-slate-700"
+                  onClick={() => setIsIngredientsOpen((prev) => !prev)}
+                >
+                  Zloženie
+                  <ChevronDown className={`h-5 w-5 transition-transform ${isIngredientsOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isIngredientsOpen && (
+                  <div className="mt-3 space-y-2 border-t border-emerald-100 pt-3">
+                    <Link
+                      href="/zlozenie"
+                      className="block rounded-xl px-3 py-2 text-base font-medium text-emerald-700 transition-colors hover:bg-emerald-50"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Všetky zložky
+                    </Link>
+                    {INGREDIENTS_SUBMENU.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block rounded-xl px-3 py-2 text-base font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {SECONDARY_LINKS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-2xl bg-white/70 px-4 py-3 text-lg font-semibold text-slate-700 shadow-sm ring-1 ring-emerald-100 transition-all hover:bg-white"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.title}
+                </Link>
+              ))}
+
+              <Link
+                href="/kupit"
+                className="mt-6 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 px-6 py-3 text-lg font-semibold text-white shadow-lg shadow-emerald-200/50 transition-transform duration-200 hover:-translate-y-0.5"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Naše produkty
+              </Link>
+            </nav>
           </div>
         </div>
       )}
