@@ -15,7 +15,7 @@ seoImage: "https://cdn.najsilnejsiaklbovavyziva.sk/2024/06/bolestpalca.webp"
 canonicalUrl: "https://najsilnejsiaklbovavyziva.sk/bolest-palca-na-ruke"
 ---
 
-Palec je „premiantom“ ruky – vďaka nemu dokážeme uchopiť, stláčať a manipulovať s drobnými predmetmi. Keď sa objaví bolesť pri ohybe, tŕpnutie alebo slabosť palca, každodenné činnosti sa stávajú náročnými. Najčastejšie za tým stoja preťaženie, úraz alebo začínajúca artróza. V článku vysvetlíme, čo všetko môže bolesť palca na ruke spôsobiť, ako ju lekári diagnostikujú a ktoré postupy prinášajú úľavu.
+Palec je „premiantom“ ruky – vďaka nemu dokážeme uchopiť, stláčať a manipulovať s drobnými predmetmi. Keď sa objaví bolesť pri ohybe, tŕpnutie alebo slabosť palca, každodenné činnosti sa stávajú náročnými. Najčastejšie za tým stoja preťaženie, úraz alebo začínajúca artróza, ale problémy môže spustiť aj prítomný opuch či zápal (pozri [Opuch kĺbu na prste ruky](https://najsilnejsiaklbovavyziva.sk/opuch-klbu-na-prste-ruky)). V článku vysvetlíme, čo všetko môže bolesť palca na ruke spôsobiť, ako ju lekári diagnostikujú a ktoré postupy prinášajú úľavu.
 
 > **TIP:** Celkový prehľad o bolestiach prstov nájdete v článku [Bolesť kĺbov na prstoch ruky](https://najsilnejsiaklbovavyziva.sk/bolest-klbov-na-prstoch-ruky). Ak pozorujete zhrubnuté kĺby, pozrite si aj [Zhrubnuté kĺby na prstoch](https://najsilnejsiaklbovavyziva.sk/zhrubnute-klby-na-prstoch).
 
@@ -43,14 +43,17 @@ Zápal šliach palca a ich puzdra na zápästí. Prejavuje sa bolesťou na palco
 ### Úraz alebo preťaženie väzov
 Podvrtnutia, natrhnutia (napríklad tzv. „lyžiarsky palec“ – poranenie ulnárneho kolaterálneho väzu) spôsobujú ostrú bolesť, opuch a nestabilitu palca.
 
-### Zápal šliach a úponov (tendinitída)
-Opakované pohyby, manuálna práca alebo hra na nástroj môžu viesť k zápalu ohýbačov a natiahnutiu šliach.
+### Zápal šliach a úponov (tendinitída, „skákavý palec“)
+Opakované pohyby, manuálna práca alebo hra na nástroj môžu viesť k zápalu ohýbačov, kde sa šľacha zachytáva v úzke pošve. Ranné „zaseknutie“ palca je pre tento problém typické.
 
 ### Reumatoidná artritída a dna
 Autoimunitný zápal kĺbov či kryštály kyseliny močovej môžu spôsobiť opuch, bolesť a rannú stuhnutosť palca.
 
 ### Syndróm karpálneho tunela
 Útlak nervu v zápästí spôsobuje tŕpnutie, pálenie a slabosť palca, ukazováka a prostredníka.
+
+### Cervikálne alebo ramenné blokády
+Blokáda nervu v oblasti krčnej chrbtice či ramenného pletenca môže spôsobiť vystreľovanie bolesti do palca, aj keď samotný kĺb je na pohľad v poriadku.
 
 ## Ako sa bolesť prejavuje
 
@@ -74,23 +77,28 @@ Autoimunitný zápal kĺbov či kryštály kyseliny močovej môžu spôsobiť o
 - **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
 - **Ortózy:** palcové dlahy stabilizujú kĺb a znižujú bolesť pri ochoreniach ako de Quervain či artróza.  
 - **Zmena návykov:** pri práci s počítačom používajte ergonomickú myš a podložku, pri domácich prácach voľte pomôcky s hrubšou rúčkou.
+- **Lokálne injekcie:** pri výraznom zápale môže lekár doporučiť obstrek kortikoidom alebo kyselinou hyalurónovou priamo do problematického kĺbu.  
+- **Manuálna terapia a fyzioterapia:** mobilizácie karpálneho tunela, mäkké techniky a kineziotejping uvoľnia stiahnuté šľachy a zlepšia prekrvenie.  
+- **Úprava stravy:** pri dne obmedzte puríny (vnútornosti, údeniny) a zaraďte protizápalové potraviny ako losos, ľanový olej či kurkuma.
 
 ## Cvičenia a mobilita palca
 
 1. **Ohýbanie a vystieranie palca:** ruka na stole, pomaly ohýbajte palec k dlani a vystierajte (10 opakovaní).  
 2. **Opposícia palca:** dotýkajte sa palcom všetkých prstov a ťahajte po prste späť do východiskovej polohy.  
-3. **Gumička:** obtočte gumičku okolo prstov a roztvárajte palec proti odporu.  
-4. **Masáž loptou:** v dlani držte mäkkú loptičku, jemne ju stláčajte 10–15×.  
-5. **Strečing zápästia:** dlaňou smerom dole pritláčajte ruku druhou rukou – uvoľní to predlaktie a úpony palca.
+3. **Gumička:** obtočte gumičku okolo prstov a roztvárajte palec proti odporu, posilňuje abductory.  
+4. **Masáž loptou alebo valčekom:** v dlani držte mäkkú loptičku, jemne ju stláčajte 10–15×; valčekom prejdite od palca smerom k zápästiu.  
+5. **Strečing zápästia a predlaktia:** dlaňou smerom dole pritláčajte ruku druhou rukou; následne otoč dlane hore a naťahuj flexory.  
+6. **Uvoľnenie karpálneho tunela:** spoj dlane ako pri modlitbe, drž 20 sekúnd a opakuj – pomáha pri tŕpnutí palca.
 
 Viac cvikov a domácich tipov nájdete v článku [Domáce recepty na zápal šliach](https://najsilnejsiaklbovavyziva.sk/domace-recepty-na-zapal-sliach).
 
 ## Prevencia a správne návyky
 
-- **Striedajte činnosti:** pri práci na PC robte mikro prestávky každých 30 minút.  
-- **Ergonómia:** používajte nástroje s mäkkými rúčkami, pri športe dbajte na správne držanie.  
-- **Šetrite palec pri bolesti:** používajte ortézu, vyhnite sa rotačným pohybom a ťažkým úchopom.  
-- **Starajte sa o pokožku:** teplé parafínové kúpele alebo masáž esenciálnymi olejmi uvoľnia stuhnuté svaly.
+- **Striedajte činnosti:** pri práci na PC robte mikro prestávky každých 30 minút, meníte úchop a polohu ruky.  
+- **Ergonómia:** používajte nástroje s mäkkými rúčkami, pri športe dbajte na správne držanie; pri bicyklovaní tlmiace rukavice.  
+- **Šetrite palec pri bolesti:** používajte ortézu, vyhnite sa rotačným pohybom a ťažkým úchopom až do ústupu zápalu.  
+- **Starajte sa o pokožku a šľachy:** teplé parafínové kúpele alebo masáž esenciálnymi olejmi uvoľnia stuhnuté svaly, ľad pomôže po záťaži.  
+- **Posilňujte stred tela a ramená:** silné predlaktie a lopatkové svaly odľahčia drobné kĺby palca.
 
 ## Kedy vyhľadať lekára
 
@@ -116,6 +124,9 @@ Krátkodobé preťaženie je bežné. Ak sa bolesť opakuje, znížte čas strá
 
 **Môže bolesť palca súvisieť s krčnou chrbticou?**  
 Áno, nervové dráždenie v oblasti krku môže vyžarovať do palca. Pri tŕpnutí navštívte neurológa alebo fyzioterapeuta.
+
+**Pomôžu injekcie do kĺbu?**  
+Pri silnej bolesti palcovo-zápästného kĺbu alebo de Quervainovej chorobe môže ortopéd aplikovať kortikoid či kyselinu hyalurónovú. Úľava býva rýchla, no postup treba kombinovať s rehabilitáciou.
 
 ## Zhrnutie
 

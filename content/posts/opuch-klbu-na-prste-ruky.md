@@ -15,7 +15,7 @@ seoImage: "https://cdn.najsilnejsiaklbovavyziva.sk/2024/05/opuchklbu.webp"
 canonicalUrl: "https://najsilnejsiaklbovavyziva.sk/opuch-klbu-na-prste-ruky"
 ---
 
-Opuchnutý kĺb na prste ruky komplikuje bežné činnosti – písanie, úchop pohára či prácu na počítači. Opuch môže byť dôsledkom úrazu, akútneho zápalu, ale aj prvým signálom artrózy či reumatoidnej artritídy. Včasné odhalenie príčiny je kľúčové, aby sa predišlo trvalému poškodeniu drobných kĺbov. V článku nájdete najčastejšie príčiny, diagnostiku, liečebné postupy a praktické tipy, ako opuch zvládnuť.
+Opuchnutý kĺb na prste ruky komplikuje bežné činnosti – písanie, úchop pohára či prácu na počítači. Opuch môže byť dôsledkom úrazu, akútneho zápalu, ale aj prvým signálom artrózy či reumatoidnej artritídy. Včasné odhalenie príčiny je kľúčové, aby sa predišlo trvalému poškodeniu drobných kĺbov a obmedzeniu jemnej motoriky. V článku nájdete najčastejšie príčiny, diagnostiku, liečebné postupy a praktické tipy, ako opuch zvládnuť.
 
 > **TIP:** Ak je opuch spojený s bolesťou pri ohybe, pozrite si aj článok [Bolesť kĺbov na prstoch ruky](https://najsilnejsiaklbovavyziva.sk/bolest-klbov-na-prstoch-ruky).
 
@@ -35,25 +35,28 @@ Opuchnutý kĺb na prste ruky komplikuje bežné činnosti – písanie, úchop 
 ## Najčastejšie príčiny opuchu
 
 ### Osteoartritída
-Opotrebovanie chrupavky vedie k zmenám na kostiach, vzniku osteofytov a zhrubnutiu kĺbov (Heberdenove a Bouchardove uzly).
+Opotrebovanie chrupavky vedie k zmenám na kostiach, vzniku osteofytov a zhrubnutiu kĺbov (Heberdenove a Bouchardove uzly). Spoznáte ju podľa postupného stuhnutia, krčenia a bolestivého „rozbiehania sa“ počas dňa.
 
 ### Reumatoidná artritída
 Autoimunitný zápal spôsobuje symetrický opuch, bolesť a rannú stuhnutosť viacerých kĺbov.
 
 ### Psoriatická artritída
-Spája sa s psoriázou. Typický je „klobásový prst“ – difúzny opuch prsta vrátane nechtových zmien.
+Spája sa s psoriázou. Typický je „klobásový prst“ – difúzny opuch prsta vrátane nechtových zmien a začervenania kože.
 
 ### Dna alebo pseudodna
-Hromadenie kryštálov kyseliny močovej (dna) alebo pyrofosfátu vápnika (pseudodna) vyvoláva náhly bolestivý opuch kĺbu.
+Hromadenie kryštálov kyseliny močovej (dna) alebo pyrofosfátu vápnika (pseudodna) vyvoláva náhly bolestivý opuch kĺbu. Koža býva horúca, lesklá a dotyk je veľmi nepríjemný.
 
 ### Úrazy a mikrotraumy
 Zlomeniny, podvrtnutia a natrhnutia väzov vedú k lokálnemu opuchu, začervenaniu a obmedzeniu pohybu.
 
-### Infekce kĺbu (septická artritída)
-Ak sú prítomné horúčka, výrazné začervenanie a bolesť, môže ísť o infekciu vyžadujúcu urgentnú liečbu.
+### Infekcie kĺbu (septická artritída)
+Ak sú prítomné horúčka, výrazné začervenanie a bolesť, môže ísť o infekciu vyžadujúcu urgentnú liečbu. Nečakajte – okamžite kontaktujte lekára.
 
 ### Tendinitída a tenosynovitída
 Zápal šliach ohýbačov alebo natiahnutie („skákavý prst“) spôsobujú opuch a bolestivé „preskočenie“ pri ohybe.
+
+### Dupuytrenova kontraktúra
+Jazvovité zhrubnutie väzivových platničiek v dlani vytvára tvrdé uzlíky, ktoré sťahujú prsty do ohybu a navodzujú pocit opuchu.
 
 ### Cysty a gangliá
 Vaky s tekutinou pri kĺboch alebo šľachách sa prejavia viditeľnou hrčkou a tlakom v okolí kĺbu.
@@ -80,7 +83,9 @@ Vaky s tekutinou pri kĺboch alebo šľachách sa prejavia viditeľnou hrčkou a
 - **Lokálne gély:** diklofenak alebo ibuprofén vo forme gélu zmiernia zápal.  
 - **Ortézy a dlahy:** stabilizujú kĺb pri artritíde, športových úrazoch či „skákavom prste“.  
 - **Parafínové zábaly:** príjemné teplo uvoľní stuhnutosť (nie pri akútnom zápale).  
-- **Pri infekcii alebo silnej bolesti neváhajte vyhľadať lekára!**
+- **Jemná automasáž a elevácia:** masírujte prst od špičky smerom k dlani, aby sa znížil opuch, a ruku si pri oddychu podopri tak, aby bola vyššie ako srdce.  
+- **Úprava stravy:** pri dne obmedzte vnútornosti, údeniny a alkohol, pri zápalových diagnózach zaraďte omega-3 (losos, ľanové semienko), kurkumu alebo zázvor.  
+- **Pri infekcii alebo silnej bolesti neváhajte vyhľadať lekára!**  
 
 ## Cvičenia a mobilita prstov
 
@@ -93,11 +98,11 @@ Vaky s tekutinou pri kĺboch alebo šľachách sa prejavia viditeľnou hrčkou a
 
 ## Prevencia a návyky
 
-- vyhýbajte sa opakovaným pohybom bez prestávok,  
-- používajte ergonomické pomôcky a nástroje,  
-- chráňte prsty pred chladom a nárazmi,  
-- jedzte stravu bohatú na omega-3, vitamín C a kolagén,  
-- pravidelne cvičte, aby ste udržali kĺby pohyblivé.
+- vyhýbajte sa opakovaným pohybom bez prestávok, nastavte si pripomienky na krátke prestávky,  
+- používajte ergonomické pomôcky a nástroje, pri písaní na klávesnici si podlož zápästie,  
+- chráňte prsty pred chladom a nárazmi, v zime noste rukavice a pri práci s náradím tlmiace rukavice,  
+- jedzte stravu bohatú na omega-3, vitamín C a kolagén a dbajte na dostatok tekutín,  
+- pravidelne cvičte, aby ste udržali kĺby pohyblivé, a posilňujte aj predlaktie – lepšie rozloží záťaž na šľachy.
 
 ## Kedy vyhľadať lekára
 
@@ -123,6 +128,12 @@ Radšej nie. Pri „skákavom prste“ vyhľadajte rehabilitáciu alebo ortopéd
 
 **Pomôžu kompresné rukavice?**  
 Pri artróze alebo reumatoidnej artritíde môžu zlepšiť prekrvenie a znížiť stuhnutosť, no nenahrádzajú liečbu.
+
+**Kedy je opuch len tuková hrčka a kedy kĺbový problém?**  
+Mäkká posuvná hrčka bez bolesti býva lipóm, tvrdé a citlivé zhrubnutie však často súvisí s kĺbom. Ak si nie ste istí, nechajte hrčku vyšetriť ultrazvukom.
+
+**Bolesť sa presúva až do palca – čo s tým?**  
+Palec má pri úchope hlavnú stabilizačnú úlohu, preto sa k nemu opuch často „pripojí“. Pozrite aj článok [Bolesť palca na ruke](https://najsilnejsiaklbovavyziva.sk/bolest-palca-na-ruke), kde riešime špecifické diagnózy palcového kĺbu.
 
 ## Zhrnutie
 
