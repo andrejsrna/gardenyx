@@ -31,6 +31,9 @@ export default function BillingInformationSection({
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     const rawPhone = e.target.value;
     const formattedPhone = sanitizePhone(rawPhone);
+    const digitsCount = formattedPhone.replace(/\D/g, '').length;
+    const isValidPhone = formattedPhone === '' || /^\+\d{9,15}$/.test(formattedPhone);
+    const shouldShowError = formattedPhone !== '' && (!isValidPhone && digitsCount >= 9);
 
     const newFormData = {
       ...formData,
@@ -41,7 +44,7 @@ export default function BillingInformationSection({
     };
     
     onFormDataChange(newFormData);
-    setPhoneError(null);
+    setPhoneError(shouldShowError ? 'Zadajte celé telefónne číslo vrátane predvoľby (napr. +421904123456).' : null);
   };
 
   return (

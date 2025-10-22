@@ -126,9 +126,13 @@ export default function CheckoutClient() {
       if (savedData) {
         try {
           const parsedData = JSON.parse(savedData);
+          const sanitizedBilling = {
+            ...parsedData.billing,
+            phone: sanitizePhone(parsedData.billing?.phone || ''),
+          };
           setFormData(prev => ({
             ...prev,
-            billing: { ...prev.billing, ...parsedData.billing },
+            billing: { ...prev.billing, ...sanitizedBilling },
             shipping: { ...prev.shipping, ...parsedData.shipping },
             shipping_method: parsedData.shipping_method || prev.shipping_method,
             payment_method: parsedData.payment_method || prev.payment_method,
@@ -136,15 +140,15 @@ export default function CheckoutClient() {
             ...(parsedData.is_business && {
               billing: {
                 ...prev.billing,
-                ...parsedData.billing,
-                company: parsedData.billing?.company || '',
-                ic: parsedData.billing?.ic || '',
-                dic: parsedData.billing?.dic || '',
-                dic_dph: parsedData.billing?.dic_dph || '',
+                ...sanitizedBilling,
+                company: sanitizedBilling.company || '',
+                ic: sanitizedBilling.ic || '',
+                dic: sanitizedBilling.dic || '',
+                dic_dph: sanitizedBilling.dic_dph || '',
               }
             })
           }));
-          if (parsedData.shipping && parsedData.billing && JSON.stringify(parsedData.shipping) === JSON.stringify(updateShippingFromBilling(parsedData.billing, parsedData.shipping))) {
+          if (parsedData.shipping && parsedData.billing && JSON.stringify(parsedData.shipping) === JSON.stringify(updateShippingFromBilling(sanitizedBilling, parsedData.shipping))) {
             setSameAsShipping(true);
           }
         } catch (error) {
@@ -191,7 +195,7 @@ export default function CheckoutClient() {
           postcode: customerData.billing?.postcode || '',
           country: 'SK',
           email: customerData.billing?.email || customerData.email || '',
-          phone: customerData.billing?.phone || '',
+          phone: sanitizePhone(customerData.billing?.phone || ''),
           ic: customerData.meta_data?.find(m => m.key === 'billing_ic')?.value || '',
           dic: customerData.meta_data?.find(m => m.key === 'billing_dic')?.value || '',
           dic_dph: customerData.meta_data?.find(m => m.key === 'billing_dic_dph')?.value || '',
@@ -293,6 +297,11 @@ export default function CheckoutClient() {
         },
       };
 
+      if (!sanitizedData.billing.phone || !/^\+\d{9,15}$/.test(sanitizedData.billing.phone)) {
+        setPhoneError('Zadajte telefónne číslo vo formáte +421XXXXXXXXX.');
+        return false;
+      }
+
       if (formData.is_business) {
         if (!sanitizedData.billing.company?.trim()) {
           throw new Error('Názov firmy je povinný pre firemné objednávky');
@@ -355,7 +364,7 @@ export default function CheckoutClient() {
       }
       return false;
     }
-  }, [formData, setFormErrors]);
+  }, [formData, setFormErrors, setPhoneError]);
 
   // Form submission
   const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {

@@ -165,7 +165,7 @@ async function createPacketaPacket(orderData: OrderData, orderId: number, total:
             name: orderData.shipping.first_name,
             surname: orderData.shipping.last_name,
             email: orderData.billing.email,
-            phone: orderData.billing.phone.replace(/\s/g, ''), // Ensure phone has no spaces for Packeta
+            phone: orderData.billing.phone.replace(/[^\d]/g, ''), // Ensure phone contains only digits for Packeta
             value: total.toString(),
             currency: 'EUR',
             weight: calculateTotalWeight(orderData.line_items).toString(),

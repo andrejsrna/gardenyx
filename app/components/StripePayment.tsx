@@ -42,6 +42,11 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 interface StripePaymentFormProps {
   clientSecret: string;
+  billingDetails?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
   onSuccess?: () => void;
   onError?: (error: string) => void;
 }
@@ -80,7 +85,7 @@ interface ShippingInfo {
   country: string;
 }
 
-function StripePaymentForm({ clientSecret, onSuccess, onError }: StripePaymentFormProps) {
+function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }: StripePaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -143,10 +148,21 @@ function StripePaymentForm({ clientSecret, onSuccess, onError }: StripePaymentFo
 
     try {
 
+      const paymentMethodData: Record<string, unknown> = {};
+      if (billingDetails) {
+        const normalizedPhone = billingDetails.phone && /^\+\d{9,15}$/.test(billingDetails.phone) ? billingDetails.phone : undefined;
+        paymentMethodData.billing_details = {
+          ...(billingDetails.name ? { name: billingDetails.name } : {}),
+          ...(billingDetails.email ? { email: billingDetails.email } : {}),
+          ...(normalizedPhone ? { phone: normalizedPhone } : {}),
+        };
+      }
+
       const { error: confirmError } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           return_url: undefined,
+          payment_method_data: Object.keys(paymentMethodData).length ? paymentMethodData : undefined,
         },
         redirect: 'if_required',
       });
@@ -715,6 +731,11 @@ export default function StripePayment({
           >
             <StripePaymentForm
               clientSecret={clientSecret}
+              billingDetails={{
+                name: [billing?.first_name, billing?.last_name].filter(Boolean).join(' ').trim() || undefined,
+                email: billing?.email || undefined,
+                phone: billing?.phone || undefined,
+              }}
               onSuccess={onSuccess}
               onError={onError}
             />

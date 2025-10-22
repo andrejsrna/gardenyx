@@ -14,28 +14,27 @@ export function sanitizePostcode(input: string): string {
 
 // Funkcia na formátovanie a sanitizáciu telefónneho čísla
 export function sanitizePhone(input: string): string {
-  // Odstránenie všetkých medzier a nečíselných znakov okrem +
-  const cleaned = input.replace(/[^\d+]/g, '');
+  if (!input) return '';
 
-  // Formátovanie podľa typu čísla
-  if (cleaned.startsWith('+421')) {
-    // Formát: +421 XXX XXX XXX
-    if (cleaned.length >= 13) {
-      return `+421 ${cleaned.substring(4, 7)} ${cleaned.substring(7, 10)} ${cleaned.substring(10, 13)}`.trim();
-    }
-  } else if (cleaned.startsWith('00421')) {
-    // Konverzia 00421 na +421
-    const withPlus = '+421' + cleaned.substring(5);
-    if (withPlus.length >= 13) {
-      return `+421 ${withPlus.substring(4, 7)} ${withPlus.substring(7, 10)} ${withPlus.substring(10, 13)}`.trim();
-    }
-  } else if (cleaned.startsWith('0')) {
-    // Formát: 0XXX XXX XXX
-    if (cleaned.length >= 10) {
-      return `${cleaned.substring(0, 4)} ${cleaned.substring(4, 7)} ${cleaned.substring(7, 10)}`.trim();
-    }
+  // Remove spaces and keep only leading + and digits
+  let cleaned = input.replace(/[^\d+]/g, '').replace(/(?!^)[+]/g, '');
+
+  if (!cleaned) {
+    return '';
   }
 
-  // Ak nezodpovedá žiadnemu formátu, vrátime vyčistený vstup
-  return cleaned;
+  // Handle Slovak numbers convenience
+  if (cleaned.startsWith('00421')) {
+    cleaned = '+421' + cleaned.substring(5);
+  } else if (cleaned.startsWith('+421')) {
+    cleaned = '+' + cleaned.substring(1).replace(/\D/g, '');
+  } else if (cleaned.startsWith('0') && cleaned.length >= 9) {
+    cleaned = '+421' + cleaned.substring(1);
+  } else if (!cleaned.startsWith('+')) {
+    cleaned = '+' + cleaned.replace(/\D/g, '');
+  }
+
+  // Ensure only digits after plus
+  const normalized = '+' + cleaned.slice(1).replace(/\D/g, '');
+  return normalized;
 }
