@@ -151,7 +151,7 @@ Prevencia a efektívny manažment nočných bolestí kĺbov zohrávajú kľúčo
 
 ### Ergonomické úpravy spálne
 
-    - **Matrac a vankúš**: Výber [správneho matraca](https://www.acko.sk/c/spalna1/kvalitne-matrace-ruzomberok) a vankúša, ktoré podporujú správne držanie tela počas spánku, môže pomôcť zmierniť bolesti kĺbov. Ortopedické alebo špecializované matrace a vankúše môžu byť užitočné.
+- **Matrac a vankúš**: Výber [správneho matraca](https://www.acko.sk/c/spalna1/kvalitne-matrace-ruzomberok) a vankúša, ktoré podporujú správne držanie tela počas spánku, môže pomôcť zmierniť bolesti kĺbov. Ortopedické alebo špecializované matrace a vankúše môžu byť užitočné.
 - **Poloha pri spánku**: Nájdenie najpohodlnejšej polohy na spanie, ktorá minimalizuje napätie na kĺboch, môže pomôcť zlepšiť kvalitu spánku. Napríklad, spánok na boku s vankúšom medzi kolenami môže zmierniť tlak na bedrové a kolenné kĺby.
 
 ### Ďalšie tipy na prevenciu a manažment
