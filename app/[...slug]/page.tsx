@@ -678,19 +678,15 @@ export default async function BlogPost({ params }: { params: tParams }) {
         />
       </div>
       <div className="relative w-full h-[45vh] min-h-[320px] md:h-[60vh] md:min-h-[400px] max-h-[600px]">
-        {post._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
-          <div className="relative w-full h-full">
-            <FeaturedImageWithFallback
-              src={post._embedded['wp:featuredmedia'][0].source_url}
-              alt={post.title.rendered}
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
-          </div>
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800" />
-        )}
+        <div className="relative w-full h-full">
+          <FeaturedImageWithFallback
+            src={post._embedded?.['wp:featuredmedia']?.[0]?.source_url}
+            alt={post.title.rendered}
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="absolute inset-0 flex items-center justify-center">

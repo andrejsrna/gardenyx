@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { WordPressPost } from '@/app/lib/wordpress';
+import FeaturedImageWithFallback from '../FeaturedImageWithFallback';
 
 const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {
     const slug = post.slug || post.link.split('/').filter(Boolean).pop() || '';
@@ -15,21 +15,17 @@ const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {
 
     return (
         <article className="bg-white rounded-lg shadow-md overflow-hidden group">
-            {featuredImage && (
-                <Link href={href}>
-                    <div className="relative h-48">
-                        <Image
-                            src={featuredImage}
-                            alt={post.title.rendered}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 50vw, 33vw"
-                            className="object-cover transition-transform duration-300 group-hover:scale-105"
-                            loading={isPriority ? "eager" : "lazy"}
-                            fetchPriority={isPriority ? "high" : undefined}
-                        />
-                    </div>
-                </Link>
-            )}
+            <Link href={href}>
+                <div className="relative h-48 overflow-hidden">
+                    <FeaturedImageWithFallback
+                        src={featuredImage}
+                        alt={post.title.rendered}
+                        sizes="(max-width: 768px) 100vw, 50vw, 33vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        priority={isPriority}
+                    />
+                </div>
+            </Link>
             <div className="p-6 flex flex-col">
                 <time className="text-sm text-gray-500 mb-2 block">
                     {formattedDate}
