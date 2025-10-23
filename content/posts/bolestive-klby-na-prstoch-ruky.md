@@ -57,7 +57,7 @@ Kancelárska práca, klimatizácia či zimná sezóna môžu zhoršiť prekrveni
 ### Ďalšie faktory
 - hormonálne zmeny (menopauza, tehotenstvo),  
 - cukrovka a metabolické poruchy,  
-- dlhodobý stres a nedostatok spánku, ktoré zvyšujú hladiny zápalových markerov; dobré je dbať aj na výber [správneho matraca](https://www.acko.sk/c/spalna1/kvalitne-matrace-ruzomberok), ktorý podporí kvalitný odpočinok.
+- dlhodobý stres a nedostatok spánku, ktoré zvyšujú hladiny zápalových markerov; ak ťa trápi bolesť po nociach, pomôžu tipy z článku [Bolesť kĺbov v noci – 7 dôležitých informácií](https://najsilnejsiaklbovavyziva.sk/bolest-klbov-v-noci).
 
 ---
 
