@@ -5,14 +5,14 @@ date: "2025-06-21"
 updated: "2025-06-21"
 excerpt: "Cítiš blížiaci sa dážď skôr než meteorológovia? Zisti, prečo kĺby pri zmene počasia reagujú bolesťou, ako do toho vstupuje tlak, vlhkosť a teplota a čo môžeš urobiť pre rýchlu úľavu."
 author: "Andrej Srna"
-coverImage: "https://cdn.najsilnejsiaklbovavyziva.sk/2025/06/meteosenzitivita-klby.jpg"
+coverImage: "/articles/meteosenzi.jpeg"
 tags: []
 categories:
   - "Problémy s kĺbmi"
 seoTitle: "Prečo bolia kĺby pri zmene počasia? Meteosenzitivita vysvetlená + tipy na úľavu"
 seoDescription: "Bolí ťa koleno alebo prsty vždy, keď sa mení počasie? Zisti, prečo kĺby reagujú na tlak a vlhkosť, čo je meteosenzitivita a ako zmierniť bolesť prírodne aj výživou."
-seoImage: "https://cdn.najsilnejsiaklbovavyziva.sk/2025/06/meteosenzitivita-klby.jpg"
-canonicalUrl: "https://najsilnejsiaklbovavyziva.sk/preco-bolia-klby-pri-zmene-pocasia"
+seoImage: "/articles/meteosenzi.jpeg"
+canonicalUrl: "/articles/meteosenzi.jpeg"
 ---
 
 ## Úvod
