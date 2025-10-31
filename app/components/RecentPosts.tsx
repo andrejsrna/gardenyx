@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { getLatestPosts } from '../lib/wordpress';
 import type { WordPressPost } from '../lib/wordpress';
+import FeaturedImageWithFallback from './FeaturedImageWithFallback';
 
 export default async function RecentPosts() {
   const posts = await getLatestPosts(3);
@@ -15,25 +15,25 @@ export default async function RecentPosts() {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {posts.map((post: WordPressPost) => {
+          {posts.map((post: WordPressPost, index: number) => {
             const slug = post.slug || post.link.split('/').filter(Boolean).pop() || '';
             const href = slug.startsWith('/') ? slug : `/${slug}`;
+            const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+            const isPriority = index === 0;
 
             return (
               <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                {post._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
-                  <Link href={href}>
-                    <div className="relative h-48">
-                      <Image
-                        src={post._embedded['wp:featuredmedia'][0].source_url}
-                        alt={post.title.rendered}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform hover:scale-105"
-                      />
-                    </div>
-                  </Link>
-                )}
+                <Link href={href}>
+                  <div className="relative h-48 overflow-hidden">
+                    <FeaturedImageWithFallback
+                      src={featuredImage}
+                      alt={post.title.rendered}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-300 hover:scale-105"
+                      priority={isPriority}
+                    />
+                  </div>
+                </Link>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">
                     <Link href={href} className="hover:text-green-600 transition-colors">
