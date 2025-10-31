@@ -5,13 +5,13 @@ date: "2025-10-22"
 updated: "2025-10-22"
 excerpt: "Bolestivé kĺby na prstoch ruky môžu signalizovať preťaženie, artrózu aj zápal. V článku nájdeš príčiny, príznaky, overenú liečbu a tipy, ako uľaviť od bolesti prstov."
 author: "Redakcia NKV"
-coverImage: "https://cdn.najsilnejsiaklbovavyziva.sk/2025/10/bolestive-klby-na-prstoch-ruky.jpeg"
+coverImage: "/articles/bol.jpeg"
 tags: []
 categories:
   - "Problémy s kĺbmi"
 seoTitle: "Bolestivé kĺby na prstoch ruky – príčiny, liečba a úľava"
 seoDescription: "Prečo bolia kĺby na prstoch ruky? Pozri sa na najčastejšie príčiny (artróza, zápal, preťaženie), príznaky, účinnú liečbu a tipy na úľavu."
-seoImage: "https://cdn.najsilnejsiaklbovavyziva.sk/2025/10/bolestive-klby-na-prstoch-ruky.jpeg"
+seoImage: "/articles/bol.jpeg"
 canonicalUrl: "https://najsilnejsiaklbovavyziva.sk/bolestive-klby-na-prstoch-ruky"
 ---
 
