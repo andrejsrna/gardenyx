@@ -20,7 +20,6 @@ if (typeof (globalThis as unknown as { File?: unknown }).File === 'undefined') {
       return function wrappedListener(this: unknown, evt: Event | null) {
         if (!evt) {
           if (process.env.NODE_ENV !== 'production') {
-            // eslint-disable-next-line no-console
             console.warn('[polyfills] Ignored null event for touch handler');
           }
           return;
@@ -30,7 +29,6 @@ if (typeof (globalThis as unknown as { File?: unknown }).File === 'undefined') {
         } catch (err) {
           if (isTouchesReadError(err)) {
             if (process.env.NODE_ENV !== 'production') {
-              // eslint-disable-next-line no-console
               console.warn('[polyfills] Swallowed touches read error in touch handler');
             }
             return;
@@ -46,7 +44,6 @@ if (typeof (globalThis as unknown as { File?: unknown }).File === 'undefined') {
       (listener as unknown as { handleEvent: (evt: Event | null) => void }).handleEvent = function wrappedHandleEvent(evt: Event | null) {
         if (!evt) {
           if (process.env.NODE_ENV !== 'production') {
-            // eslint-disable-next-line no-console
             console.warn('[polyfills] Ignored null event for touch handler (object)');
           }
           return;
@@ -56,7 +53,6 @@ if (typeof (globalThis as unknown as { File?: unknown }).File === 'undefined') {
         } catch (err) {
           if (isTouchesReadError(err)) {
             if (process.env.NODE_ENV !== 'production') {
-              // eslint-disable-next-line no-console
               console.warn('[polyfills] Swallowed touches read error in touch handler (object)');
             }
             return;
@@ -92,5 +88,4 @@ if (typeof (globalThis as unknown as { File?: unknown }).File === 'undefined') {
     // do nothing if patching fails
   }
 })();
-
 

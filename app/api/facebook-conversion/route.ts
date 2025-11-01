@@ -45,17 +45,20 @@ export async function POST(request: Request) {
     }
     
     const safeEventData = (eventData ?? {}) as Record<string, unknown>;
+    const eventId = (safeEventData.event_id as string | undefined) || `${eventName}_${Date.now()}`;
     const event: Record<string, unknown> = {
       event_name: eventName,
       event_time: Math.floor(Date.now() / 1000),
       action_source: 'website',
       event_source_url: (safeEventData.event_source_url as string) || 'https://najsilnejsiaklbovavyziva.sk',
+      event_id: eventId,
       custom_data: {
         ...safeEventData,
         currency: (safeEventData.currency as string) || 'EUR',
         content_type: (safeEventData.content_type as string) || 'product',
       },
     };
+    delete (event.custom_data as Record<string, unknown>).event_id;
 
     // Always include user data (even if just IP and user agent)
     event.user_data = enhancedUserData;

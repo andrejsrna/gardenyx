@@ -52,7 +52,12 @@ export default function FacebookPixel() {
   );
 }
 
-export const fbq = (action: string, eventName: string, params?: Record<string, unknown>) => {
+export const fbq = (
+  action: string,
+  eventName: string,
+  params?: Record<string, unknown>,
+  options?: Record<string, unknown>
+) => {
   if (typeof window === 'undefined') return;
 
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -62,7 +67,7 @@ export const fbq = (action: string, eventName: string, params?: Record<string, u
 
   try {
     if (typeof window.fbq === 'function') {
-      window.fbq(action, eventName, params);
+      window.fbq(action, eventName, params, options);
     }
   } catch {
   }

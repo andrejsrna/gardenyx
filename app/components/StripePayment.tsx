@@ -387,7 +387,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
       
       Sentry.setContext('payment', null);
     }
-  }, [stripe, elements, clientSecret, onSuccess, onError]);
+  }, [stripe, elements, clientSecret, onSuccess, onError, billingDetails]);
 
   return (
     <form onSubmit={handleSubmitWithPolling} className="space-y-6">

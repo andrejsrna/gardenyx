@@ -122,10 +122,10 @@ async function findExistingOrder(idempotencyKey: string) {
             return existingOrder || null;
         }
 
-        return null;
-    } catch (error) {
-        return null;
-    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -378,7 +378,7 @@ export async function POST(request: Request) {
                         status: 'on-hold', // Or a custom status
                         customer_note: `Automatické vytvorenie zásielky v Packete zlyhalo. Prosím, skontrolujte manuálne. Chyba: ${(packetaError instanceof Error ? packetaError.message : String(packetaError))}`
                     });
-                } catch (updateError) {
+                } catch {
                 }
             }
         }

@@ -4,7 +4,6 @@ import type {
   PaymentGateway,
   RankMathSEOResponse,
   ShippingMethod,
-  WooCommerceOrder,
   WooCommerceProduct,
   WordPressCategory,
   WordPressMedia,
@@ -16,7 +15,6 @@ import {
   filterLocalPosts,
   getLocalCategories as getAllLocalCategories,
   getLocalCategoryBySlug,
-  getLocalPostById,
   getLocalPostBySlug,
   getLocalPosts as getAllLocalPosts,
   getLocalTags as getAllLocalTags,
@@ -32,7 +30,6 @@ export type {
   PaymentGateway,
   RankMathSEOResponse,
   ShippingMethod,
-  WooCommerceOrder,
   WooCommerceProduct,
   WordPressCategory,
   WordPressMedia,
@@ -333,7 +330,6 @@ export const getPaginatedPosts = async ({
 
     let wordpressPosts: WordPressPost[] = [];
     let wordpressTotalPosts = 0;
-    let wordpressTotalPages = 0;
 
     if (shouldFetchWordPressPosts(category, tags)) {
       const wpOptions: GetPaginatedPostsOptions = {
@@ -346,7 +342,6 @@ export const getPaginatedPosts = async ({
       const results = await collectWordPressPosts(wpOptions, perPage);
       wordpressPosts = results.posts;
       wordpressTotalPosts = results.totalPosts;
-      wordpressTotalPages = results.totalPages;
     }
 
     const combinedTotalPosts = wordpressTotalPosts + localPosts.length;

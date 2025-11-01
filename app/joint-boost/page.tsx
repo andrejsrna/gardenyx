@@ -134,14 +134,6 @@ const reviews = [
   },
 ];
 
-const ctaHighlights = [
-  'Komplexná výživa pre kĺby, šľachy a väzy',
-  '1 kapsula denne',
-  '9 účinných látok v ideálnych dávkach',
-  'Doručenie do 24 hodín • 14 dní na vrátenie',
-  'Bez lepku, želatíny a cukru',
-];
-
 export default function JointBoostPage() {
   return (
     <main className="bg-white">

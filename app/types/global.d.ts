@@ -9,9 +9,10 @@ declare global {
     ) => void;
     dataLayer: unknown[];
     fbq: (
-      action: string, 
-      event: string, 
-      params?: Record<string, unknown>
+      action: string,
+      event: string,
+      params?: Record<string, unknown>,
+      options?: Record<string, unknown>
     ) => void;
     _fbq: {
       callMethod: (...args: unknown[]) => void;

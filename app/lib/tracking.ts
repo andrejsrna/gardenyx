@@ -29,14 +29,15 @@ const trackFbEventWithConversionAPI = async (
   
   // Add external_id for better event deduplication
   const timestamp = Date.now();
+  const eventId = `${eventName}_${timestamp}`;
   const eventParams = {
     ...params,
     external_id: `${eventName}_${timestamp}_${Math.random().toString(36).substr(2, 9)}`,
-    event_id: `${eventName}_${timestamp}`,
+    event_id: eventId,
   };
   
   // Track with both client-side pixel and server-side conversion API
-  fbq('track', eventName, eventParams);
+  fbq('track', eventName, eventParams, { eventID: eventId });
   const hashedUserData = hashUserData(userData);
   await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
 };
