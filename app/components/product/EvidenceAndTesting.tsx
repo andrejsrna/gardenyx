@@ -27,7 +27,7 @@ export default function EvidenceAndTesting() {
     },
     {
       title: 'Nedenaturovaný kolagén typu II (UC‑II) pri bolestiach kolena: multicentrická RCT',
-      url: 'https://pubmed.ncbi.nlm.nih.gov/26746199/',
+      url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9232232/',
       summary: 'UC‑II preukázal zlepšenie skóre bolesti a funkcie kolena, v niektorých ukazovateľoch lepší ako glukozamín/chondroitín.'
     }
   ];
