@@ -2,12 +2,12 @@ export default function EvidenceAndTesting() {
   const sources = [
     {
       title: 'Glukozamín a chondroitín pri osteoartritíde: systematický prehľad a meta-analýza',
-      url: 'https://pubmed.ncbi.nlm.nih.gov/12837042/',
+      url: 'https://pubmed.ncbi.nlm.nih.gov/10732937/',
       summary: 'Meta‑analýza naznačuje mierne zníženie bolesti a zlepšenie funkcie u časti pacientov s osteoartritídou.'
     },
     {
       title: 'Extrakt Boswellia serrata pri osteoartritíde: randomizovaná, dvojito zaslepená, placebom kontrolovaná štúdia',
-      url: 'https://pubmed.ncbi.nlm.nih.gov/17035153/',
+      url: 'https://pubmed.ncbi.nlm.nih.gov/30838706/',
       summary: 'Významné zlepšenie bolesti a funkcie kĺbov oproti placebu už po niekoľkých týždňoch užívania.'
     },
     {
@@ -55,5 +55,3 @@ export default function EvidenceAndTesting() {
     </section>
   );
 }
-
-
