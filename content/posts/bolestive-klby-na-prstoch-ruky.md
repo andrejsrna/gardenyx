@@ -88,7 +88,7 @@ Kancelárska práca, klimatizácia či zimná sezóna môžu zhoršiť prekrveni
 ### 💆‍♀️ 3. Lokálna úľava
 - Teplé obklady, masáže alebo parafínové zábaly zlepšujú prekrvenie a uvoľňujú stuhnutosť.  
 - Skvelá domáca pomoc: ajurvédska masť **Siddhalepa** – prehrieva, uvoľňuje svaly a tlmí bolesť.  
-- Pri akútnom zápale siahni skôr po chladení a lokálnych NSAID géloch.
+- Pri akútnom zápale siahni skôr po chladení a lokálnych NSAID géloch, prípadne po [Joint Boost géle](/protizapalova-mast-na-klby), ktorý kombinuje Boswelliu s mentolom a rýchlo schladí podráždený kĺb.
 
 ### 💉 4. Lekárske zákroky (keď bolesť neustupuje)
 - kortikoidové injekcie pri akútnej artritíde,  

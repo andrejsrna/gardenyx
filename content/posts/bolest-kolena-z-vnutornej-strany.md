@@ -67,6 +67,7 @@ Autoimunitný zápal alebo kryštály kyseliny močovej spôsobujú bolestivý o
 - **RICE protokol:** odpočinok, ľad (10 – 15 minút 3× denne), elastický návlek, vyloženie nohy.  
 - **Dočasná zmena tréningu:** vyhnite sa behu z kopca, drepu s veľkou záťažou a dlhému kľačaniu.  
 - **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
+- **Lokálne protizápalové gély:** na okamžitú úľavu skúste [Joint Boost gél](/protizapalova-mast-na-klby) s Boswelliou, mentolom a MSM – uľaví zvonka, kým rehabilitácia rieši príčinu.  
 - **Kompresné ortézy:** stabilizujú koleno a znižujú bolesť pri chôdzi.
 
 ## Cvičenia a strečing

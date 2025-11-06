@@ -96,7 +96,7 @@ Liečba osteoartritídy je zameraná na zmiernenie symptómov a zlepšenie kvali
 
 1. **Lieková terapia**
   - **Analgetiká**: Na zmiernenie bolesti môžu byť predpísané lieky proti bolesti, ako je paracetamol.
-  - **Nesteroidné protizápalové lieky (NSAID)**: Na zmiernenie bolesti a zápalu. Môžu byť k dispozícii vo forme tabliet alebo ako krémy a gély na lokálne použitie.
+  - **Nesteroidné protizápalové lieky (NSAID)**: Na zmiernenie bolesti a zápalu. Môžu byť k dispozícii vo forme tabliet alebo ako krémy a gély na lokálne použitie. Ak hľadáte prírodnejšiu alternatívu na lokálnu úľavu, odporúčame vyskúšať [Joint Boost gél – protizápalovú masť na kĺby](/protizapalova-mast-na-klby).
   - **Kortikosteroidné injekcie**: Na zníženie zápalu a bolesti, najmä v prípadoch závažnej artritídy.
 2. **Fyzioterapia**
   - Cvičebné programy navrhnuté na zlepšenie rozsahu pohybu a posilnenie svalov okolo postihnutého kĺbu.

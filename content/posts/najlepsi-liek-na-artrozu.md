@@ -71,7 +71,7 @@ Typ lieku | Príklad | Účinok
 --- | --- | ---
 **Analgetiká** | Paracetamol, Ibuprofen | Rýchle tlmenie bolesti, vhodné pri miernej artróze
 **Nesteroidné antiflogistiká (NSAID)** | Diklofenak, Naproxen, Etorikoxib | Znižujú zápal aj bolesť, prinášajú úľavu pri akútnej fáze
-**Lokálne masti a gély** | Voltaren, Ibalgin gél, Lioton | Pôsobia priamo na postihnuté miesto, vhodné na kolená či ramená
+**Lokálne masti a gély** | [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), Voltaren, Ibalgin gél, Lioton | Pôsobia priamo na postihnuté miesto, vhodné na kolená či ramená
 **Kortikoidné injekcie** *(len pod dohľadom lekára)* | Metylprednizolón, Triamcinolón | Krátkodobé zníženie silného zápalu priamo v kĺbe
 
 **Upozornenie:**
@@ -88,7 +88,7 @@ Typ lieku | Príklad | Účinok | Poznámka
 --- | --- | --- | ---
 **Nesteroidné protizápalové lieky (NSAID)** | ibuprofén, diclofenac | Rýchlo tlmia bolesť a zápal | Dlhodobé užívanie môže podráždiť žalúdok a obličky
 **Analgetiká** | paracetamol | Tlmenie miernejšej bolesti | Vhodné ako doplnok, nemá protizápalový účinok
-**Lokálne lieky** | Voltaren gél, kapsaicínová náplasť | Pôsobia priamo v kĺbe | Bezpečné, vhodné pri chronických bolestiach
+**Lokálne lieky** | [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), Voltaren gél, kapsaicínová náplasť | Pôsobia priamo v kĺbe | Bezpečné, vhodné pri chronických bolestiach
 **Opioidné analgetiká** | tramadol, kodeín | Rezerva pri silnej bolesti | Krátkodobé použitie, pozor na ospalosť a závislosť
 **Kortikoidové injekcie** | triamcinolón, metylprednizolón | Rýchlo znižujú akútny zápal | Možno podať len obmedzene (2–3× ročne)
 
@@ -164,7 +164,7 @@ Mnohí sa pýtajú, *ktorý liek na artrózu je ten najlepší*. Pravda je, že 
 
 Najlepšie výsledky prináša:
 
-1. **Tlmenie bolesti a zápalu** – krátkodobo pomocou liekov (napr. ibuprofén, diklofenak) alebo lokálnych gélov.
+1. **Tlmenie bolesti a zápalu** – krátkodobo pomocou liekov (napr. ibuprofén, diklofenak) alebo lokálnych gélov, napríklad [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby).
 2. **Dlhodobá výživa kĺbov** – doplnky s obsahom **kolagénu, MSM, chondroitínu, glukozamínu a vitamínu C** pomáhajú regenerovať chrupavku.
 3. **Pohyb a zdravý životný štýl** – primerané cvičenie, kontrola hmotnosti a kvalitný spánok výrazne znižujú záťaž na kĺby.
 4. **Cielené zákroky** – injekcie kyseliny hyalurónovej, PRP alebo napokon náhrada kĺbu, ak konzervatívna liečba nestačí.

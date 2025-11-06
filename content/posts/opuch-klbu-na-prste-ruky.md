@@ -80,7 +80,7 @@ Vaky s tekutinou pri kĺboch alebo šľachách sa prejavia viditeľnou hrčkou a
 
 - **RICE protokol:** rest – odľahčite prst, ice – ľadujte 10 minút 3× denne, compression – elastická bandáž, elevation – vyložte ruku.  
 - **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
-- **Lokálne gély:** diklofenak alebo ibuprofén vo forme gélu zmiernia zápal.  
+- **Lokálne gély:** diklofenak alebo ibuprofén vo forme gélu zmiernia zápal. Pri dlhšom domácom režime pomáha aj [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), ktorý nepreťažuje žalúdok.  
 - **Ortézy a dlahy:** stabilizujú kĺb pri artritíde, športových úrazoch či „skákavom prste“.  
 - **Parafínové zábaly:** príjemné teplo uvoľní stuhnutosť (nie pri akútnom zápale).  
 - **Jemná automasáž a elevácia:** masírujte prst od špičky smerom k dlani, aby sa znížil opuch, a ruku si pri oddychu podopri tak, aby bola vyššie ako srdce.  

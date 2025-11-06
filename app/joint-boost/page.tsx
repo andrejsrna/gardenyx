@@ -281,6 +281,55 @@ export default function JointBoostPage() {
 
       <Products />
 
+      <section className="bg-emerald-50/60 py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-center">
+            <div className="space-y-5">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                Lokálna úľava
+              </span>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Potrebujete rýchlu úľavu zvonka? Skúste aj náš protizápalový gél
+              </h2>
+              <p className="text-lg text-gray-600">
+                Joint Boost kapsuly pracujú zvnútra, no existujú dni, keď sa kĺby ozvú okamžite. Vtedy siahnite po
+                chladivom{' '}
+                <Link className="font-semibold text-emerald-700 underline-offset-4 hover:underline" href="/protizapalova-mast-na-klby">
+                  Joint Boost géle
+                </Link>
+                , ktorý vďaka Boswellii, MSM, mentolu a gáfru prinesie úľavu priamo na postihnuté miesto.
+              </p>
+              <ul className="grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                <li className="flex items-start gap-2 rounded-2xl bg-white/70 px-4 py-3 shadow-sm">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-600" />
+                  Kombinujte kapsuly s gélom pre kompletnú regeneráciu
+                </li>
+                <li className="flex items-start gap-2 rounded-2xl bg-white/70 px-4 py-3 shadow-sm">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-600" />
+                  Chladivý efekt v priebehu minút a žiadny mastný film
+                </li>
+              </ul>
+              <Link
+                href="/protizapalova-mast-na-klby"
+                className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700"
+              >
+                Objav protizápalovú masť Joint Boost gél
+              </Link>
+            </div>
+            <div className="relative overflow-hidden rounded-[2.5rem] border border-emerald-100 bg-white p-6 shadow-xl">
+              <div className="absolute -inset-6 -z-10 rounded-[3rem] bg-emerald-200/40 blur-3xl" />
+              <Image
+                src="/jointboost-gel.jpg"
+                alt="Joint Boost gél nanášaný na koleno"
+                width={640}
+                height={760}
+                className="w-full rounded-[2rem] object-cover shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="space-y-8">

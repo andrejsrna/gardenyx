@@ -114,10 +114,11 @@ Liečba reumatických bolestí klbov zahŕňa široké spektrum prístupov, ktor
 
 #### Konvenčné liečebné metódy
 
-- **Farmakologickej liečby:**
+- **Farmakologická liečba:**
   - **Protizápalové nesteroidné lieky (NSAID):** Zmierňujú bolesť a zápal.
   - **Kortikosteroidy:** Používajú sa na rýchle zmiernenie zápalu v prípade silných záchvatov bolesti.
   - **Disease-modifying antirheumatic drugs (DMARDs):** Pomáhajú spomaliť progresiu ochorenia a uchovávať funkciu kĺbov, najmä pri reumatoidnej artritíde.
+  - **Lokálne gély:** Pri miernejších vzplanutiach prinesú úľavu chladivé prípravky. Skúsiť môžete [Joint Boost gél – protizápalovú masť na kĺby](/protizapalova-mast-na-klby), ktorá pôsobí bez zaťaženia žalúdka.
   - **Biologické liečivá:** Cieľové terapie zamerané na špecifické molekuly zapojené do zápalového procesu.
 - **Fyzioterapia:**
   - Cvičebné programy na posilnenie svalov podporujúcich kĺby a zlepšenie ich rozsahu pohybu.

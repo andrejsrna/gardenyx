@@ -59,6 +59,7 @@ Správne určenie diagnózy je základom úspešnej liečby. Niekedy stačí fyz
 
 - **RICE protokol** – Rest (odpočinok), Ice (ľad na 10–15 minút), Compression (elastická bandáž), Elevation (vyloženie nohy).  
 - **Protizápalové lieky** – ibuprofén alebo diklofenak krátkodobo tlmia zápal, no neprekračujte odporúčanú dávku.  
+- **Lokálna úľava** – pri akútnej bolesti pomôže chladivý [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), ktorý schladí zadnú stranu kolena bez zaťaženia žalúdka.  
 - **Jemné rozhýbanie** – po ústupe bolesti zaraďte ľahký strečing zadných stehien a mobilizáciu jabĺčka.  
 - **Kedy zbystriť pozornosť:** náhle „prasknutie“, nestabilita, výrazný opuch alebo teplota kolena si vyžadujú okamžité vyšetrenie. Viac tipov na cvičenia, ktoré kolenu uľavia, nájdete v sprievodcoch [Cviky na koleno po zranení](https://najsilnejsiaklbovavyziva.sk/cviky-na-koleno) a [10 cvikov na posilnenie kĺbov a šliach](https://najsilnejsiaklbovavyziva.sk/10-cvikov-na-posilnenie-klbov-a-sliach).
 

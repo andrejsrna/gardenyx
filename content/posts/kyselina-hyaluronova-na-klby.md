@@ -52,7 +52,7 @@ Najčastejšie spájajú HA s glukozamínom, chondroitínom, MSM či kolagénom 
 
 ### 4. Lokálne gély a krémy
 
-HA v krémoch pôsobí najmä na kožu a podkožie. Pri kĺboch má zmysel v kombinácii s masážou alebo fyzioterapiou – podporí hydratáciu, no na chrupavku pôsobí minimálne.
+HA v krémoch pôsobí najmä na kožu a podkožie. Pri kĺboch má zmysel v kombinácii s masážou alebo fyzioterapiou – podporí hydratáciu, no na chrupavku pôsobí minimálne. Ako praktického pomocníka odporúčame [Joint Boost gél – protizápalovú masť na kĺby](/protizapalova-mast-na-klby), ktorý spája Boswelliu, MSM a chladivé látky.
 
 ## Ako si vybrať kvalitný doplnok
 

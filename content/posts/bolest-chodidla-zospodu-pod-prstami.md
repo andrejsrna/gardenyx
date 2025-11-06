@@ -92,7 +92,7 @@ Viac o tom, ako sa riešia bolesti pri chôdzi, nájdete v článku [Bolesť prs
 ### Lieky a doplnky
 
 - Voľnopredajné NSAID (ibuprofén, diklofenak) zmiernia zápal – užívajte len krátkodobo a po jedle.  
-- Lokálne gélové NSAID sú šetrnejšie k žalúdku.  
+- Lokálne gélové NSAID sú šetrnejšie k žalúdku. Ak preferujete prírodnejšie riešenie, siahnite po [Joint Boost géle – protizápalovej masti na kĺby](/protizapalova-mast-na-klby), ktorý cítiť ako chladivý obklad.  
 - Podpora kĺbov so zložkami [glukozamín, chondroitín a MSM](https://najsilnejsiaklbovavyziva.sk/glukozamin-chondroitin-a-msm-trojica-ktora-ulavi-vasim-klbom) pomáha pri dlhodobom preťažení.
 
 ### Domáce pomôcky

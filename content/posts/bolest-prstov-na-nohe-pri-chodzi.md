@@ -95,7 +95,7 @@ Medzi typické príznaky patrí:
 
 - kľúčová je pravidelná, primeraná pohybová aktivita (napr. plávanie, prechádzky),
 - obuv s mäkkou podrážkou a ortopedickou podporou,
-- protizápalové masti alebo studené obklady na zmiernenie príznakov.
+- protizápalové masti alebo studené obklady na zmiernenie príznakov – pri kĺbovej bolesti výborne funguje aj [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby).
 
 **Doplnky výživy:** Na podporu zdravia kĺbov sa často odporúčajú prípravky s obsahom glukozamínu, chondroitínu, MSM, kolagénu typu II, kurkumínu či kyseliny hyalurónovej. Tieto látky môžu pomôcť znížiť zápal, zlepšiť pružnosť kĺbov a spomaliť ich opotrebovanie.
 
@@ -114,7 +114,7 @@ Opakované preťaženie svalov a šliach chodidla vedie k mikrotrhlinám a zápa
 **Čo pomáha:**
 
 - krátkodobý odpočinok a obmedzenie provokujúcej aktivity,
-- lokálne protizápalové gély, ľadovanie alebo teplo podľa odporúčania fyzioterapeuta,
+- lokálne protizápalové gély, ľadovanie alebo teplo podľa odporúčania fyzioterapeuta (napríklad [Joint Boost gél](/protizapalova-mast-na-klby) s Boswelliou a mentolom),
 - strečing lýtok a krátkych svalov chodidla, cvičenia na posilnenie klenby.
 
 Neliečený zápal šliach môže prejsť do chronickej podoby, preto pri zhoršujúcej sa bolesti odporúčame vyšetrenie (ultrazvuk, MRI).

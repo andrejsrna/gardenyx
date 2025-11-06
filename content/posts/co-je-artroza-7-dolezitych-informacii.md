@@ -109,7 +109,7 @@ Liečba artrózy zahŕňa komplexné stratégie zamerané na zmiernenie bolesti,
 
 - **Fyzioterapia:** Môže pomôcť zlepšiť mobilitu a zmierniť bolesť.
 - **Akupunktúra:** Niektorí pacienti hlásia úľavu od bolesti po akupunktúrnych sedeniach.
-- **Tepelná a chladiaca terapia:** Použitie teplých obkladov alebo chladivých gélov môže poskytnúť dočasnú úľavu od bolesti.
+- **Tepelná a chladiaca terapia:** Použitie teplých obkladov alebo chladivých gélov (napríklad [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby)) môže poskytnúť dočasnú úľavu od bolesti.
 
 Manažment artrózy vyžaduje multidisciplinárny prístup a často kombináciu viacerých terapeutických stratégií. Je dôležité, aby pacienti pracovali v úzkej spolupráci so svojím lekárom a zdravotníckym tímom na vývoji personalizovaného plánu liečby, ktorý bude zodpovedať ich špecifickým potrebám a životnému štýlu. Aktívne zapojenie do procesu liečby a ochota prispôsobiť sa môžu výrazne prispieť k zlepšeniu kvality života ľudí s artrózou.
 

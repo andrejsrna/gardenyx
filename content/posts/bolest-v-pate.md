@@ -141,7 +141,7 @@ Liečba bolesti v päte závisí od príčiny a závažnosti príznakov. Väčš
   - **Cvičenia**: Pravidelné cvičenie na natiahnutie plantárnej fascie a lýtkových svalov môže pomôcť zmierniť napätie v päte a znížiť bolesť. Cvičenia môžu zahŕňať strečing lýtkových svalov, rotácie členku a valcovanie chodidla po penovom valci.
 3. **Lieky proti bolesti a zápalu (NSAID)**
   - **NSAID**: Nesteroidné protizápalové lieky, ako je ibuprofén alebo naproxén, môžu pomôcť zmierniť bolesť a zápal spojený s plantárnou fasciitídou, Achillovou tendinitídou a inými stavmi spôsobujúcimi bolesť v päte.
-  - **Aplikácia**: Tieto lieky môžu byť užívané perorálne alebo aplikované topicky vo forme krému či gélu na postihnutú oblasť.
+  - **Aplikácia**: Tieto lieky môžu byť užívané perorálne alebo aplikované topicky vo forme krému či gélu na postihnutú oblasť. Ak hľadáte chladivý efekt bez liekov na žalúdok, siahnite po [Joint Boost géle – protizápalovej masti na kĺby](/protizapalova-mast-na-klby).
 4. **Použitie ľadu na zmiernenie opuchu**
   - **Ľadové obklady**: Aplikácia ľadu na pätu po dobu 15-20 minút niekoľkokrát denne môže pomôcť zmierniť opuch a bolesť. Ľad by mal byť vždy zabalený do uteráka alebo látky, aby sa zabránilo poškodeniu kože.
 

@@ -137,7 +137,7 @@ Táto forma liečby je základom pri manažovaní artrózy a zahŕňa kombináci
 
 - **Nesteroidné protizápalové lieky (NSAID)** – ibuprofén, diklofenak, naproxén pomáhajú zmierniť bolesť a zápal.
 - **Analgetiká (paracetamol)** – vhodné na miernu bolesť bez zápalu.
-- **Lokálne gély a masti** – obsahujúce NSAID alebo kapsaicín môžu pomôcť pri lokálnej aplikácii na bolestivé miesta.
+- **Lokálne gély a masti** – obsahujúce NSAID alebo kapsaicín môžu pomôcť pri lokálnej aplikácii na bolestivé miesta. Skvelou voľbou na každodennú starostlivosť je aj [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby).
 
 #### **Kĺbová výživa**
 

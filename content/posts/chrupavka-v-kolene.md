@@ -102,7 +102,7 @@ Liečba a manažment problémov s chrupavkou v kolene zahŕňajú široké spekt
   - **Fyzioterapia**: Cvičebné programy zamerané na posilnenie svalov okolo kolena, zlepšenie flexibility a rozsahu pohybu.
   - **Injekcie**: Steroidné injekcie na zmiernenie zápalu a bolesti alebo [kyselina hyaluronová](https://najsilnejsiaklbovavyziva.sk/kyselina-hyaluronova/) na zlepšenie lubrikácie v kĺbe.
 2. **Farmakologická liečba**
-  - **Analgetiká a protizápalové lieky**: Na kontrolu bolesti a zápalu. Môžu byť použité perorálne lieky alebo topické krémy a gély. Vyskúšajte môžete aj [Boswellia serata](https://najsilnejsiaklbovavyziva.sk/boswellia-serata/) alebo [MSM](https://najsilnejsiaklbovavyziva.sk/msm-prasok/).
+  - **Analgetiká a protizápalové lieky**: Na kontrolu bolesti a zápalu. Môžu byť použité perorálne lieky alebo topické krémy a gély. Vyskúšajte môžete aj [Boswellia serata](https://najsilnejsiaklbovavyziva.sk/boswellia-serata/) alebo [MSM](https://najsilnejsiaklbovavyziva.sk/msm-prasok/) a na lokálnu úľavu [Joint Boost gél – protizápalovú masť na kĺby](/protizapalova-mast-na-klby).
 3. **Chirurgické zákroky**
   - **Artroskopia**: Minimálne invazívny zákrok, pri ktorom lekár môže odstrániť voľné fragmenty chrupavky alebo vyhladiť poškodené oblasti.
   - **Osteotómia**: Zákrok, ktorý zahŕňa preštrukturovanie kostí na zníženie zaťaženia postihnutého kĺbu.

@@ -1,16 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { WooCommerceProduct } from '../../lib/wordpress';
 import ProductCard from '../ProductCard'; // Import the shared ProductCard component
 
-// Define the specific product IDs to display
-const LANDING_PAGE_PRODUCT_IDS = [47, 49, 24, 27, 30];
+const DEFAULT_PRODUCT_IDS = [47, 49, 24, 27, 30];
 
-export default function Products() {
+type ProductsProps = {
+  productIds?: number[];
+  title?: string;
+  description?: string;
+  gridClassName?: string;
+  loadingGridClassName?: string;
+};
+
+export default function Products({
+  productIds = DEFAULT_PRODUCT_IDS,
+  title = 'Naša odporúčaná kĺbová výživa',
+  description,
+  gridClassName = 'grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
+  loadingGridClassName = 'animate-pulse grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
+}: ProductsProps) {
   const [products, setProducts] = useState<WooCommerceProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const includeIds = useMemo(() => {
+    if (!productIds.length) return '';
+    return [...productIds].join(',');
+  }, [productIds]);
+
+  const loadingPlaceholderCount = productIds.length > 0 ? productIds.length : DEFAULT_PRODUCT_IDS.length;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,19 +38,27 @@ export default function Products() {
       setError(null);
       try {
         // Fetch products by specific IDs using the 'include' parameter
-        const includeIds = LANDING_PAGE_PRODUCT_IDS.join(',');
-        const response = await fetch(`/api/woocommerce/products?include=${includeIds}`);
+        const url = includeIds ? `/api/woocommerce/products?include=${includeIds}` : '/api/woocommerce/products';
+        const response = await fetch(url);
         const data = await response.json();
 
         if (!response.ok) {
           console.error('API Error Response:', data);
-          throw new Error(data.message || `Failed to fetch products with IDs: ${includeIds}`);
+          throw new Error(
+            data.message ||
+              (includeIds ? `Failed to fetch products with IDs: ${includeIds}` : 'Failed to fetch products'),
+          );
         }
 
-        // Optional: Sort the specific products if needed (e.g., by the order in LANDING_PAGE_PRODUCT_IDS)
+        const orderMap = new Map(productIds.map((id, index) => [id, index]));
+
+        // Optional: Sort the specific products if needed (e.g., by the order in productIds)
         const sortedData = [...data].sort((a, b) => {
-          const indexA = LANDING_PAGE_PRODUCT_IDS.indexOf(a.id);
-          const indexB = LANDING_PAGE_PRODUCT_IDS.indexOf(b.id);
+          const indexA = orderMap.get(a.id);
+          const indexB = orderMap.get(b.id);
+          if (indexA === undefined && indexB === undefined) return 0;
+          if (indexA === undefined) return 1;
+          if (indexB === undefined) return -1;
           return indexA - indexB; // Sort by the predefined order
         });
 
@@ -48,19 +76,22 @@ export default function Products() {
     };
 
     fetchProducts();
-  }, []);
+  }, [includeIds, productIds]);
 
   return (
     <section id="produkty" className="py-16 md:py-24 bg-gray-50"> {/* Section background */}
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
-          Naša odporúčaná kĺbová výživa
-        </h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-6 text-gray-900">{title}</h2>
+        {description && (
+          <p className="mx-auto mb-12 max-w-3xl text-center text-lg text-gray-600">
+            {description}
+          </p>
+        )}
 
         {isLoading && (
           // Updated grid to match the number of products (5)
-          <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {[...Array(LANDING_PAGE_PRODUCT_IDS.length)].map((_, i) => (
+          <div className={loadingGridClassName}>
+            {[...Array(loadingPlaceholderCount)].map((_, i) => (
               <div key={i} className="bg-gray-200 rounded-xl h-96"></div>
             ))}
           </div>
@@ -81,9 +112,9 @@ export default function Products() {
 
         {!isLoading && !error && products.length > 0 && (
            // Updated grid to better accommodate 5 products
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+          <div className={gridClassName}>
+            {products.map((product, index) => (
+              <ProductCard key={product.id} product={product} isPriority={index === 0} />
             ))}
           </div>
         )}

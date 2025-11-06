@@ -55,7 +55,7 @@ Doprajte kĺbu čas na regeneráciu. Vyhnite sa činnostiam, ktoré spôsobujú 
 **🔹 Masáže, kúpele, bylinné masti**
 Masáže podporujú prekrvenie a uvoľňujú napätie okolo kĺbu.
 Teplý kúpeľ s epsomskou soľou či bylinkami (arnika, levanduľa, rozmarín) môže mať uvoľňujúci a protizápalový účinok.
-Bylinné masti s *arnikou, mentolom, eukalyptom, alebo kapsaicínom* znižujú bolesť a pôsobia lokálne bez zaťaženia žalúdka.
+Bylinné masti s *arnikou, mentolom, eukalyptom, alebo kapsaicínom* znižujú bolesť a pôsobia lokálne bez zaťaženia žalúdka. Skvelou kombináciou týchto princípov je [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby).
 
 ➡️ V ďalšej časti si povieme, ako môže pomôcť správna výživa a doplnky stravy – najmä pri dlhodobej starostlivosti o kĺby.
 

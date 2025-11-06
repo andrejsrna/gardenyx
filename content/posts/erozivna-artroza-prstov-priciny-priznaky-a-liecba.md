@@ -63,7 +63,7 @@ Liečba sa zameriava na zmiernenie bolesti, spomalenie progresie ochorenia a udr
 ### Konzervatívna liečba
 
 - **Lieky proti bolesti a zápalu (NSAID)** – pomáhajú znižovať bolesť a zápal v akútnych fázach.
-- **Kortikosteroidy** – podávané injekčne priamo do postihnutého kĺbu alebo vo forme mastí a gélov na rýchle potlačenie zápalu.
+- **Kortikosteroidy** – podávané injekčne priamo do postihnutého kĺbu alebo vo forme mastí a gélov na rýchle potlačenie zápalu. Pri domácej starostlivosti siahnite po [Joint Boost géle – protizápalovej masti na kĺby](/protizapalova-mast-na-klby), ktorý kombinuje Boswelliu s chladivými látkami.
 - **Fyzioterapia a rehabilitácia** – cvičenia na udržanie pohyblivosti, jemné strečingy a posilnenie svalov rúk.
 - **Ergoterapia** – používanie pomôcok, ktoré uľahčujú každodenné činnosti a znižujú záťaž na postihnuté kĺby.
 
