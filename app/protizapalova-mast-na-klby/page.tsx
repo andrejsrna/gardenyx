@@ -76,6 +76,7 @@ const keyIngredients: KeyIngredient[] = [
     title: 'Arnika montana extrakt',
     description: 'Prispieva k revitalizácii a regenerácii pokožky.',
     image: null,
+    href: '/protizapalova-mast-na-klby/zlozky/arnika-montana-gel',
   },
   {
     title: 'Boswellia serrata extrakt',

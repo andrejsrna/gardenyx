@@ -28,6 +28,7 @@ const JOINT_BOOST_PAGE_LINKS = [
 
 const JOINT_BOOST_GEL_LINKS = [
   { title: 'Boswellia serrata', href: '/protizapalova-mast-na-klby/zlozky/boswellia-serrata-gel' },
+  { title: 'Arnika montana', href: '/protizapalova-mast-na-klby/zlozky/arnika-montana-gel' },
 ];
 
 const SECONDARY_LINKS = [
