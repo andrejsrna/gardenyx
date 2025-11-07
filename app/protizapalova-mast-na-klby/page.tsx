@@ -71,6 +71,7 @@ const keyIngredients: KeyIngredient[] = [
     title: 'MSM',
     description: 'Podporuje pružnosť kĺbov a regeneráciu tkanív.',
     image: '/images/ingredients/msm.jpeg',
+    href: '/protizapalova-mast-na-klby/zlozky/msm-gel',
   },
   {
     title: 'Arnika montana extrakt',
