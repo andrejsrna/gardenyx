@@ -76,6 +76,8 @@ Viac o tom, ako podporiť [**výživu kĺbov**](https://najsilnejsiaklbovavyziva
 
 *V produkte*[*Joint Boost*](https://najsilnejsiaklbovavyziva.sk/joint-boost)*sú obe látky obsiahnuté v synergickom pomere spolu s MSM a vitamínom C – pre maximálnu vstrebateľnosť.*
 
+Ak chceš glukozamín a chondroitín aplikovať priamo na citlivé kĺby, odporúčame aj [špeciálny gél zameraný na tieto látky](/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel), ktorý doplní vnútornú výživu o lokálnu starostlivosť.
+
 ### **MSM – síra pre pružné kĺby**
 
 MSM (metylsulfonylmetán) je zdroj prírodnej síry, ktorá sa nachádza v kostiach, šľachách aj väzoch.

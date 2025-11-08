@@ -133,7 +133,7 @@ Liečba bolesti vonkajšej kosti chodidla závisí od príčiny, závažnosti sy
 ### Farmakologická liečba
 
 - **Protizápalové lieky**: Nesteroidné protizápalové lieky (NSAID), ako sú ibuprofén alebo naproxen, môžu pomôcť zmierniť bolesť a znížiť zápal.
-- **Lokálne aplikované krémy a gély**: Niektoré topické liečivá môžu poskytnúť dočasnú úľavu od bolesti. Skúste napríklad [Joint Boost gél](/protizapalova-mast-na-klby), ktorý schladí podráždené miesto bez mastného filmu.
+- **Lokálne aplikované krémy a gély**: Niektoré topické liečivá môžu poskytnúť dočasnú úľavu od bolesti. Skúste napríklad [Joint Boost gél](/protizapalova-mast-na-klby), ktorý schladí podráždené miesto bez mastného filmu. Viac o chladivej dvojici v jeho zložení sa dozvieš na stránke [mentol + gáfor gél](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).
 
 ### Chirurgický zákrok
 

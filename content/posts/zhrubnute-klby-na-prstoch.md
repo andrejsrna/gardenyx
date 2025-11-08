@@ -73,7 +73,7 @@ Pri náhle vzniknutom opuchu prsta môže ísť aj o infekciu. Praktické rady n
 
 Liečba závisí od príčiny, no väčšinou kombinuje viac prístupov:
 
-- **Protizápalové lieky:** krátkodobé podanie NSAID alebo lokálnych gélov uľaví pri akútnom zápale. Pri autoimunite lekár nastaví dlhodobú liečbu (DMARD, biologiká). Na bežné dni sa osvedčil aj [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), ktorý prinesie rýchlu úľavu bez zaťaženia žalúdka.
+- **Protizápalové lieky:** krátkodobé podanie NSAID alebo lokálnych gélov uľaví pri akútnom zápale. Pri autoimunite lekár nastaví dlhodobú liečbu (DMARD, biologiká). Na bežné dni sa osvedčil aj [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), ktorý prinesie rýchlu úľavu bez zaťaženia žalúdka. O jeho chladivej báze mentolu a gáforu si môžeš prečítať viac [v samostatnej zložkovej sekcii](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).
 - **Injekčné terapie:** kortikoid či kyselina hyaluronová sa používajú pri bolestivej artróze na prstoch zriedkavejšie, no pri vybraných pacientoch vedia pomôcť.
 - **Ortézy a tejpy:** odľahčia kĺb pri akútnom vzplanutí a chránia ho pri práci.
 - **Chirurgické riešenie:** pri ťažkej deformácii či ganglione môže byť potrebný zákrok – odstránenie uzla alebo stuhnutosť kĺbu (artrodéza).

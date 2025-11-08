@@ -67,7 +67,7 @@ Autoimunitný zápal alebo kryštály kyseliny močovej spôsobujú bolestivý o
 - **RICE protokol:** odpočinok, ľad (10 – 15 minút 3× denne), elastický návlek, vyloženie nohy.  
 - **Dočasná zmena tréningu:** vyhnite sa behu z kopca, drepu s veľkou záťažou a dlhému kľačaniu.  
 - **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
-- **Lokálne protizápalové gély:** na okamžitú úľavu skúste [Joint Boost gél](/protizapalova-mast-na-klby) s Boswelliou, mentolom a MSM – uľaví zvonka, kým rehabilitácia rieši príčinu.  
+- **Lokálne protizápalové gély:** na okamžitú úľavu skúste [Joint Boost gél](/protizapalova-mast-na-klby) s Boswelliou, mentolom a MSM – uľaví zvonka, kým rehabilitácia rieši príčinu. Detaily o chladivom účinku mentolu a gáforu nájdete v [profilovej stránke zložky](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).  
 - **Kompresné ortézy:** stabilizujú koleno a znižujú bolesť pri chôdzi.
 
 ## Cvičenia a strečing
@@ -97,6 +97,8 @@ Viac cvikov nájdete v článku [Cviky na koleno](https://najsilnejsiaklbovavyzi
 ## Ako podporiť koleno zvnútra
 
 „[Najsilnejšia kĺbová výživa – JointBoost](https://najsilnejsiaklbovavyziva.sk/kupit/)“ obsahuje glukozamín, chondroitín, MSM, morský kolagén typu II, vitamín C, kyselinu hyalurónovú, kurkumín a Boswelliu. Tento komplex podporuje chrupavky, väzy a šľachy, zmierňuje zápal a zlepšuje pohyblivosť kolien pri dlhodobom užívaní.
+
+Ak chceš glukozamín a chondroitín dopriať aj lokálne, pozri si [špeciálny gél so zameraním na tieto látky](/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel).
 
 [![JointBoost – komplexná kĺbová výživa](https://najsilnejsiaklbovavyziva.sk/wp-content/uploads/2023/12/jointboost-1024x536.jpg)](https://najsilnejsiaklbovavyziva.sk/kupit/)
 

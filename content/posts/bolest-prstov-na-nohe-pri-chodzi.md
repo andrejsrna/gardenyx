@@ -97,7 +97,7 @@ Medzi typické príznaky patrí:
 - obuv s mäkkou podrážkou a ortopedickou podporou,
 - protizápalové masti alebo studené obklady na zmiernenie príznakov – pri kĺbovej bolesti výborne funguje aj [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby).
 
-**Doplnky výživy:** Na podporu zdravia kĺbov sa často odporúčajú prípravky s obsahom glukozamínu, chondroitínu, MSM, kolagénu typu II, kurkumínu či kyseliny hyalurónovej. Tieto látky môžu pomôcť znížiť zápal, zlepšiť pružnosť kĺbov a spomaliť ich opotrebovanie.
+**Doplnky výživy:** Na podporu zdravia kĺbov sa často odporúčajú prípravky s obsahom glukozamínu, chondroitínu, MSM, kolagénu typu II, kurkumínu či kyseliny hyalurónovej. Tieto látky môžu pomôcť znížiť zápal, zlepšiť pružnosť kĺbov a spomaliť ich opotrebovanie. Ak chceš glukozamín a chondroitín aplikovať aj lokálne, pozri [špeciálny gél pre tieto látky](/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel).
 
 Pri pretrvávajúcich ťažkostiach je vhodné navštíviť reumatológa, ktorý vylúči autoimunitné ochorenia a odporučí cielenú liečbu.
 
@@ -114,7 +114,7 @@ Opakované preťaženie svalov a šliach chodidla vedie k mikrotrhlinám a zápa
 **Čo pomáha:**
 
 - krátkodobý odpočinok a obmedzenie provokujúcej aktivity,
-- lokálne protizápalové gély, ľadovanie alebo teplo podľa odporúčania fyzioterapeuta (napríklad [Joint Boost gél](/protizapalova-mast-na-klby) s Boswelliou a mentolom),
+- lokálne protizápalové gély, ľadovanie alebo teplo podľa odporúčania fyzioterapeuta (napríklad [Joint Boost gél](/protizapalova-mast-na-klby) s Boswelliou a [mentolom + gáforom](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel)),
 - strečing lýtok a krátkych svalov chodidla, cvičenia na posilnenie klenby.
 
 Neliečený zápal šliach môže prejsť do chronickej podoby, preto pri zhoršujúcej sa bolesti odporúčame vyšetrenie (ultrazvuk, MRI).

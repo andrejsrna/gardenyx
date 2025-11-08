@@ -55,7 +55,7 @@ Doprajte kĺbu čas na regeneráciu. Vyhnite sa činnostiam, ktoré spôsobujú 
 **🔹 Masáže, kúpele, bylinné masti**
 Masáže podporujú prekrvenie a uvoľňujú napätie okolo kĺbu.
 Teplý kúpeľ s epsomskou soľou či bylinkami (arnika, levanduľa, rozmarín) môže mať uvoľňujúci a protizápalový účinok.
-Bylinné masti s *arnikou, mentolom, eukalyptom, alebo kapsaicínom* znižujú bolesť a pôsobia lokálne bez zaťaženia žalúdka. Skvelou kombináciou týchto princípov je [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby).
+Bylinné masti s *arnikou, mentolom, eukalyptom, alebo kapsaicínom* znižujú bolesť a pôsobia lokálne bez zaťaženia žalúdka. Pri chladivej úľave sa osvedčil [mentolovo-gáforový gél](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel). Skvelou kombináciou týchto princípov je [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby).
 
 ➡️ V ďalšej časti si povieme, ako môže pomôcť správna výživa a doplnky stravy – najmä pri dlhodobej starostlivosti o kĺby.
 
@@ -72,6 +72,8 @@ Správna výživa je základom pre zdravé kĺby – a výživové doplnky môž
 - **[MSM](https://najsilnejsiaklbovavyziva.sk/msm-ucinky) (metylsulfonylmetán)** – má protizápalové účinky, zmierňuje [bolesť](https://najsilnejsiaklbovavyziva.sk/bolest-chodidla-z-boku)
 - **[Kolagén](https://najsilnejsiaklbovavyziva.sk/najlepsi-kolagen-na-klby-6-veci-ktore-su-dolezite) typu II** – dôležitý stavebný prvok kĺbov, šliach a väzov
 - **Vitamín C** – podporuje tvorbu kolagénu, pôsobí ako antioxidant
+
+Lokálne riešenie s glukozamínom a chondroitínom nájdeš v [tomto géli](/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel), ktorý cieľavedome vyživuje chrupavky pri aplikácii priamo na kĺb.
 
 **🔹 Protizápalové látky z prírody**
 

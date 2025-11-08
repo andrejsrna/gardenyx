@@ -161,7 +161,7 @@ RTG Pomáha zistiť prítomnosť artritídy, zlomenín, alebo degeneratívnych z
 1. **Lieky**
 
 - **Analgetiká**: Lieky proti bolesti, ako je paracetamol, môžu pomôcť zmierniť bolesť.
-- **Nesteroidné protizápalové lieky (NSAID)**: Lieky ako ibuprofén alebo naproxén znižujú zápal a zmierňujú bolesť. Môžu byť dostupné vo forme tabliet, krémov alebo gélov. Pri lokálnej aplikácii siahnite aj po [Joint Boost géle – protizápalovej masti na kĺby](/protizapalova-mast-na-klby), ktorá prináša chladivý efekt bez zbytočnej záťaže trávenia.
+- **Nesteroidné protizápalové lieky (NSAID)**: Lieky ako ibuprofén alebo naproxén znižujú zápal a zmierňujú bolesť. Môžu byť dostupné vo forme tabliet, krémov alebo gélov. Pri lokálnej aplikácii siahnite aj po [Joint Boost géle – protizápalovej masti na kĺby](/protizapalova-mast-na-klby), ktorá prináša chladivý efekt bez zbytočnej záťaže trávenia. Ako funguje jeho mentolovo-gáforová zložka popisujeme [na tejto samostatnej stránke](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).
 - **Disease-Modifying Antirheumatic Drugs (DMARDs)**: Lieky ako metotrexát alebo sulfasalazín sú používané pri liečbe autoimunitných ochorení, ako je reumatoidná artritída. Pomáhajú znižovať zápal a predchádzať poškodeniu kĺbov.
 
 1. **Fyzikálna terapia a rehabilitácia**

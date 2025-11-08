@@ -89,11 +89,13 @@ const keyIngredients: KeyIngredient[] = [
     title: 'Mentol a gáfor',
     description: 'Prinášajú okamžitý chladivý efekt a pocit úľavy.',
     image: null,
+    href: '/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel',
   },
   {
     title: 'Glukozamín a chondroitín',
     description: 'Pomáhajú udržiavať zdravú chrupavku.',
     image: '/images/ingredients/glukozamin.jpeg',
+    href: '/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel',
   },
   {
     title: 'Prírodné oleje a emolienty',

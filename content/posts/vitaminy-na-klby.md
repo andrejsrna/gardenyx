@@ -128,6 +128,8 @@ Omega-3 mastné kyseliny sa nachádzajú v tučných rybách, ako sú losos, mak
 
 Tieto látky sú často dostupné vo forme doplnkov stravy a sú populárne medzi ľuďmi trpiacimi osteoartrózou a inými ochoreniami kĺbov. Niektoré štúdie naznačujú, že môžu pomôcť zmierniť bolesť a zlepšiť funkciu kĺbov, hoci výsledky nie sú vždy konzistentné. Pred začatím užívania glukozamínu a chondroitínu je dôležité konzultovať to s lekárom, najmä ak užívate iné lieky alebo máte zdravotné problémy.
 
+Na lokálne použitie existuje aj [glukozamínovo-chondroitínový gél](/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel), ktorý tieto látky dopĺňa priamo na postihnuté kĺby.
+
 ![Losos, makrela, sardinky a tuniak sú bohaté na vitamín D a omega-3 mastné kyseliny. ](https://cdn.najsilnejsiaklbovavyziva.sk/2023/12/losos.jpg)
 
 Losos, makrela, sardinky a tuniak sú bohaté na vitamín D a omega-3 mastné kyseliny.

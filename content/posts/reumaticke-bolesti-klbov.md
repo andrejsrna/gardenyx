@@ -191,6 +191,8 @@ TIP – [Bolesť vonkajšej kosti chodidla – 6 dôležitých informácií](htt
 
 „[Najsilnejšia kĺbová výživa](https://najsilnejsiaklbovavyziva.sk/) – JointBoost“ predstavuje komplexný doplnok stravy, ktorý je navrhnutý na podporu zdravia a funkcie kĺbov. S jeho unikátnym zložením, vrátane glukozamínu, chondroitínu a MSM, tento produkt cieľavedome podporuje regeneráciu kĺbového tkaniva a mazivá. Glukozamín je známy svojou schopnosťou podporovať tvorbu a opravu chrupavky, zatiaľ čo chondroitín sulfát pomáha udržiavať pružnosť a hydratáciu chrupavky. MSM (metylsulfonylmetán), bohatý na síru, môže napomáhať zmierňovať bolesť a zápal v kĺboch.
 
+Tieto látky nájdeš aj v lokálnej forme – [glukozamínovo-chondroitínový gél](/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel) ich dodá priamo do bolestivých kĺbov.
+
 Pridaný vitamín C nielenže podporuje zdravý imunitný systém, ale tiež je dôležitý pre syntézu kolagénu, základného stavebného kameňa pre kĺby a spojivové tkanivá. Morský kolagén typu 2, kurkumín, BioPerine a kyselina hyaluronová sú ďalšími zložkami, ktoré synergicky pôsobia na podporu zdravia kĺbov, zlepšujú ich pohyblivosť a môžu znižovať diskomfort spojený s opotrebovaním kĺbov.
 
 Boswellia serrata, známa tiež ako indický kadidlovník, dopĺňa tento vzorec svojimi protizápalovými vlastnosťami. Vďaka tomu, že je tento doplnok vyrobený v kapsulách HPMC z rastlinnej celulózy, je vhodný aj pre vegetariánov a poskytuje komplexnú podporu pre tých, ktorí hľadajú udržať svoje kĺby zdravé a funkčné.

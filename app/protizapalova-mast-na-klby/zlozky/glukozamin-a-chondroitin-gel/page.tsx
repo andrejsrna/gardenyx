@@ -4,27 +4,34 @@ import Link from 'next/link';
 import Products from '../../../components/landing-page/Products';
 
 export const metadata: Metadata = {
-  title: 'Arnika montana gél – prírodná pomoc na stuhnuté kĺby a svaly',
+  title: 'Glukozamín a chondroitín gél – regenerácia chrupaviek zvonka',
   description:
-    'Objav arnika montana gél – horská arnika v modernej, rýchlo vstrebateľnej forme pre stuhnuté kĺby a unavené svaly. Účinky, použitie a dôvody, prečo je v Najsilnejšom kĺbovom géle.',
+    'Glukozamín a chondroitín gél zlepšuje pružnosť kĺbov, podporuje regeneráciu chrupavky a pôsobí lokálne bez mastného filmu. Spoznaj účinky v Najsilnejšom kĺbovom géle.',
 };
 
-const benefitBullets = [
-  'Podporuje regeneráciu svalov po športovom výkone',
-  'Zmierňuje pocit stuhnutosti a napätia v kĺboch',
-  'Prináša osviežujúci chladivý efekt',
-  'Zlepšuje prekrvenie a prispieva k rýchlejšiemu zotaveniu',
-  'Pôsobí blahodarne na drobné pomliaždeniny či namáhané časti tela',
+const benefits = [
+  'Podporujú prirodzenú regeneráciu chrupavky.',
+  'Pomáhajú zlepšiť pohyblivosť a flexibilitu kĺbov.',
+  'Znižujú pocit napätia a únavy v svaloch a šľachách.',
+  'Pôsobia synergicky s MSM, arnikou a Boswelliou.',
+  'Zlepšujú hydratáciu pokožky a vstrebávanie aktívnych látok.',
+];
+
+const comboItems = [
+  { label: 'MSM', description: 'regenerácia spojivových tkanív' },
+  { label: 'Arnika montana', description: 'revitalizácia pokožky' },
+  { label: 'Boswellia serrata', description: 'podpora pružnosti kĺbov' },
+  { label: 'Mentol a gáfor', description: 'chladivý efekt a okamžitá úľava' },
 ];
 
 const usageIdeas = [
-  'Po športovom výkone alebo fyzickej záťaži',
-  'Pri stuhnutosti krku, chrbta či ramien',
-  'Na regeneráciu po turistike, cvičení alebo práci v stoji',
-  'Na lokálnu starostlivosť o namáhané kĺby a svaly',
+  'Pri stuhnutosti alebo bolesti kĺbov.',
+  'Po športovom výkone alebo dlhom sedení.',
+  'Pri zvýšenej fyzickej záťaži alebo práci v stoji.',
+  'Ako doplnkovú starostlivosť k výživovým doplnkom na kĺby (napr. Joint Boost).',
 ];
 
-export default function ArnikaMontanaGelPage() {
+export default function GlukozaminChondroitinGelPage() {
   return (
     <main className="bg-white">
       <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-emerald-100/40 py-16 md:py-24">
@@ -33,22 +40,22 @@ export default function ArnikaMontanaGelPage() {
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
             <div className="space-y-6 text-center lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
-                🌼 Arnika montana gél
+                🦴 Glukozamín & chondroitín gél
               </span>
               <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-5xl">
-                Arnika montana gél – prírodná pomoc pri stuhnutosti a únave svalov
+                Glukozamín a chondroitín gél – regenerácia a výživa kĺbov zvonka
               </h1>
               <p className="text-lg text-gray-600 md:text-xl">
-                Arnika montana, známa aj ako horská arnika, je tradičná liečivá rastlina z alpských oblastí.
-                V modernej gélovej forme prináša protizápalové, regeneračné a revitalizačné účinky – ideálne
-                pre všetkých, ktorí chcú rýchlo uvoľniť namáhané kĺby a svaly.
+                Glukozamín a chondroitín sú prirodzené súčasti chrupaviek, šliach a väzív. V gélovej forme pôsobia
+                lokálne, pomáhajú zlepšiť pružnosť tkanív, podporujú regeneráciu a zmierňujú diskomfort spôsobený
+                preťažením alebo stuhnutosťou.
               </p>
               <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
                 <Link
                   href="#produkty"
                   className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-emerald-700"
                 >
-                  Objednať gél s arnikou
+                  Objednať gél na chrupavky
                 </Link>
                 <span className="flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-100">
                   11,90 € • doručenie do 24 h
@@ -60,7 +67,7 @@ export default function ArnikaMontanaGelPage() {
               <div className="relative overflow-hidden rounded-[3rem] border border-emerald-100 bg-white/80 p-6 shadow-2xl backdrop-blur">
                 <Image
                   src="/jointboost-gel.jpg"
-                  alt="Aplikácia gélu s Arnika montana na koleno"
+                  alt="Glukozamín a chondroitín gél aplikovaný na koleno"
                   width={640}
                   height={800}
                   priority
@@ -75,23 +82,23 @@ export default function ArnikaMontanaGelPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl space-y-6 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Čo je arnika montana?</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Čo je glukozamín a chondroitín?</h2>
             <p className="text-lg text-gray-600">
-              Horská arnika je storočia uznávaná bylina pre svaly, kĺby aj pokožku. V arnika géle alebo arnika
-              masti pomáha zmierňovať napätie po fyzickej záťaži, revitalizuje tkanivá a podporuje prirodzené
-              hojivé procesy tela.
+              Tieto látky tvoria základ zdravých, pružných a pohyblivých kĺbov. Vo forme gélu pôsobia priamo na miesto
+              potreby – zlepšujú výživu chrupavky, zmierňujú napätie okolitého tkaniva a podporujú prirodzené hojivé
+              procesy.
             </p>
           </div>
           <div className="mt-10 grid gap-4 text-left sm:grid-cols-2">
-            {benefitBullets.map((item) => (
+            {benefits.map((benefit) => (
               <div
-                key={item}
+                key={benefit}
                 className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm"
               >
                 <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-lg font-semibold text-emerald-700">
                   ✓
                 </span>
-                <span className="text-gray-700">{item}</span>
+                <span className="text-gray-700">{benefit}</span>
               </div>
             ))}
           </div>
@@ -101,37 +108,35 @@ export default function ArnikaMontanaGelPage() {
       <section className="bg-emerald-50/70 py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl space-y-6 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Arnika montana v Najsilnejšom kĺbovom géle</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Glukozamín a chondroitín v Najsilnejšom kĺbovom géle</h2>
             <p className="text-lg text-gray-600">
-              V našom géle tvorí arnika extrakt jednu z hlavných aktívnych zložiek. Dopĺňa ju{' '}
-              <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/boswellia-serrata-gel">
-                Boswellia serrata gél
-              </Link>{' '}
-              pre protizápalový účinok a{' '}
-              <Link className="text-emerald-600 hover:underline" href="/zlozenie/msm">
-                MSM
-              </Link>{' '}
-              pre regeneráciu tkanív – spolu s mentolom a gáforom prinášajú komplexný, rýchlo pôsobiaci efekt.
-            </p>
-            <p className="text-base text-gray-600">
-              Špeciálna receptúra sa rýchlo vstrebáva, nezanecháva mastný film a pôsobí presne tam, kde to telo
-              potrebuje.
-            </p>
-            <p className="text-base text-gray-600">
-              Pri potrebe výživy chrupaviek a dlhodobej ochrany kĺbov pridaj do rutiny aj{' '}
-              <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel">
-                glukozamínovo-chondroitínový gél
-              </Link>
-              , ktorý arniku výborne dopĺňa.
+              Na dosiahnutie komplexného účinku ich spájame s ďalšími aktívnymi látkami:
             </p>
           </div>
+          <div className="mt-10 grid gap-4 text-left sm:grid-cols-2">
+            {comboItems.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm"
+              >
+                <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-semibold text-emerald-700">
+                  {item.label}
+                </span>
+                <span className="text-gray-700">{item.description}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-10 text-center text-base text-gray-600">
+            Výsledkom je gél, ktorý uvoľňuje, regeneruje a pomáha udržiavať zdravú štruktúru kĺbov a chrupaviek – bez
+            mastného filmu a s rýchlym vstrebávaním.
+          </p>
         </div>
       </section>
 
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl space-y-6 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Kedy používať arnikovú masť (gél)</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Kedy používať gél s glukozamínom a chondroitínom</h2>
           </div>
           <div className="mt-10 grid gap-4 text-left sm:grid-cols-2">
             {usageIdeas.map((idea) => (
@@ -140,7 +145,7 @@ export default function ArnikaMontanaGelPage() {
                 className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm"
               >
                 <span className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-lg font-semibold text-emerald-700">
-                  •
+                  ⏱
                 </span>
                 <span className="text-gray-700">{idea}</span>
               </div>
@@ -152,18 +157,21 @@ export default function ArnikaMontanaGelPage() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl space-y-6 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Spojenie tradície a modernej kozmetiky</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Prečo zvoliť glukozamín a chondroitín vo forme gélu</h2>
             <p className="text-lg text-gray-600">
-              Arnika montana patrí medzi najstaršie byliny využívané v prírodnej medicíne. V Najsilnejšom kĺbovom
-              géle spája tradičné účinky s modernou, rýchlo vstrebateľnou textúrou, ktorá sa postará o tvoje svaly
-              a kĺby každý deň.
+              Na rozdiel od výživových doplnkov pôsobí lokálne a rýchlo – presne tam, kde pociťuješ diskomfort.
+              Gél sa okamžite vstrebáva, nezanecháva mastný film a je vhodný na každodenné používanie.
+            </p>
+            <p className="text-base text-gray-600">
+              V kombinácii s ostatnými účinnými zložkami pomáha udržať tvoje kĺby silné, pružné a bez obmedzení – či už
+              športuješ, veľa sedíš alebo stojíš pri práci.
             </p>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Link
                 href="#produkty"
                 className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-emerald-700"
               >
-                🛒 Vyskúšaj arnikovú masť teraz
+                🛒 Vyskúšaj Najsilnejší kĺbový gél
               </Link>
               <div className="rounded-full bg-emerald-100 px-5 py-3 text-sm font-semibold text-emerald-700">
                 Doručenie do 24 h • Doprava zdarma nad 40 €
@@ -175,8 +183,8 @@ export default function ArnikaMontanaGelPage() {
 
       <Products
         productIds={[669, 824, 684]}
-        title="Najsilnejší kĺbový gél s arnikou"
-        description="Vyber si samostatnú tubu gélu alebo zvýhodnené balíčky, ktoré spájajú arniku montanu s Boswelliou, MSM a mentolom pre komplexnú starostlivosť o kĺby."
+        title="Najsilnejší kĺbový gél s glukozamínom a chondroitínom"
+        description="Glukozamín gél + chondroitín, MSM, arnika a Boswellia v jednom produkte. Vyber si samostatné balenie alebo zvýhodnené sety."
         gridClassName="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
         loadingGridClassName="animate-pulse grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
       />

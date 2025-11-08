@@ -81,14 +81,14 @@ Kancelárska práca, klimatizácia či zimná sezóna môžu zhoršiť prekrveni
 - Vhodné je jemné naťahovanie prstov vo vlažnej vode a cvičenie s mäkkou loptou či gumou na prsty.
 
 ### 🌿 2. Protizápalová výživa a doplnky
-- **Joint Boost** – obsahuje glukozamín, chondroitín, MSM, kolagén, kurkumín a Boswelliu, ktoré podporujú výživu chrupavky a tlmia zápal.  
+- **Joint Boost** – obsahuje glukozamín, chondroitín, MSM, kolagén, kurkumín a Boswelliu, ktoré podporujú výživu chrupavky a tlmia zápal. Ako pracuje lokálna kombinácia týchto látok sme zhrnuli v [glukozamínovo-chondroitínovom géli](/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel).  
 - Zameraj sa na protizápalové potraviny (omega-3, kurkuma, vitamín C) → [Strava pre kĺby](https://najsilnejsiaklbovavyziva.sk/strava-pre-klby).  
 - Pri tartaru pozor na cukry a vysoko spracované jedlo – podporujú zápal v tele.
 
 ### 💆‍♀️ 3. Lokálna úľava
 - Teplé obklady, masáže alebo parafínové zábaly zlepšujú prekrvenie a uvoľňujú stuhnutosť.  
 - Skvelá domáca pomoc: ajurvédska masť **Siddhalepa** – prehrieva, uvoľňuje svaly a tlmí bolesť.  
-- Pri akútnom zápale siahni skôr po chladení a lokálnych NSAID géloch, prípadne po [Joint Boost géle](/protizapalova-mast-na-klby), ktorý kombinuje Boswelliu s mentolom a rýchlo schladí podráždený kĺb.
+- Pri akútnom zápale siahni skôr po chladení a lokálnych NSAID géloch, prípadne po [Joint Boost géle](/protizapalova-mast-na-klby), ktorý kombinuje Boswelliu s mentolom a rýchlo schladí podráždený kĺb. Ako mentol s gáforom funguje najdeš v [tejto samostatnej zložkovej stránke](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).
 
 ### 💉 4. Lekárske zákroky (keď bolesť neustupuje)
 - kortikoidové injekcie pri akútnej artritíde,  
