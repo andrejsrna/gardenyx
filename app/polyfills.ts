@@ -6,6 +6,18 @@ if (typeof (globalThis as unknown as { File?: unknown }).File === 'undefined') {
 // Global guard against rare browsers/robots passing null events into touch handlers
 (() => {
   if (typeof window === 'undefined') return;
+  const isFacebookInAppBrowser =
+    typeof navigator !== 'undefined' &&
+    /FBAN|FBAV|FB_IAB|FB4A|Instagram/i.test(navigator.userAgent || '');
+
+  // Facebook/Instagram in-app browsers expose native hooks (e.g. enableDidUserTypeOnKeyboardLogging)
+  // that occasionally vanish and crash when we patch addEventListener. Skip the touch guard there.
+  if (isFacebookInAppBrowser) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[polyfills] Skipping touch listener guard in Facebook in-app browser');
+    }
+    return;
+  }
 
   const touchTypes = new Set(['touchstart', 'touchmove', 'touchend', 'touchcancel']);
 
@@ -88,4 +100,3 @@ if (typeof (globalThis as unknown as { File?: unknown }).File === 'undefined') {
     // do nothing if patching fails
   }
 })();
-

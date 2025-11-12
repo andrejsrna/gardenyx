@@ -35,7 +35,7 @@ const corsHeaders = {
 
 const ALLOWED_PARAMS = new Set([
   'ad_id', 'pixel', 'key', 'page', 'search', 'tag', 'include',
-  'fbclid', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign',
+  'fbclid', 'fbc', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign',
   'utm_term', 'utm_content',
   // Needed for Stripe success + internal lookups
   'id', 'payment_intent', 'payment_intent_client_secret'
@@ -172,24 +172,42 @@ export async function middleware(request: NextRequest) {
     }
 
     const url = new URL(request.url);
+    const fbclidParam = url.searchParams.get('fbclid');
+    const fbcParam = url.searchParams.get('fbc');
+    const existingFbc = request.cookies.get('_fbc')?.value;
     const sanitizedParams = sanitizeUrlParams(url);
     const originalParamsString = url.search ? url.search.substring(1) : '';
     const sanitizedParamsString = sanitizedParams.toString();
 
+    let response: NextResponse;
     if (originalParamsString !== sanitizedParamsString) {
       const cleanUrl = new URL(url.pathname, url.origin);
       if (sanitizedParamsString) {
         cleanUrl.search = sanitizedParamsString;
       }
-      return NextResponse.redirect(cleanUrl);
+      response = NextResponse.redirect(cleanUrl);
+    } else {
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-nonce', nonce);
+      requestHeaders.set('Content-Security-Policy', generateCSPHeader());
+      Object.entries(corsHeaders).forEach(([key, value]) => requestHeaders.set(key, value));
+      response = NextResponse.next({ headers: requestHeaders });
     }
 
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-nonce', nonce);
-    requestHeaders.set('Content-Security-Policy', generateCSPHeader());
-    Object.entries(corsHeaders).forEach(([key, value]) => requestHeaders.set(key, value));
+    const derivedFbc = deriveFbcValue(fbclidParam, fbcParam, existingFbc);
+    if (derivedFbc && derivedFbc !== existingFbc) {
+      response.cookies.set({
+        name: '_fbc',
+        value: derivedFbc,
+        path: '/',
+        httpOnly: false,
+        sameSite: 'lax',
+        secure: url.protocol === 'https:',
+        maxAge: 60 * 60 * 24 * 90, // 90 days recommended by Meta
+      });
+    }
 
-    return NextResponse.next({ headers: requestHeaders });
+    return response;
   } catch (error) {
     return handleErrorResponse(error, corsHeaders);
   }
@@ -209,3 +227,28 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|images|public|.*\\.(?:css|js|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$).*)',
   ],
 };
+
+function deriveFbcValue(
+  fbclidParam: string | null,
+  fbcParam: string | null,
+  existingFbc: string | undefined,
+): string | null {
+  if (fbcParam && isValidFbc(fbcParam)) {
+    return fbcParam;
+  }
+
+  if (fbclidParam && isValidFbclid(fbclidParam)) {
+    const timestamp = Math.floor(Date.now() / 1000);
+    return `fb.1.${timestamp}.${fbclidParam}`;
+  }
+
+  return existingFbc ?? null;
+}
+
+function isValidFbclid(value: string): boolean {
+  return /^[A-Za-z0-9._-]+$/.test(value) && value.length <= MAX_PARAM_LENGTH;
+}
+
+function isValidFbc(value: string): boolean {
+  return /^fb\.1\.\d+\.[A-Za-z0-9._-]+$/.test(value) && value.length <= MAX_PARAM_LENGTH;
+}
