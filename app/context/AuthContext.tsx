@@ -52,6 +52,7 @@ const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthContextType['customerData']>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasPersistedIdentity, setHasPersistedIdentity] = useState(false);
 
   const logout = useCallback(async () => {
     try {
@@ -73,6 +74,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (user) {
+      const billing = user.billing;
+      const billingRecord = billing as Partial<Record<string, string | undefined>> | undefined;
+      const userRecord = user as unknown as Partial<Record<string, string | undefined>>;
+      const normalizedIdentity = {
+        email: billing?.email || user.email || '',
+        phone: billing?.phone || '',
+        firstName: billing?.first_name || billingRecord?.firstName || user.first_name || userRecord?.firstName || '',
+        lastName: billing?.last_name || billingRecord?.lastName || user.last_name || userRecord?.lastName || '',
+        city: billing?.city || '',
+        state: billing?.state || '',
+        zip: billing?.postcode || '',
+        country: billing?.country || '',
+      };
+
+      try {
+        window.localStorage.setItem('customerIdentity', JSON.stringify(normalizedIdentity));
+        setHasPersistedIdentity(true);
+      } catch (error) {
+        console.warn('[AuthProvider] Failed to persist customer identity', error);
+      }
+    } else if (hasPersistedIdentity) {
+      try {
+        window.localStorage.removeItem('customerIdentity');
+      } catch (error) {
+        console.warn('[AuthProvider] Failed to clear customer identity', error);
+      } finally {
+        setHasPersistedIdentity(false);
+      }
+    }
+  }, [user, hasPersistedIdentity]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;

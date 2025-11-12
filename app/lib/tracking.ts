@@ -4,6 +4,20 @@ import { sendFacebookConversionEvent, hashUserData } from './facebook-conversion
 import { getCookie } from 'cookies-next';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+const CUSTOMER_IDENTITY_STORAGE_KEY = 'customerIdentity';
+const CHECKOUT_STORAGE_KEY = 'checkoutFormData';
+const ABANDONED_CART_STORAGE_KEY = 'abandonedCart';
+
+type StoredIdentity = {
+  email?: string;
+  phone?: string;
+  firstName?: string;
+  lastName?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+};
 
 // Track event with both client-side pixel and server-side conversion API
 const trackFbEventWithConversionAPI = async (
@@ -15,16 +29,18 @@ const trackFbEventWithConversionAPI = async (
     return;
   }
 
+  const enrichedUserData = mergeWithStoredIdentity(userData);
+
   // Prepare user data for Conversion API
   const fbp = getCookie('_fbp')?.toString();
   const fbc = getCookie('_fbc')?.toString();
-  
+
   if (fbp) {
-    userData.fbp = fbp;
+    enrichedUserData.fbp = fbp;
   }
 
   if (fbc) {
-    userData.fbc = fbc;
+    enrichedUserData.fbc = fbc;
   }
   
   // Add external_id for better event deduplication
@@ -38,7 +54,7 @@ const trackFbEventWithConversionAPI = async (
   
   // Track with both client-side pixel and server-side conversion API
   fbq('track', eventName, eventParams, { eventID: eventId });
-  const hashedUserData = hashUserData(userData);
+  const hashedUserData = hashUserData(enrichedUserData);
   await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
 };
 
@@ -460,3 +476,84 @@ export const tracking = {
     gtagEvent(eventName, params || {});
   },
 };
+
+function mergeWithStoredIdentity(userData: Record<string, unknown> = {}): Record<string, unknown> {
+  const storedIdentity = getStoredIdentity();
+  const merged: Record<string, unknown> = { ...storedIdentity };
+
+  Object.entries(userData).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      merged[key] = value;
+    }
+  });
+
+  return merged;
+}
+
+function getStoredIdentity(): StoredIdentity {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+    return {};
+  }
+
+  const identity: StoredIdentity = {};
+  const safelyParse = (key: string) => {
+    try {
+      const raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const customerIdentity = safelyParse(CUSTOMER_IDENTITY_STORAGE_KEY);
+  if (customerIdentity && typeof customerIdentity === 'object') {
+    mergeIdentity(identity, customerIdentity as Record<string, unknown>);
+  }
+
+  const checkoutData = safelyParse(CHECKOUT_STORAGE_KEY);
+  const billingData = checkoutData && typeof checkoutData === 'object'
+    ? (checkoutData as Record<string, unknown>).billing
+    : null;
+  if (billingData && typeof billingData === 'object') {
+    mergeIdentity(identity, billingData as Record<string, unknown>);
+  }
+
+  const abandonedCart = safelyParse(ABANDONED_CART_STORAGE_KEY);
+  if (
+    abandonedCart &&
+    typeof abandonedCart === 'object' &&
+    typeof (abandonedCart as Record<string, unknown>).email === 'string' &&
+    !identity.email
+  ) {
+    identity.email = (abandonedCart as Record<string, string>).email;
+  }
+
+  return identity;
+}
+
+function mergeIdentity(target: StoredIdentity, source: Record<string, unknown>) {
+  const fieldMapping: Array<[keyof StoredIdentity, string[]]> = [
+    ['email', ['email']],
+    ['phone', ['phone']],
+    ['firstName', ['firstName', 'first_name']],
+    ['lastName', ['lastName', 'last_name']],
+    ['city', ['city']],
+    ['state', ['state']],
+    ['zip', ['zip', 'postcode', 'post_code']],
+    ['country', ['country']],
+  ];
+
+  fieldMapping.forEach(([targetKey, possibleKeys]) => {
+    if (target[targetKey]) {
+      return;
+    }
+
+    for (const key of possibleKeys) {
+      const value = source[key];
+      if (typeof value === 'string' && value.trim() !== '') {
+        target[targetKey] = value;
+        break;
+      }
+    }
+  });
+}
