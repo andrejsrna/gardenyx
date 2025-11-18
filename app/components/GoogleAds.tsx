@@ -6,14 +6,46 @@ import { hasConsentFor } from './CookieConsentBanner';
 
 const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-16627910487';
 const PURCHASE_CONVERSION_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_CONVERSION_LABEL || 'aXspCIyAm8gZENeO5_g9';
+const ADD_TO_CART_CONVERSION_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_ADD_TO_CART_CONVERSION_LABEL || 'YjPMCJDhxcIbENeO5_g9';
 
 declare global {
   interface Window {
     dataLayer: unknown[];
-    gtag: (command: string, action: string | Date, params?: Record<string, unknown>) => void;
+    gtag: (...args: unknown[]) => void;
     gtag_report_conversion?: (url?: string, value?: number, transactionId?: string) => boolean;
+    gtag_report_add_to_cart_conversion?: (url?: string, value?: number) => boolean;
   }
 }
+
+type ConversionParams = {
+  sendTo: string;
+  url?: string;
+  value?: number;
+  currency?: string;
+  transactionId?: string;
+};
+
+const fireConversion = ({ sendTo, url, value = 1.0, currency = 'EUR', transactionId }: ConversionParams) => {
+  if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
+    return false;
+  }
+
+  const callback = () => {
+    if (typeof url !== 'undefined') {
+      window.location.href = url;
+    }
+  };
+
+  window.gtag('event', 'conversion', {
+    send_to: sendTo,
+    value,
+    currency,
+    ...(transactionId ? { transaction_id: transactionId } : {}),
+    event_callback: callback,
+  });
+
+  return false;
+};
 
 export default function GoogleAds() {
   const cookieConsent = getCookieConsentValue('cookieConsent');
@@ -30,37 +62,34 @@ export default function GoogleAds() {
       src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
       onLoad={() => {
         window.dataLayer = window.dataLayer || [];
-        function gtag(command: string, action: string | Date, params?: Record<string, unknown>) {
-          window.dataLayer.push([command, action, params]);
+        function gtag(...args: unknown[]) {
+          window.dataLayer.push(args);
         }
+        window.gtag = gtag;
         gtag('js', new Date());
         gtag('config', GOOGLE_ADS_ID);
 
-        window.gtag_report_conversion = (url?: string, value = 1.0, transactionId?: string) => {
-          if (typeof window.gtag !== 'function') {
-            return false;
-          }
-          const callback = () => {
-            if (typeof url !== 'undefined') {
-              window.location.href = url;
-            }
-          };
-          window.gtag('event', 'conversion', {
-            send_to: `${GOOGLE_ADS_ID}/${PURCHASE_CONVERSION_LABEL}`,
+        window.gtag_report_conversion = (url?: string, value?: number, transactionId?: string) =>
+          fireConversion({
+            sendTo: `${GOOGLE_ADS_ID}/${PURCHASE_CONVERSION_LABEL}`,
+            url,
             value,
-            currency: 'EUR',
-            transaction_id: transactionId || '',
-            event_callback: callback,
+            transactionId,
           });
-          return false;
-        };
+
+        window.gtag_report_add_to_cart_conversion = (url?: string, value?: number) =>
+          fireConversion({
+            sendTo: `${GOOGLE_ADS_ID}/${ADD_TO_CART_CONVERSION_LABEL}`,
+            url,
+            value,
+          });
       }}
     />
   );
 }
 
 export const trackConversion = (conversionId: string, value?: number) => {
-  if (typeof window !== 'undefined' && window.gtag) {
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
     window.gtag('event', 'conversion', {
       'send_to': `${GOOGLE_ADS_ID}/${conversionId}`,
       ...(value && { value, currency: 'EUR' })
@@ -72,13 +101,22 @@ type ConversionOptions = {
   url?: string;
   value?: number;
   transactionId?: string;
+  currency?: string;
 };
 
-export const reportPurchaseConversion = (options?: ConversionOptions) => {
-  if (typeof window === 'undefined' || typeof window.gtag_report_conversion !== 'function') {
-    return false;
-  }
+export const reportPurchaseConversion = (options?: ConversionOptions) =>
+  fireConversion({
+    sendTo: `${GOOGLE_ADS_ID}/${PURCHASE_CONVERSION_LABEL}`,
+    url: options?.url,
+    value: options?.value,
+    transactionId: options?.transactionId,
+    currency: options?.currency,
+  });
 
-  const { url, value, transactionId } = options || {};
-  return window.gtag_report_conversion(url, value, transactionId);
-};
+export const reportAddToCartConversion = (options?: ConversionOptions) =>
+  fireConversion({
+    sendTo: `${GOOGLE_ADS_ID}/${ADD_TO_CART_CONVERSION_LABEL}`,
+    url: options?.url,
+    value: options?.value,
+    currency: options?.currency,
+  });

@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { tracking } from '../lib/tracking';
-import { trackConversion } from '../components/GoogleAds';
+import { trackConversion, reportAddToCartConversion } from '../components/GoogleAds';
 import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
 
 interface CartItem {
@@ -266,6 +266,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             const trackValue = trackItem.price * trackItem.quantity;
 
             tracking.addToCart(trackItem);
+            reportAddToCartConversion({ value: trackValue });
 
             if (!existingItem) {
                 trackConversion('c1xXCLfG9ZgZEJ2x7aU9', trackValue);
