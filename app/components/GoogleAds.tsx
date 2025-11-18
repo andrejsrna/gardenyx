@@ -8,15 +8,6 @@ const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-16627910487';
 const PURCHASE_CONVERSION_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_CONVERSION_LABEL || 'aXspCIyAm8gZENeO5_g9';
 const ADD_TO_CART_CONVERSION_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_ADD_TO_CART_CONVERSION_LABEL || 'YjPMCJDhxcIbENeO5_g9';
 
-declare global {
-  interface Window {
-    dataLayer: unknown[];
-    gtag: (...args: unknown[]) => void;
-    gtag_report_conversion?: (url?: string, value?: number, transactionId?: string) => boolean;
-    gtag_report_add_to_cart_conversion?: (url?: string, value?: number) => boolean;
-  }
-}
-
 type ConversionParams = {
   sendTo: string;
   url?: string;
@@ -62,9 +53,13 @@ export default function GoogleAds() {
       src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
       onLoad={() => {
         window.dataLayer = window.dataLayer || [];
-        function gtag(...args: unknown[]) {
-          window.dataLayer.push(args);
-        }
+        const gtag: Window['gtag'] = (command, target, params) => {
+          if (typeof params === 'undefined') {
+            window.dataLayer.push([command, target]);
+          } else {
+            window.dataLayer.push([command, target, params]);
+          }
+        };
         window.gtag = gtag;
         gtag('js', new Date());
         gtag('config', GOOGLE_ADS_ID);
