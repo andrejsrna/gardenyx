@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { tracking } from '../../lib/tracking';
+import { reportPurchaseConversion } from '../../components/GoogleAds';
 
 type SuccessTrackingProps = {
   orderId: string;
@@ -23,6 +24,7 @@ export default function SuccessTracking({ orderId, total, tax, shipping, items }
     void (async () => {
       try {
         await tracking.purchaseWithConversionAPI(orderId, items, total, undefined, tax, shipping);
+        reportPurchaseConversion({ value: total, transactionId: orderId });
         sessionStorage.setItem(key, 'true');
       } catch {
         // ignore
@@ -32,5 +34,4 @@ export default function SuccessTracking({ orderId, total, tax, shipping, items }
 
   return null;
 }
-
 
