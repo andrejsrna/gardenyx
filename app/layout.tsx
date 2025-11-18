@@ -20,6 +20,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { CookieConsentProvider } from './context/CookieConsentContext';
 import { isSalesSuspended, getSalesSuspensionMessage } from './lib/utils/sales-suspension';
+import { GoogleTagManagerHead, GoogleTagManagerBody } from "./components/GoogleTagManager";
 import "./globals.css";
 
 const inter = Inter({
@@ -83,8 +84,10 @@ export default function RootLayout({
         />
         <OrganizationSchema />
         <WebSiteSchema />
+        <GoogleTagManagerHead />
       </head>
       <body className={`${inter.variable} antialiased`}>
+        <GoogleTagManagerBody />
         <Suspense fallback={<Loading />}>
           <AuthProvider>
             <CartProvider>
