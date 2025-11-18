@@ -4,6 +4,32 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import CookieConsent, { getCookieConsentValue } from 'react-cookie-consent';
 
+type ConsentDetails = {
+  necessary: boolean;
+  analytics: boolean;
+  marketing: boolean;
+};
+
+const storeConsentDetails = (details: ConsentDetails) => {
+  try {
+    localStorage.setItem('cookieConsentDetails', JSON.stringify(details));
+  } catch {
+    // ignore storage errors
+  }
+};
+
+const ACCEPTED_DETAILS: ConsentDetails = {
+  necessary: true,
+  analytics: true,
+  marketing: true,
+};
+
+const DECLINED_DETAILS: ConsentDetails = {
+  necessary: true,
+  analytics: false,
+  marketing: false,
+};
+
 export default function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -23,16 +49,20 @@ export default function CookieConsentBanner() {
     
     if (!existingConsent) {
       setIsVisible(true);
+    } else if (typeof window !== 'undefined' && !localStorage.getItem('cookieConsentDetails')) {
+      storeConsentDetails(existingConsent === 'true' ? ACCEPTED_DETAILS : DECLINED_DETAILS);
     }
   }, [isSeznamBrowser]);
 
   const handleAcceptAll = () => {
     setIsVisible(false);
+    storeConsentDetails(ACCEPTED_DETAILS);
     window.location.reload();
   };
 
   const handleDeclineAll = () => {
     setIsVisible(false);
+    storeConsentDetails(DECLINED_DETAILS);
   };
 
   if (!isSeznamBrowser && isVisible) {
