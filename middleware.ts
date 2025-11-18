@@ -47,9 +47,9 @@ const CSP_DIRECTIVES = {
     "'self'", "'unsafe-inline'", "'unsafe-eval'",
     'https://*.facebook.net', 'https://*.facebook.com',
     'https://connect.facebook.net', 'https://js.stripe.com',
-    'https://www.googletagmanager.com', 'https://widget.packeta.com',
-    'https://backup.widget.packeta.com', 'https://maps.googleapis.com'
-    , 'https://eu-assets.i.posthog.com'
+    'https://www.googletagmanager.com', 'https://www.google-analytics.com',
+    'https://widget.packeta.com', 'https://backup.widget.packeta.com',
+    'https://maps.googleapis.com', 'https://eu-assets.i.posthog.com'
   ],
   styleSrc: ["'self'", "'unsafe-inline'"],
   imgSrc: [
@@ -57,8 +57,9 @@ const CSP_DIRECTIVES = {
     'https://*.facebook.com', 'https://www.facebook.com',
     'https://facebook.com', 'https://najsilnejsiaklbovavyziva.sk',
     'https://*.googletagmanager.com', 'https://www.googletagmanager.com',
-    'https://cdn.najsilnejsiaklbovavyziva.sk', 'https://*.gstatic.com',
-    'https://maps.gstatic.com', 'https://upload.wikimedia.org'
+    'https://www.google-analytics.com', 'https://googleads.g.doubleclick.net',
+    'https://stats.g.doubleclick.net', 'https://cdn.najsilnejsiaklbovavyziva.sk',
+    'https://*.gstatic.com', 'https://maps.gstatic.com', 'https://upload.wikimedia.org'
   ],
   frameSrc: [
     "'self'", 'https://js.stripe.com',
@@ -71,7 +72,9 @@ const CSP_DIRECTIVES = {
     'https://admin.najsilnejsiaklbovavyziva.sk',
     'https://*.facebook.net', 'https://*.facebook.com',
     'https://connect.facebook.net', 'https://*.sentry.io',
-    'https://*.ingest.sentry.io', 'https://eu.i.posthog.com'
+    'https://*.ingest.sentry.io', 'https://eu.i.posthog.com',
+    'https://www.googletagmanager.com', 'https://www.google-analytics.com',
+    'https://stats.g.doubleclick.net', 'https://googleads.g.doubleclick.net'
   ],
   fontSrc: ["'self'"],
   workerSrc: ["'self'", 'blob:', 'https://js.stripe.com']
