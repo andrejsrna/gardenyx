@@ -69,6 +69,13 @@ export default function Footer() {
     }
   ];
 
+  const HELPFUL_LINKS = [
+    { label: 'Masť na bolesť kolena', href: '/mast-na-bolest-kolena' },
+    { label: 'Protizápalová masť na kĺby', href: '/protizapalova-mast-na-klby' },
+    { label: 'Ako správne užívať Joint Boost', href: '/uzivanie' },
+    { label: 'Často kladené otázky', href: '/casto-kladene-otazky' }
+  ];
+
   return (
     <footer className="bg-gradient-to-b from-white to-green-50">
       <div className="container mx-auto px-8 pt-16 pb-8 sm:pb-24">
@@ -218,6 +225,27 @@ export default function Footer() {
               {link.icon}
             </a>
           ))}
+        </div>
+
+        {/* Secondary links accordion */}
+        <div className="mx-auto mb-8 max-w-xl">
+          <details className="group rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm">
+            <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-gray-800">
+              Užitočné odkazy
+              <span className="text-lg text-green-600 transition-transform duration-200 group-open:rotate-45">+</span>
+            </summary>
+            <div className="mt-3 space-y-2 text-sm text-gray-700">
+              {HELPFUL_LINKS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block rounded-lg px-3 py-2 transition hover:bg-green-50 hover:text-green-700"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </details>
         </div>
 
         {/* Divider */}

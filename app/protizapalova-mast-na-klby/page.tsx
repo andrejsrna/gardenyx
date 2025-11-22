@@ -197,6 +197,12 @@ export default function ProtizapalovyGelPage() {
                   Objednaj dnes – odosielame do 24 hodín
                 </span>
                 <span className="text-gray-600">Najpredávanejšia masť v kategórii chladivých gélov 2025</span>
+                <Link
+                  href="/mast-na-bolest-kolena"
+                  className="text-green-700 underline-offset-4 hover:underline"
+                >
+                  Hľadáš riešenie na bolesť kolena? Pozri našu špecializovanú stránku.
+                </Link>
               </div>
             </div>
             <div className="relative mx-auto w-full max-w-sm md:max-w-md">
