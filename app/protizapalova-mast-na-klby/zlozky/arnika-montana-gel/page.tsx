@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import Products from '../../../components/landing-page/Products';
+import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
 
 export const metadata: Metadata = {
   title: 'Arnika montana gél – prírodná pomoc na stuhnuté kĺby a svaly',
@@ -104,10 +105,6 @@ export default function ArnikaMontanaGelPage() {
             <h2 className="text-3xl font-bold text-gray-900">Arnika montana v Najsilnejšom kĺbovom géle</h2>
             <p className="text-lg text-gray-600">
               V našom géle tvorí arnika extrakt jednu z hlavných aktívnych zložiek. Dopĺňa ju{' '}
-              <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/boswellia-serrata-gel">
-                Boswellia serrata gél
-              </Link>{' '}
-              pre protizápalový účinok a{' '}
               <Link className="text-emerald-600 hover:underline" href="/zlozenie/msm">
                 MSM
               </Link>{' '}
@@ -118,11 +115,11 @@ export default function ArnikaMontanaGelPage() {
               potrebuje.
             </p>
             <p className="text-base text-gray-600">
-              Pri potrebe výživy chrupaviek a dlhodobej ochrany kĺbov pridaj do rutiny aj{' '}
-              <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel">
-                glukozamínovo-chondroitínový gél
+              Pri potrebe výživy chrupaviek a dlhodobej ochrany kĺbov pridaj do rutiny aj vnútornú výživu, napríklad{' '}
+              <Link className="text-emerald-600 hover:underline" href="/joint-boost">
+                Joint Boost
               </Link>
-              , ktorý arniku výborne dopĺňa.
+              , ktorý pôsobí zvnútra.
             </p>
           </div>
         </div>
@@ -172,6 +169,12 @@ export default function ArnikaMontanaGelPage() {
           </div>
         </div>
       </section>
+
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <JointBoostGelIngredients />
+        </div>
+      </div>
 
       <Products
         productIds={[669, 824, 684]}

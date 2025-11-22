@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import Products from '../../../components/landing-page/Products';
+import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
 
 export const metadata: Metadata = {
   title: 'Mentolový a gáforový gél – okamžité osvieženie pre kĺby',
@@ -113,7 +114,7 @@ export default function MentolGaforGelPage() {
               <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/arnika-montana-gel">
                 arnikou montana
               </Link>{' '}
-              a Boswelliou serrata.
+              a ďalšími regeneračnými látkami.
               Vďaka tomu gél:
             </p>
           </div>
@@ -132,10 +133,14 @@ export default function MentolGaforGelPage() {
           </div>
           <p className="mt-8 text-center text-base text-gray-600">
             Pri detailnej regenerácii kĺbov sa mentol s gáforom skvele dopĺňajú s{' '}
-            <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel">
-              glukozamínovo-chondroitínovým gélom
+            <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/arnika-montana-gel">
+              arnikovým gélom
+            </Link>{' '}
+            a{' '}
+            <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/msm-gel">
+              MSM gélom
             </Link>
-            , ktorý cieli na dlhodobú výživu chrupaviek.
+            , ktoré podporujú regeneráciu tkanív.
           </p>
           <p className="mt-10 text-center text-base text-gray-600">
             Ideálne riešenie pre športovcov, fyzicky aktívnych ľudí aj tých, ktorí trpia stuhnutosťou pri sedavom
@@ -191,6 +196,12 @@ export default function MentolGaforGelPage() {
           </div>
         </div>
       </section>
+
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <JointBoostGelIngredients />
+        </div>
+      </div>
 
       <Products
         productIds={[669, 824, 684]}

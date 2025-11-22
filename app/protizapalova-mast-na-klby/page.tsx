@@ -3,9 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import Products from '../components/landing-page/Products';
+import JointBoostGelIngredients from '../components/product/JointBoostGelIngredients';
 
 export const metadata: Metadata = {
-  title: 'Protizápalová masť na kĺby – rýchla úľava a regenerácia',
+  title: 'Chladivá masť (gél) na kĺby – rýchla úľava a svieži pocit pri napätí a stuhnutosti',
   description:
     'Chladivá protizápalová masť na kĺby pre okamžitú úľavu od napätia, stuhnutosti a bolesti po záťaži. Rýchlo sa vstrebáva, nezanecháva mastný film a podporuje regeneráciu.',
 };
@@ -17,7 +18,7 @@ const heroHighlights = [
 ];
 
 const benefitBullets = [
-  'Zmierňuje pocit napätia a stuhnutosti',
+  'Okamžite zmierňuje pocit napätia, stuhnutosti a preťaženia.',
   'Podporuje regeneráciu kĺbov a svalov',
   'Osviežuje a zlepšuje prekrvenie',
   'Rýchlo sa vstrebáva, bez mastného filmu',
@@ -57,6 +58,14 @@ const coreEffects = [
     description:
       'Pomáha obnoviť pružnosť kĺbov a svalov, aby si sa mohol rýchlejšie vrátiť k obľúbeným aktivitám.',
   },
+  {
+    title: 'Nezanecháva lepkavý alebo mastný pocit',
+    description: 'Ľahká gélová textúra sa rýchlo vstrebáva a na pokožke necháva len svieži pocit.',
+  },
+  {
+    title: 'Svieža vôňa mentolu a eukalyptu oživí unavené partie',
+    description: 'Jemná aróma spríjemní masáž a povzbudí zmysly pri aplikácii.',
+  },
 ];
 
 type KeyIngredient = {
@@ -70,37 +79,25 @@ const keyIngredients: KeyIngredient[] = [
   {
     title: 'MSM',
     description: 'Podporuje pružnosť kĺbov a regeneráciu tkanív.',
-    image: '/images/ingredients/msm.jpeg',
+    image: '/images/ingredients/gel/msm.jpeg',
     href: '/protizapalova-mast-na-klby/zlozky/msm-gel',
   },
   {
     title: 'Arnika montana extrakt',
     description: 'Prispieva k revitalizácii a regenerácii pokožky.',
-    image: null,
+    image: '/images/ingredients/gel/arnika.jpeg',
     href: '/protizapalova-mast-na-klby/zlozky/arnika-montana-gel',
-  },
-  {
-    title: 'Boswellia serrata extrakt',
-    description: 'Podporuje prirodzenú pohyblivosť kĺbov.',
-    image: '/images/ingredients/boswellia-serata.jpeg',
-    href: '/protizapalova-mast-na-klby/zlozky/boswellia-serrata-gel',
   },
   {
     title: 'Mentol a gáfor',
     description: 'Prinášajú okamžitý chladivý efekt a pocit úľavy.',
-    image: null,
+    image: '/images/ingredients/gel/mentolgafor.jpeg',
     href: '/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel',
-  },
-  {
-    title: 'Glukozamín a chondroitín',
-    description: 'Pomáhajú udržiavať zdravú chrupavku.',
-    image: '/images/ingredients/glukozamin.jpeg',
-    href: '/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel',
   },
   {
     title: 'Prírodné oleje a emolienty',
     description: 'Zabezpečujú dobrú vstrebateľnosť bez mastného pocitu.',
-    image: null,
+    image: '/images/ingredients/gel/prirodneoleje.jpeg',
   },
 ];
 
@@ -165,7 +162,7 @@ export default function ProtizapalovyGelPage() {
                 Protizápalová starostlivosť • okamžitá úľava • lokálna aplikácia
               </span>
               <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-5xl">
-                Protizápalová masť na kĺby – rýchle ochladenie a regenerácia
+                Chladivá masť (gél) na kĺby – rýchla úľava a svieži pocit pri napätí a stuhnutosti
               </h1>
               <p className="text-lg text-gray-600 md:text-xl">
                 Chladivý gél, ktorý uľaví unaveným a stuhnutým kĺbom už po prvom nanesení. Ideálny pri
@@ -194,6 +191,12 @@ export default function ProtizapalovyGelPage() {
                 >
                   Kompletná starostlivosť o kĺby
                 </Link>
+              </div>
+              <div className="flex flex-col items-center gap-2 text-sm font-semibold text-gray-700 lg:items-start">
+                <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-green-800">
+                  Objednaj dnes – odosielame do 24 hodín
+                </span>
+                <span className="text-gray-600">Najpredávanejšia masť v kategórii chladivých gélov 2025</span>
               </div>
             </div>
             <div className="relative mx-auto w-full max-w-sm md:max-w-md">
@@ -291,7 +294,7 @@ export default function ProtizapalovyGelPage() {
             <h2 className="text-3xl font-bold text-gray-900">Kľúčové aktívne zložky</h2>
             <p className="text-lg text-gray-600">
               Kombinácia prírodných extraktov a osvedčených látok prináša okamžitú úľavu aj dlhodobú podporu
-              regenerácie kĺbov.
+              regenerácie kĺbov. Všetky extrakty sú kozmetické – bezpečné na opakované používanie.
             </p>
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -341,6 +344,12 @@ export default function ProtizapalovyGelPage() {
           </div>
         </div>
       </section>
+
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <JointBoostGelIngredients />
+        </div>
+      </div>
 
       <section id="ako-pouzivat" className="bg-green-50/60 py-16">
         <div className="container mx-auto px-4">

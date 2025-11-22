@@ -27,11 +27,9 @@ const JOINT_BOOST_PAGE_LINKS = [
 ];
 
 const JOINT_BOOST_GEL_LINKS = [
-  { title: 'Boswellia serrata', href: '/protizapalova-mast-na-klby/zlozky/boswellia-serrata-gel' },
   { title: 'Arnika montana', href: '/protizapalova-mast-na-klby/zlozky/arnika-montana-gel' },
   { title: 'MSM', href: '/protizapalova-mast-na-klby/zlozky/msm-gel' },
   { title: 'Mentol a gáfor', href: '/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel' },
-  { title: 'Glukozamín & chondroitín', href: '/protizapalova-mast-na-klby/zlozky/glukozamin-a-chondroitin-gel' },
 ];
 
 const SECONDARY_LINKS = [

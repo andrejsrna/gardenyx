@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import Products from '../../../components/landing-page/Products';
+import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
 
 export const metadata: Metadata = {
   title: 'MSM gél – síra pre zdravé a pružné kĺby',
@@ -106,14 +107,11 @@ export default function MsmGelPage() {
             <h2 className="text-3xl font-bold text-gray-900">MSM v Najsilnejšom kĺbovom géle</h2>
             <p className="text-lg text-gray-600">
               MSM je jednou z kľúčových zložiek nášho Najsilnejšieho kĺbového gélu. Spolu s{' '}
-              <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/boswellia-serrata-gel">
-                Boswellia serrata gélom
-              </Link>{' '}
-              a{' '}
               <Link className="text-emerald-600 hover:underline" href="/protizapalova-mast-na-klby/zlozky/arnika-montana-gel">
                 arnikou montana
               </Link>{' '}
-              dodáva protizápalovému gélu silu, ktorú cítiš okamžite – bez mastného filmu a s rýchlym vstrebávaním.
+              a chladivými látkami (mentol, gáfor) dodáva gélu silu, ktorú cítiš okamžite – bez mastného filmu a s
+              rýchlym vstrebávaním.
             </p>
             <p className="text-base text-gray-600">
               Mentol, gáfor a ďalšie zložky sa postarajú o svieži efekt, zatiaľ čo MSM pomáha preniknúť účinným látkam
@@ -166,6 +164,12 @@ export default function MsmGelPage() {
           </div>
         </div>
       </section>
+
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <JointBoostGelIngredients />
+        </div>
+      </div>
 
       <Products
         productIds={[669, 824, 684]}
