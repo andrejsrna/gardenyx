@@ -62,7 +62,7 @@ export default function ShopContent() {
   const fetchAndCategorizeProducts = useCallback(async () => {
     setError(null);
     setIsLoading(true);
-    
+
     try {
       // Fetch all products in one go
       const response = await fetch(`/api/woocommerce/products`);
@@ -71,7 +71,7 @@ export default function ShopContent() {
       if (!response.ok) {
         throw new Error(allProducts.message || 'Failed to fetch products');
       }
-      
+
       if (!Array.isArray(allProducts) || allProducts.length === 0) {
         throw new Error('No products found');
       }
@@ -79,7 +79,7 @@ export default function ShopContent() {
       // Create a map of sections for easy lookup
       const sectionsMap = new Map<string, WooCommerceProduct[]>();
       INITIAL_SECTIONS.forEach(section => sectionsMap.set(section.taxonomy, []));
-      
+
       // Distribute products into sections
       allProducts.forEach((product: WooCommerceProduct) => {
         product.categories.forEach(category => {
@@ -89,12 +89,26 @@ export default function ShopContent() {
           }
         });
       });
-      
+
       // Update the sections with sorted products
-      const updatedSections = INITIAL_SECTIONS.map(section => ({
-        ...section,
-        products: sortProductsByPrice(sectionsMap.get(section.taxonomy) || [])
-      }));
+      const updatedSections = INITIAL_SECTIONS.map(section => {
+        let products = sectionsMap.get(section.taxonomy) || [];
+
+        // Sort by price
+        products = sortProductsByPrice(products);
+
+        // If this section contains the Duo Set (ID 824), move it to the top
+        const duoSetIndex = products.findIndex(p => p.id === 824);
+        if (duoSetIndex > -1) {
+          const duoSet = products.splice(duoSetIndex, 1)[0];
+          products.unshift(duoSet);
+        }
+
+        return {
+          ...section,
+          products
+        };
+      });
 
       setProductSections(updatedSections);
 
@@ -123,7 +137,7 @@ export default function ShopContent() {
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Naše produkty</h1>
         <p className="mt-2 text-lg text-gray-600">Objavte našu ponuku kĺbovej výživy</p>
       </div>
-      
+
       {productSections.map((section) => (
         section.products.length > 0 && (
           <section key={section.taxonomy} className="space-y-6">
@@ -131,10 +145,11 @@ export default function ShopContent() {
             <h2 className="text-3xl font-bold">{section.title}</h2>
             <div className={`grid ${section.gridCols} gap-6`}>
               {section.products.map((product, index) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
+                <ProductCard
+                  key={product.id}
+                  product={product}
                   isPriority={index < 4}
+                  isHero={product.id === 824}
                 />
               ))}
             </div>

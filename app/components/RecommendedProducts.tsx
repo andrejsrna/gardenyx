@@ -85,19 +85,20 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
         <h2 className="text-3xl font-bold mb-8">Odporúčané produkty</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => {
+            const isHero = product.id === 824;
             const hasDiscount = product.sale_price !== '';
             const price = parseFloat(product.price);
             const regularPrice = parseFloat(product.regular_price);
             const discount = hasDiscount ? Math.round((1 - price / regularPrice) * 100) : 0;
 
             return (
-              <article 
-                key={product.id} 
-                className="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-shadow duration-300"
+              <article
+                key={product.id}
+                className={`bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300 ${isHero ? 'ring-2 ring-green-500 transform md:-translate-y-2' : ''}`}
               >
                 <div className="aspect-[4/3] relative overflow-hidden">
                   {product.images[0] && (
-                    <Link 
+                    <Link
                       href={`/produkt/${product.slug}`}
                       onClick={() => handleViewDetail(product)}
                       className="block relative w-full h-full"
@@ -111,15 +112,25 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
                       />
                     </Link>
                   )}
+                  {isHero && (
+                    <div className="absolute top-0 left-0 bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-br-xl text-sm font-bold shadow-md z-10">
+                      Najpredávanejšie
+                    </div>
+                  )}
                   {hasDiscount && (
                     <div className="absolute top-3 right-3 bg-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg">
                       -{discount}%
                     </div>
                   )}
+                  {isHero && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-max bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                      + Masť
+                    </div>
+                  )}
                 </div>
                 <div className="p-6">
-                  <Link 
-                    href={`/produkt/${product.slug}`} 
+                  <Link
+                    href={`/produkt/${product.slug}`}
                     className="block group"
                     onClick={() => handleViewDetail(product)}
                   >
@@ -128,11 +139,11 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
                     </h3>
                   </Link>
 
-                  <div 
+                  <div
                     className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[2.5rem]"
                     dangerouslySetInnerHTML={{ __html: product.short_description }}
                   />
-                  
+
                   <div className="flex items-baseline gap-2 mb-4">
                     <span className="text-2xl font-bold text-green-600">
                       {price.toFixed(2)} €
@@ -145,16 +156,16 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <Link 
+                    <Link
                       href={`/produkt/${product.slug}`}
-                      className="text-center px-4 py-2 border-2 border-green-600 text-green-600 font-medium rounded-lg hover:bg-green-600 hover:text-white transition-colors"
+                      className={`text-center px-4 py-2 border-2 font-medium rounded-lg transition-colors ${isHero ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100' : 'border-green-600 text-green-600 hover:bg-green-600 hover:text-white'}`}
                       onClick={() => handleViewDetail(product)}
                     >
                       Detail
                     </Link>
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="text-center px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
+                      className={`text-center px-6 py-2 font-medium rounded-lg transition-colors ${isHero ? 'bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-green-200' : 'bg-green-600 text-white hover:bg-green-700'}`}
                     >
                       Kúpiť
                     </button>

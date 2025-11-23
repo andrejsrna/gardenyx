@@ -13,41 +13,41 @@ import RecommendedProductsWrapper from './components/RecommendedProductsWrapper'
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  
+
   // Get RankMath SEO data for homepage
   const seoData = await getRankMathSEO(process.env.WORDPRESS_URL!);
-  
+
   if (seoData) {
     // Parse the head HTML using our utility
     const parser = parseHTML(seoData.head);
-    
+
     return {
-      title: parser.getTitle() || 'Najsilnejšia kĺbová výživa',
-      description: parser.getMetaTag('description') || 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+      title: 'Najsilnejšia kĺbová výživa na trhu | JointBoost Duo Set',
+      description: 'Hľadáte skutočne účinné riešenie? Objavte najsilnejšiu kĺbovú výživu JointBoost. Unikátny Duo Set: komplexná kĺbová výživa + gél proti bolesti pre dvojitý efekt. Skladom!',
       openGraph: {
-        title: parser.getMetaTag('og:title') || 'Najsilnejšia kĺbová výživa',
-        description: parser.getMetaTag('og:description') || 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+        title: 'Najsilnejšia kĺbová výživa na trhu | JointBoost Duo Set',
+        description: 'Hľadáte skutočne účinné riešenie? Objavte najsilnejšiu kĺbovú výživu JointBoost. Unikátny Duo Set: komplexná kĺbová výživa + gél proti bolesti pre dvojitý efekt. Skladom!',
         url: parser.getMetaTag('og:url') || siteUrl,
         siteName: parser.getMetaTag('og:site_name') || 'Najsilnejšia kĺbová výživa',
-        images: parser.getMetaTag('og:image') 
+        images: parser.getMetaTag('og:image')
           ? [{
-              url: parser.getMetaTag('og:image') || '',
-              width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
-              height: parseInt(parser.getMetaTag('og:image:height') || '630'),
-            }]
+            url: parser.getMetaTag('og:image') || '',
+            width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
+            height: parseInt(parser.getMetaTag('og:image:height') || '630'),
+          }]
           : [{
-              url: `${siteUrl}/logo.png`,
-              width: 1200,
-              height: 630,
-            }],
+            url: `${siteUrl}/logo.png`,
+            width: 1200,
+            height: 630,
+          }],
         locale: 'sk_SK',
         type: (parser.getMetaTag('og:type') || 'website') as 'website',
       },
       twitter: {
         card: 'summary_large_image',
-        title: parser.getMetaTag('twitter:title') || 'Najsilnejšia kĺbová výživa',
-        description: parser.getMetaTag('twitter:description') || 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
-        images: parser.getMetaTag('twitter:image') 
+        title: 'Najsilnejšia kĺbová výživa na trhu | JointBoost Duo Set',
+        description: 'Hľadáte skutočne účinné riešenie? Objavte najsilnejšiu kĺbovú výživu JointBoost. Unikátny Duo Set: komplexná kĺbová výživa + gél proti bolesti pre dvojitý efekt. Skladom!',
+        images: parser.getMetaTag('twitter:image')
           ? [{ url: parser.getMetaTag('twitter:image')! }]
           : [`${siteUrl}/logo.png`],
       },
@@ -70,11 +70,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
   // Fallback metadata if RankMath data is not available
   return {
-    title: 'Najsilnejšia kĺbová výživa',
-    description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+    title: 'Najsilnejšia kĺbová výživa na trhu | JointBoost Duo Set',
+    description: 'Hľadáte skutočne účinné riešenie? Objavte najsilnejšiu kĺbovú výživu JointBoost. Unikátny Duo Set: komplexná kĺbová výživa + gél proti bolesti pre dvojitý efekt. Skladom!',
     openGraph: {
-      title: 'Najsilnejšia kĺbová výživa',
-      description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+      title: 'Najsilnejšia kĺbová výživa na trhu | JointBoost Duo Set',
+      description: 'Hľadáte skutočne účinné riešenie? Objavte najsilnejšiu kĺbovú výživu JointBoost. Unikátny Duo Set: komplexná kĺbová výživa + gél proti bolesti pre dvojitý efekt. Skladom!',
       url: siteUrl,
       siteName: 'Najsilnejšia kĺbová výživa',
       images: [
@@ -89,8 +89,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Najsilnejšia kĺbová výživa',
-      description: 'Prírodná kĺbová výživa pre zdravé a silné kĺby. Overené zákazníkmi.',
+      title: 'Najsilnejšia kĺbová výživa na trhu | JointBoost Duo Set',
+      description: 'Hľadáte skutočne účinné riešenie? Objavte najsilnejšiu kĺbovú výživu JointBoost. Unikátny Duo Set: komplexná kĺbová výživa + gél proti bolesti pre dvojitý efekt. Skladom!',
       images: [`${siteUrl}/logo.png`],
     },
     alternates: {
@@ -118,7 +118,7 @@ export default function Home() {
       <Reviews />
       <RecommendedProductsWrapper />
       <RecentPosts />
-      <CTA/>  
+      <CTA />
     </main>
   );
 }

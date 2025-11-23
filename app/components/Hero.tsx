@@ -51,12 +51,11 @@ export default function Hero() {
 
             <div className="space-y-6">
               <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-                Podporte kĺby doplnkom, ktorý obstál v praxi
+                Vitajte u špecialistu na najsilnejšiu kĺbovú výživu
               </h1>
 
               <p className="max-w-xl text-lg leading-relaxed text-slate-600">
-                Od roku 2023 pomáhame ľuďom žiť bez obmedzení. Férové zloženie, slovenská výroba
-                a reálne výsledky potvrdené zákazníkmi.
+                Prečo sme najsilnejší? Pretože útočíme na bolesť z dvoch strán. Náš unikátny <strong>Duo Set</strong> kombinuje prémiovú kĺbovú výživu pre hĺbkovú regeneráciu a protizápalový gél pre okamžitú úľavu. Maximálny účinok, ktorý pocítite.
               </p>
 
               <ul className="space-y-3 text-sm text-slate-600">
@@ -130,7 +129,7 @@ export default function Hero() {
                 <div className="absolute inset-x-10 -top-6 h-20 rounded-full bg-white/80 blur-3xl" />
                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-white shadow-xl">
                   <Image
-                    src="/product-image.png"
+                    src="/tabgel.jpg"
                     alt="Kĺbová výživa produkt"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"

@@ -8,9 +8,10 @@ import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/
 interface ProductCardProps {
   product: WooCommerceProduct;
   isPriority?: boolean;
+  isHero?: boolean;
 }
 
-export default function ProductCard({ product, isPriority = false }: ProductCardProps) {
+export default function ProductCard({ product, isPriority = false, isHero = false }: ProductCardProps) {
   const { addToCart, appliedCoupon, openCart } = useCart();
 
   const handleAddToCart = (product: WooCommerceProduct) => {
@@ -54,10 +55,10 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
   const isSalesSuspended = isSalesSuspendedClient();
 
   return (
-    <article className="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-shadow duration-300 flex flex-col">
+    <article className={`bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300 flex flex-col ${isHero ? 'ring-2 ring-green-500 transform md:-translate-y-2' : ''}`}>
       <div className="aspect-[4/3] relative overflow-hidden">
         {product.images[0] && (
-          <Link 
+          <Link
             href={`/produkt/${product.slug}`}
             onClick={handleViewDetail}
             className="block relative w-full h-full"
@@ -72,15 +73,25 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
             />
           </Link>
         )}
+        {isHero && (
+          <div className="absolute top-0 left-0 bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-br-xl text-sm font-bold shadow-md z-10">
+            Najpredávanejšie
+          </div>
+        )}
         {hasDiscount && (
           <div className="absolute top-3 right-3 bg-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg z-10">
             -{discount}%
           </div>
         )}
+        {isHero && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-max bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse z-10">
+            + Masť ZADARMO
+          </div>
+        )}
       </div>
       <div className="p-6 flex flex-col flex-grow">
-        <Link 
-          href={`/produkt/${product.slug}`} 
+        <Link
+          href={`/produkt/${product.slug}`}
           className="block group mb-2"
           onClick={handleViewDetail}
         >
@@ -105,18 +116,19 @@ export default function ProductCard({ product, isPriority = false }: ProductCard
             <Link
               href={`/produkt/${product.slug}`}
               onClick={handleViewDetail}
-              className="text-center w-full px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm"
+              className={`text-center w-full px-4 py-3 border font-medium rounded-lg transition-colors duration-200 text-sm ${isHero ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}`}
             >
               Detail produktu
             </Link>
             <button
               onClick={() => handleAddToCart(product)}
               disabled={isSalesSuspended}
-              className={`text-center w-full px-4 py-3 font-semibold rounded-lg transition-colors duration-200 text-sm shadow-md ${
-                isSalesSuspended 
-                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
-                  : 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg'
-              }`}
+              className={`text-center w-full px-4 py-3 font-semibold rounded-lg transition-colors duration-200 text-sm shadow-md ${isSalesSuspended
+                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                  : isHero
+                    ? 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg shadow-green-200'
+                    : 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg'
+                }`}
             >
               {isSalesSuspended ? 'Predaje pozastavené' : 'Pridať do košíka'}
             </button>

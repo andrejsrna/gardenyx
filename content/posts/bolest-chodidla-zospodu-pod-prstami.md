@@ -95,6 +95,12 @@ Viac o tom, ako sa riešia bolesti pri chôdzi, nájdete v článku [Bolesť prs
 - Lokálne gélové NSAID sú šetrnejšie k žalúdku. Ak preferujete prírodnejšie riešenie, siahnite po [Joint Boost géle – protizápalovej masti na kĺby](/protizapalova-mast-na-klby), ktorý cítiť ako chladivý obklad. Z čoho chladenie pochádza, vysvetľuje [profil mentol + gáfor gél](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).  
 - Podpora kĺbov so zložkami [glukozamín, chondroitín a MSM](https://najsilnejsiaklbovavyziva.sk/glukozamin-chondroitin-a-msm-trojica-ktora-ulavi-vasim-klbom) pomáha pri dlhodobom preťažení.
 
+### Chladivý gél ako rýchla prvá pomoc
+
+- Pri lokálnej bolesti spodku chodidla (pri každom kroku alebo pri dotyku) natrite tenkú vrstvu [Joint Boost chladivého gélu](/protizapalova-mast-na-klby) – chladivý efekt mentolu a gáforu uľaví v priebehu pár minút, kým riešite obuv a vložky.  
+- Pre bolesť sústredenú okolo kĺbov prstov pozri aj špeciálny návod [masť na bolesť kolena](/mast-na-bolest-kolena) – platí rovnako pre rýchlu úľavu na chodidle.  
+- Gél používajte ako prvú pomoc pri akútnom diskomforte; výživa (napr. Joint Boost kapsule) pracuje dlhodobo zvnútra.
+
 ### Domáce pomôcky
 
 - Mäkké gélové vankúšiky alebo metatarzálne vložky rozložia tlak.  
