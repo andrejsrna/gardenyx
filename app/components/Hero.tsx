@@ -129,11 +129,11 @@ export default function Hero() {
                 <div className="absolute inset-x-10 -top-6 h-20 rounded-full bg-white/80 blur-3xl" />
                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-white shadow-xl">
                   <Image
-                    src="/tabgel.jpg"
+                    src="/home-hero.jpeg"
                     alt="Kĺbová výživa produkt"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain p-8"
+                    className="object-cover"
                   />
                 </div>
                 <div className="mt-6 flex items-center justify-between rounded-2xl border border-emerald-100 bg-white/80 p-4 text-sm text-slate-600">

@@ -2,10 +2,13 @@ import { getProductsByCategory, getProductsByIds } from '../lib/wordpress';
 import RecommendedProducts from './RecommendedProducts';
 
 export default async function RecommendedProductsWrapper() {
-  const [heroProduct, categoryProducts] = await Promise.all([
+  const [heroProduct, ...categoryProductsArrays] = await Promise.all([
     getProductsByIds([824]),
-    getProductsByCategory('akciove', 5)
+    getProductsByCategory('akciove', 6),
+    getProductsByCategory('akciove-produkty', 6)
   ]);
+
+  const categoryProducts = categoryProductsArrays.flat();
 
   let additionalProducts = categoryProducts;
 

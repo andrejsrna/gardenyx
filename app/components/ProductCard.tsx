@@ -53,7 +53,9 @@ export default function ProductCard({ product, isPriority = false, isHero = fals
   const regularPrice = parseFloat(product.regular_price);
   const discount = hasDiscount ? Math.round((1 - price / regularPrice) * 100) : 0;
   const isSalesSuspended = isSalesSuspendedClient();
-  const qualifiesFreeShippingBadge = hasDiscount || price > 29.99;
+  const salePrice = parseFloat(product.sale_price || 'NaN');
+  const effectivePrice = Number.isFinite(salePrice) ? salePrice : price;
+  const qualifiesFreeShippingBadge = effectivePrice > 29;
 
   return (
     <article className={`bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300 flex flex-col ${isHero ? 'ring-2 ring-green-500 transform md:-translate-y-2' : ''}`}>

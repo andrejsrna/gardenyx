@@ -181,7 +181,7 @@ export default function JointBoostPage() {
               <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-emerald-200/40 blur-3xl" />
               <div className="relative overflow-hidden rounded-[2.5rem] border border-green-100 bg-white/80 p-6 shadow-2xl backdrop-blur">
                 <Image
-                  src="/product-image.png"
+                  src="/kapsule-hero.jpeg"
                   alt="Produkt Joint Boost"
                   width={720}
                   height={900}

@@ -14,6 +14,7 @@ type ProductSection = {
 
 const INITIAL_SECTIONS: ProductSection[] = [
   { title: 'Akciové sety', taxonomy: '29', gridCols: 'grid-cols-1 md:grid-cols-4', products: [] },
+  { title: 'JointBoost gél', taxonomy: '44', gridCols: 'grid-cols-1 md:grid-cols-5', products: [] },
   { title: 'Kĺbová výživa', taxonomy: '15', gridCols: 'grid-cols-1 md:grid-cols-5', products: [] },
   { title: 'Ďalšie produkty', taxonomy: '30', gridCols: 'grid-cols-1 md:grid-cols-4', products: [] }
 ];
