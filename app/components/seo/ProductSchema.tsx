@@ -88,7 +88,12 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
         "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
         "merchantReturnDays": 14,
         "returnMethod": "https://schema.org/ReturnByMail",
-        "returnFees": "https://schema.org/ReturnShippingFees"
+        "returnFees": "https://schema.org/ReturnShippingFees",
+        "returnShippingFeesAmount": {
+          "@type": "MonetaryAmount",
+          "value": "3.80",
+          "currency": "EUR"
+        }
       },
       "seller": {
         "@type": "Organization",
