@@ -53,6 +53,7 @@ export default function ProductCard({ product, isPriority = false, isHero = fals
   const regularPrice = parseFloat(product.regular_price);
   const discount = hasDiscount ? Math.round((1 - price / regularPrice) * 100) : 0;
   const isSalesSuspended = isSalesSuspendedClient();
+  const qualifiesFreeShippingBadge = hasDiscount || price > 29.99;
 
   return (
     <article className={`bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300 flex flex-col ${isHero ? 'ring-2 ring-green-500 transform md:-translate-y-2' : ''}`}>
@@ -69,7 +70,7 @@ export default function ProductCard({ product, isPriority = false, isHero = fals
               fill
               priority={isPriority}
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
         )}
@@ -83,9 +84,9 @@ export default function ProductCard({ product, isPriority = false, isHero = fals
             -{discount}%
           </div>
         )}
-        {isHero && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-max bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse z-10">
-            + Masť ZADARMO
+        {qualifiesFreeShippingBadge && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-max bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse z-10">
+            Doprava zadarmo
           </div>
         )}
       </div>
