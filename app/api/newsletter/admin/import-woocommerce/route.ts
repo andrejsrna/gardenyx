@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import prisma from '../../../../lib/prisma';
@@ -28,11 +29,20 @@ const createWooCommerceClient = () => {
 
 type WooOrder = {
   id: number;
+  date_created?: string;
+  date_created_gmt?: string;
   billing?: {
     email?: string;
     first_name?: string;
     last_name?: string;
   };
+};
+
+const parseOrderDate = (order: WooOrder) => {
+  const rawDate = order.date_created || order.date_created_gmt;
+  if (!rawDate) return undefined;
+  const parsed = new Date(rawDate);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed;
 };
 
 export async function POST(request: Request) {
@@ -47,7 +57,7 @@ export async function POST(request: Request) {
     let fetchedOrders = 0;
     const seen = new Map<
       string,
-      { firstName?: string; lastName?: string; source: string }
+      { firstName?: string; lastName?: string; source: string; oldestOrderDate?: Date }
     >();
 
     // Paginate through all orders
@@ -61,12 +71,22 @@ export async function POST(request: Request) {
       orders.forEach((order) => {
         const rawEmail = order.billing?.email?.trim().toLowerCase();
         if (!rawEmail) return;
-        if (!seen.has(rawEmail)) {
+
+        const orderDate = parseOrderDate(order);
+        const existing = seen.get(rawEmail);
+
+        if (!existing) {
           seen.set(rawEmail, {
             firstName: order.billing?.first_name || undefined,
             lastName: order.billing?.last_name || undefined,
             source: 'woocommerce-order',
+            oldestOrderDate: orderDate,
           });
+          return;
+        }
+
+        if (orderDate && (!existing.oldestOrderDate || orderDate < existing.oldestOrderDate)) {
+          existing.oldestOrderDate = orderDate;
         }
       });
 
@@ -82,16 +102,24 @@ export async function POST(request: Request) {
 
     for (const [email, meta] of Array.from(seen.entries())) {
       const existing = await prisma.newsletterSubscriber.findUnique({ where: { email } });
+      const createdAt = meta.oldestOrderDate ?? new Date();
+
       if (existing) {
+        const data: Prisma.NewsletterSubscriberUpdateInput = {
+          firstName: meta.firstName,
+          lastName: meta.lastName,
+          source: existing.source || meta.source,
+          status: 'active',
+          unsubscribedAt: null,
+        };
+
+        if (existing.createdAt && createdAt < existing.createdAt) {
+          data.createdAt = createdAt;
+        }
+
         await prisma.newsletterSubscriber.update({
           where: { email },
-          data: {
-            firstName: meta.firstName,
-            lastName: meta.lastName,
-            source: existing.source || meta.source,
-            status: 'active',
-            unsubscribedAt: null,
-          },
+          data,
         });
         updated += 1;
       } else {
@@ -102,6 +130,7 @@ export async function POST(request: Request) {
             lastName: meta.lastName,
             source: meta.source,
             status: 'active',
+            createdAt,
           },
         });
         inserted += 1;
