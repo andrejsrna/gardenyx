@@ -46,7 +46,7 @@ export default async function NewsletterPage({ searchParams }: PageProps) {
   const stats = [
     { label: 'Odberatelia', value: active.toString(), delta: total ? `${((active / total) * 100).toFixed(1)}% aktívni` : '—' },
     { label: 'Odhlásenia', value: unsubscribed.toString(), delta: total ? `${((unsubscribed / total) * 100).toFixed(1)}%` : '—' },
-    { label: 'Nové (50)', value: subscribers.filter((s) => s.status === 'active').length.toString(), delta: 'Posledných 50 záznamov' },
+    { label: 'Nové (50)', value: subscribers.filter((s: SubscriberRow) => s.status === 'active').length.toString(), delta: 'Posledných 50 záznamov' },
     { label: 'Celkový počet', value: total.toString(), delta: 'Všetky segmenty' },
   ];
 
