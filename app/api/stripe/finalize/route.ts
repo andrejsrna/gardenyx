@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
+import prisma from '../../../lib/prisma';
+import { upsertBrevoContact } from '../../../lib/newsletter/brevo';
 
 const stripe = getStripe();
 const creatingByPi = new Set<string>();
@@ -110,6 +112,55 @@ export async function POST(request: Request) {
       if (!orderId) {
         return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
       }
+
+      if (mc && b?.email) {
+        const email = String(b.email).trim().toLowerCase();
+        const firstName = typeof b.first_name === 'string' ? b.first_name : undefined;
+        const lastName = typeof b.last_name === 'string' ? b.last_name : undefined;
+
+        try {
+          const subscriber = await prisma.newsletterSubscriber.upsert({
+            where: { email },
+            create: {
+              email,
+              firstName,
+              lastName,
+              source: 'checkout',
+              status: 'active',
+            },
+            update: {
+              firstName,
+              lastName,
+              source: 'checkout',
+              status: 'active',
+              unsubscribedAt: null,
+            },
+          });
+
+          const brevoListId = process.env.BREVO_LIST_ID ? Number(process.env.BREVO_LIST_ID) : undefined;
+          if (process.env.BREVO_API_KEY) {
+            try {
+              const brevoId = await upsertBrevoContact({
+                email,
+                firstName,
+                lastName,
+                listId: brevoListId,
+              });
+              if (brevoId && !subscriber.brevoContactId) {
+                await prisma.newsletterSubscriber.update({
+                  where: { email },
+                  data: { brevoContactId: brevoId },
+                });
+              }
+            } catch (error) {
+              console.warn('[stripe-finalize] Failed to sync newsletter to Brevo', error);
+            }
+          }
+        } catch (error) {
+          console.warn('[stripe-finalize] Newsletter upsert failed', error);
+        }
+      }
+
       return NextResponse.json({ orderId });
     } catch {
       return NextResponse.json({ error: 'Finalize failed' }, { status: 500 });
@@ -121,5 +172,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Finalize failed' }, { status: 500 });
   }
 }
-
-

@@ -366,6 +366,31 @@ export default function CheckoutClient() {
     }
   }, [formData, setFormErrors, setPhoneError]);
 
+  const subscribeToNewsletter = useCallback(async () => {
+    if (!formData.consents.marketing) return;
+    const email = formData.billing.email?.trim().toLowerCase();
+    if (!email) return;
+
+    try {
+      await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          firstName: formData.billing.first_name,
+          lastName: formData.billing.last_name,
+          consent: true,
+          source: 'checkout',
+        }),
+      });
+    } catch (error) {
+      Sentry.captureMessage('[checkout] newsletter subscribe failed', {
+        level: 'warning',
+        extra: { error },
+      });
+    }
+  }, [formData.billing.email, formData.billing.first_name, formData.billing.last_name, formData.consents.marketing]);
+
   // Form submission
   const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -427,6 +452,7 @@ export default function CheckoutClient() {
       const result = await createOrder(orderData);
       orderIdRef.current = result.order.id;
 
+      void subscribeToNewsletter();
       tracking.purchase(result.order.id.toString(), items, finalTotal);
 
       // Set processing state to show overlay
@@ -454,7 +480,7 @@ export default function CheckoutClient() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData]);
+  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData, subscribeToNewsletter]);
 
   // Check if form is valid for submit button
   const isFormValid = Boolean(formData.billing.first_name && 

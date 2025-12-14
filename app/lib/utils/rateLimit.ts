@@ -17,6 +17,10 @@ const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
   auth: {
     max: 10,     // 10 attempts
     windowMs: 900000 // per 15 minutes
+  },
+  newsletter: {
+    max: 5,      // 5 requests
+    windowMs: 900000 // per 15 minutes
   }
 };
 

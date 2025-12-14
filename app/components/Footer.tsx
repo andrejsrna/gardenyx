@@ -5,14 +5,74 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { resetCookieConsentValue } from 'react-cookie-consent';
 import { deleteCookie } from 'cookies-next';
+import { FormEvent, useState } from 'react';
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+
   const openCookieManager = () => {
     resetCookieConsentValue();
     deleteCookie('cookieConsent', { path: '/' });
     deleteCookie('CookieConsent', { path: '/' });
     localStorage.removeItem('cookieConsentDetails');
     window.location.reload();
+  };
+
+  const handleNewsletterSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (status === 'loading') return;
+
+    const trimmedEmail = email.trim();
+    const emailIsValid = /\S+@\S+\.\S+/.test(trimmedEmail);
+
+    if (!emailIsValid) {
+      setStatus('error');
+      setMessage('Zadajte prosím platný email.');
+      return;
+    }
+
+    if (!consent) {
+      setStatus('error');
+      setMessage('Pre odber je potrebný súhlas so spracovaním údajov.');
+      return;
+    }
+
+    setStatus('loading');
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: trimmedEmail,
+          consent,
+          source: 'footer',
+          honeypot,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        setStatus('error');
+        setMessage(errorData?.error || 'Nepodarilo sa uložiť odber. Skúste to znova.');
+        return;
+      }
+
+      setStatus('success');
+      setMessage('Ďakujeme, úspešne sme vás pridali do newslettera.');
+      setEmail('');
+      setConsent(false);
+      setHoneypot('');
+    } catch (error) {
+      console.error('[newsletter] submit failed', error);
+      setStatus('error');
+      setMessage('Ups, niečo sa pokazilo. Skúste to prosím znova neskôr.');
+    }
   };
 
   const PAYMENT_METHODS = [
@@ -130,6 +190,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/newsletter"
+                  className="text-gray-600 hover:text-green-600 transition-colors"
+                >
+                  Newsletter
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/reklamacie"
                   className="text-gray-600 hover:text-green-600 transition-colors"
                 >
@@ -188,6 +256,109 @@ export default function Footer() {
                 <Mail className="w-4 h-4 mr-2" />
                 andrej@najsilnejsiaklbovavyziva.sk
               </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Newsletter signup */}
+        <div className="mb-16">
+          <div className="relative overflow-hidden rounded-3xl border border-green-100 bg-white/80 p-6 sm:p-8 shadow-lg">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-emerald-100 opacity-70" aria-hidden />
+            <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
+              <div className="space-y-4">
+                <p className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-green-700">
+                  Newsletter
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900">Žiadne tajné tipy už neuniknú</h3>
+                <p className="text-gray-700">
+                  Posielam krátke rady pre zdravé kĺby a exkluzívne kupóny. Žiadny spam – maximálne jeden email týždenne.
+                </p>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-600" />
+                    Získate prístup k zľavám len pre odberateľov
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-600" />
+                    Praktické tipy od Andreja priamo do inboxu
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-600" />
+                    Odhlásiť sa môžete jedným klikom
+                  </li>
+                </ul>
+              </div>
+
+              <form className="space-y-4" onSubmit={handleNewsletterSubmit}>
+                <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+                  <div>
+                    <label htmlFor="newsletter-email" className="text-sm font-medium text-gray-700">Váš email</label>
+                    <input
+                      id="newsletter-email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
+                      className="mt-1 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-200"
+                      placeholder="napr. jana@email.sk"
+                      aria-describedby="newsletter-helper"
+                    />
+                  </div>
+                  <div className="pt-6 sm:pt-0 ">
+                    <button
+                      type="submit"
+                      disabled={status === 'loading'}
+                      className="w-full rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-200 transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {status === 'loading' ? 'Odosielam…' : 'Chcem odoberať'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="sr-only" aria-hidden>
+                  <label htmlFor="company">Nechajte toto pole prázdne</label>
+                  <input
+                    id="company"
+                    name="company"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    className="hidden"
+                  />
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <input
+                    id="newsletter-consent"
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                    className="mt-1 h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    required
+                  />
+                  <label htmlFor="newsletter-consent" className="text-sm leading-relaxed text-gray-700">
+                    Súhlasím so spracovaním osobných údajov na účely zasielania newsletteru. Podrobnosti nájdete v&nbsp;
+                    <Link href="/ochrana-osobnych-udajov" className="text-green-700 underline underline-offset-4 hover:text-green-800">
+                      ochrane osobných údajov
+                    </Link>.
+                  </label>
+                </div>
+
+                <p
+                  id="newsletter-helper"
+                  className={`text-sm ${
+                    status === 'error'
+                      ? 'text-red-600'
+                      : status === 'success'
+                        ? 'text-green-700'
+                        : 'text-gray-600'
+                  }`}
+                >
+                  {message || 'Môžete sa kedykoľvek odhlásiť priamo z emailu.'}
+                </p>
+              </form>
             </div>
           </div>
         </div>

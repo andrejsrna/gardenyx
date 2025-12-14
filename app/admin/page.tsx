@@ -1,26 +1,82 @@
-import Link from 'next/link';
+import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 
-const metrics = [
-  { label: 'Tržby (30d)', value: '€42 380', change: '+8.4%' },
-  { label: 'Objednávky', value: '612', change: '+3.1%' },
-  { label: 'Priem. hodnota', value: '€69.30', change: '+1.9%' },
-  { label: 'Konverzný pomer', value: '3.4%', change: '+0.6%' },
-];
+export const dynamic = 'force-dynamic';
 
-const recentOrders = [
-  { id: '#4812', customer: 'Jana K.', total: '€129.00', status: 'spracovanie', channel: 'E‑shop' },
-  { id: '#4809', customer: 'Peter V.', total: '€58.50', status: 'odoslaná', channel: 'Packeta' },
-  { id: '#4801', customer: 'Lucia H.', total: '€92.70', status: 'čaká na platbu', channel: 'GoPay' },
-  { id: '#4796', customer: 'Martin D.', total: '€34.90', status: 'doručená', channel: 'E‑shop' },
-];
+type WooOrder = {
+  id: number;
+  total: string;
+  status: string;
+  date_created: string;
+  payment_method_title?: string;
+  billing?: {
+    first_name?: string;
+    last_name?: string;
+  };
+  shipping_lines?: Array<{ method_title?: string }>;
+  total_refunded?: string;
+};
 
-const latestPosts = [
-  { title: 'Bolestivé zápästie: čo pomáha', date: '12.02.2025', status: 'Zverejnené' },
-  { title: 'Rehabilitácia po operácii kolena', date: '08.02.2025', status: 'Koncept' },
-  { title: 'Ako vybrať správnu ortézu', date: '03.02.2025', status: 'Naplánované' },
-];
+const api = new WooCommerceRestApi({
+  url: process.env.WORDPRESS_URL || '',
+  consumerKey: process.env.WC_CONSUMER_KEY || '',
+  consumerSecret: process.env.WC_CONSUMER_SECRET || '',
+  version: 'wc/v3'
+});
 
-export default function AdminPage() {
+async function fetchOrders(): Promise<WooOrder[]> {
+  if (!process.env.WORDPRESS_URL || !process.env.WC_CONSUMER_KEY || !process.env.WC_CONSUMER_SECRET) {
+    console.warn('[admin-dashboard] Missing WooCommerce credentials');
+    return [];
+  }
+
+  try {
+    const response = await api.get('orders', {
+      per_page: 25,
+      orderby: 'date',
+      order: 'desc'
+    });
+    return Array.isArray(response.data) ? (response.data as WooOrder[]) : [];
+  } catch (error) {
+    console.error('[admin-dashboard] Failed to fetch orders', error);
+    return [];
+  }
+}
+
+function formatCurrency(value: number) {
+  return value.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 });
+}
+
+function formatDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  return date.toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+export default async function AdminPage() {
+  const orders = await fetchOrders();
+  const recentOrders = orders.slice(0, 10);
+
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const last30d = orders.filter((order) => new Date(order.date_created) >= thirtyDaysAgo);
+
+  const revenue30d = last30d.reduce((sum, order) => {
+    const total = parseFloat(order.total || '0');
+    const refunded = parseFloat(order.total_refunded || '0');
+    return sum + (total - refunded);
+  }, 0);
+
+  const metrics = [
+    { label: 'Tržby (30d)', value: last30d.length ? formatCurrency(revenue30d) : '—', change: '' },
+    { label: 'Objednávky (30d)', value: last30d.length.toString(), change: '' },
+    {
+      label: 'Priem. hodnota',
+      value: last30d.length ? formatCurrency(revenue30d / last30d.length) : '—',
+      change: ''
+    },
+    { label: 'Posledná objednávka', value: recentOrders[0]?.id ? `#${recentOrders[0].id}` : '—', change: '' }
+  ];
+
   return (
     <div className="space-y-10">
       <header className="rounded-3xl border border-slate-800 bg-gradient-to-r from-emerald-500/15 via-slate-900 to-slate-950 p-8 shadow-2xl shadow-emerald-900/20">
@@ -51,85 +107,61 @@ export default function AdminPage() {
           >
             <p className="text-sm text-slate-400">{metric.label}</p>
             <p className="mt-2 text-3xl font-semibold text-white">{metric.value}</p>
-            <p className="mt-2 text-xs font-medium text-emerald-300">{metric.change} vs. predchádzajúce obdobie</p>
+            <p className="mt-2 text-xs font-medium text-emerald-300">{metric.change || 'Aktualizované z WooCommerce'}</p>
           </div>
         ))}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
+        <div className="lg:col-span-3 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white">Posledné objednávky</h2>
             <button className="text-sm text-emerald-300 hover:text-emerald-200">Zobraziť všetky</button>
           </div>
           <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800">
-            <table className="min-w-full divide-y divide-slate-800 text-sm">
-              <thead className="bg-slate-900/80 text-slate-300">
-                <tr>
-                  <th className="px-4 py-3 text-left font-medium">ID</th>
-                  <th className="px-4 py-3 text-left font-medium">Zákazník</th>
-                  <th className="px-4 py-3 text-left font-medium">Celkom</th>
-                  <th className="px-4 py-3 text-left font-medium">Stav</th>
-                  <th className="px-4 py-3 text-left font-medium">Kanál</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/80 bg-slate-950/40">
-                {recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-900/60">
-                    <td className="px-4 py-3 font-semibold text-white">{order.id}</td>
-                    <td className="px-4 py-3 text-slate-200">{order.customer}</td>
-                    <td className="px-4 py-3 text-slate-100">{order.total}</td>
-                    <td className="px-4 py-3">
-                      <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-200">
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-slate-300">{order.channel}</td>
+            {recentOrders.length ? (
+              <table className="min-w-full divide-y divide-slate-800 text-sm">
+                <thead className="bg-slate-900/80 text-slate-300">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-medium">ID</th>
+                    <th className="px-4 py-3 text-left font-medium">Zákazník</th>
+                    <th className="px-4 py-3 text-left font-medium">Celkom</th>
+                    <th className="px-4 py-3 text-left font-medium">Stav</th>
+                    <th className="px-4 py-3 text-left font-medium">Platba / doprava</th>
+                    <th className="px-4 py-3 text-left font-medium">Dátum</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                </thead>
+                <tbody className="divide-y divide-slate-800/80 bg-slate-950/40">
+                  {recentOrders.map((order) => {
+                    const hasName = order.billing?.first_name || order.billing?.last_name;
+                    const customerName = hasName
+                      ? `${order.billing?.first_name ?? ''} ${order.billing?.last_name ?? ''}`.trim()
+                      : '—';
 
-        <div className="space-y-6">
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">Obsah</h2>
-              <button className="text-sm text-emerald-300 hover:text-emerald-200">Spravovať články</button>
-            </div>
-            <div className="mt-4 space-y-4">
-              {latestPosts.map((post) => (
-                <div key={post.title} className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
-                  <p className="text-sm text-slate-300">{post.date}</p>
-                  <p className="mt-1 text-base font-semibold text-white">{post.title}</p>
-                  <span className="mt-2 inline-flex rounded-full bg-white/5 px-3 py-1 text-xs font-semibold text-emerald-200">
-                    {post.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-3xl border border-slate-800 bg-gradient-to-r from-emerald-500/20 via-slate-900 to-slate-950 p-6 shadow-xl shadow-emerald-900/15">
-            <h3 className="text-lg font-semibold text-white">Rýchle akcie</h3>
-            <div className="mt-4 space-y-3">
-              <button className="w-full rounded-2xl bg-white/10 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-white/20">
-                + Vytvoriť nový článok
-              </button>
-              <Link
-                href="/admin/newsletter"
-                className="block w-full rounded-2xl bg-white/10 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-white/20"
-              >
-                + Newsletter kampaň
-              </Link>
-              <button className="w-full rounded-2xl bg-white/10 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-white/20">
-                + Vygenerovať kupón
-              </button>
-              <button className="w-full rounded-2xl bg-white/10 px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-white/20">
-                + Export objednávok
-              </button>
-            </div>
+                    return (
+                    <tr key={order.id} className="hover:bg-slate-900/60">
+                      <td className="px-4 py-3 font-semibold text-white">#{order.id}</td>
+                      <td className="px-4 py-3 text-slate-200">{customerName}</td>
+                      <td className="px-4 py-3 text-slate-100">{formatCurrency(parseFloat(order.total || '0'))}</td>
+                      <td className="px-4 py-3">
+                        <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-200">
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-slate-300">
+                        {order.payment_method_title || order.shipping_lines?.[0]?.method_title || '—'}
+                      </td>
+                      <td className="px-4 py-3 text-slate-300">{formatDate(order.date_created)}</td>
+                    </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <div className="bg-slate-950/40 px-6 py-5 text-sm text-slate-300">
+                Nepodarilo sa načítať objednávky alebo žiadne nie sú k dispozícii.
+              </div>
+            )}
           </div>
         </div>
       </section>

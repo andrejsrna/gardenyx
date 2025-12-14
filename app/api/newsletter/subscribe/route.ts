@@ -2,16 +2,20 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '../../../lib/prisma';
 import { upsertBrevoContact } from '../../../lib/newsletter/brevo';
+import { rateLimit } from '../../../lib/utils/rateLimit';
 
 const subscribeSchema = z.object({
   email: z.string().email(),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   source: z.string().optional(),
+  consent: z.boolean(),
+  honeypot: z.string().optional(),
 });
 
 export async function POST(request: Request) {
   try {
+    const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0]?.trim() || 'unknown';
     const body = await request.json();
     const parsed = subscribeSchema.safeParse(body);
 
@@ -19,12 +23,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
 
-    const { email, firstName, lastName, source } = parsed.data;
+    const { email, firstName, lastName, source, consent, honeypot } = parsed.data;
+
+    if (!consent) {
+      return NextResponse.json({ error: 'Consent required' }, { status: 400 });
+    }
+
+    if (honeypot) {
+      return NextResponse.json({ error: 'Spam detected' }, { status: 400 });
+    }
+
+    try {
+      await rateLimit(ip, 'newsletter');
+    } catch (error) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
 
     const subscriber = await prisma.newsletterSubscriber.upsert({
-      where: { email },
+      where: { email: normalizedEmail },
       create: {
-        email,
+        email: normalizedEmail,
         firstName,
         lastName,
         source,
@@ -43,14 +63,14 @@ export async function POST(request: Request) {
     if (process.env.BREVO_API_KEY) {
       try {
         const brevoId = await upsertBrevoContact({
-          email,
+          email: normalizedEmail,
           firstName,
           lastName,
           listId: brevoListId,
         });
         if (brevoId && !subscriber.brevoContactId) {
           await prisma.newsletterSubscriber.update({
-            where: { email },
+            where: { email: normalizedEmail },
             data: { brevoContactId: brevoId },
           });
         }
