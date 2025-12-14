@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import './polyfills';
 import { Inter } from "next/font/google";
 import { Suspense } from 'react';
+import { headers } from 'next/headers';
 import { Toaster } from 'sonner';
 import CookieConsentBanner from './components/CookieConsentBanner';
 
@@ -62,11 +63,14 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = await headers();
+  const isAdminRoute = headerList.get('x-admin-route') === '1';
+
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
@@ -92,26 +96,26 @@ export default function RootLayout({
           <AuthProvider>
             <CartProvider>
               <CookieConsentProvider>
-                {process.env.NEXT_PUBLIC_FB_PIXEL_ID ? (
+                {!isAdminRoute && process.env.NEXT_PUBLIC_FB_PIXEL_ID ? (
                   <noscript
                     dangerouslySetInnerHTML={{
                       __html: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FB_PIXEL_ID}&ev=PageView&noscript=1" alt="" />`,
                     }}
                   />
                 ) : null}
-                <SalesSuspensionBanner />
-                <Header />
+                {!isAdminRoute && <SalesSuspensionBanner />}
+                {!isAdminRoute && <Header />}
                 <main>
                   {children}
                 </main>
-                <Footer />
+                {!isAdminRoute && <Footer />}
                 <Toaster/>
 
-                <GoogleAnalytics />
-                <Posthog />
-                <FacebookPixel />
-                <GoogleAds />
-                <CookieConsentBanner />
+                {!isAdminRoute && <GoogleAnalytics />}
+                {!isAdminRoute && <Posthog />}
+                {!isAdminRoute && <FacebookPixel />}
+                {!isAdminRoute && <GoogleAds />}
+                {!isAdminRoute && <CookieConsentBanner />}
               </CookieConsentProvider>
             </CartProvider>
           </AuthProvider>

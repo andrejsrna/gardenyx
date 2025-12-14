@@ -9,6 +9,19 @@ declare global {
       NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: string;
       SALES_SUSPENDED: string;
       SALES_SUSPENSION_MESSAGE: string;
+      POSTGRES_URL?: string;
+      BREVO_API_KEY: string;
+      BREVO_SENDER_EMAIL?: string;
+      BREVO_SENDER_NAME?: string;
+      BREVO_LIST_ID: string;
+      NEWSLETTER_ADMIN_TOKEN: string;
+      POSTGRES_URL_PRISMA?: string;
+      PRISMA_DB_SCHEMA?: string;
+      WC_CONSUMER_KEY: string;
+      WC_CONSUMER_SECRET: string;
+      WORDPRESS_URL: string;
+      ADMIN_DASHBOARD_USER: string;
+      ADMIN_DASHBOARD_PASSWORD: string;
     }
   }
 }

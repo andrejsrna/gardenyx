@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { rateLimit } from './app/lib/utils/rateLimit';
 
 const PROTECTED_PATHS: string[] = [];
+const ADMIN_PATH_PREFIX = '/admin';
 const MAX_PARAM_LENGTH = 250;
 
 // Paths that should bypass rate limiting
@@ -151,10 +152,19 @@ export async function middleware(request: NextRequest) {
       return new NextResponse(null, { status: 200, headers: corsHeaders });
     }
 
+    const isAdmin = isAdminPath(request.nextUrl.pathname);
+
     // Only apply rate limiting to dynamic routes and API endpoints
     if (shouldApplyRateLimit(request.nextUrl.pathname)) {
       const ip = request.headers.get('x-forwarded-for') || 'unknown';
       await rateLimit(ip);
+    }
+
+    if (isAdmin) {
+      const adminAuthResponse = requireAdminAuth(request);
+      if (adminAuthResponse) {
+        return adminAuthResponse;
+      }
     }
 
     if (PROTECTED_PATHS.some(path => request.nextUrl.pathname.startsWith(path))) {
@@ -195,6 +205,9 @@ export async function middleware(request: NextRequest) {
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-nonce', nonce);
       requestHeaders.set('Content-Security-Policy', generateCSPHeader());
+      if (isAdmin) {
+        requestHeaders.set('x-admin-route', '1');
+      }
       Object.entries(corsHeaders).forEach(([key, value]) => requestHeaders.set(key, value));
       response = NextResponse.next({ headers: requestHeaders });
     }
@@ -256,4 +269,53 @@ function isValidFbclid(value: string): boolean {
 
 function isValidFbc(value: string): boolean {
   return /^fb\.1\.\d+\.[A-Za-z0-9._-]+$/.test(value) && value.length <= MAX_PARAM_LENGTH;
+}
+
+function isAdminPath(pathname: string): boolean {
+  return pathname.startsWith(ADMIN_PATH_PREFIX);
+}
+
+function requireAdminAuth(request: NextRequest): NextResponse | null {
+  const username = process.env.ADMIN_DASHBOARD_USER || 'admin';
+  const password = process.env.ADMIN_DASHBOARD_PASSWORD;
+
+  if (!password) {
+    console.warn('[Middleware] ADMIN_DASHBOARD_PASSWORD is not set, admin route will be blocked.');
+    return new NextResponse('Admin access not configured', { status: 503 });
+  }
+
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Basic ')) {
+    return new NextResponse('Authentication required', {
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Basic realm="Admin Dashboard"',
+      },
+    });
+  }
+
+  const encoded = authHeader.split(' ')[1] || '';
+  let decoded: string;
+  try {
+    decoded = atob(encoded);
+  } catch {
+    return new NextResponse('Unauthorized', {
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Basic realm="Admin Dashboard"',
+      },
+    });
+  }
+  const [providedUser, providedPass] = decoded.split(':');
+
+  if (providedUser !== username || providedPass !== password) {
+    return new NextResponse('Unauthorized', {
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Basic realm="Admin Dashboard"',
+      },
+    });
+  }
+
+  return null;
 }

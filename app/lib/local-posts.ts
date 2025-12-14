@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
+import yaml from 'js-yaml';
 import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import remarkGfm from 'remark-gfm';
@@ -178,7 +179,12 @@ const convertToWordPressPost = (post: LocalPost): WordPressPost => {
 
 const readMarkdownFile = async (filePath: string): Promise<LocalPost | null> => {
   const raw = await fs.readFile(filePath, 'utf8');
-  const parsed = matter(raw);
+  const parsed = matter(raw, {
+    // js-yaml v4 removed safeLoad; use load explicitly to stay compatible
+    engines: {
+      yaml: (source) => yaml.load(source) as object,
+    },
+  });
   const validation = frontmatterSchema.safeParse(parsed.data);
 
   if (!validation.success) {
