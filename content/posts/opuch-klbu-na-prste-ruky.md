@@ -19,6 +19,10 @@ Opuchnutý kĺb na prste ruky komplikuje bežné činnosti – písanie, úchop 
 
 > **TIP:** Ak je opuch spojený s bolesťou pri ohybe, pozrite si aj článok [Bolesť kĺbov na prstoch ruky](https://najsilnejsiaklbovavyziva.sk/bolest-klbov-na-prstoch-ruky).
 
+- 🔍 Rýchly prehľad: náhle horúce opuchnuté kĺby = dna/pseudodna alebo infekcia; symetria a ranná stuhnutosť = RA; uzlíky a „rozbiehanie“ = artróza.  
+- ⏱️ Prvá pomoc: 48 h RICE, chladenie 10–15 min 3× denne, odľahčiť úchop, žiadne „lámavé“ cviky do bolesti.  
+- 💊 Úľava a výživa: NSAID podľa lekára + [JointBoost](/kupit/) (kolagén II, MSM, kyselina hyalurónová, Boswellia) 1 kapsula denne počas 2 mesiacov na podporu chrupaviek a väziva drobných kĺbov.
+
 **Prehľad článku**
 
 - [Najčastejšie príčiny opuchu](#najcastejsie-priciny-opuchu)
@@ -34,32 +38,17 @@ Opuchnutý kĺb na prste ruky komplikuje bežné činnosti – písanie, úchop 
 
 ## Najčastejšie príčiny opuchu
 
-### Osteoartritída
-Opotrebovanie chrupavky vedie k zmenám na kostiach, vzniku osteofytov a zhrubnutiu kĺbov (Heberdenove a Bouchardove uzly). Spoznáte ju podľa postupného stuhnutia, krčenia a bolestivého „rozbiehania sa“ počas dňa.
-
-### Reumatoidná artritída
-Autoimunitný zápal spôsobuje symetrický opuch, bolesť a rannú stuhnutosť viacerých kĺbov.
-
-### Psoriatická artritída
-Spája sa s psoriázou. Typický je „klobásový prst“ – difúzny opuch prsta vrátane nechtových zmien a začervenania kože.
-
-### Dna alebo pseudodna
-Hromadenie kryštálov kyseliny močovej (dna) alebo pyrofosfátu vápnika (pseudodna) vyvoláva náhly bolestivý opuch kĺbu. Koža býva horúca, lesklá a dotyk je veľmi nepríjemný.
-
-### Úrazy a mikrotraumy
-Zlomeniny, podvrtnutia a natrhnutia väzov vedú k lokálnemu opuchu, začervenaniu a obmedzeniu pohybu.
-
-### Infekcie kĺbu (septická artritída)
-Ak sú prítomné horúčka, výrazné začervenanie a bolesť, môže ísť o infekciu vyžadujúcu urgentnú liečbu. Nečakajte – okamžite kontaktujte lekára.
-
-### Tendinitída a tenosynovitída
-Zápal šliach ohýbačov alebo natiahnutie („skákavý prst“) spôsobujú opuch a bolestivé „preskočenie“ pri ohybe.
-
-### Dupuytrenova kontraktúra
-Jazvovité zhrubnutie väzivových platničiek v dlani vytvára tvrdé uzlíky, ktoré sťahujú prsty do ohybu a navodzujú pocit opuchu.
-
-### Cysty a gangliá
-Vaky s tekutinou pri kĺboch alebo šľachách sa prejavia viditeľnou hrčkou a tlakom v okolí kĺbu.
+| Príčina | Typické príznaky | Čo skúsiť ako prvé |
+| --- | --- | --- |
+| **Osteoartritída** | postupné zhrubnutie, „rozbiehanie sa“ ráno, uzlíky | teplé obklady mimo akútneho zápalu, chrániť kĺb, výživa chrupavky |
+| **Reumatoidná artritída** | symetrický opuch na oboch rukách, ranná stuhnutosť hodiny | reumatológ, lab. testy, pokoj v akútnej fáze |
+| **Psoriatická artritída** | „klobásový“ prst, kožné/nechtové zmeny | reumatológ, kontrola psoriázy, chladenie pri zápale |
+| **Dna / pseudodna** | náhle horúce, lesklé, veľmi bolestivé kĺby | chladenie, NSAID podľa lekára, diéta s nízkym purínom, vyšetrenie |
+| **Úraz / mikrotrauma** | lokálny opuch po náraze, obmedzený pohyb | RICE, ak bolesť/opuch pretrváva 48–72 h, ortopéd |
+| **Infekcia kĺbu** | horúčka, výrazné začervenanie, silná bolesť | urgentne lekár, neodkladať |
+| **Tendinitída / „skákavý prst“** | preskakovanie pri ohybe, citlivosť šľachy | odľahčiť, chladenie, ortéza, fyzioterapia |
+| **Dupuytrenova kontraktúra** | tvrdé uzlíky v dlani, prsty sa ohýbajú | fyzioterapia, ergoterapia, ortopéd |
+| **Cysty a gangliá** | viditeľná hrčka, tlak bez veľkej bolesti | ultrazvuk, chrániť kĺb, podľa nálezu evakuácia/excícia |
 
 ## Ako sa opuch prejavuje
 
@@ -78,23 +67,24 @@ Vaky s tekutinou pri kĺboch alebo šľachách sa prejavia viditeľnou hrčkou a
 
 ## Domáca liečba a režim
 
-- **RICE protokol:** rest – odľahčite prst, ice – ľadujte 10 minút 3× denne, compression – elastická bandáž, elevation – vyložte ruku.  
-- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
-- **Lokálne gély:** diklofenak alebo ibuprofén vo forme gélu zmiernia zápal. Pri dlhšom domácom režime pomáha aj [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), ktorý nepreťažuje žalúdok. Viac o jeho chladivých látkach nájdeš na podstránke [mentol + gáfor gél](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).  
-- **Ortézy a dlahy:** stabilizujú kĺb pri artritíde, športových úrazoch či „skákavom prste“.  
-- **Parafínové zábaly:** príjemné teplo uvoľní stuhnutosť (nie pri akútnom zápale).  
-- **Jemná automasáž a elevácia:** masírujte prst od špičky smerom k dlani, aby sa znížil opuch, a ruku si pri oddychu podopri tak, aby bola vyššie ako srdce.  
-- **Úprava stravy:** pri dne obmedzte vnútornosti, údeniny a alkohol, pri zápalových diagnózach zaraďte omega-3 (losos, ľanové semienko), kurkumu alebo zázvor.  
-- **Pri infekcii alebo silnej bolesti neváhajte vyhľadať lekára!**  
+- **Deň 0 – 2 (RICE):** rest – odľahčite prst, ice – ľadujte 10–15 min 3× denne cez látku, compression – jemný elastický návlek, elevation – ruka nad úrovňou srdca.  
+- **Deň 3 – 7:** ľahké rozhýbanie bez bolesti, krátke cvičenia na stole, žiadne švihové pohyby ani „lámavé“ naťahovanie.  
+- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára, vždy po jedle.  
+- **Lokálne gély:** diklofenak/ibuprofén gél; pri domácej starostlivosti použite [Joint Boost gél – protizápalová masť na kĺby](/protizapalova-mast-na-klby), chladivý vďaka mentolu a gáforu.  
+- **Ortézy a dlahy:** stabilizujú kĺb pri artritíde, úrazoch alebo „skákavom prste“ – konzultujte výber s fyzioterapeutom.  
+- **Parafínové zábaly:** teplo uvoľní stuhnutosť pri artróze (nie pri akútnom zápale).  
+- **Jemná automasáž a elevácia:** masírujte prst od špičky k dlani, podporíte odtok tekutiny.  
+- **Strava a hydratácia:** pri dne obmedzte puríny a alkohol; pri zápaloch zaraďte omega-3, kurkumu, zázvor.  
+- **Výživa kĺbov:** [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov dodá kolagén II, MSM a kyselinu hyalurónovú na podporu chrupaviek a väzov.
 
 ## Cvičenia a mobilita prstov
 
-1. **Ohyb a vystretie:** položte ruku na stôl a pomaly ohýbajte postihnutý prst, potom vystrite (10 opakovaní).  
-2. **„Pazúrik“:** ohnite všetky prsty tak, aby končeky smerovali do dlane – držte 5 sekúnd, uvoľnite.  
-3. **Rozťahovanie gumičky:** nasuňte gumičku na prsty a roztvárajte ich, posilníte extenzory.  
-4. **Stláčanie loptičky:** jemne stláčajte antistresovú loptičku 10 – 15×.  
-5. **Masáž prstov:** druhou rukou jemne masírujte kĺb, stimulujete prekrvenie.  
-6. **Cvičenie s uterákom:** položte uterák na stôl a prstami ho krčte smerom k dlani.
+1. **Ohyb a vystretie:** ruka na stole, pomalý ohyb a vystretie (10 opakovaní, 2–3× denne).  
+2. **„Pazúrik“:** ohnite prsty tak, aby končeky smerovali do dlane – držte 5 sekúnd, uvoľnite (3 série).  
+3. **Rozťahovanie gumičky:** gumička na prstoch, roztvárajte ich proti odporu (15 opakovaní).  
+4. **Stláčanie loptičky:** jemné stlačenie 10 – 15× bez vyvolania ostrej bolesti.  
+5. **Masáž prstov:** jemný posuvný tlak pozdĺž prsta 1 – 2 minúty.  
+6. **Cvičenie s uterákom:** krčte uterák prstami k dlani, 2 série po 10 opakovaní.
 
 ## Prevencia a návyky
 
@@ -102,7 +92,8 @@ Vaky s tekutinou pri kĺboch alebo šľachách sa prejavia viditeľnou hrčkou a
 - používajte ergonomické pomôcky a nástroje, pri písaní na klávesnici si podlož zápästie,  
 - chráňte prsty pred chladom a nárazmi, v zime noste rukavice a pri práci s náradím tlmiace rukavice,  
 - jedzte stravu bohatú na omega-3, vitamín C a kolagén a dbajte na dostatok tekutín,  
-- pravidelne cvičte, aby ste udržali kĺby pohyblivé, a posilňujte aj predlaktie – lepšie rozloží záťaž na šľachy.
+- pravidelne cvičte, aby ste udržali kĺby pohyblivé, a posilňujte aj predlaktie – lepšie rozloží záťaž na šľachy,  
+- zvážte dlhodobejšiu výživu kĺbov – [JointBoost](/kupit/) 1 kapsula denne podporuje chrupavku a väzivo drobných kĺbov.
 
 ## Kedy vyhľadať lekára
 
@@ -135,9 +126,14 @@ Mäkká posuvná hrčka bez bolesti býva lipóm, tvrdé a citlivé zhrubnutie v
 **Bolesť sa presúva až do palca – čo s tým?**  
 Palec má pri úchope hlavnú stabilizačnú úlohu, preto sa k nemu opuch často „pripojí“. Pozrite aj článok [Bolesť palca na ruke](https://najsilnejsiaklbovavyziva.sk/bolest-palca-na-ruke), kde riešime špecifické diagnózy palcového kĺbu.
 
+**Ako rýchlo by mal opuch klesnúť?**  
+Pri preťažení často do 3 – 7 dní s RICE a odľahčením. Ak opuch zostáva, je horúci alebo sa zhoršuje, potrebujete vyšetrenie a prípadne laboratórne testy či zobrazovanie.
+
 ## Zhrnutie
 
 Opuch kĺbu na prste je signálom, že kĺbové štruktúry sú podráždené – či už opotrebením, úrazom, zápalom alebo metabolickými ochoreniami. Včasná diagnostika, kombinácia domácej starostlivosti, cielenej rehabilitácie a kĺbovej výživy dokáže opuch znížiť a obnoviť funkciu prstov. Sledujte varovné príznaky a v prípade pochybností sa obráťte na odborníka – zdravé prsty sú základom jemnej motoriky aj silného úchopu.
+
+- 💊 [Objednať JointBoost pre podporu drobných kĺbov prstov](/kupit/)
 
 ### Referencie
 

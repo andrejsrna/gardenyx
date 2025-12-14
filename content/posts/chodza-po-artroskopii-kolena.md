@@ -15,12 +15,18 @@ seoImage: "https://cdn.najsilnejsiaklbovavyziva.sk/2023/12/chodza-po-artroskopii
 canonicalUrl: "https://najsilnejsiaklbovavyziva.sk/chodza-po-artroskopii-kolena"
 ---
 
+**Chcete jasný plán chôdze po artroskopii?** Nižšie nájdete časovú os, cviky a checklist varovných príznakov.
+
+- ✅ Časová os a cviky pre prvé týždne nájdete nižšie v článku.  
+- 💊 [Vyskúšať JointBoost na rýchlejšie hojenie](/kupit/) – kolagén II, MSM, kurkumín a Boswellia, 1 kapsula denne.  
+
 Artroskopia kolena patrí medzi najčastejšie ortopedické zákroky. Kamera a tenké nástroje umožnia chirurgovi opraviť poškodený [meniskus](https://najsilnejsiaklbovavyziva.sk/meniskus-kolena), chrupavku alebo odstrániť voľné telieska bez potreby veľkého rezu. Úspech však závisí od toho, ako sa budete o koleno starať po operácii. Tento sprievodca vám ukáže, kedy môžete začať chodiť, ako znižovať oporu bariel a ktoré cviky pomáhajú k bezpečnému návratu do plnej záťaže.
 
 > **Upozornenie:** Informácie v článku nenahrádzajú individuálne pokyny vášho ortopéda alebo fyzioterapeuta. Priebeh hojenia závisí od typu zákroku, veku, kondície a pridružených diagnóz. Vždy sa riaďte presnými inštrukciami lekára.
 
 **Prehľad článku**
 
+- [Časová os chôdze po artroskopii](#casova-os-chodze-po-artroskopii-co-ocakavat)
 - [Prvé dni po artroskopii](#prve-dni-po-artroskopii)
 - [Ako používať barle a ortézu](#ako-pouzivat-barle-a-ortezu)
 - [Cvičenia v jednotlivých fázach](#cvicenia-v-jednotlivych-fazach)
@@ -30,6 +36,14 @@ Artroskopia kolena patrí medzi najčastejšie ortopedické zákroky. Kamera a t
 - [Najčastejšie otázky](#najcastejsie-otazky)
 - [Ako podporiť regeneráciu](#ako-podporit-regeneraciu)
 - [Zhrnutie](#zhrnutie)
+
+## Časová os chôdze po artroskopii (čo očakávať)
+
+- **Deň 0 – 3:** polohovanie s vyloženou nohou, ľad 3–4× denne, krátke presuny s barlami.  
+- **Deň 4 – 7:** jemné ohýbanie do 90°, prenášanie váhy s oporou, vychádzky v interiéri.  
+- **Deň 8 – 14:** dlhšie prechádzky (podľa tolerancie), stacionárny bicykel bez odporu, nácvik chôdze po schodoch.  
+- **Týždeň 3 – 6:** prechod na plnú váhu podľa typu zákroku, mini-squaty, mostíky, balančné cvičenia.  
+- **Po 6. týždni:** rýchlejšia chôdza, eliptický trenažér, neskôr beh a športové prvky po súhlase lekára.  
 
 ## Prvé dni po artroskopii
 
@@ -94,6 +108,14 @@ Vždy nosite vhodnú obuv s tlmením. Počas dňa striedajte státie, chôdzu a 
 
 Ak koleno bolí alebo opúcha po športovej aktivite, prejdite späť na nižšiu záťaž a kontaktujte terapeuta.
 
+## Rýchlejšie hojenie: výživa a doplnky
+
+- **JointBoost**: kolagén typu II, MSM, vitamín C, kyselina hyalurónová, kurkumín, Boswellia – 1 kapsula denne.  
+- **Prečo teraz:** po zákroku je chrupavka a mäkké tkanivá smädné po stavebných látkach; doplnenie môže podporiť tvorbu kolagénu a tlmiť zápal.  
+- **Ako užívať:** ideálne s jedlom a dostatkom vody, minimálne 2 mesiace.  
+
+👉 [Objednať JointBoost bez rizika](/kupit/) – doručenie do 24 h.
+
 ## Varovné signály, kedy spozornieť
 
 Okamžite vyhľadajte lekára, ak:
@@ -132,6 +154,8 @@ Zvyčajne po odstránení stehov, keď lekár dovolí flexiu nad 90°. Začnite 
 ## Zhrnutie
 
 Chôdza po artroskopii kolena je postupný proces. Najskôr chránite kĺb a odľahčujete ho, neskôr pridávate cvičenia a učíte sa prenášať váhu. Kľúčom k úspechu je spolupráca s ortopédom a fyzioterapeutom, dôsledné cvičenie, trpezlivosť a včasné riešenie varovných príznakov. Tak si zabezpečíte bezpečný návrat k aktivitám, ktoré máte radi.
+
+- 💊 [Objednať JointBoost na podporu hojenia](/kupit/)
 
 ### Referencie
 

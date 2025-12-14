@@ -19,8 +19,12 @@ Artroskopia kolena je minimálne invazívna operácia, počas ktorej ortopéd ce
 
 > **TIP:** Ak máte artroskopiu kvôli menisku, prečítajte si aj sprievodcu [Poškodený meniskus – príznaky a liečba](https://najsilnejsiaklbovavyziva.sk/poskodeny-meniskus-priznaky), kde podrobne vysvetľujeme možnosti liečby.
 
+- ⏱️ Rýchly prehľad: prudšia bolesť 0 – 3 dni, citeľná stuhnutosť 1. týždeň, mierne pobolievanie po záťaži 1 – 3 mesiace.  
+- 💊 [JointBoost – podpora hojenia a chrupavky](/kupit/) (kolagén II, MSM, kyselina hyalurónová, kurkumín, Boswellia) – 1 kapsula denne počas prvých 2 mesiacov.
+
 **Prehľad článku**
 
+- [Rýchle kroky na menšiu bolesť](#rychle-kroky-na-mensiu-bolest)
 - [Čo je artroskopia kolena](#co-je-artroskopia-kolena)
 - [Koľko trvá bolesť po artroskopii](#kolko-trva-bolest-po-artroskopii)
 - [Faktory, ktoré ovplyvňujú hojenie](#faktory-ktore-ovplyvnuju-hojenie)
@@ -31,6 +35,14 @@ Artroskopia kolena je minimálne invazívna operácia, počas ktorej ortopéd ce
 - [Tipy na rýchlejší návrat](#tipy-na-rychlejsi-navrat)
 - [Najčastejšie otázky](#najcastejsie-otazky)
 - [Zhrnutie](#zhrnutie)
+
+## Rýchle kroky na menšiu bolesť
+
+- **Deň 0 – 3:** ľad 3–4× denne, vyložená noha, barle podľa odporúčania.  
+- **Deň 4 – 7:** jemné ohýbanie do 90°, izometrické napínanie kvadricepsu, krátke presuny.  
+- **Týždeň 2 – 3:** stacionárny bicykel bez odporu, viac chôdze, ľahké posilnenie sedacích svalov.  
+- **Týždeň 4 – 6:** stabilizačné a balančné cviky, postupná záťaž bez prudkých otočiek.  
+- **Doplnok:** [JointBoost](/kupit/) – stavebné látky pre chrupavku + protizápalové zložky, 1 kapsula denne s jedlom.
 
 ## Čo je artroskopia kolena
 
@@ -83,6 +95,7 @@ Ak sa objaví výrazný opuch alebo tekutina v kolene, pomôžu tipy z článku 
 - Dodržiavajte dávkovanie od lekára; najčastejšie sa kombinuje paracetamol s NSAID (ibuprofén, diklofenak).  
 - Pri citlivom žalúdku alebo liekoch na riedenie krvi užívajte NSAID vždy po jedle a konzultujte ich s lekárom.  
 - Doplňte výživu o [glukozamín, chondroitín a MSM](https://najsilnejsiaklbovavyziva.sk/glukozamin-chondroitin-a-msm-trojica-ktora-ulavi-vasim-klbom), ktoré podporujú regeneráciu chrupavky.
+- **JointBoost (kolagén II, MSM, kyselina hyalurónová, kurkumín, Boswellia):** 1 kapsula denne počas prvých 2 mesiacov môže pomôcť tlmiť zápal a dodať stavebné látky chrupavke. [Objednať](/kupit/).
 
 ### RICE protokol a domáca starostlivosť
 
@@ -148,3 +161,5 @@ Plávanie a stacionárny bicykel po 3 – 4 týždňoch, beh a dynamické šport
 ## Zhrnutie
 
 Bolesť po artroskopii je najvýraznejšia počas prvých dní a postupne slabne. Kľúčom k rýchlemu zotaveniu je kombinácia správne nastavenej liečby bolesti, dôslednej rehabilitácie a včasného riešenia varovných príznakov. Ak budete dodržiavať odporúčania lekára, cvičiť pod dohľadom fyzioterapeuta a podporíte kĺb kvalitnou výživou, návrat k bežnému režimu bude rýchly a bez komplikácií.
+
+- 💊 [Objednať JointBoost pre lepšiu regeneráciu](/kupit/)

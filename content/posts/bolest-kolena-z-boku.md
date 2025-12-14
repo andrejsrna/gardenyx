@@ -19,6 +19,10 @@ Bočná bolesť kolena patrí medzi najčastejšie ťažkosti aktívnych ľudí,
 
 > **TIP:** Ak cítite tlak alebo bolesť vzadu na kolene, pozrite si článok [Bolesť kolena zo zadnej strany](https://najsilnejsiaklbovavyziva.sk/bolest-kolena-zo-zadnej-strany), kde riešime popliteálne ťažkosti a Bakerovu cystu.
 
+- 🔍 Rýchly prehľad: najčastejšie ITBS (vonkajšia strana) alebo podvrtnutie MCL (vnútorná strana); náhle prasknutie + opuch = ortopéd.  
+- ⏱️ Prvá pomoc: 48 – 72 h RICE, limitovať zostupy po schodoch, krátke presuny.  
+- 💊 Úľava a výživa: NSAID podľa lekára + [JointBoost](/kupit/) (kolagén II, MSM, kyselina hyalurónová, Boswellia) 1 kapsula denne počas 2 mesiacov na podporu chrupavky a väzov.
+
 **Prehľad článku**
 
 - [Najčastejšie príčiny bolesti z boku](#najcastejsie-priciny-bolesti-z-boku)
@@ -34,20 +38,13 @@ Bočná bolesť kolena patrí medzi najčastejšie ťažkosti aktívnych ľudí,
 
 ## Najčastejšie príčiny bolesti z boku
 
-### Iliotibiálny syndróm (ITBS)
-Zápal iliotibiálneho pruhu (IT band) na vonkajšej strane kolena. Typický najmä pre bežcov a cyklistov. Bolesť sa zhoršuje pri behu z kopca alebo po tvrdom povrchu.
-
-### Poranenie menisku
-Natrhnutie laterálneho (vonkajšieho) alebo mediálneho (vnútorného) menisku spôsobuje bodavú bolesť, pocit „zaseknutia“ a obmedzený rozsah pohybu. Viac o príznakoch nájdete v článku [Poškodený meniskus](https://najsilnejsiaklbovavyziva.sk/poskodeny-meniskus-priznaky).
-
-### Podvrtnutie bočných väzov
-Natiahnuť sa môže laterálny kolaterálny väz (LCL) alebo mediálny (MCL). Bolesť sprevádza opuch a nestabilita kolena po úraze.
-
-### Artróza kolena
-Opotrebovanie chrupavky spôsobuje bolestivú stuhnutosť po sedení alebo ráno. Bolesť môže vyžarovať aj do bočnej strany kolena. Viac vysvetľujeme v článku [Artróza kolena – príznaky](https://najsilnejsiaklbovavyziva.sk/co-je-artroza-7-dolezitych-informacii).
-
-### Zápal šliach a úponov
-Preťaženie úponov hamstringov, lýtkových svalov alebo patelárnej šľachy vedie k bočnej bolesti kolena po intenzívnom tréningu alebo nesprávnej technike.
+| Príčina | Typické príznaky | Čo skúsiť ako prvé |
+| --- | --- | --- |
+| **Iliotibiálny syndróm (ITBS)** | pálivá bolesť na vonkajšej strane pri behu z kopca, citlivé miesto nad laterálnym epikondylom | RICE 48 h, znížiť objem behu, strečing IT bandu, pozri [Cviky na koleno](https://najsilnejsiaklbovavyziva.sk/cviky-na-koleno) |
+| **Poranenie menisku** | bodavá bolesť, „zaseknutie“, opuch, obmedzený rozsah | odľahčiť, ortéza, vyšetrenie + MRI, článok [Poškodený meniskus](https://najsilnejsiaklbovavyziva.sk/poskodeny-meniskus-priznaky) |
+| **Podvrtnutie bočných väzov (MCL/LCL)** | bolesť po úraze, opuch, pocit nestability pri došľape | RICE, dočasne barla/ortéza, kontrola u ortopéda pri nestabilite |
+| **Artróza kolena** | tupá bolesť, ranná stuhnutosť, praskanie, zhoršenie po sedení | nízkoimpaktný pohyb, zníženie hmotnosti, výživa chrupavky |
+| **Zápal šliach/úponov** | lokálna citlivosť na dotyk, bolesť pri špecifickom pohybe | úprava techniky, strečing, postupný návrat k záťaži |
 
 ## Ako sa bolesť prejavuje
 
@@ -64,10 +61,11 @@ Preťaženie úponov hamstringov, lýtkových svalov alebo patelárnej šľachy 
 
 ## Domáca liečba a prvá pomoc
 
-- **RICE protokol:** Rest, Ice (10–15 minút 3–4× denne), Compression (elastický návlek), Elevation.  
-- **Dočasná zmena záťaže:** vyhnite sa behu z kopca, drepu alebo noseniu ťažkých nákladov.  
-- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
-- **Bandáže a ortézy:** stabilizujú koleno počas aktivity.
+- **Deň 0 – 2 (RICE):** Rest, Ice 10–15 minút 3–4× denne, Compression (návlek/obväz), Elevation.  
+- **Deň 3 – 7:** krátke presuny po rovine, ľahké izometrické cviky (napínanie kvadricepsu), vyhnite sa behu z kopca a hlbokým drepom.  
+- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára, vždy po jedle.  
+- **Bandáže a ortézy:** stabilizujú koleno počas aktivity; pri výraznej nestabilite ortopéd môže odporučiť pevnejšiu ortézu.  
+- **Výživa kĺbov:** [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov dodá kolagén II, MSM, kyselinu hyalurónovú a Boswelliu na podporu chrupavky a tlmenie zápalu.
 
 ## Cielené cvičenia a strečing
 
@@ -86,6 +84,14 @@ Detailné návody nájdete v článkoch [Cviky na koleno](https://najsilnejsiakl
 - **Technika behu:** dopad na stred chodidla, postupné zvyšovanie objemu tréningu.  
 - **Warm-up a cool-down:** dynamický strečing pred športom, statický po ňom.  
 - **Kompresné návleky:** podporujú obeh a znižujú svalovú únavu.
+- **Hmotnosť a regenerácia:** každé kilo navyše zvyšuje tlak na kolená; doplňte bielkoviny, omega-3 a vitamín D pre lepšie hojenie.
+
+## Varovné symptómy – kedy k lekárovi ihneď
+
+- náhle „prasknutie“ s pocitom blokovania alebo prepadnutia kolena,  
+- výrazný opuch, začervenanie alebo teplota nad 38 °C,  
+- nestabilita, nemožnosť vystrieť/ohnúť koleno,  
+- bolesť v lýtku s opuchom (podozrenie na trombózu).
 
 ## Kedy vyhľadať lekára
 
@@ -111,9 +117,14 @@ Vyhnite sa aktivitám, ktoré bolesť zhoršujú. Voľte bicykel alebo plávanie
 **Pomôžu ortopedické vložky?**  
 Pri plochonoží alebo zlej biomechanike môžu vložky výrazne znížiť tlak na bočné štruktúry kolena.
 
+**Ako rýchlo by mala bolesť ustúpiť?**  
+Pri preťažení ITBS často do 1 – 3 týždňov s úpravou záťaže a strečingom. Ak sa bolesť zhoršuje alebo je koleno nestabilné, potrebné je vyšetrenie a prípadne zobrazovanie.
+
 ## Zhrnutie
 
 Bolesť kolena z boku najčastejšie spôsobuje iliotibiálny syndróm, meniskus, poškodené väzy alebo artróza. Kľúčom k uzdraveniu je presná diagnostika, úprava záťaže, správne cvičenia a podpora kĺbov výživou. Sledujte varovné príznaky a v prípade potreby vyhľadajte odbornú pomoc – kolená vám poďakujú pri každom kroku.
+
+- 💊 [Objednať JointBoost pre pevnejšiu chrupavku a väzy](/kupit/)
 
 ### Referencie
 

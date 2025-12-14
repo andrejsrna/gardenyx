@@ -19,6 +19,10 @@ Pichanie alebo pálenie na bruškách prstov dokáže pokaziť každú prechádz
 
 > **TIP:** Ak vás bolí celé chodidlo alebo päta, pozrite si aj články [Bolesť spodnej časti chodidla](https://najsilnejsiaklbovavyziva.sk/bolest-spodnej-casti-chodidla) a [Plantárna fascitída – príčiny a liečba](https://najsilnejsiaklbovavyziva.sk/plantarna-fascitida).
 
+- 🔍 Rýchly prehľad: najčastejšie metatarzalgia (preťaženie) alebo Mortonov neurom; pri náhlom „puknutí“ či neschopnosti došliapnuť riešte lekára.  
+- ⏱️ Prvá pomoc: 48 – 72 hodín RICE, mäkké gélové vankúšiky pod metatarzy, znížiť počet krokov.  
+- 💊 Úľava: NSAID podľa lekára + [JointBoost](/kupit/) (kolagén II, MSM, kyselina hyalurónová, Boswellia) 1 kapsula denne počas 2 mesiacov na podporu chrupaviek a šliach.
+
 **Prehľad článku**
 
 - [Ako funguje predná časť chodidla](#ako-funguje-predna-cast-chodidla)
@@ -45,26 +49,17 @@ Ak sa klenby oslabia alebo sa zmení rozloženie váhy (napr. pri nosení opätk
 
 ## Najčastejšie príčiny bolesti pod prstami
 
-### 1. Metatarzalgia
-Preťaženie metatarzálnych kostí spôsobuje pálenie alebo pocit kamienka v topánke. Typicky postihuje športovcov, ľudí s nadváhou či nositeľov úzkych topánok.
+| Príčina | Typické príznaky | Čo skúsiť ako prvé |
+| --- | --- | --- |
+| **Metatarzalgia (preťaženie)** | pálenie, pocit kamienka v topánke, zhoršenie po behu alebo opätkoch | RICE 48 h, gélové vankúšiky, výmena obuvi, redukcia objemu behu o 30 % |
+| **Mortonov neurom** | ostrá bolesť medzi 3. a 4. prstom, mravenčenie, úľava po vyzutí | širšia špička topánky, mäkké vložky, fyzioterapeut, článok [Bolesť chodidla z boku](https://najsilnejsiaklbovavyziva.sk/bolest-chodidla-z-boku) |
+| **Plantárna fasciitída** | ranná pichavá bolesť, zhoršenie po dlhom sedení | strečing fascie a lýtok, valček pod chodidlom, pozri [Plantárna fascitída](https://najsilnejsiaklbovavyziva.sk/plantarna-fascitida) |
+| **Otlaky, kurie oká, mozole** | lokalizovaná tlačivá bolesť, viditeľné stvrdnuté miesta | odľahčujúce náplasti, pedikúra, širšia obuv, korekcia haluxov |
+| **Únavové zlomeniny metatarzov** | bolestivý bod pri došľape, opuch, zhoršenie po každom kroku | okamžité odľahčenie, vyšetrenie + röntgen/MRI, dočasne bez behu |
+| **Artritída, dna** | opuch, teplo, začervenanie kĺbov prstov, nočné bolesti | lekár, protizápalová liečba, úprava stravy, pozri [Zápal kĺbov – príznaky](https://najsilnejsiaklbovavyziva.sk/zapal-klbov) |
+| **Diabetická neuropatia** | pálenie, strata citlivosti, „mŕtve“ oblasti | vyšetrenie u diabetológa/podiatra, kontrola glykémie, ochranná obuv |
 
-### 2. Mortonov neurom
-Zhrubnutie nervu medzi 3. a 4. prstom vyvoláva ostrú bolesť a mravenčenie. Zhoršuje sa v užšej obuvi, uvoľnenie prináša vyzutie. Viac o nervových bolestiach v chodidle píšeme v článku [Bolesť chodidla z boku](https://najsilnejsiaklbovavyziva.sk/bolest-chodidla-z-boku).
-
-### 3. Plantárna fasciitída
-Zápal plantárnej fascie sa môže preniesť aj do oblasti metatarzov, najmä ráno alebo po dlhom sedení. Detailný sprievodca nájdete v článku [Plantárna fascitída](https://najsilnejsiaklbovavyziva.sk/plantarna-fascitida).
-
-### 4. Otlačeniny, kurie oká a mozole
-Zhrubnutá koža vytvára tlak na nervy a kĺby pod prstami, typicky pri nevhodnej obuvi alebo deformitách (haluxy).
-
-### 5. Zlomeniny únavou
-Opakované nárazy pri behu môžu spôsobiť mikrozlomeniny metatarzov – bolesť sa zhoršuje pri každom kroku.
-
-### 6. Artritída a dna
-Zápal metatarzofalangeálnych kĺbov spôsobuje opuch, teplo a intenzívnu bolesť. Viac o ochorení kĺbov píšeme aj v článku [Zápal kĺbov – príznaky a liečba](https://najsilnejsiaklbovavyziva.sk/zapal-klbov).
-
-### 7. Diabetická neuropatia
-Pri cukrovke sa zhoršuje citlivosť nervov. Bolesť môže sprevádzať pálenie, strata citlivosti alebo „mŕtve“ oblasti na chodidle.
+> Pri náhlom „puknutí“, nemožnosti sa odraziť alebo výraznom opuchu chodidla urobte RICE a vyhľadajte lekára – môže ísť o únavovú zlomeninu alebo akútny zápal nervu.
 
 ## Ako lekár stanoví diagnózu
 
@@ -84,10 +79,11 @@ Viac o tom, ako sa riešia bolesti pri chôdzi, nájdete v článku [Bolesť prs
 
 ### RICE protokol pre chodidlo
 
-- **Rest:** obmedzte beh a skákanie, znížte počet krokov.  
+- **Deň 0 – 2 (Rest):** obmedzte beh a skákanie, znížte počet krokov na minimum.  
 - **Ice:** ľadujte 10 – 15 minút, 3 – 4-krát denne (použite uterák medzi ľadom a kožou).  
-- **Compression:** ľahká bandáž alebo kompresná ponožka znižuje opuch.  
-- **Elevation:** chodidlo vyložte nad úroveň srdca, keď oddychujete.
+- **Compression:** ľahká bandáž alebo kompresná ponožka znižuje opuch, nesmie tŕpnuť prsty.  
+- **Elevation:** chodidlo vyložte nad úroveň srdca, keď oddychujete.  
+- **Deň 3+:** postupne pridávajte krátke prechádzky na mäkkom povrchu; ak bolesť rastie, vráťte sa k odľahčeniu.
 
 ### Lieky a doplnky
 
@@ -106,6 +102,7 @@ Viac o tom, ako sa riešia bolesti pri chôdzi, nájdete v článku [Bolesť prs
 - Mäkké gélové vankúšiky alebo metatarzálne vložky rozložia tlak.  
 - Masáž s tenisovou loptičkou alebo valčekom zlepší prekrvenie.  
 - Strečing lýtok znižuje napätie fascie – postup nájdete v článku [Cviky na bolesť chodidla](https://najsilnejsiaklbovavyziva.sk/bolest-chodidla-z-boku#cviky).
+- Pri Mortonovom neurome skúste topánky so širšou špičkou a nižším dropom, aby sa nervu uľavilo.
 
 ## Cvičenia a posilnenie chodidla
 
@@ -125,6 +122,7 @@ Viac cvikov nájdete v článku [Bolesti chodidiel – rady a cviky](https://naj
 - **Striedanie topánok:** nenoste denne tie isté tenisky alebo opätky.  
 - **Rozcvička pred športom:** dynamický strečing lýtok a chodidiel znižuje riziko úrazov.  
 - **Starostlivosť o kožu:** pravidelne odstraňujte stvrdnutú kožu a používajte hydratačné krémy.
+- **Výživa kĺbov a šliach:** [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov dodá kolagén II, MSM a kyselinu hyalurónovú, ktoré podporia chrupavky a väzivo prednej časti chodidla.
 
 Ďalšie tipy na starostlivosť sú v článkoch [Haluxy – príčiny a riešenia](https://najsilnejsiaklbovavyziva.sk/haluxy) či [Bolesť vonkajšej kosti chodidla](https://najsilnejsiaklbovavyziva.sk/bolest-vonkajsej-kosti-chodidla).
 
@@ -154,6 +152,9 @@ Chirurgické riešenie sa zvažuje pri Mortonovom neurome alebo ťažkých defor
 **Môžem pokračovať v tréningu?**  
 Pri miernej bolesti redukujte objem a vyhnite sa tvrdým povrchom. Ak bolí každý krok alebo je chodidlo opuchnuté, dajte si pauzu a vyhľadajte lekára.
 
+**Ako rýchlo by mala bolesť ustúpiť?**  
+Pri preťažení často do 1 – 2 týždňov po úprave obuvi a znížení záťaže. Ak do 7 dní nevidíte zlepšenie alebo sa bolesť zhoršuje, nechajte si chodidlo vyšetriť.
+
 ## Ako vám „Najsilnejšia kĺbová výživa“ môže pomôcť
 
 „[Najsilnejšia kĺbová výživa – JointBoost](https://najsilnejsiaklbovavyziva.sk/kupit/)“ kombinuje glukozamín, chondroitín, MSM, morský kolagén typu II, vitamín C, kyselinu hyalurónovú, kurkumín a Boswelliu. Táto synergická kombinácia podporuje chrupavky, väzy aj šľachy a znižuje zápalové procesy, ktoré stoja za mnohými bolesťami chodidiel.
@@ -163,6 +164,8 @@ Pri miernej bolesti redukujte objem a vyhnite sa tvrdým povrchom. Ak bolí kaž
 ## Zhrnutie
 
 Bolesť chodidla zospodu pod prstami býva najčastejšie dôsledkom preťaženia alebo nevhodnej obuvi. Správna diagnóza je základom úspešnej liečby – nebojte sa navštíviť odborníka, ak bolesť pretrváva. Úľavu prináša kombinácia zmeny obuvi, cvičení, vložiek a cielenej výživy. Starostlivosť o chodidlá sa vám odvďačí bezbolestným pohybom pri každom kroku.
+
+- 💊 [Objednať JointBoost pre pevnejšie kĺby a šľachy chodidla](/kupit/)
 
 ### Referencie
 
