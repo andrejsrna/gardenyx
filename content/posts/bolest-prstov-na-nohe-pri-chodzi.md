@@ -22,10 +22,11 @@ Aj keď ide často o banálny problém, ignorovanie bolesti sa nemusí vyplatiť
 V článku nájdete **8 najčastejších dôvodov**, prečo vás pri chôdzi môžu bolieť prsty na nohách, a praktické tipy, ako si pomôcť – od úpravy obuvi až po situácie, kedy je lepšie vyhľadať lekára.
 
 **Rýchly prehľad:**
-- tlak z nevhodnej obuvi a preťaženie klenby patria medzi najčastejšie príčiny,
-- ostrá bolesť „z ničoho nič“ môže súvisieť s dnou alebo únavovou zlomeninou,
-- brnenie či pálenie signalizuje podráždenie nervu, typicky Mortonov neuróm,
-- bolesť, ktorá pretrváva viac ako týždeň, si zaslúži odborné vyšetrenie.
+- najčastejšie nevhodná obuv, preťaženie klenby alebo otlaky/zarastený necht,  
+- ostrá náhla bolesť + teplý opuch = dna alebo infekcia, bodová bolesť po záťaži = únavová zlomenina,  
+- brnenie/pálenie medzi prstami = Mortonov neuróm (nerv),  
+- ak bolesť trvá > 7 dní alebo zhoršuje chôdzu, riešte s lekárom.  
+- 💊 Podpora zvnútra: [JointBoost](/kupit/) 1 kapsula denne (kolagén II, MSM, kyselina hyalurónová, Boswellia) počas 2 mesiacov na podporu chrupaviek, väzov a šliach prstov.
 
 Pozrite si tiež: [Chondroitín sulfát – 7 vecí čo potrebujete vedieť](https://najsilnejsiaklbovavyziva.sk/chondroitin-sulfat)
 
@@ -194,7 +195,7 @@ Pri chronickej bolesti alebo po úrazoch pomáha fyzioterapia – mobilizácia k
 
 #### 🔹 **Doplnky výživy**
 
-Pri problémoch s kĺbmi alebo zápalmi sú vhodné doplnky s obsahom glukozamínu, chondroitínu, kolagénu typu II, kurkumínu, MSM alebo kyseliny hyalurónovej. Pomáhajú tlmiť zápaly, podporiť regeneráciu a znížiť bolesť.
+Pri problémoch s kĺbmi alebo zápalmi sú vhodné doplnky s obsahom glukozamínu, chondroitínu, kolagénu typu II, kurkumínu, MSM alebo kyseliny hyalurónovej. Pomáhajú tlmiť zápaly, podporiť regeneráciu a znížiť bolesť. Skúste [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov – kolagén II, MSM, kyselina hyalurónová a Boswellia podporia malé kĺby prstov aj väzy prednožia.
 
 #### 🔹 **Ďalšie tipy**
 
@@ -202,6 +203,12 @@ Pri problémoch s kĺbmi alebo zápalmi sú vhodné doplnky s obsahom glukozamí
 - odpočinok a obmedzenie záťaže pri akútnej bolesti,
 - studené alebo teplé obklady podľa charakteru problému (zápal vs. stuhnutosť),
 - pravidelná pedikúra, najmä ak sa vám tvoria otlaky alebo zarastené nechty.
+
+#### 🔹 **Rýchly domáci postup pri akútnej bolesti prstov**
+
+- Deň 0 – 2: RICE (ľad 10–15 min 3× denne, odľahčiť, mäkká obuv),  
+- Deň 3 – 7: jemné rozhýbanie prstov, valček pod klenbu, úprava obuvi/vložiek,  
+- Ak bolesť do týždňa neklesá, objaví sa opuch, teplo alebo bodová bolesť pri došľape – vyšetrenie (RTG/MRI).
 
 #### ❗️**Kedy ísť k lekárovi**
 
@@ -214,11 +221,7 @@ Pri problémoch s kĺbmi alebo zápalmi sú vhodné doplnky s obsahom glukozamí
 
 ## Ako vám „Najsilnejšia kĺbová výživa“ môže pomôcť?
 
-„[Najsilnejšia kĺbová výživa](https://najsilnejsiaklbovavyziva.sk/) – JointBoost“ predstavuje komplexný doplnok stravy navrhnutý na podporu zdravia a funkcie kĺbov. Kombinácia glukozamínu, chondroitínu a MSM cielene podporuje regeneráciu kĺbového tkaniva a tvorbu kĺbovej tekutiny. Glukozamín pomáha obnovovať chrupavku, chondroitín zlepšuje jej pružnosť a MSM (metylsulfonylmetán) môže zmierňovať bolesť a zápal.
-
-Obsah vitamínu C podporuje syntézu kolagénu – stavebného kameňa pre kĺby a spojivové tkanivá. Morský kolagén typu II, kurkumín, BioPerine a kyselina hyalurónová pracujú synergicky na znížení zápalov, zlepšení pohyblivosti a ochrane chrupavky.
-
-Boswellia serrata (indický kadidlovník) dopĺňa receptúru protizápalovými účinkami. Doplnok je balený v kapsulách HPMC z rastlinnej celulózy, je teda vhodný aj pre vegetariánov. Ak bojujete s bolesťami prstov kvôli artritíde či úrazu, JointBoost môže podporiť vaše kĺby zvnútra.
+„[Najsilnejšia kĺbová výživa – JointBoost](https://najsilnejsiaklbovavyziva.sk/kupit/)“ kombinuje glukozamín, chondroitín, MSM, morský kolagén typu II, vitamín C, kyselinu hyalurónovú, kurkumín a Boswelliu. Podporuje chrupavky a väzy prstov, tlmí zápal a dopĺňa kyselinu hyalurónovú zvnútra.
 
 ## Záver
 
@@ -234,3 +237,5 @@ Bolesť prstov na nohe pri chôdzi môže mať rôzne príčiny – od banálnyc
 - 👉 [Bolesť päty pri chôdzi – čo môže znamenať?](https://najsilnejsiaklbovavyziva.sk/bolest-v-pate)
 - 👉 [Ako si vybrať správnu kĺbovú výživu?](https://najsilnejsiaklbovavyziva.sk/ako-si-vybrat-najlepsiu-klbovu-vyzivu-pre-vase-potreby-kompletny-sprievodca)
 - 👉 [Kedy pomôžu ortopedické vložky a na čo si dať pozor](https://najsilnejsiaklbovavyziva.sk/ako-podporit-zdravie-klbov-doma)
+
+- 💊 [Objednať JointBoost pre podporu kĺbov prstov a prednožia](/kupit/)

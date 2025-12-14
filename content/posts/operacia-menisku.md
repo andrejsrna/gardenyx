@@ -21,6 +21,10 @@ Zákrok má zmysel najmä vtedy, keď sa bolesť a blokovanie kolena vracajú na
 
 > TIP: Ak si chcete najprv ujasniť, čo všetko meniskus v kolene robí, prečítajte si článok [Meniskus kolena – anatómia a funkcia](https://najsilnejsiaklbovavyziva.sk/meniskus-kolena/).
 
+- 🔍 Rýchly prehľad: akútne trhliny s blokovaním = operácia; degeneratívne trhliny = najprv fyzio a injekcie.  
+- ⏱️ Mini plán: Deň 0–2 ľad + barle; Týždeň 1–2 rozsah ohybu, aktivácia kvadricepsu; Týždeň 3–6 bicykel bez odporu, stabilita; Týždeň 7+ návrat k behu podľa sily.  
+- 💊 Podpora: [JointBoost](/kupit/) 1 kapsula denne (kolagén II, MSM, kyselina hyalurónová, glukozamín, chondroitín, Boswellia) počas 2–3 mesiacov; zvonka chladivý [Joint Boost gél](/protizapalova-mast-na-klby) na opuch a bolesť.
+
 ![Artroskopická operácia menisku prináša úľavu od bolesti a zlepšuje stabilitu kolena.](https://najsilnejsiaklbovavyziva.sk/wp-content/uploads/2023/12/operacia-menisku-img.jpg)
 
 Artroskopická operácia menisku prináša úľavu od bolesti a zlepšuje stabilitu kolena.
@@ -64,6 +68,12 @@ U vybraných pacientov s rozsiahlym poškodením sa môže implantovať steriliz
 
 > TIP: Ak máte pocit, že sa vám koleno ozýva najmä v noci, pozrite si aj článok [Bolesť kĺbov v noci](https://najsilnejsiaklbovavyziva.sk/bolest-klbov-v-noci/).
 
+| Typ zákroku | Výhoda | Obmedzenie | Návrat k športu |
+| --- | --- | --- | --- |
+| Parciálna meniskektómia | rýchla úľava, krátka rekonvalescencia | mierne vyššie riziko artrózy dlhodobo | 6–10 týždňov |
+| Šitie menisku | zachová funkciu menisku | dlhšie barle, pomalší návrat | 3–4 mesiace |
+| Transplantácia | možnosť pri rozsiahlej strate menisku | náročný zákrok, dlhá rehabilitácia | individuálne, často >6 mesiacov |
+
 ## Ako prebieha operácia krok za krokom
 
 1. **Anestézia:** Najčastejšie spinálna (pich do chrbtice) alebo celková, podľa preferencie pacienta a chirurga.
@@ -77,10 +87,11 @@ Celá operácia trvá 30 – 60 minút. Po krátkom pozorovaní pacient dostane 
 
 Úspech zákroku do veľkej miery závisí od rehabilitácie. Orientačný harmonogram:
 
-- **Prvé 2 týždne:** Odpočinok s vyvýšenou nohou, ľadovanie, aktivácia stehenného svalu. Pri šití menisku chôdza s barlami, pri meniskektómii postupné zaťažovanie podľa bolesti.
-- **3. – 6. týždeň:** Fyzio cvičenia na rozsah pohybu, posilňovanie kvadricepsu a hamstringov, stacionárny bicykel. Pomáha aj jemná mobilizácia bedra a členku, aby sa koleno nepreťažilo.
-- **7. – 12. týždeň:** Funkčný tréning, práca s rovnováhou, postupné návraty k behu alebo športu.
-- **Po 3 mesiacoch:** Väčšina pacientov sa vracia k dynamickým športom. Ak bol meniskus šitý, ortopéd často odporučí úplné zaťaženie až po kontrolnej MRI.
+- **Deň 0 – 2:** ľad 10–15 min 3–4× denne, vyložená noha, analgetiká podľa lekára, barle (pri šití bez zaťaženia).  
+- **Týždeň 1 – 2:** aktivácia kvadricepsu (izometria), rozsah ohybu do 90° (pri šití podľa pokynov), chôdza o barlách.  
+- **Týždeň 3 – 6:** stacionárny bicykel bez odporu, posilnenie sedacích svalov a hamstringov, mobilizácia bedra/členku, balans.  
+- **Týždeň 7 – 12:** funkčný tréning, pomalý beh podľa sily, laterálne pohyby a stabilita.  
+- **3+ mesiace:** dynamické športy po schválení ortopédom (pri šití často až po kontrole MRI).
 
 > Doplňte si plán o článok [Chôdza po artroskopii kolena](https://najsilnejsiaklbovavyziva.sk/chodza-po-artroskopii-kolena/), kde nájdete konkrétne cviky a tipy na bezpečný návrat k bežnej chôdzi.
 
@@ -103,6 +114,7 @@ Nie každý meniskus treba operovať. Ako alternatívu alebo doplnok zvážte:
 - injekcie PRP alebo kyseliny hyalurónovej,
 - ortézy pri športovej záťaži,
 - úpravu techniky behu či posilňovania – viac tipov nájdete v článku [Bolesť prstov na nohe pri chôdzi](https://najsilnejsiaklbovavyziva.sk/bolest-prstov-na-nohe-pri-chodzi/).
+- výživu kĺbov: [JointBoost](/kupit/) 1 kapsula denne počas 2–3 mesiacov (kolagén II, MSM, kyselina hyalurónová, glukozamín, chondroitín, Boswellia) + chladivý [Joint Boost gél](/protizapalova-mast-na-klby) na opuch a bolesť po cvičení.
 
 ## Ako vám „Najsilnejšia kĺbová výživa“ môže pomôcť?
 
@@ -127,6 +139,8 @@ Doplnky stravy nenahradia zákrok, no môžu zrýchliť obnovu chrupavky, ak sa 
 ## Operácia menisku – záver
 
 Operácia menisku vie rýchlo znížiť bolesť a zablokovanie kolena, no o úspechu rozhoduje dôkladná príprava, správne zvolený typ zákroku a poctivá rehabilitácia. Sledujte signály tela, posilnite okolie kolena a v prípade pochybností sa riaďte odporúčaniami odborníkov. Čím lepšie pochopíte celý proces, tým skôr sa vrátite k aktivitám, ktoré máte radi.
+
+- 💊 [Objednať JointBoost pre podporu chrupavky a hojenia menisku](/kupit/)
 
 **Referencie**
 

@@ -22,36 +22,21 @@ Bolesť chodidla z boku vie znepríjemniť obyčajnú chôdzu aj šport. Často 
 - rizikové faktory: nevhodná obuv, plochonožie či vysoká klenba, nadváha, prudké zvýšenie tréningu,
 - neliečená bolesť mení stereotyp chôdze a môže vyústiť do bolesti kolena alebo bedra,
 - ak bolesť sprevádza opuch, hematóm alebo neschopnosť došliapnuť, vyhľadaj lekára.
+- 💊 Podpora: pri akútnej bolesti NSAID podľa lekára + chladivý [Joint Boost gél](/protizapalova-mast-na-klby); zvnútra [JointBoost](/kupit/) 1 kapsula denne (kolagén II, MSM, kyselina hyalurónová, glukozamín, chondroitín, Boswellia) počas 2 mesiacov na šľachy a kĺby chodidla.
 
 Pozrite si tiež: [Bolesť chodidla zo spodnej strany pod prstami](https://najsilnejsiaklbovavyziva.sk/bolest-chodidla-zospodu-pod-prstami)
 
 ## Prečo bolí chodidlo z boku
 
-### Preťažené šľachy a väzy
-
-Opakované behanie na tvrdom povrchu alebo dlhé státie sťažujú prácu šliach, ktoré stabilizujú vonkajší okraj chodidla. Typickým príkladom je zápal šľachy peroneálnych svalov či plantárnej fascie. Pri nadmernom zaťažení sa objavuje pálenie a ostrá bolesť pri odrazovom kroku. Doplňujúce informácie nájdeš v článku [Plantarna fascitída](https://najsilnejsiaklbovavyziva.sk/plantarna-fascitida).
-
-### Nevhodná obuv alebo ortopedická vada
-
-Úzke tenisky, vysoké podpätky a ploché baleríny tlačia na bočnú hranu a deformujú chodidlo. Ak máš plochú alebo naopak veľmi vysokú klenbu, tlak sa koncentruje práve na vonkajšiu stranu. Pomôcť môže zmena obuvi či individuálne ortopedické vložky – viac tipov nájdeš v článku [Ako si vybrať správnu kĺbovú výživu?](https://najsilnejsiaklbovavyziva.sk/ako-si-vybrat-najlepsiu-klbovu-vyzivu-pre-vase-potreby-kompletny-sprievodca) (časť o podpore kĺbov zvonka).
-
-### Syndróm kuboidnej kosti
-
-Kuboidná kosť (kockovitá kosť) leží na vonkajšej hrane chodidla. Pri prudkom pohybe alebo po úraze sa môže mierne vysunúť, čo spôsobí ostrú lokálnu bolesť, pocit „blokády“ či neschopnosť stáť na špičke. Často sa objavuje u bežcov a tanečníkov. Riešením je manuálne ošetrenie fyzioterapeutom, tejpovanie a dočasné odľahčenie.
-
-### Mortonov neuróm alebo nervové dráždenie
-
-Ak cítiš pichanie, brnenie a zároveň pocit kamienka v topánke, môže ísť o [Mortonov neuróm](https://najsilnejsiaklbovavyziva.sk/bolest-prstov-na-nohe-pri-chodzi). Hoci sa najčastejšie prejavuje medzi tretím a štvrtým prstom, bolesť sa môže šíriť aj na bočnú stranu chodidla. Kľúčom je znížiť tlak (širšia obuv, vložky, fyzioterapia).
-
-### Únavová zlomenina alebo akútne poranenie
-
-Bežci a športovci, ktorí náhle zvýšia objemy, riskujú mikrotrhlinky v pišteľovej či piatovej kosti. Pri únavovej zlomenine je bolesť lokalizovaná, zhoršuje sa pri každom kroku a môže byť prítomný opuch. Pri podozrení na zlomeninu sa opieraj o radu lekára – viac o príznakoch sa dozvieš v článku [Bolesť chodidla zospodu pod prstami](https://najsilnejsiaklbovavyziva.sk/bolest-chodidla-zospodu-pod-prstami) (sekcia o mikrotraumách).
-
-### Ďalšie príčiny
-
-- dna alebo artritída – zápal spôsobuje opuch a citlivosť na dotyk,
-- vybočený palec (hallux valgus) – mení rozloženie tlaku, bočná hrana preberá viac záťaže,
-- problémy s chrbticou – dráždenie nervov v krížoch môže vyvolať bolesť v chodidle. Ak sa objavuje bolesť aj v bedrách, pozri si článok [Bolesť bedrových kĺbov v noci](https://najsilnejsiaklbovavyziva.sk/bolest-bedrovych-klbov-v-noci).
+| Príčina | Typické príznaky | Čo skúsiť ako prvé |
+| --- | --- | --- |
+| **Peroneálna tendinitída / preťažené šľachy** | pálenie na vonkajšej hrane, bolesť pri odraze | RICE 48 h, chladenie, úprava záťaže, strečing lýtok |
+| **Nevhodná obuv / plochonožie alebo vysoká klenba** | tlak na bočnú hranu, únava po dlhom státí | širšia špička, vložky na mieru, výmena zodratých tenisiek |
+| **Syndróm kuboidnej kosti** | ostrá bodová bolesť, pocit „blokády“, problém stáť na špičke | odľahčiť, fyzioterapeutické uvoľnenie, tejpovanie |
+| **Mortonov neuróm / nervové dráždenie** | pichanie, brnenie, pocit kamienka v topánke | širšia obuv, vložky, fyzioterapia, pozri [bolesť prstov pri chôdzi](https://najsilnejsiaklbovavyziva.sk/bolest-prstov-na-nohe-pri-chodzi) |
+| **Únavová zlomenina** | bodová bolesť pri každom kroku, opuch | okamžité odľahčenie, röntgen/MRI, dočasne bez behu |
+| **Artritída/dna** | teplý opuch, začervenanie, nočné bolesti | lekár, lab. testy, pri dne diéta s nízkym purínom |
+| **Hallux valgus / chybné rozloženie tlaku** | vybočený palec, tlak na bočnú hranu | obuv s priestorom pre prsty, korekčné vložky |
 
 ## Kedy vyhľadať lekára
 
@@ -68,7 +53,10 @@ Lekár vykoná klinické vyšetrenie, v prípade potreby doplní RTG alebo MRI a
 
 ### RICE protokol a úprava záťaže
 
-Rešt (odpočinok), Ice (chladenie), Compression (ľahký kompresný obväz) a Elevation (vyloženie nohy) je dobrý základ pri akútnej bolesti. Vyhni sa aktivitám, ktoré bolesť provokujú, no úplná nečinnosť nie je riešenie – postupne sa vracaj k miernej chôdzi alebo plávaniu.
+- **Deň 0 – 2:** Rest, Ice 10–15 min 3× denne cez látku, Compression (ľahký obväz/ponožka), Elevation (noha nad úrovňou srdca).  
+- **Deň 3 – 7:** krátke presuny po rovine, žiadny beh/skoky; pridaj strečing lýtok a plantárnej fascie.  
+- **Gél a výživa:** chladivý [Joint Boost gél](/protizapalova-mast-na-klby) pre rýchlu úľavu; zvnútra [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov doplní kolagén II, MSM a kyselinu hyalurónovú na podporu šliach a kĺbov chodidla.  
+- **Návrat k záťaži:** zvyšuj objem o 10–15 % týždenne, striedaj tvrdý a mäkký povrch.
 
 ### Cvičenia na stabilitu a mobilitu
 

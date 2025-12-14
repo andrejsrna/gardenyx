@@ -19,6 +19,10 @@ Pichanie na vnútornej (mediálnej) strane kolena býva dôsledkom preťaženia,
 
 > **TIP:** Ak vás bolí koleno skôr zvonku, prečítajte si článok [Bolesť kolena z boku](https://najsilnejsiaklbovavyziva.sk/bolest-kolena-z-boku). Pichanie vzadu riešime v texte [Bolesť kolena zo zadnej strany](https://najsilnejsiaklbovavyziva.sk/bolest-kolena-zo-zadnej-strany).
 
+- 🔍 Rýchly prehľad: najčastejšie mediálny meniskus, MCL alebo pes anserinus bursitída; náhle prasknutie + opuch = ortopéd.  
+- ⏱️ Prvá pomoc: 48 – 72 h RICE, chôdza len krátke presuny, žiadne hlboké drepy či zostupy po schodoch.  
+- 💊 Úľava: NSAID podľa lekára + [JointBoost](/kupit/) (kolagén II, MSM, kyselina hyalurónová, Boswellia) 1 kapsula denne počas 2 mesiacov na podporu chrupavky a väzov.
+
 **Prehľad článku**
 
 - [Najčastejšie príčiny](#najcastejsie-priciny)
@@ -34,20 +38,13 @@ Pichanie na vnútornej (mediálnej) strane kolena býva dôsledkom preťaženia,
 
 ## Najčastejšie príčiny
 
-### Poškodenie mediálneho menisku
-Meniskus tlmí nárazy medzi stehen­nou a holennou kosťou. Natrhnutie sa prejaví bodavou bolesťou, pocitom „zaseknutia“ a opuchom. Viac o symptómoch nájdete v článku [Poškodený meniskus](https://najsilnejsiaklbovavyziva.sk/poskodeny-meniskus-priznaky).
-
-### Podvrtnutie mediálneho kolaterálneho väzu (MCL)
-Vzniká pri prudkom vybočení kolena do strany. Bolesť je lokalizovaná na vnútornej hrane kolena, pridáva sa opuch a nestabilita.
-
-### Artróza (osteoartritída)
-Opotrebovanie chrupavky spôsobuje stuhnutosť po sedení, praskanie a bolestivé zaťaženie vnútornej strany kolena. Podrobne ju opisujeme v článku [Čo je artróza kolena](https://najsilnejsiaklbovavyziva.sk/co-je-artroza-7-dolezitych-informacii).
-
-### Pes anserinus bursitída/tendinitída
-Zápal burzy a šliach na vnútornej strane kolena. Typická je citlivosť pri dotyku a bolesť pri chôdzi do schodov.
-
-### Reumatoidná artritída alebo dna
-Autoimunitný zápal alebo kryštály kyseliny močovej spôsobujú bolestivý opuch, pocit tepla a výraznú stuhnutosť.
+| Príčina | Typické príznaky | Čo skúsiť ako prvé |
+| --- | --- | --- |
+| **Mediálny meniskus** | bodavá bolesť, „zaseknutie“, opuch po otočení alebo drepe | RICE, ortéza, vyšetrenie + MRI pri blokovaní, článok [Poškodený meniskus](https://najsilnejsiaklbovavyziva.sk/poskodeny-meniskus-priznaky) |
+| **Podvrtnutie MCL** | bolesť na vnútornej hrane po vybočení kolena, citlivosť na dotyk, nestabilita | RICE 48 h, dočasne barle, ortopéd pri nestabilite |
+| **Artróza** | tupá bolesť, ranná stuhnutosť, praskanie, zhoršenie po sedení | nízkoimpaktný pohyb, redukcia hmotnosti, výživa chrupavky |
+| **Pes anserinus bursitída/tendinitída** | citlivé miesto 4–5 cm pod vnútornou líniou kolena, bolesť do schodov | chladenie, úprava záťaže, strečing hamstringov a adduktorov |
+| **RA alebo dna** | teplý opuch, výrazná stuhnutosť, prípadne symetria (RA) | lekár, lab. testy, pri dne diéta s nízkym purínom, chladenie |
 
 ## Ako sa bolesť prejavuje
 
@@ -64,19 +61,20 @@ Autoimunitný zápal alebo kryštály kyseliny močovej spôsobujú bolestivý o
 
 ## Domáca liečba a režim
 
-- **RICE protokol:** odpočinok, ľad (10 – 15 minút 3× denne), elastický návlek, vyloženie nohy.  
-- **Dočasná zmena tréningu:** vyhnite sa behu z kopca, drepu s veľkou záťažou a dlhému kľačaniu.  
-- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
-- **Lokálne protizápalové gély:** na okamžitú úľavu skúste [Joint Boost gél](/protizapalova-mast-na-klby) s Boswelliou, mentolom a MSM – uľaví zvonka, kým rehabilitácia rieši príčinu. Detaily o chladivom účinku mentolu a gáforu nájdete v [profilovej stránke zložky](/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel).  
-- **Kompresné ortézy:** stabilizujú koleno a znižujú bolesť pri chôdzi.
+- **Deň 0 – 2 (RICE):** odpočinok, ľad 10–15 min 3–4× denne, elastický návlek, noha vyložená.  
+- **Deň 3 – 7:** krátke presuny po rovine, ľahké izometrické napínanie kvadricepsu, vyhnite sa hlbokým drepom a zostupom po schodoch.  
+- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára, po jedle.  
+- **Lokálne protizápalové gély:** [Joint Boost gél](/protizapalova-mast-na-klby) (Boswellia, MSM, mentol, gáfor) na rýchlu úľavu počas rehabilitácie.  
+- **Kompresné ortézy:** stabilizujú koleno pri chôdzi alebo ľahkom tréningu; pri výraznej nestabilite konzultujte typ s ortopédom.  
+- **Výživa kĺbov:** [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov dodá kolagén II, MSM a kyselinu hyalurónovú na podporu chrupavky a väzov.
 
 ## Cvičenia a strečing
 
-1. **Strečing hamstringov:** sadnite si, nohu vystreté, ťahajte špičku k sebe (držať 20 sekúnd).  
-2. **Posilnenie vnútornej časti stehenných svalov:** stláčanie mäkkého balónika medzi kolenami v sede (15 opakovaní).  
-3. **Mostík s loptou:** ležte na chrbte, kolená pokrčené, loptu medzi kolenami, zdvihnite panvu.  
-4. **Výpony na špičky:** posilňujú lýtka a stabilizujú koleno.  
-5. **Balančný stoj na jednej nohe:** postupne pridajte zatvorené oči alebo mäkkú podložku.
+1. **Strečing hamstringov:** sadnite si, noha vystretá, ťahajte špičku k sebe (20 sekúnd, 3× na každú nohu).  
+2. **Stláčanie mäkkého balónika:** v sede medzi kolená, stlačte na 5 sekúnd, 15 opakovaní (posilnenie vnútornej časti stehna).  
+3. **Mostík s loptou:** ležmo, kolená pokrčené, lopta medzi kolenami, zdvihnite panvu (3×12).  
+4. **Výpony na špičky:** 3×15, držte sa opory.  
+5. **Balančný stoj na jednej nohe:** 30 – 45 sekúnd, postupne na mäkkej podložke; pridajte zatvorené oči až keď je koleno bez bolesti.
 
 Viac cvikov nájdete v článku [Cviky na koleno](https://najsilnejsiaklbovavyziva.sk/cviky-na-koleno) a [10 cvikov na posilnenie kĺbov a šliach](https://najsilnejsiaklbovavyziva.sk/10-cvikov-na-posilnenie-klbov-a-sliach).
 
@@ -86,6 +84,14 @@ Viac cvikov nájdete v článku [Cviky na koleno](https://najsilnejsiaklbovavyzi
 - **Kontrola hmotnosti:** každé kilo navyše zvyšuje tlak na mediálnu stranu kolena.  
 - **Obuv a vložky:** pri plochej nohe pomáhajú ortopedické vložky, kvalitné tlmenie znižuje nárazy.  
 - **Technika behu a drepu:** dopadajte na stred chodidla, pri drepe držte kolená nad špičkami.
+- **Regenerácia:** doplňte bielkoviny a omega-3, dbajte na spánok; postupné zvyšovanie záťaže max o 10–15 % týždenne.
+
+## Varovné symptómy – kedy k lekárovi ihneď
+
+- náhle „prasknutie“ s pocitom blokovania alebo nemožnosťou vystrieť koleno,  
+- výrazný opuch a začervenanie, teplota nad 38 °C,  
+- bolesť v lýtku s opuchom (podozrenie na trombózu),  
+- prepadnutie alebo nestabilita pri každom kroku.
 
 ## Kedy vyhľadať lekára
 
@@ -113,9 +119,14 @@ Pri MCL podvrtnutí alebo artróze môže elastická ortéza stabilizovať kolen
 **Môžem pokračovať v športovaní?**  
 Pokračujte len v aktivitách, ktoré bolesť nezhoršujú. Vhodné sú bicykel, plávanie a cvičenia na stabilitu.
 
+**Ako rýchlo by mala bolesť ustúpiť?**  
+Pri preťažení 1 – 3 týždne s úpravou záťaže a rehabilitáciou. Ak sa bolesť zhoršuje, je koleno nestabilné alebo sa objaví opuch, potrebné je vyšetrenie a prípadne zobrazovanie.
+
 ## Zhrnutie
 
 Bolesť kolena z vnútornej strany často spôsobuje meniskus, poškodenie väzu, bursitída alebo artróza. Presná diagnostika, úprava záťaže, cielené cviky a podpora kĺbov výživou dokážu bolesť zmierniť a obnoviť stabilitu kolena. Sledujte varovné príznaky a v prípade pochybností vyhľadajte odbornú pomoc.
+
+- 💊 [Objednať JointBoost pre pevnejšiu chrupavku a väzy](/kupit/)
 
 ### Referencie
 

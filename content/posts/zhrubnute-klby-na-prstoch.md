@@ -23,6 +23,7 @@ Zhrubnuté kĺby na prstoch sú častým signálom, že sa v kĺboch deje niečo
 - pulzujúci opuch pri dotyku môže znamenať ganglion alebo dnavý tofus,
 - varovný signál je rýchlo sa zväčšujúci, bolestivý alebo začervenaný kĺb – patrí do ambulancie,
 - liečba kombinuje úpravu záťaže, protizápalové opatrenia a cielene nastavené lieky.
+- 💊 Podpora zvnútra: [JointBoost](/kupit/) 1 kapsula denne (kolagén II, MSM, kyselina hyalurónová, glukozamín, chondroitín, Boswellia) počas 2 – 3 mesiacov na podporu chrupaviek a väzov prstov; zvonka chladivý [Joint Boost gél](/protizapalova-mast-na-klby) pri akútnom zápale.
 
 Pozrite si tiež: [Bolestivé kĺby na prstoch ruky – príčiny a liečba](https://najsilnejsiaklbovavyziva.sk/bolestive-klby-na-prstoch-ruky)
 
@@ -103,5 +104,7 @@ Zhrubnuté kĺby na prstoch netreba vnímať iba ako „kozmetický“ problém.
 - pri náhlej bolesti a opuchu vyhľadajte lekára,
 - dlhodobo pracujte na rehabilitácii, úprave stravy a pravidelnom cvičení,
 - sledujte ďalšie články ako [Bolestivé kĺby na prstoch ruky](https://najsilnejsiaklbovavyziva.sk/bolestive-klby-na-prstoch-ruky) alebo [Ako podporiť zdravie kĺbov doma](https://najsilnejsiaklbovavyziva.sk/ako-podporit-zdravie-klbov-doma) pre praktické tipy.
+
+- 💊 [Objednať JointBoost pre podporu drobných kĺbov prstov](/kupit/)
 
 Starostlivosť o kĺby rúk je beh na dlhú trať – dobrý plán, disciplína a spolupráca s odborníkmi sa však prejavia na každodenných činnostiach aj kvalite života.

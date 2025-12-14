@@ -19,6 +19,10 @@ Palec je „premiantom“ ruky – vďaka nemu dokážeme uchopiť, stláčať a
 
 > **TIP:** Celkový prehľad o bolestiach prstov nájdete v článku [Bolesť kĺbov na prstoch ruky](https://najsilnejsiaklbovavyziva.sk/bolest-klbov-na-prstoch-ruky). Ak pozorujete zhrubnuté kĺby, pozrite si aj [Zhrubnuté kĺby na prstoch](https://najsilnejsiaklbovavyziva.sk/zhrubnute-klby-na-prstoch).
 
+- 🔍 Rýchly prehľad: najčastejšie rhizartróza, de Quervain alebo „lyžiarsky palec“ (väz); ak je kĺb horúci a opuchnutý, riešte lekára.  
+- ⏱️ Prvá pomoc: 48 h RICE, odľahčiť úchopy, ortéza pri bolesti, jemné rozhýbanie bez bolesti.  
+- 💊 Úľava a výživa: NSAID podľa lekára + [JointBoost](/kupit/) (kolagén II, MSM, kyselina hyalurónová, Boswellia) 1 kapsula denne počas 2 mesiacov na podporu chrupaviek a väzov palca.
+
 **Prehľad článku**
 
 - [Najčastejšie príčiny bolesti palca](#najcastejsie-priciny-bolesti-palca)
@@ -34,26 +38,15 @@ Palec je „premiantom“ ruky – vďaka nemu dokážeme uchopiť, stláčať a
 
 ## Najčastejšie príčiny bolesti palca
 
-### Rhizartróza (artróza palcovo-zápästného kĺbu)
-Opotrebovanie chrupavky v základnom kĺbe palca (CMC kĺb) spôsobuje bolesť pri úchope, praskanie a zníženie sily. Často postihuje ženy po 50. roku života.
-
-### De Quervainova tendovaginitída
-Zápal šliach palca a ich puzdra na zápästí. Prejavuje sa bolesťou na palcovej strane zápästia, ktorá vystreľuje do palca a zhoršuje sa pri uchopovaní alebo skúšaní vykrútiť vrchnák.
-
-### Úraz alebo preťaženie väzov
-Podvrtnutia, natrhnutia (napríklad tzv. „lyžiarsky palec“ – poranenie ulnárneho kolaterálneho väzu) spôsobujú ostrú bolesť, opuch a nestabilitu palca.
-
-### Zápal šliach a úponov (tendinitída, „skákavý palec“)
-Opakované pohyby, manuálna práca alebo hra na nástroj môžu viesť k zápalu ohýbačov, kde sa šľacha zachytáva v úzke pošve. Ranné „zaseknutie“ palca je pre tento problém typické.
-
-### Reumatoidná artritída a dna
-Autoimunitný zápal kĺbov či kryštály kyseliny močovej môžu spôsobiť opuch, bolesť a rannú stuhnutosť palca.
-
-### Syndróm karpálneho tunela
-Útlak nervu v zápästí spôsobuje tŕpnutie, pálenie a slabosť palca, ukazováka a prostredníka.
-
-### Cervikálne alebo ramenné blokády
-Blokáda nervu v oblasti krčnej chrbtice či ramenného pletenca môže spôsobiť vystreľovanie bolesti do palca, aj keď samotný kĺb je na pohľad v poriadku.
+| Príčina | Typické príznaky | Čo skúsiť ako prvé |
+| --- | --- | --- |
+| **Rhizartróza (CMC OA)** | bolesť pri úchope, praskanie, znížená sila | ortéza, teplé obklady pri stuhnutí, výživa chrupavky |
+| **De Quervainova tendovaginitída** | bolesť na palcovej strane zápästia, Finkelstein pozitívny | RICE, ortéza, chladenie, úprava úchopu |
+| **Lyžiarsky palec (UCL väz)** | ostrá bolesť po vyvrtnutí, opuch, nestabilita | RICE, ortéza, pri nestabilite ortopéd |
+| **Tendinitída/„skákavý palec“** | ranné „zaseknutie“, bolesť pri ohybe | odľahčiť, chladenie, ľahké strečingy, fyzioterapeut |
+| **Reumatoidná artritída/dna** | teplý opuch, ranná stuhnutosť, niekedy symetria | lekár, lab. testy, pri dne diéta s nízkym purínom |
+| **Karpálny tunel** | tŕpnutie palca–prostredníka, nočné budenie, slabší úchop | ortéza na noc, ergonómia, EMG pri podozrení |
+| **Cervikálne blokády** | vystreľovanie z krku/ramena, normálny kĺb | neurológ/fyzioterapeut, mobilizácia krku/ramena |
 
 ## Ako sa bolesť prejavuje
 
@@ -73,22 +66,24 @@ Blokáda nervu v oblasti krčnej chrbtice či ramenného pletenca môže spôsob
 
 ## Domáca liečba a režim
 
-- **RICE:** rest – odľahčite palec, ice – ľad 10 minút 3× denne, compression – elastická bandáž, elevation – vyložte ruku.  
-- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára.  
-- **Ortózy:** palcové dlahy stabilizujú kĺb a znižujú bolesť pri ochoreniach ako de Quervain či artróza.  
-- **Zmena návykov:** pri práci s počítačom používajte ergonomickú myš a podložku, pri domácich prácach voľte pomôcky s hrubšou rúčkou.
-- **Lokálne injekcie:** pri výraznom zápale môže lekár doporučiť obstrek kortikoidom alebo kyselinou hyalurónovou priamo do problematického kĺbu.  
-- **Manuálna terapia a fyzioterapia:** mobilizácie karpálneho tunela, mäkké techniky a kineziotejping uvoľnia stiahnuté šľachy a zlepšia prekrvenie.  
-- **Úprava stravy:** pri dne obmedzte puríny (vnútornosti, údeniny) a zaraďte protizápalové potraviny ako losos, ľanový olej či kurkuma.
+- **Deň 0 – 2 (RICE):** rest – odľahčite palec, ice – ľad 10–15 min 3× denne cez látku, compression – jemná bandáž/ortéza, elevation – ruka nad úrovňou srdca.  
+- **Deň 3 – 7:** postupné jemné rozhýbanie bez bolesti, ortéza pri námahe, žiadne „lámavé“ naťahovanie.  
+- **NSAID a analgetiká:** krátkodobo podľa pokynov lekára, po jedle.  
+- **Ortózy:** palcové dlahy stabilizujú kĺb pri de Quervain, rhizartróze či úrazoch väzov.  
+- **Zmena návykov:** pri práci s počítačom ergonomická myš a podložka, pri domácich prácach hrubšie rúčky.  
+- **Lokálne injekcie:** pri výraznom zápale môže lekár odporučiť kortikoid alebo kyselinu hyalurónovú priamo do kĺbu.  
+- **Manuálna terapia a fyzioterapia:** mobilizácie karpálneho tunela, mäkké techniky, tejpovanie.  
+- **Výživa kĺbov:** [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov dodá kolagén II, MSM a kyselinu hyalurónovú na podporu chrupaviek a väzov.  
+- **Úprava stravy:** pri dne obmedzte puríny, pri zápaloch zaraďte omega-3 (losos, ľanový olej), kurkumu a zázvor.
 
 ## Cvičenia a mobilita palca
 
-1. **Ohýbanie a vystieranie palca:** ruka na stole, pomaly ohýbajte palec k dlani a vystierajte (10 opakovaní).  
-2. **Opposícia palca:** dotýkajte sa palcom všetkých prstov a ťahajte po prste späť do východiskovej polohy.  
-3. **Gumička:** obtočte gumičku okolo prstov a roztvárajte palec proti odporu, posilňuje abductory.  
-4. **Masáž loptou alebo valčekom:** v dlani držte mäkkú loptičku, jemne ju stláčajte 10–15×; valčekom prejdite od palca smerom k zápästiu.  
-5. **Strečing zápästia a predlaktia:** dlaňou smerom dole pritláčajte ruku druhou rukou; následne otoč dlane hore a naťahuj flexory.  
-6. **Uvoľnenie karpálneho tunela:** spoj dlane ako pri modlitbe, drž 20 sekúnd a opakuj – pomáha pri tŕpnutí palca.
+1. **Ohýbanie a vystieranie palca:** ruka na stole, pomaly ohni palec k dlani a vystri (10 opakovaní, 2–3× denne).  
+2. **Opposícia palca:** dotkni sa palcom všetkých prstov a potiahni späť, 2 série po 10 opakovaní.  
+3. **Gumička:** obtoč gumičku okolo prstov a roztváraj palec proti odporu (15 opakovaní).  
+4. **Masáž loptou alebo valčekom:** stláčaj mäkkú loptičku 10–15×; valčekom prechádzaj od palca k zápästiu 1–2 minúty.  
+5. **Strečing zápästia a predlaktia:** dlaňou dole pritlač ruku druhou rukou 20 sekúnd, potom dlaňou hore naťahuj flexory (3 opakovania).  
+6. **Uvoľnenie karpálneho tunela:** spoj dlane ako pri modlitbe, drž 20 sekúnd, 3× – pomáha pri tŕpnutí palca.
 
 Viac cvikov a domácich tipov nájdete v článku [Domáce recepty na zápal šliach](https://najsilnejsiaklbovavyziva.sk/domace-recepty-na-zapal-sliach).
 
@@ -99,6 +94,14 @@ Viac cvikov a domácich tipov nájdete v článku [Domáce recepty na zápal šl
 - **Šetrite palec pri bolesti:** používajte ortézu, vyhnite sa rotačným pohybom a ťažkým úchopom až do ústupu zápalu.  
 - **Starajte sa o pokožku a šľachy:** teplé parafínové kúpele alebo masáž esenciálnymi olejmi uvoľnia stuhnuté svaly, ľad pomôže po záťaži.  
 - **Posilňujte stred tela a ramená:** silné predlaktie a lopatkové svaly odľahčia drobné kĺby palca.
+- **Výživa kĺbov:** [JointBoost](/kupit/) 1 kapsula denne počas 2 mesiacov podporí chrupavky a väzy palca.
+
+## Varovné symptómy – kedy k lekárovi ihneď
+
+- náhly opuch a teplý kĺb s bolesťou (podozrenie na infekciu/dnu),  
+- pocit „cvaknutia“ a okamžitá nestabilita po úraze (väz),  
+- výrazné tŕpnutie palca s úbytkom sily,  
+- neschopnosť ohnúť alebo vystrieť palec bez bolesti.
 
 ## Kedy vyhľadať lekára
 
@@ -128,9 +131,14 @@ Krátkodobé preťaženie je bežné. Ak sa bolesť opakuje, znížte čas strá
 **Pomôžu injekcie do kĺbu?**  
 Pri silnej bolesti palcovo-zápästného kĺbu alebo de Quervainovej chorobe môže ortopéd aplikovať kortikoid či kyselinu hyalurónovú. Úľava býva rýchla, no postup treba kombinovať s rehabilitáciou.
 
+**Ako dlho má trvať zlepšenie pri preťažení?**  
+Často 7 – 14 dní po odľahčení, RICE a základných cvikoch. Ak bolesť trvá alebo sa palec zhoršuje/opuchne, potrebujete vyšetrenie a prípadne zobrazovanie.
+
 ## Zhrnutie
 
 Bolesť palca na ruke najčastejšie spôsobuje artróza palcovo-zápästného kĺbu, zápal šliach alebo úraz väzov. Diagnostika zahŕňa klinické testy, zobrazovanie a niekedy krvné vyšetrenia. Úľavu prináša kombinácia oddychu, ortéz, cvičení a cielenej kĺbovej výživy. Sledujte varovné príznaky a v prípade pochybností vyhľadajte odbornú pomoc – funkčný palec je pre jemnú motoriku nevyhnutný.
+
+- 💊 [Objednať JointBoost pre podporu drobných kĺbov palca](/kupit/)
 
 ### Referencie
 
