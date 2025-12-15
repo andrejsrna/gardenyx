@@ -1,5 +1,6 @@
 import { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } from '@getbrevo/brevo';
 import type { Order, OrderItem, OrderAddress } from '@prisma/client';
+import { renderEmail, keyValueTable, infoNote } from './template';
 
 type OrderWithRelations = Order & {
   items: OrderItem[];
@@ -19,61 +20,82 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
   const shipping = order.addresses.find(a => a.type === 'SHIPPING') || billing;
   const itemsHtml = order.items.map(item => `
     <tr>
-      <td style="padding:6px 8px;border:1px solid #e2e8f0;">${item.productName}</td>
-      <td style="padding:6px 8px;border:1px solid #e2e8f0;">${item.quantity}</td>
-      <td style="padding:6px 8px;border:1px solid #e2e8f0;text-align:right;">${formatCurrency(item.price)}</td>
-      <td style="padding:6px 8px;border:1px solid #e2e8f0;text-align:right;">${formatCurrency(item.total)}</td>
+      <td style="padding:8px;border:1px solid #e2e8f0;">${item.productName}</td>
+      <td style="padding:8px;border:1px solid #e2e8f0;">${item.quantity}</td>
+      <td style="padding:8px;border:1px solid #e2e8f0;text-align:right;">${formatCurrency(item.price)}</td>
+      <td style="padding:8px;border:1px solid #e2e8f0;text-align:right;">${formatCurrency(item.total)}</td>
     </tr>
   `).join('');
 
-  return `
-  <div style="font-family: 'Inter', Arial, sans-serif; max-width: 720px; margin:0 auto; padding:24px; color:#0f172a;">
-    <h1 style="margin:0 0 12px 0;font-size:24px;font-weight:800;">Potvrdenie objednávky #${order.id}</h1>
-    <p style="margin:0 0 16px 0;">Ďakujeme za objednávku. V prílohe nájdete rekapituláciu.</p>
+  const summary = keyValueTable([
+    { label: 'Spôsob platby', value: order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou' },
+    { label: 'Doprava', value: order.shippingMethod || '—' },
+    { label: 'Suma', value: formatCurrency(order.total) }
+  ]);
 
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin:0 0 16px 0;">
+  const addressesHtml = `
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 10px 0;">
       <tr>
-        <td style="padding:8px;background:#f1f5f9;border:1px solid #e2e8f0;">Spôsob platby</td>
-        <td style="padding:8px;border:1px solid #e2e8f0;">${order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou'}</td>
+        <td style="padding:10px;border:1px solid #e2e8f0;border-radius:12px 12px 0 0;background:#f8fafc;font-weight:700;">Fakturačné údaje</td>
       </tr>
       <tr>
-        <td style="padding:8px;background:#f1f5f9;border:1px solid #e2e8f0;">Doprava</td>
-        <td style="padding:8px;border:1px solid #e2e8f0;">${order.shippingMethod || '—'}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px;background:#f1f5f9;border:1px solid #e2e8f0;">Suma</td>
-        <td style="padding:8px;border:1px solid #e2e8f0;">${formatCurrency(order.total)}</td>
+        <td style="padding:10px;border:1px solid #e2e8f0;border-top:0;color:#475569;">
+          <p style="margin:0 0 4px 0;">${[billing?.firstName, billing?.lastName].filter(Boolean).join(' ')}</p>
+          <p style="margin:0 0 4px 0;">${billing?.address1 || ''} ${billing?.address2 || ''}</p>
+          <p style="margin:0 0 4px 0;">${billing?.postcode || ''} ${billing?.city || ''}</p>
+          <p style="margin:0 0 4px 0;">${billing?.country || ''}</p>
+          <p style="margin:0 0 4px 0;">${billing?.email || email}</p>
+          <p style="margin:0 0 0 0;">${billing?.phone || ''}</p>
+        </td>
       </tr>
     </table>
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:6px 0 0 0;">
+      <tr>
+        <td style="padding:10px;border:1px solid #e2e8f0;border-radius:12px 12px 0 0;background:#f8fafc;font-weight:700;">Dodacie údaje</td>
+      </tr>
+      <tr>
+        <td style="padding:10px;border:1px solid #e2e8f0;border-top:0;color:#475569;">
+          <p style="margin:0 0 4px 0;">${[shipping?.firstName, shipping?.lastName].filter(Boolean).join(' ')}</p>
+          <p style="margin:0 0 4px 0;">${shipping?.address1 || ''} ${shipping?.address2 || ''}</p>
+          <p style="margin:0 0 4px 0;">${shipping?.postcode || ''} ${shipping?.city || ''}</p>
+          <p style="margin:0 0 0 0;">${shipping?.country || ''}</p>
+        </td>
+      </tr>
+    </table>
+  `;
 
-    <h3 style="margin:16px 0 8px 0;">Položky</h3>
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;border:1px solid #e2e8f0;">
+  const itemsTable = `
+    <h3 style="margin:16px 0 8px 0;color:#0f172a;">Položky</h3>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
       <thead>
         <tr style="background:#f8fafc;">
-          <th style="padding:6px 8px;border:1px solid #e2e8f0;text-align:left;">Produkt</th>
-          <th style="padding:6px 8px;border:1px solid #e2e8f0;text-align:left;">Množ.</th>
-          <th style="padding:6px 8px;border:1px solid #e2e8f0;text-align:right;">Cena</th>
-          <th style="padding:6px 8px;border:1px solid #e2e8f0;text-align:right;">Spolu</th>
+          <th style="padding:8px;border:1px solid #e2e8f0;text-align:left;">Produkt</th>
+          <th style="padding:8px;border:1px solid #e2e8f0;text-align:left;">Množ.</th>
+          <th style="padding:8px;border:1px solid #e2e8f0;text-align:right;">Cena</th>
+          <th style="padding:8px;border:1px solid #e2e8f0;text-align:right;">Spolu</th>
         </tr>
       </thead>
       <tbody>${itemsHtml}</tbody>
     </table>
+  `;
 
-    <h3 style="margin:16px 0 8px 0;">Fakturačné údaje</h3>
-    <p style="margin:0 0 4px 0;">${[billing?.firstName, billing?.lastName].filter(Boolean).join(' ')}</p>
-    <p style="margin:0 0 4px 0;">${billing?.address1 || ''} ${billing?.address2 || ''}</p>
-    <p style="margin:0 0 4px 0;">${billing?.postcode || ''} ${billing?.city || ''}</p>
-    <p style="margin:0 0 4px 0;">${billing?.country || ''}</p>
-    <p style="margin:0 0 4px 0;">${billing?.email || email}</p>
-    <p style="margin:0 0 4px 0;">${billing?.phone || ''}</p>
+  const content = `
+    ${infoNote('Ďakujeme za objednávku. V prílohe nájdete rekapituláciu.')}
+    ${summary}
+    ${itemsTable}
+    <h3 style="margin:18px 0 8px 0;color:#0f172a;">Adresy</h3>
+    ${addressesHtml}
+  `;
 
-    <h3 style="margin:16px 0 8px 0;">Dodacie údaje</h3>
-    <p style="margin:0 0 4px 0;">${[shipping?.firstName, shipping?.lastName].filter(Boolean).join(' ')}</p>
-    <p style="margin:0 0 4px 0;">${shipping?.address1 || ''} ${shipping?.address2 || ''}</p>
-    <p style="margin:0 0 4px 0;">${shipping?.postcode || ''} ${shipping?.city || ''}</p>
-    <p style="margin:0 0 4px 0;">${shipping?.country || ''}</p>
-  </div>
-`;
+  const greeting = billing?.firstName ? `Ahoj ${billing.firstName},` : 'Ahoj,';
+
+  return renderEmail({
+    title: `Potvrdenie objednávky #${order.id}`,
+    preheader: `Objednávka #${order.id} bola potvrdená.`,
+    greeting,
+    content,
+    footerNote: 'Ak máte otázky, stačí odpovedať na tento email.'
+  });
 };
 
 export async function sendOrderConfirmationEmail(order: OrderWithRelations, to: string) {
@@ -106,16 +128,27 @@ export async function sendOrderNotificationToAdmin(order: OrderWithRelations, cu
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
   const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
 
+  const summary = keyValueTable([
+    { label: 'Suma', value: formatCurrency(order.total) },
+    { label: 'Spôsob platby', value: order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou' },
+    { label: 'Doprava', value: order.shippingMethod || '—' }
+  ]);
+
+  const content = `
+    ${summary}
+    ${customerEmail ? infoNote(`Email zákazníka: <strong>${customerEmail}</strong>`) : ''}
+    <p style="margin:0;color:#475569;">Podrobnosti nájdete v admin DB.</p>
+  `;
+
   const email = new SendSmtpEmail();
   email.subject = `Nová objednávka #${order.id}`;
-  email.htmlContent = `
-    <div style="font-family: 'Inter', Arial, sans-serif; max-width: 640px; margin:0 auto; padding:24px; color:#0f172a;">
-      <h1 style="margin:0 0 12px 0;font-size:22px;font-weight:800;">Nová objednávka #${order.id}</h1>
-      <p style="margin:0 0 12px 0;">Suma: ${formatCurrency(order.total)}</p>
-      ${customerEmail ? `<p style="margin:0 0 12px 0;">Email zákazníka: ${customerEmail}</p>` : ''}
-      <p style="margin:0;">Pozrite admin DB na detaily.</p>
-    </div>
-  `;
+  email.htmlContent = renderEmail({
+    title: `Nová objednávka #${order.id}`,
+    preheader: `Nová objednávka v hodnote ${formatCurrency(order.total)}`,
+    content,
+    highlight: `Suma ${formatCurrency(order.total)}`,
+    footerNote: 'Pozrite admin DB na detaily.'
+  });
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: adminEmail }];
 
@@ -166,16 +199,20 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
   const status = statusTexts[code] || `Status ${code}`;
   const trackingUrl = barcode ? `https://tracking.packeta.com/sk/?id=${barcode}` : null;
 
+  const content = `
+    ${infoNote(`Aktuálny stav: <strong>${status}</strong>`)}
+    ${trackingUrl ? `<p style="margin:0 0 12px 0;color:#475569;">Sledovanie: <a href="${trackingUrl}" style="color:#0f766e;">${trackingUrl}</a></p>` : ''}
+    <p style="margin:0;color:#475569;">Ak máte otázky, odpovedzte na tento email.</p>
+  `;
+
   const email = new SendSmtpEmail();
   email.subject = `Aktualizácia zásielky: ${status}`;
-  email.htmlContent = `
-    <div style="font-family: 'Inter', Arial, sans-serif; max-width: 640px; margin:0 auto; padding:24px; color:#0f172a;">
-      <h1 style="margin:0 0 12px 0;font-size:22px;font-weight:800;">Stav zásielky k objednávke #${order.id}</h1>
-      <p style="margin:0 0 12px 0;">Aktuálny stav: <strong>${status}</strong></p>
-      ${trackingUrl ? `<p style="margin:0 0 12px 0;">Sledovanie: <a href="${trackingUrl}">${trackingUrl}</a></p>` : ''}
-      <p style="margin:0;">Ak máte otázky, odpovedzte na tento email.</p>
-    </div>
-  `;
+  email.htmlContent = renderEmail({
+    title: `Stav zásielky k objednávke #${order.id}`,
+    preheader: `Aktuálny stav: ${status}`,
+    content,
+    footerNote: 'Tento email je informačný, odpovedzte, ak niečo nesedí.'
+  });
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: to }];
 

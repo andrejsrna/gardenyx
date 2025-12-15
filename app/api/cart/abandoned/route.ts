@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import * as SibApiV3Sdk from '@getbrevo/brevo';
+import { renderEmail, emailButton, infoNote } from '@/app/lib/email/template';
 
 const apiKey = process.env.BREVO_API_KEY;
 if (!apiKey) {
@@ -41,51 +42,42 @@ export async function POST(request: Request) {
     const itemsList = cart.items
       .map(item => `
         <tr>
-          <td style="padding: 10px;">${item.name}</td>
-          <td style="padding: 10px; text-align: center;">${item.quantity}x</td>
-          <td style="padding: 10px; text-align: right;">${item.price.toFixed(2)} €</td>
+          <td style="padding:10px;border:1px solid #e2e8f0;">${item.name}</td>
+          <td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">${item.quantity}x</td>
+          <td style="padding:10px;border:1px solid #e2e8f0;text-align:right;">${item.price.toFixed(2)} €</td>
         </tr>
       `)
       .join('');
 
+    const content = `
+      <p style="margin:0 0 10px 0;color:#475569;">Všimli sme si, že ste nedokončili svoj nákup na Najsilnejšia kĺbová výživa. Váš košík obsahuje:</p>
+      <table role="presentation" style="width:100%;border-collapse:collapse;margin:16px 0;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
+        <thead>
+          <tr style="background-color:#f8fafc;">
+            <th style="padding:10px;text-align:left;border:1px solid #e2e8f0;">Produkt</th>
+            <th style="padding:10px;text-align:center;border:1px solid #e2e8f0;">Množstvo</th>
+            <th style="padding:10px;text-align:right;border:1px solid #e2e8f0;">Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsList}
+          <tr>
+            <td colspan="2" style="padding:10px;font-weight:bold;border:1px solid #e2e8f0;">Celková suma:</td>
+            <td style="padding:10px;text-align:right;font-weight:bold;color:#16a34a;border:1px solid #e2e8f0;">${cart.totalPrice.toFixed(2)} €</td>
+          </tr>
+        </tbody>
+      </table>
+      ${emailButton({ label: 'Dokončiť objednávku', url: 'https://najsilnejsiaklbovavyziva.sk/pokladna' })}
+      ${infoNote('Ak ste dostali tento email omylom, môžete ho ignorovať.')}
+    `;
+
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     sendSmtpEmail.subject = 'Dokončite svoj nákup na Najsilnejšia kĺbová výživa';
-    sendSmtpEmail.htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #16a34a;">Váš košík na vás čaká</h2>
-        <p>Všimli sme si, že ste nedokončili svoj nákup na Najsilnejšia kĺbová výživa. Váš košík obsahuje:</p>
-        
-        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-          <thead>
-            <tr style="background-color: #f3f4f6;">
-              <th style="padding: 10px; text-align: left;">Produkt</th>
-              <th style="padding: 10px; text-align: center;">Množstvo</th>
-              <th style="padding: 10px; text-align: right;">Cena</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsList}
-            <tr style="border-top: 2px solid #e5e7eb;">
-              <td colspan="2" style="padding: 10px; font-weight: bold;">Celková suma:</td>
-              <td style="padding: 10px; text-align: right; font-weight: bold; color: #16a34a;">
-                ${cart.totalPrice.toFixed(2)} €
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="https://najsilnejsiaklbovavyziva.sk/pokladna" 
-             style="display: inline-block; background-color: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
-            Dokončiť objednávku
-          </a>
-        </div>
-
-        <p style="margin-top: 24px; color: #666; font-size: 12px; text-align: center;">
-          Ak ste dostali tento email omylom, môžete ho ignorovať.
-        </p>
-      </div>
-    `;
+    sendSmtpEmail.htmlContent = renderEmail({
+      title: 'Váš košík na vás čaká',
+      preheader: 'Dokončite svoj nákup na Najsilnejšia kĺbová výživa',
+      content
+    });
     sendSmtpEmail.sender = { name: 'Najsilnejšia kĺbová výživa', email: 'noreply@najsilnejsiaklbovavyziva.sk' };
     sendSmtpEmail.to = [{ email: cart.email }];
 

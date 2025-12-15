@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Prisma } from '@prisma/client';
+import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import prisma from '@/app/lib/prisma';
+import { fetchPacketaStatus, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
 
 type Order = {
   id: string;
@@ -58,6 +59,61 @@ const formatDate = (value?: string) => {
 
 const getMetaValue = (order: Order, key: string) => order.meta?.find(m => m.key === key)?.value || null;
 
+async function ensurePacketaStatuses(orders: Order[]) {
+  if (!hasPacketaCredentials()) return;
+
+  const ordersToSync = orders.filter(order =>
+    getMetaValue(order, '_packeta_packet_id') && !getMetaValue(order, '_packeta_status_text')
+  );
+
+  for (const order of ordersToSync) {
+    const packetId = getMetaValue(order, '_packeta_packet_id');
+    if (!packetId) continue;
+
+    try {
+      const status = await fetchPacketaStatus(packetId);
+      const newStatus = mapPacketaStatusToOrderStatus(status.code);
+
+      await prisma.$transaction(async (tx) => {
+        await tx.order.update({
+          where: { id: order.id },
+          data: {
+            status: newStatus,
+            paymentStatus: newStatus === OrderStatus.completed ? PaymentStatus.paid : undefined,
+          }
+        });
+
+        const existingCode = await tx.orderMeta.findFirst({
+          where: { orderId: order.id, key: '_packeta_status_code' }
+        });
+        if (existingCode) {
+          await tx.orderMeta.update({ where: { id: existingCode.id }, data: { value: String(status.code) } });
+        } else {
+          await tx.orderMeta.create({ data: { orderId: order.id, key: '_packeta_status_code', value: String(status.code) } });
+        }
+
+        const existingText = await tx.orderMeta.findFirst({
+          where: { orderId: order.id, key: '_packeta_status_text' }
+        });
+        if (existingText) {
+          await tx.orderMeta.update({ where: { id: existingText.id }, data: { value: status.text } });
+        } else {
+          await tx.orderMeta.create({ data: { orderId: order.id, key: '_packeta_status_text', value: status.text } });
+        }
+      });
+
+      order.status = newStatus;
+      order.meta = [
+        ...order.meta.filter(m => m.key !== '_packeta_status_code' && m.key !== '_packeta_status_text'),
+        { key: '_packeta_status_code', value: String(status.code) },
+        { key: '_packeta_status_text', value: status.text }
+      ];
+    } catch (error) {
+      console.warn(`[admin packeta sync] failed for order ${order.id}`, error);
+    }
+  }
+}
+
 async function deleteOrderAction(formData: FormData) {
   'use server';
   const id = formData.get('orderId');
@@ -88,6 +144,8 @@ export default async function OrdersPage({ searchParams }: PageProps) {
     }) as unknown as Promise<Order[]>,
     prisma.order.count()
   ]);
+
+  await ensurePacketaStatuses(orders);
 
   const totalPages = Math.max(1, Math.ceil(total / perPage));
 
@@ -159,10 +217,17 @@ export default async function OrdersPage({ searchParams }: PageProps) {
                       const code = getMetaValue(order, '_packeta_status_code');
                       const text = getMetaValue(order, '_packeta_status_text');
                       const barcode = getMetaValue(order, '_packeta_barcode');
-                      const display = text || (code ? `Status ${code}` : '—');
-                      if (barcode) {
+                      const packetId = getMetaValue(order, '_packeta_packet_id');
+                      const trackingId = barcode || packetId;
+                      const display = text || (code ? `Status ${code}` : packetId ? `Zásielka ${packetId}` : '—');
+
+                      if (trackingId) {
                         return (
-                          <Link href={`https://tracking.packeta.com/sk/?id=${barcode}`} className="text-emerald-200 hover:text-emerald-100 underline">
+                          <Link
+                            href={`https://tracking.packeta.com/sk/?id=${trackingId}`}
+                            className="text-emerald-200 hover:text-emerald-100 underline"
+                            title={packetId || undefined}
+                          >
                             {display}
                           </Link>
                         );
@@ -185,7 +250,7 @@ export default async function OrdersPage({ searchParams }: PageProps) {
               ))}
               {orders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-6 text-center text-slate-300">
+                  <td colSpan={9} className="px-4 py-6 text-center text-slate-300">
                     Nepodarilo sa načítať objednávky.
                   </td>
                 </tr>

@@ -1,4 +1,5 @@
 import { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } from '@getbrevo/brevo';
+import { renderEmail, emailButton, infoNote } from '../email/template';
 
 type ResetEmailParams = {
   to: string;
@@ -6,17 +7,23 @@ type ResetEmailParams = {
   resetUrl: string;
 };
 
-const buildHtml = (params: ResetEmailParams) => `
-  <div style="font-family: 'Inter', Arial, sans-serif; color: #0f172a; max-width: 640px; margin: 0 auto; padding: 24px;">
-    <h1 style="font-size: 24px; margin: 0 0 12px 0;">Obnovenie hesla</h1>
-    <p style="margin: 0 0 12px 0;">Ahoj ${params.firstName ? params.firstName : ''},</p>
-    <p style="margin: 0 0 12px 0;">Požiadali ste o obnovenie hesla. Kliknite na tlačidlo nižšie a nastavte si nové heslo. Odkaz je platný ${process.env.PASSWORD_RESET_TTL_MINUTES || 30} minút.</p>
-    <p style="text-align: center; margin: 24px 0;">
-      <a href="${params.resetUrl}" style="background: #059669; color: #fff; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: 700;">Obnoviť heslo</a>
-    </p>
-    <p style="margin: 0 0 12px 0;">Ak ste o zmenu hesla nepožiadali, môžete tento email ignorovať.</p>
-  </div>
-`;
+const buildHtml = (params: ResetEmailParams) => {
+  const greeting = params.firstName ? `Ahoj ${params.firstName},` : 'Ahoj,';
+  const ttl = process.env.PASSWORD_RESET_TTL_MINUTES || 30;
+  const content = `
+    <p style="margin:0 0 12px 0;color:#475569;">Požiadali ste o obnovenie hesla. Kliknite na tlačidlo nižšie a nastavte si nové heslo. Odkaz je platný ${ttl} minút.</p>
+    ${emailButton({ label: 'Obnoviť heslo', url: params.resetUrl })}
+    ${infoNote(`Ak tlačidlo nefunguje, skopírujte si odkaz: <a href="${params.resetUrl}" style="color:#0f766e;">${params.resetUrl}</a>`)}
+  `;
+
+  return renderEmail({
+    title: 'Obnovenie hesla',
+    preheader: 'Link na nastavenie nového hesla',
+    greeting,
+    content,
+    footerNote: 'Ak ste o zmenu hesla nepožiadali, môžete tento email ignorovať.'
+  });
+};
 
 export async function sendResetEmail(params: ResetEmailParams) {
   const apiKey = process.env.BREVO_API_KEY;

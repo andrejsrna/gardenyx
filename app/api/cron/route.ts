@@ -6,9 +6,10 @@ const isAuthorized = (request: Request) => {
   return request.headers.get('x-admin-token') === token;
 };
 
-const handlers: Record<string, string> = {
+const handlers: Record<string, string | string[]> = {
   reactivation: '/api/cron/reactivation',
   packeta: '/api/cron/packeta',
+  all: ['/api/cron/reactivation', '/api/cron/packeta'],
 };
 
 export async function POST(request: Request) {
@@ -24,19 +25,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unknown job' }, { status: 400 });
   }
 
-  const targetUrl = new URL(target, url.origin);
-  // forward all params except job
-  url.searchParams.forEach((value, key) => {
-    if (key !== 'job') targetUrl.searchParams.set(key, value);
-  });
+  const targets = Array.isArray(target) ? target : [target];
+  const results: Array<{ proxied: string; status: number; data: unknown }> = [];
 
-  const res = await fetch(targetUrl.toString(), {
-    method: 'POST',
-    headers: {
-      'x-admin-token': request.headers.get('x-admin-token') || '',
-    },
-  });
+  for (const path of targets) {
+    const targetUrl = new URL(path, url.origin);
+    // forward all params except job
+    url.searchParams.forEach((value, key) => {
+      if (key !== 'job') targetUrl.searchParams.set(key, value);
+    });
 
-  const data = await res.json().catch(() => ({}));
-  return NextResponse.json({ proxied: target, status: res.status, data });
+    const res = await fetch(targetUrl.toString(), {
+      method: 'POST',
+      headers: {
+        'x-admin-token': request.headers.get('x-admin-token') || '',
+      },
+    });
+
+    const data = await res.json().catch(() => ({}));
+    results.push({ proxied: path, status: res.status, data });
+  }
+
+  return NextResponse.json({
+    proxied: targets,
+    results,
+  });
 }
