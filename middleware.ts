@@ -40,6 +40,8 @@ const ALLOWED_PARAMS = new Set([
   'utm_term', 'utm_content',
   // Reviews token
   'token',
+  // Cron job selector
+  'job',
   // Needed for Stripe success + internal lookups
   'id', 'payment_intent', 'payment_intent_client_secret'
 ]);
