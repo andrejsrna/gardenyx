@@ -29,26 +29,37 @@ export async function POST(request: Request) {
   const targets = Array.isArray(target) ? target : [target];
   const results: Array<{ proxied: string; status: number; data: unknown }> = [];
 
-  for (const path of targets) {
-    const targetUrl = new URL(path, url.origin);
-    // forward all params except job
-    url.searchParams.forEach((value, key) => {
-      if (key !== 'job') targetUrl.searchParams.set(key, value);
-    });
+  try {
+    for (const path of targets) {
+      const targetUrl = new URL(path, url.origin);
+      // forward all params except job
+      url.searchParams.forEach((value, key) => {
+        if (key !== 'job') targetUrl.searchParams.set(key, value);
+      });
 
-    const res = await fetch(targetUrl.toString(), {
-      method: 'POST',
-      headers: {
-        'x-admin-token': request.headers.get('x-admin-token') || '',
-      },
-    });
+      try {
+        const res = await fetch(targetUrl.toString(), {
+          method: 'POST',
+          headers: {
+            'x-admin-token': request.headers.get('x-admin-token') || '',
+          },
+        });
 
-    const data = await res.json().catch(() => ({}));
-    results.push({ proxied: path, status: res.status, data });
+        const data = await res.json().catch(() => ({ error: 'No JSON body' }));
+        results.push({ proxied: path, status: res.status, data });
+      } catch (error) {
+        results.push({ proxied: path, status: 500, data: { error: String(error) } });
+      }
+    }
+
+    return NextResponse.json({
+      proxied: targets,
+      results,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Cron proxy failed', detail: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({
-    proxied: targets,
-    results,
-  });
 }
