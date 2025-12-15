@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import crypto from 'crypto';
+import type { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { sendReviewThankYouEmail } from '@/app/lib/email/review-thankyou';
 
@@ -40,11 +41,10 @@ export async function POST(request: Request) {
     const expires = new Date(now);
     expires.setDate(expires.getDate() + REVIEW_COUPON_VALID_DAYS);
 
-    const couponDelegate = (prisma as unknown as { coupon?: { upsert: (args: unknown) => Promise<unknown> } }).coupon;
-    const performCouponUpsert = async (tx?: typeof prisma) => {
-      const client = tx || prisma;
-      if (couponDelegate?.upsert) {
-        return couponDelegate.upsert({
+    const performCouponUpsert = async (client: Prisma.TransactionClient | typeof prisma = prisma) => {
+      const couponClient = (client as unknown as { coupon?: { upsert: (args: unknown) => Promise<unknown> } }).coupon;
+      if (couponClient?.upsert) {
+        return couponClient.upsert({
           where: { code: couponCode },
           update: {
             type: 'percent',

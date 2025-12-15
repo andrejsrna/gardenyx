@@ -11,7 +11,7 @@ type JobResult = {
   status: 'ok';
   targeted: number;
   sent: number;
-  failures: Array<{ email: string; error: string }>;
+  failures?: Array<{ email: string; error: string }>;
 };
 
 const generateCouponCode = () => {

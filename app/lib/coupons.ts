@@ -19,6 +19,30 @@ export type CouponValidationResult = {
 
 const clampMoney = (value: number) => Math.max(0, Math.round(value * 100) / 100);
 
+type FetchedCoupon = {
+  id: string;
+  code: string;
+  description: string | null;
+  type: 'percent' | 'fixed';
+  amount: number | null;
+  percent: number | null;
+  freeShipping: boolean;
+  active: boolean;
+  startsAt: Date | null;
+  endsAt: Date | null;
+  minOrderTotal: number | null;
+  maxUses: number | null;
+  usedCount: number;
+  maxUsesPerEmail: number | null;
+  redemptions?: unknown[];
+};
+
+const isCouponRecord = (value: unknown): value is FetchedCoupon =>
+  typeof value === 'object' &&
+  value !== null &&
+  'active' in value &&
+  'type' in value;
+
 export async function validateCoupon({ code, subtotal, email }: ValidateCouponInput): Promise<CouponValidationResult> {
   const normalizedCode = code.trim().toUpperCase();
   if (!normalizedCode) {
@@ -59,25 +83,10 @@ export async function validateCoupon({ code, subtotal, email }: ValidateCouponIn
               email.toLowerCase()
             )
           : [{ count: '0' }];
-        return { ...row, redemptions: Array.from({ length: Number(redemptionCount[0]?.count || 0) }) } as unknown as {
-          id: string;
-          description: string | null;
-          type: 'percent' | 'fixed';
-          amount: number | null;
-          percent: number | null;
-          freeShipping: boolean;
-          active: boolean;
-          startsAt: Date | null;
-          endsAt: Date | null;
-          minOrderTotal: number | null;
-          maxUses: number | null;
-          usedCount: number;
-          maxUsesPerEmail: number | null;
-          redemptions?: unknown[];
-        };
+        return { ...row, redemptions: Array.from({ length: Number(redemptionCount[0]?.count || 0) }) } as FetchedCoupon;
       })();
 
-  if (!coupon || !coupon.active) {
+  if (!isCouponRecord(coupon) || !coupon.active) {
     return { valid: false, code: normalizedCode, message: 'Neplatný alebo neaktívny kupón' };
   }
   if (coupon.startsAt && coupon.startsAt > now) {
