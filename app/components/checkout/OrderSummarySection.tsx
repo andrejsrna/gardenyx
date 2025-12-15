@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { FormData } from '../../lib/checkout/types';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
 import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
+import CouponSection from '../CouponSection';
 
 interface CartItem {
   id: number;
@@ -24,6 +25,9 @@ interface OrderSummarySectionProps {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onCustomerNoteChange: (note: string) => void;
   onRemoveItem: (id: number) => void;
+  discountAmount?: number;
+  appliedCoupon?: string | null;
+  couponFreeShipping?: boolean;
 }
 
 export default function OrderSummarySection({
@@ -34,13 +38,17 @@ export default function OrderSummarySection({
   onSubmit,
   onCustomerNoteChange,
   onRemoveItem,
+  discountAmount = 0,
+  appliedCoupon = null,
+  couponFreeShipping = false,
 }: OrderSummarySectionProps) {
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
+  const isFreeShipping = couponFreeShipping || subtotal >= FREE_SHIPPING_THRESHOLD;
   const isSalesSuspended = isSalesSuspendedClient();
   const VAT_RATE = 0.19;
-  const netSubtotal = subtotal / (1 + VAT_RATE);
-  const vatAmount = subtotal - netSubtotal;
+  const netSubtotal = subtotalAfterDiscount / (1 + VAT_RATE);
+  const vatAmount = subtotalAfterDiscount - netSubtotal;
   
   const getShippingCostBase = () => {
     if (isFreeShipping) return 0;
@@ -52,14 +60,13 @@ export default function OrderSummarySection({
   const shippingCostBase = getShippingCostBase(); // základ bez DPH
   const shippingCostWithVat = shippingCostBase ? shippingCostBase * 1.19 : 0; // s DPH
   const shippingVat = shippingCostBase ? shippingCostBase * 0.19 : 0; // len DPH
-  const totalVat = vatAmount + shippingVat;
-  const total = subtotal + shippingCostWithVat;
+  const total = Math.max(0, subtotalAfterDiscount + shippingCostWithVat);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm sticky top-20">
       <h2 className="text-xl font-semibold mb-2">Súhrn objednávky</h2>
       <div className="text-xs text-gray-500 mb-4">Ceny sú uvedené vrátane DPH 19%.</div>
-      
+
       {/* Cart Items */}
       <div className="space-y-3 mb-4">
         {cartItems.map((item) => (
@@ -97,7 +104,11 @@ export default function OrderSummarySection({
           </div>
         ))}
       </div>
-      
+
+      <div className="mt-4">
+        <CouponSection />
+      </div>
+
       <div className="border-t pt-4 space-y-2">
         {/* Subtotal */}
         <div className="flex justify-between text-sm">
@@ -106,12 +117,32 @@ export default function OrderSummarySection({
         </div>
         <div className="flex justify-between text-xs text-gray-500">
           <span>Základ bez DPH</span>
-          <span>{netSubtotal.toFixed(2)} €</span>
+          <span>{(subtotal / (1 + VAT_RATE)).toFixed(2)} €</span>
         </div>
         <div className="flex justify-between text-xs text-gray-500">
           <span>DPH (19%)</span>
-          <span>{totalVat.toFixed(2)} €</span>
+          <span>{(subtotal - subtotal / (1 + VAT_RATE)).toFixed(2)} €</span>
         </div>
+        {discountAmount > 0 && (
+          <>
+            <div className="flex justify-between text-sm text-green-700">
+              <span>Zľava{appliedCoupon ? ` (${appliedCoupon})` : ''}</span>
+              <span className="font-medium">- {discountAmount.toFixed(2)} €</span>
+            </div>
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>Nový medzisúčet po zľave (vrátane DPH)</span>
+              <span>{subtotalAfterDiscount.toFixed(2)} €</span>
+            </div>
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>Základ po zľave bez DPH</span>
+              <span>{netSubtotal.toFixed(2)} €</span>
+            </div>
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>DPH po zľave (19%)</span>
+              <span>{vatAmount.toFixed(2)} €</span>
+            </div>
+          </>
+        )}
         
         {/* Shipping */}
         <div className="flex justify-between text-sm">
@@ -138,9 +169,9 @@ export default function OrderSummarySection({
         )}
         
         {/* Free shipping progress */}
-        {!isFreeShipping && subtotal > 0 && (
+        {!isFreeShipping && subtotal > 0 && !couponFreeShipping && (
           <div className="text-xs text-gray-500">
-            Nakúpte ešte za {(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} € a získate dopravu zdarma
+            Nakúpte ešte za {Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} € a získate dopravu zdarma
           </div>
         )}
       </div>

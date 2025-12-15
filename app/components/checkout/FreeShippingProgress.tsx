@@ -5,32 +5,38 @@ import { FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
 import { tracking } from '../../lib/tracking';
 
 interface FreeShippingProgressProps {
-  totalPrice: number;
+  totalPrice?: number; // kept for backward compatibility (after discount)
+  subtotal?: number;   // preferred: before discount
+  couponFreeShipping?: boolean;
 }
 
-export default function FreeShippingProgress({ totalPrice }: FreeShippingProgressProps) {
+export default function FreeShippingProgress({ totalPrice = 0, subtotal, couponFreeShipping = false }: FreeShippingProgressProps) {
   const hasTrackedFreeShipping = useRef(false);
 
-  // Track when free shipping threshold is reached
+  const effectiveSubtotal = typeof subtotal === 'number' ? subtotal : totalPrice;
+  const hasFreeShipping = couponFreeShipping || effectiveSubtotal >= FREE_SHIPPING_THRESHOLD;
+
+  // Track when free shipping threshold is reached (only when it is reached by subtotal, not by coupon)
   useEffect(() => {
-    if (totalPrice >= FREE_SHIPPING_THRESHOLD && !hasTrackedFreeShipping.current) {
+    if (couponFreeShipping) return;
+    if (effectiveSubtotal >= FREE_SHIPPING_THRESHOLD && !hasTrackedFreeShipping.current) {
       tracking.custom('free_shipping_threshold', {
-        value: totalPrice,
+        value: effectiveSubtotal,
         threshold: FREE_SHIPPING_THRESHOLD
       });
       hasTrackedFreeShipping.current = true;
-    } else if (totalPrice < FREE_SHIPPING_THRESHOLD) {
+    } else if (effectiveSubtotal < FREE_SHIPPING_THRESHOLD) {
       // Reset tracking when price goes below threshold
       hasTrackedFreeShipping.current = false;
     }
-  }, [totalPrice]);
+  }, [effectiveSubtotal, couponFreeShipping]);
 
-  if (totalPrice >= FREE_SHIPPING_THRESHOLD) {
+  if (hasFreeShipping) {
     return null;
   }
 
-  const remaining = FREE_SHIPPING_THRESHOLD - totalPrice;
-  const progress = (totalPrice / FREE_SHIPPING_THRESHOLD) * 100;
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - effectiveSubtotal);
+  const progress = (effectiveSubtotal / FREE_SHIPPING_THRESHOLD) * 100;
 
   return (
     <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">

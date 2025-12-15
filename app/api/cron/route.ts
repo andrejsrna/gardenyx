@@ -9,7 +9,8 @@ const isAuthorized = (request: Request) => {
 const handlers: Record<string, string | string[]> = {
   reactivation: '/api/cron/reactivation',
   packeta: '/api/cron/packeta',
-  all: ['/api/cron/reactivation', '/api/cron/packeta'],
+  reviews: '/api/cron/reviews',
+  all: ['/api/cron/reactivation', '/api/cron/packeta', '/api/cron/reviews'],
 };
 
 export async function POST(request: Request) {

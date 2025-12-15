@@ -454,6 +454,7 @@ interface StripePaymentProps {
   items: PaymentIntentItem[];
   shippingMethod: string;
   discountAmount: number;
+  couponCode?: string | null;
   billing: BillingInfo;
   shipping: ShippingInfo;
   isBusiness: boolean;
@@ -469,6 +470,7 @@ export default function StripePayment({
   items, 
   shippingMethod, 
   discountAmount, 
+  couponCode,
   billing, 
   shipping, 
   isBusiness, 
@@ -519,6 +521,7 @@ export default function StripePayment({
       shipping_method: shippingMethod,
     },
     discountAmount: Number(discountAmount) || 0,
+    couponCode: couponCode || undefined,
     customer: {
       billing,
       shipping,
@@ -527,7 +530,7 @@ export default function StripePayment({
       marketing_consent: Boolean(marketingConsent),
       meta_data: metaData || [],
     },
-  }), [stableItems, shippingMethod, discountAmount, billing, shipping, isBusiness, customerNote, marketingConsent, metaData]);
+  }), [stableItems, shippingMethod, discountAmount, couponCode, billing, shipping, isBusiness, customerNote, marketingConsent, metaData]);
 
   // Create a signature for the cart to detect changes
   const currentCartSignature = useMemo(() => 
@@ -535,9 +538,10 @@ export default function StripePayment({
       items: stableItems,
       shipping: shippingMethod,
       discount: discountAmount,
-      billing: billing?.email
+      billing: billing?.email,
+      coupon: couponCode || ''
     })
-  , [stableItems, shippingMethod, discountAmount, billing?.email]);
+  , [stableItems, shippingMethod, discountAmount, billing?.email, couponCode]);
 
   // Update cart signature and reset payment state if cart changed
   useEffect(() => {

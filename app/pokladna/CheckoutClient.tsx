@@ -41,7 +41,7 @@ import { updateShippingFromBilling, translateFieldName } from '../lib/checkout/u
 import { useCheckoutForm } from '../hooks/checkout';
 
 export default function CheckoutClient() {
-  const { items, totalPrice, clearCart, addToCart, discountAmount, removeFromCart } = useCart();
+  const { items, totalPrice, subtotal, clearCart, addToCart, discountAmount, removeFromCart, appliedCoupon, couponFreeShipping } = useCart();
   const { customerData } = useAuth();
   const { hasConsented, consentDetails } = useCookieConsent();
 
@@ -216,17 +216,18 @@ export default function CheckoutClient() {
 
   // Shipping cost calculation
   const getShippingCost = useCallback(() => {
+    if (couponFreeShipping) return 0;
     if (totalPrice >= FREE_SHIPPING_THRESHOLD) return 0;
     switch (formData.shipping_method) {
       case 'packeta_pickup': return 2.9; // základ bez DPH
       case 'packeta_home': return 3.8;   // základ bez DPH
       default: return 0;
     }
-  }, [totalPrice, formData.shipping_method]);
+  }, [couponFreeShipping, totalPrice, formData.shipping_method]);
 
   const shippingCostBase = getShippingCost(); // základ bez DPH
   const shippingCostWithVat = shippingCostBase * 1.19; // s DPH
-  const finalTotal = parseFloat((totalPrice + shippingCostWithVat - discountAmount).toFixed(2));
+  const finalTotal = parseFloat((totalPrice + shippingCostWithVat).toFixed(2));
 
   // Add to cart handler for recommended products
   const handleAddToCart = useCallback((product: Product) => {
@@ -431,6 +432,9 @@ export default function CheckoutClient() {
             { key: 'billing_dic_dph', value: formData.billing.dic_dph || '' },
           ] : []),
           ...(formData.consents.marketing ? [{ key: '_marketing_consent', value: 'yes' }] : []),
+          ...(appliedCoupon ? [{ key: '_coupon_code', value: appliedCoupon }] : []),
+          ...(discountAmount > 0 ? [{ key: '_discount_total', value: discountAmount.toFixed(2) }] : []),
+          ...(couponFreeShipping ? [{ key: '_coupon_free_shipping', value: 'true' }] : []),
         ],
         line_items: items.map(item => ({
           product_id: item.id,
@@ -485,7 +489,7 @@ export default function CheckoutClient() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData, subscribeToNewsletter]);
+  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData, subscribeToNewsletter, appliedCoupon, discountAmount, couponFreeShipping]);
 
   // Check if form is valid for submit button
   const isFormValid = Boolean(formData.billing.first_name && 
@@ -561,7 +565,7 @@ export default function CheckoutClient() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Forms */}
             <div className="lg:col-span-2 space-y-6">
-              <FreeShippingProgress totalPrice={totalPrice} />
+              <FreeShippingProgress subtotal={subtotal} couponFreeShipping={couponFreeShipping} />
               
               <RecommendedProducts 
                 totalPrice={totalPrice}
@@ -599,6 +603,8 @@ export default function CheckoutClient() {
                 formData={formData}
                 formErrors={formErrors}
                 cartTotal={totalPrice}
+                cartSubtotal={subtotal}
+                couponFreeShipping={couponFreeShipping}
                 selectedPacketaPoint={selectedPacketaPoint}
                 onInputChange={handleInputChange}
                 onPacketaPointSelect={handlePacketaPointSelect}
@@ -633,6 +639,9 @@ export default function CheckoutClient() {
                 onSubmit={handleSubmit}
                 onCustomerNoteChange={handleCustomerNoteChange}
                 onRemoveItem={removeFromCart}
+                discountAmount={Math.max(0, Number(discountAmount) || 0)}
+                appliedCoupon={appliedCoupon}
+                couponFreeShipping={couponFreeShipping}
               />
             </div>
           </div>
@@ -665,6 +674,7 @@ export default function CheckoutClient() {
           })).filter(i => i.id > 0 && i.quantity > 0)}
           shippingMethod={formData.shipping_method}
           discountAmount={Math.max(0, Number(discountAmount) || 0)}
+          couponCode={appliedCoupon}
           billing={formData.billing}
           shipping={formData.shipping}
           isBusiness={Boolean(formData.is_business)}

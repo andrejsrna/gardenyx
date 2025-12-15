@@ -5,6 +5,7 @@ import { getStripe } from '@/app/lib/stripe';
 import { rateLimit } from '@/app/lib/utils/rateLimit';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { getProductsByIds } from '@/app/lib/products';
+import { validateCoupon } from '@/app/lib/coupons';
 
 const stripe = getStripe();
 
@@ -18,7 +19,8 @@ const requestSchema = z.object({
         line_items: z.array(z.object({ product_id: z.number(), quantity: z.number().positive() })),
         shipping_method: z.string()
     }),
-    discountAmount: z.number().nonnegative().default(0),
+    discountAmount: z.number().nonnegative().default(0).optional(),
+    couponCode: z.string().optional(),
     customer: z.object({
         billing: z.any(),
         shipping: z.any(),
@@ -64,30 +66,54 @@ export async function POST(request: Request) {
             } catch {}
             return sum;
         })();
-        // Recalculate shipping based on actual productsTotal
-        let computedShippingCostBase = 0; // základ bez DPH
-        const subtotalAfterDiscount = Math.max(0, productsTotal - validatedData.discountAmount);
-        if (subtotalAfterDiscount < FREE_SHIPPING_THRESHOLD) {
-            if (validatedData.cart.shipping_method === 'packeta_home') {
-                computedShippingCostBase = SHIPPING_COST_PACKETA_HOME;
-            } else if (validatedData.cart.shipping_method === 'packeta_pickup') {
-                computedShippingCostBase = SHIPPING_COST_PACKETA_PICKUP;
-            } else {
-                computedShippingCostBase = 0; // Unknown or free shipping methods
+        const billingEmail = validatedData.customer?.billing?.email as string | undefined;
+        const couponCode = validatedData.couponCode?.trim();
+        let discountAmount = 0;
+        let freeShipping = false;
+        let couponType: string | undefined;
+        let couponRawAmount: number | undefined;
+
+        if (couponCode) {
+            const coupon = await validateCoupon({
+                code: couponCode,
+                subtotal: productsTotal,
+                email: billingEmail
+            });
+            if (!coupon.valid || !coupon.discountAmount) {
+                return NextResponse.json({ error: coupon.message || 'Neplatný kupón' }, { status: 400 });
             }
-        } else {
-            computedShippingCostBase = 0; // Free shipping applies
+            discountAmount = coupon.discountAmount;
+            freeShipping = Boolean(coupon.freeShipping);
+            couponType = coupon.type;
+            couponRawAmount = coupon.amount;
+        }
+
+        // Recalculate shipping based on actual productsTotal minus discount
+        let computedShippingCostBase = 0; // základ bez DPH
+        const subtotalAfterDiscount = Math.max(0, productsTotal - discountAmount);
+        if (!freeShipping) {
+            if (subtotalAfterDiscount < FREE_SHIPPING_THRESHOLD) {
+                if (validatedData.cart.shipping_method === 'packeta_home') {
+                    computedShippingCostBase = SHIPPING_COST_PACKETA_HOME;
+                } else if (validatedData.cart.shipping_method === 'packeta_pickup') {
+                    computedShippingCostBase = SHIPPING_COST_PACKETA_PICKUP;
+                } else {
+                    computedShippingCostBase = 0; // Unknown or free shipping methods
+                }
+            } else {
+                computedShippingCostBase = 0; // Free shipping applies
+            }
         }
         
         const computedShippingCost = computedShippingCostBase * 1.19; // s DPH
 
-        const total = Math.max(0, productsTotal + computedShippingCost - validatedData.discountAmount);
+        const total = Math.max(0, productsTotal + computedShippingCost - discountAmount);
         if (!Number.isFinite(total) || total <= 0) {
             return NextResponse.json({ error: 'Invalid cart total' }, { status: 400 });
         }
         const amountInCents = Math.round(total * 100);
 
-        const cartSignature = Buffer.from(JSON.stringify({ li: validatedData.cart.line_items, sm: validatedData.cart.shipping_method, d: validatedData.discountAmount })).toString('base64');
+        const cartSignature = Buffer.from(JSON.stringify({ li: validatedData.cart.line_items, sm: validatedData.cart.shipping_method, d: discountAmount, cp: couponCode || null, fs: freeShipping })).toString('base64');
         const receiptEmail = validatedData.customer.billing?.email as string | undefined;
         const timestamp = Math.floor(Date.now() / 1000); // Use seconds to allow some deduplication within same second
         const idempotencyKey = crypto.createHash('sha256').update(`${cartSignature}|${receiptEmail || ''}|${amountInCents}|${timestamp}`).digest('hex');
@@ -109,7 +135,12 @@ export async function POST(request: Request) {
                     md: validatedData.customer.meta_data ? Buffer.from(JSON.stringify(validatedData.customer.meta_data)).toString('base64') : '',
                     sc: computedShippingCost.toFixed(2), // shipping cost in EUR as string (gross)
                     sct: computedShippingCostBase.toFixed(2), // net shipping total (base)
-                    sctx: (computedShippingCostBase * 0.19).toFixed(2) // shipping tax
+                    sctx: (computedShippingCostBase * 0.19).toFixed(2), // shipping tax
+                    cp: couponCode || '',
+                    da: discountAmount.toFixed(2),
+                    fs: freeShipping ? '1' : '',
+                    cpt: couponType || '',
+                    cpa: couponRawAmount !== undefined ? String(couponRawAmount) : ''
                 },
                 statement_descriptor_suffix: 'NKV SHOP',
                 receipt_email: receiptEmail

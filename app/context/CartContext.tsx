@@ -32,6 +32,7 @@ interface CartContextType {
     appliedCoupon: string | null;
     couponType: string | null;
     couponAmountRaw: number | null;
+    couponFreeShipping: boolean;
     addToCart: (item: CartItem) => void;
     removeFromCart: (itemId: number) => void;
     updateQuantity: (itemId: number, quantity: number) => void;
@@ -55,6 +56,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     const [discountAmount, setDiscountAmount] = useState(0);
     const [couponType, setCouponType] = useState<string | null>(null);
     const [couponAmountRaw, setCouponAmountRaw] = useState<number | null>(null);
+    const [couponFreeShipping, setCouponFreeShipping] = useState(false);
     const lastActionRef = useRef<{ type: 'add' | 'update', itemId: number } | null>(null);
     const [lastSavedCart, setLastSavedCart] = useState<string | null>(null);
     const [exitCoupon, setExitCoupon] = useState<string | null>(null);
@@ -68,6 +70,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         setDiscountAmount(0);
         setCouponType(null);
         setCouponAmountRaw(null);
+        setCouponFreeShipping(false);
         localStorage.removeItem('appliedCoupon');
         localStorage.removeItem('pendingCoupon');
         toast.info('Kupón bol odstránený');
@@ -79,13 +82,36 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             toast.error("Pridajte produkty do košíka pre aplikáciu kupónu.");
             return false;
         }
-        // Coupons disabled
-        if (appliedCoupon === code) {
-            removeCoupon();
+        const normalized = code.trim();
+        if (!normalized) return false;
+        try {
+            const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const response = await fetch('/api/coupons/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: normalized, subtotal })
+            });
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                toast.error(err?.error || 'Kupón sa nepodarilo overiť.');
+                return false;
+            }
+            const data = await response.json();
+            const discount = Math.max(0, Number(data.discountAmount) || 0);
+            setAppliedCoupon(data.code || normalized);
+            setDiscountAmount(discount);
+            setCouponType(data.type || null);
+            setCouponAmountRaw(data.amount ?? null);
+            setCouponFreeShipping(Boolean(data.freeShipping));
+            localStorage.setItem('appliedCoupon', data.code || normalized);
+            toast.success('Kupón bol aplikovaný.');
+            return true;
+        } catch (error) {
+            console.error('[applyCoupon] failed', error);
+            toast.error('Kupón sa nepodarilo overiť.');
+            return false;
         }
-        toast.error('Kupóny momentálne nie sú podporované.');
-        return false;
-    }, [items, appliedCoupon, removeCoupon]);
+    }, [items]);
 
     const applyExitCoupon = useCallback(async (code: string) => {
         if (!code) return false;
@@ -282,6 +308,9 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         setItems([]);
         setAppliedCoupon(null);
         setDiscountAmount(0);
+        setCouponType(null);
+        setCouponAmountRaw(null);
+        setCouponFreeShipping(false);
         localStorage.removeItem('cart');
         localStorage.removeItem('appliedCoupon');
         toast.info("Košík bol vyprázdnený");
@@ -314,6 +343,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             appliedCoupon,
             couponType,
             couponAmountRaw,
+            couponFreeShipping,
             addToCart,
             removeFromCart,
             updateQuantity,

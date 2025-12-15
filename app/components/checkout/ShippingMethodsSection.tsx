@@ -10,6 +10,8 @@ interface ShippingMethodsSectionProps {
   formData: FormData;
   formErrors: Record<string, string[] | undefined> | null;
   cartTotal: number;
+  cartSubtotal?: number;
+  couponFreeShipping?: boolean;
   selectedPacketaPoint: PacketaPoint | null;
   onInputChange: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -22,11 +24,14 @@ export default function ShippingMethodsSection({
   formData,
   formErrors,
   cartTotal,
+  cartSubtotal,
+  couponFreeShipping = false,
   selectedPacketaPoint,
   onInputChange,
   onPacketaPointSelect,
 }: ShippingMethodsSectionProps) {
-  const isFreeShipping = cartTotal >= FREE_SHIPPING_THRESHOLD;
+  const effectiveSubtotal = typeof cartSubtotal === 'number' ? cartSubtotal : cartTotal;
+  const isFreeShipping = couponFreeShipping || effectiveSubtotal >= FREE_SHIPPING_THRESHOLD;
 
   const shippingMethods = [
     {

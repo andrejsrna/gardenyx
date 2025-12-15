@@ -38,6 +38,8 @@ const ALLOWED_PARAMS = new Set([
   'ad_id', 'pixel', 'key', 'page', 'search', 'tag', 'include',
   'fbclid', 'fbc', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign',
   'utm_term', 'utm_content',
+  // Reviews token
+  'token',
   // Needed for Stripe success + internal lookups
   'id', 'payment_intent', 'payment_intent_client_secret'
 ]);

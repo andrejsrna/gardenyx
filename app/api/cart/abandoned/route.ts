@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       .join('');
 
     const content = `
-      <p style="margin:0 0 10px 0;color:#475569;">Všimli sme si, že ste nedokončili svoj nákup na Najsilnejšia kĺbová výživa. Váš košík obsahuje:</p>
+      <p style="margin:0 0 10px 0;color:#475569;">Váš košík stále čaká. Ak sa chcete vrátiť k objednávke, tu je rýchly prehľad:</p>
       <table role="presentation" style="width:100%;border-collapse:collapse;margin:16px 0;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
         <thead>
           <tr style="background-color:#f8fafc;">
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
         </tbody>
       </table>
       ${emailButton({ label: 'Dokončiť objednávku', url: 'https://najsilnejsiaklbovavyziva.sk/pokladna' })}
-      ${infoNote('Ak ste dostali tento email omylom, môžete ho ignorovať.')}
+      ${infoNote('Ak ste dostali tento email omylom alebo už máte objednané, stačí ho ignorovať.')}
     `;
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();

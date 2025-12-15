@@ -1,7 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 interface Review {
   id: string;
@@ -83,6 +84,7 @@ const DynamicReviewModal = dynamic(
 
 export default function Reviews() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const searchParams = useSearchParams();
 
   const averageRating = Number(
     (defaultReviews.reduce((acc, review) => acc + review.rating, 0) / defaultReviews.length).toFixed(1)
@@ -101,6 +103,13 @@ export default function Reviews() {
     1: (ratingCounts[1] || 0) / defaultReviews.length * 100 || 0,
   };
 
+  useEffect(() => {
+    const hasToken = searchParams.get('token');
+    if (hasToken) {
+      setIsModalOpen(false);
+    }
+  }, [searchParams]);
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -110,12 +119,14 @@ export default function Reviews() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Skúsenosti zákaznikov
             </h2>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-block bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition-colors"
-            >
-              Pridať recenziu
-            </button>
+            {!searchParams.get('token') && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-block bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Pridať recenziu
+              </button>
+            )}
           </div>
 
           <div className="grid md:grid-cols-12 gap-8">

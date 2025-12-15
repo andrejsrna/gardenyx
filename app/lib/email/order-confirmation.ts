@@ -80,7 +80,7 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
   `;
 
   const content = `
-    ${infoNote('Ďakujeme za objednávku. V prílohe nájdete rekapituláciu.')}
+    ${infoNote('Ďakujeme, že ste si vybrali naše produkty. Tu je prehľad vašej objednávky – nech máte všetko po ruke.')}
     ${summary}
     ${itemsTable}
     <h3 style="margin:18px 0 8px 0;color:#0f172a;">Adresy</h3>
@@ -94,7 +94,7 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
     preheader: `Objednávka #${order.id} bola potvrdená.`,
     greeting,
     content,
-    footerNote: 'Ak máte otázky, stačí odpovedať na tento email.'
+    footerNote: 'Ak máte otázky alebo chcete niečo zmeniť, stačí odpovedať na tento email.'
   });
 };
 
@@ -200,9 +200,9 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
   const trackingUrl = barcode ? `https://tracking.packeta.com/sk/?id=${barcode}` : null;
 
   const content = `
-    ${infoNote(`Aktuálny stav: <strong>${status}</strong>`)}
-    ${trackingUrl ? `<p style="margin:0 0 12px 0;color:#475569;">Sledovanie: <a href="${trackingUrl}" style="color:#0f766e;">${trackingUrl}</a></p>` : ''}
-    <p style="margin:0;color:#475569;">Ak máte otázky, odpovedzte na tento email.</p>
+    ${infoNote(`Balík sme posunuli ďalej. Aktuálny stav: <strong>${status}</strong>.`)}
+    ${trackingUrl ? `<p style="margin:0 0 12px 0;color:#475569;">Sledovať balík: <a href="${trackingUrl}" style="color:#0f766e;">${trackingUrl}</a></p>` : ''}
+    <p style="margin:0;color:#475569;">Ak niečo nesedí alebo potrebujete pomôcť, stačí odpovedať na tento email.</p>
   `;
 
   const email = new SendSmtpEmail();
@@ -211,7 +211,7 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
     title: `Stav zásielky k objednávke #${order.id}`,
     preheader: `Aktuálny stav: ${status}`,
     content,
-    footerNote: 'Tento email je informačný, odpovedzte, ak niečo nesedí.'
+    footerNote: 'Sme tu pre vás – odpovedzte, ak potrebujete upresniť doručenie.'
   });
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: to }];

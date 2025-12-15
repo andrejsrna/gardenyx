@@ -6,6 +6,7 @@ import { upsertBrevoContact } from '../../../lib/newsletter/brevo';
 import { getProductsByIds } from '@/app/lib/products';
 import { sendOrderConfirmationEmail } from '@/app/lib/email/order-confirmation';
 import type { Prisma } from '@prisma/client';
+import { recordCouponRedemption } from '@/app/lib/coupons';
 
 const stripe = getStripe();
 const creatingByPi = new Set<string>();
@@ -68,7 +69,7 @@ export async function POST(request: Request) {
     creatingByPi.add(pi.id);
     
     try {
-      const decoded = JSON.parse(Buffer.from(cartSignature, 'base64').toString('utf8')) as { li: Array<{ product_id: number; quantity: number }>; sm: string; d: number };
+      const decoded = JSON.parse(Buffer.from(cartSignature, 'base64').toString('utf8')) as { li: Array<{ product_id: number; quantity: number }>; sm: string; d?: number; cp?: string | null; fs?: boolean };
       const b = md.b ? JSON.parse(Buffer.from(md.b, 'base64').toString('utf8')) : undefined;
       const s = md.s ? JSON.parse(Buffer.from(md.s, 'base64').toString('utf8')) : undefined;
       const ib = md.ib === 'true';
@@ -78,6 +79,11 @@ export async function POST(request: Request) {
       const sc = typeof md.sc === 'string' ? md.sc : '0.00'; // gross shipping
       const sct = typeof md.sct === 'string' ? md.sct : undefined; // net shipping
       const sctx = typeof md.sctx === 'string' ? md.sctx : undefined; // shipping tax
+      const couponCode = (md.cp || decoded.cp || '').trim() || undefined;
+      const discountTotal = Number(md.da || decoded.d || 0);
+      const freeShippingCoupon = md.fs === '1' || decoded.fs === true;
+      const couponType = md.cpt || undefined;
+      const couponAmountRaw = md.cpa ? Number(md.cpa) : undefined;
       const productIds = decoded.li.map(i => i.product_id);
       const products = await getProductsByIds(productIds);
       const priceMap = new Map<number, { price: number; name: string; sku?: string | null }>();
@@ -119,6 +125,11 @@ export async function POST(request: Request) {
           ...(ib ? [{ key: 'billing_ic', value: b?.ic || '' }, { key: 'billing_dic', value: b?.dic || '' }, { key: 'billing_dic_dph', value: b?.dic_dph || '' }] : []),
           ...(mc ? [{ key: '_marketing_consent', value: 'yes' }] : []),
           ...(cn ? [{ key: '_customer_note', value: cn }] : []),
+          ...(couponCode ? [{ key: '_coupon_code', value: couponCode }] : []),
+          ...(Number.isFinite(discountTotal) && discountTotal > 0 ? [{ key: '_discount_total', value: discountTotal.toFixed(2) }] : []),
+          ...(couponType ? [{ key: '_coupon_type', value: couponType }] : []),
+          ...(couponAmountRaw !== undefined ? [{ key: '_coupon_value', value: String(couponAmountRaw) }] : []),
+          ...(freeShippingCoupon ? [{ key: '_coupon_free_shipping', value: 'true' }] : []),
           ...metaData
         ],
         total: (pi.amount_received || pi.amount || 0) / 100,
@@ -138,6 +149,10 @@ export async function POST(request: Request) {
       const orderId = body?.order?.id as string | undefined;
       if (!orderId) {
         return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
+      }
+
+      if (orderId && couponCode) {
+        recordCouponRedemption({ couponCode, orderId, email: b?.email }).catch(err => console.warn('[coupon redemption] failed', err));
       }
 
       if (b?.email) {

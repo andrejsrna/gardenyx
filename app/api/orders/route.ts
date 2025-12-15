@@ -7,6 +7,7 @@ import { logError } from '@/app/lib/utils/logger';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { Prisma, OrderStatus, PaymentMethod as PaymentMethodEnum, PaymentStatus as PaymentStatusEnum } from '@prisma/client';
 import { sendOrderConfirmationEmail, sendOrderNotificationToAdmin } from '@/app/lib/email/order-confirmation';
+import { recordCouponRedemption } from '@/app/lib/coupons';
 import { getIronSession } from 'iron-session';
 import { sessionConfig } from '@/app/lib/config/session';
 import type { SessionData } from '@/app/lib/config/session';
@@ -382,7 +383,11 @@ export async function POST(request: Request) {
       return sum;
     }, 0);
 
-    const total = orderData.total ? Number(orderData.total) : subtotal + shippingTotal;
+    const discountMeta = orderData.meta_data.find(m => m.key === '_discount_total')?.value;
+    const discountTotal = Number(discountMeta) || 0;
+    const couponCode = orderData.meta_data.find(m => m.key === '_coupon_code')?.value;
+
+    const total = orderData.total ? Number(orderData.total) : Math.max(0, subtotal + shippingTotal - discountTotal);
 
     // link to user if session or email matches
     let userId: string | undefined;
@@ -408,7 +413,7 @@ export async function POST(request: Request) {
         subtotal: toDecimal(subtotal),
         shippingTotal: toDecimal(shippingTotal),
         taxTotal: toDecimal(0),
-        discountTotal: toDecimal(0),
+        discountTotal: toDecimal(discountTotal),
         total: toDecimal(total),
         shippingMethod: orderData.shipping_method,
         customerNote: orderData.customer_note,
@@ -482,6 +487,11 @@ export async function POST(request: Request) {
       },
       include: { items: true, addresses: true, meta: true }
     });
+
+    if (couponCode) {
+      recordCouponRedemption({ couponCode, orderId: createdOrder.id, email: billingEmail })
+        .catch(err => console.warn('[coupon redemption cod] failed', err));
+    }
 
     if (
       (orderData.shipping_method === 'packeta_pickup' || orderData.shipping_method === 'packeta_home') &&
