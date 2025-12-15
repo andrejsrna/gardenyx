@@ -3,9 +3,6 @@ import prisma from '../prisma';
 import { sendReviewRequestEmail } from '../email/review-request';
 
 const DAYS_AFTER_ORDER = 90;
-// TEMP: force send to test recipient only; disable after end-to-end test
-const TEST_MODE = true;
-const TEST_RECIPIENT = 'ahoj@andrejsrna.sk';
 
 type JobResult = {
   status: 'ok';
@@ -28,34 +25,6 @@ export async function runReviewRequestJob(limit: number = 200): Promise<JobResul
   const now = new Date();
   const cutoff = new Date(now);
   cutoff.setDate(cutoff.getDate() - DAYS_AFTER_ORDER);
-
-  if (TEST_MODE) {
-    const token = generateCouponCode();
-    const reviewUrl = buildReviewUrl();
-    try {
-      await prisma.reviewRequest.upsert({
-        where: { token },
-        update: { email: TEST_RECIPIENT },
-        create: { token, email: TEST_RECIPIENT }
-      });
-
-      await sendReviewRequestEmail({
-        to: TEST_RECIPIENT,
-        firstName: 'Tester',
-        token,
-        reviewUrl: `${reviewUrl}?token=${token}`
-      });
-
-      return { status: 'ok', targeted: 1, sent: 1 };
-    } catch (error) {
-      return {
-        status: 'ok',
-        targeted: 1,
-        sent: 0,
-        failures: [{ email: TEST_RECIPIENT, error: error instanceof Error ? error.message : 'unknown' }]
-      };
-    }
-  }
 
   const orders = await prisma.order.findMany({
     where: {
