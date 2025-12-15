@@ -300,34 +300,35 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
         attempts++;
 
         try {
-          const response = await fetch(`/api/woocommerce/orders/by-payment-intent?id=${paymentIntentId}`, {
+          const response = await fetch(`/api/orders?payment_intent=${paymentIntentId}`, {
             signal: formAbortControllerRef.current?.signal,
           });
           
           if (response.ok) {
             const result = await response.json();
             
-            if (result && result.orderId) {
+            const orderId = result?.order?.id || result?.orderId;
+            if (orderId) {
               logPaymentEvent('success_order_found_polling', {
-                orderId: result.orderId,
+                orderId,
                 payment_intent_id: paymentIntentId,
                 attempts_taken: attempts
               });
 
               try {
                 await tracking.purchaseWithConversionAPI(
-                  result.orderId.toString(),
+                  orderId.toString(),
                   [],
                   0,
                 );
               } catch (trackingError) {
                 logPaymentEvent('warning_tracking_failed_polling_succeeded', {
                   error: trackingError instanceof Error ? trackingError.message : String(trackingError),
-                  orderId: result.orderId,
+                  orderId,
                   payment_intent_id: paymentIntentId
                 });
                 Sentry.captureException(trackingError, {
-                  extra: { orderId: result.orderId, payment_intent_id: paymentIntentId, phase: 'polling' }
+                  extra: { orderId, payment_intent_id: paymentIntentId, phase: 'polling' }
                 });
               }
 

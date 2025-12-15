@@ -6,16 +6,17 @@ import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 
 interface Order {
-  id: number;
+  id: string;
   status: string;
-  date_created: string;
-  total: string;
-  line_items: Array<{
-    name: string;
+  createdAt: string;
+  total: { toString(): string };
+  currency: string;
+  items: Array<{
+    productName: string;
     quantity: number;
-    total: string;
+    total: { toString(): string };
   }>;
-  meta_data?: Array<{
+  meta?: Array<{
     key: string;
     value: string;
   }>;
@@ -57,18 +58,14 @@ export default function AccountPage() {
     country: 'SK'
   });
 
-  const fetchOrders = useCallback(async (customerId: number) => {
+  const fetchOrders = useCallback(async (email: string) => {
     try {
-      const response = await fetch('/api/woocommerce/orders/customer', {
-        headers: {
-          'Authorization': `Bearer ${customerId}`
-        }
-      });
+      const response = await fetch(`/api/orders?email=${encodeURIComponent(email)}`);
       if (!response.ok) {
         throw new Error('Failed to fetch orders');
       }
       const data = await response.json();
-      setOrders(data);
+      setOrders(data.orders || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast.error('Chyba pri načítaní objednávok');
@@ -107,29 +104,9 @@ export default function AccountPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/woocommerce/customer/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          billing: {
-            ...billingFormData,
-            country: billingFormData.country || 'SK',
-            company: billingFormData.company || '',
-            address_2: '',
-            state: ''
-          }
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Nepodarilo sa aktualizovať údaje');
-      }
-
+      // TODO: Implement a dedicated profile update endpoint; for now just keep data locally
       setIsEditing(false);
-      toast.success('Údaje boli úspešne aktualizované');
+      toast.success('Údaje boli uložené iba lokálne');
     } catch (error) {
       console.error('Error updating billing information:', error);
       toast.error(error instanceof Error ? error.message : 'Nepodarilo sa aktualizovať údaje');
@@ -182,10 +159,10 @@ export default function AccountPage() {
 
   // Also fetch orders when customerData becomes available
   useEffect(() => {
-    if (customerData?.id) {
-      fetchOrders(customerData.id);
+    if (customerData?.email || customerData?.billing?.email) {
+      fetchOrders(customerData?.billing?.email || customerData.email!);
     }
-  }, [customerData?.id, fetchOrders]);
+  }, [customerData?.email, customerData?.billing?.email, fetchOrders]);
 
   if (isLoading) {
     return (
@@ -430,19 +407,19 @@ export default function AccountPage() {
                               Objednávka #{order.id}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {new Date(order.date_created).toLocaleDateString('sk-SK')}
+                              {new Date(order.createdAt).toLocaleDateString('sk-SK')}
                             </div>
                             <div className="mt-2">
-                              {order.line_items.map((item, index) => (
+                              {order.items.map((item, index) => (
                                 <div key={index} className="text-sm text-gray-600">
-                                  {item.name} × {item.quantity}
+                                  {item.productName} × {item.quantity}
                                 </div>
                               ))}
                             </div>
                             <div className="mt-2">
-                              {order.meta_data?.find(meta => meta.key === 'packeta_barcode')?.value && (
+                              {order.meta?.find(meta => meta.key === '_packeta_barcode')?.value && (
                                 <a
-                                  href={`https://tracking.app.packeta.com/sk/${order.meta_data.find(meta => meta.key === 'packeta_barcode')?.value}`}
+                                  href={`https://tracking.app.packeta.com/sk/${order.meta.find(meta => meta.key === '_packeta_barcode')?.value}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="inline-flex items-center gap-2 text-sm text-green-600 hover:text-green-700"
@@ -457,7 +434,7 @@ export default function AccountPage() {
                           </div>
                           <div className="text-right">
                             <div className="text-sm font-medium text-gray-900">
-                              {order.total} €
+                              {order.total.toString()} €
                             </div>
                             <div className="text-sm text-gray-500">
                               {order.status === 'processing'

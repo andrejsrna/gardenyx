@@ -4,20 +4,19 @@ import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { WooCommerceProduct } from '../lib/wordpress';
+import type { Product } from '../lib/content-types';
+import { getProducts } from '../lib/orders';
 
 export default function Toast() {
   const [isVisible, setIsVisible] = useState(false);
-  const [products, setProducts] = useState<WooCommerceProduct[]>([]);
-  const [currentProduct, setCurrentProduct] = useState<WooCommerceProduct | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     // Fetch products once when component mounts
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/woocommerce/products');
-        if (!response.ok) throw new Error('Failed to fetch products');
-        const data = await response.json();
+        const data = await getProducts();
         setProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);

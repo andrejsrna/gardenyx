@@ -3,11 +3,11 @@
 import { useRouter } from 'next/navigation';
 import { CreditCard } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
-import type { WooCommerceProduct } from '@/app/lib/wordpress';
+import type { Product } from '@/app/lib/content-types';
 import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@/app/lib/utils/sales-suspension';
 
 interface Props {
-  product: WooCommerceProduct;
+  product: Product;
 }
 
 export default function BuyNowCTA({ product }: Props) {
@@ -51,5 +51,4 @@ export default function BuyNowCTA({ product }: Props) {
     </div>
   );
 }
-
 

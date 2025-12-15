@@ -12,6 +12,8 @@ interface CartItem {
   price: number;
   quantity: number;
   image?: string;
+  sku?: string;
+  slug?: string;
 }
 
 interface OrderSummarySectionProps {

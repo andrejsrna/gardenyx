@@ -2,12 +2,11 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { toast } from 'sonner';
-import { getSession } from '../lib/utils/session';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   customerData: {
-    id: number;
+    id: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -58,11 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
       await fetch('/api/auth/logout', { method: 'POST' });
-      
-      // Clear session
-      const session = await getSession();
-      session.destroy();
-      
       setUser(null);
     } catch (error) {
       console.error('Logout failed:', error);
@@ -171,17 +165,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || 'Login failed');
       }
 
       const userData = await response.json();
-      
-      // Update session
-      const session = await getSession();
-      session.customerId = userData.id;
-      session.isLoggedIn = true;
-      await session.save();
-
       setUser(userData);
       return userData;
     } catch (error) {

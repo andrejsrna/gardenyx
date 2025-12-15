@@ -4,17 +4,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
-import { WooCommerceProduct } from '../lib/wordpress';
+import type { Product } from '../lib/content-types';
 import { tracking } from '../lib/tracking';
 
 interface RecommendedProductsProps {
-  products: WooCommerceProduct[];
+  products: Product[];
 }
 
 export default function RecommendedProducts({ products }: RecommendedProductsProps) {
   const { addToCart } = useCart();
 
-  const handleAddToCart = (product: WooCommerceProduct) => {
+  const handleAddToCart = (product: Product) => {
     tracking.addToCart({
       id: product.id,
       name: product.name,
@@ -66,7 +66,7 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
     });
   };
 
-  const handleViewDetail = (product: WooCommerceProduct) => {
+  const handleViewDetail = (product: Product) => {
     tracking.viewContent({
       id: product.id,
       name: product.name,
@@ -152,7 +152,7 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
 
                   <div
                     className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[2.5rem]"
-                    dangerouslySetInnerHTML={{ __html: product.short_description }}
+                    dangerouslySetInnerHTML={{ __html: product.short_description || '' }}
                   />
 
                   <div className="flex items-baseline gap-2 mb-4">

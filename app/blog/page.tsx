@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { parseHTML } from '../lib/html-parser';
-import { getPaginatedPosts, getRankMathSEO, getAllTags, getTagBySlug, getCategories } from '../lib/wordpress';
+import { getPaginatedPosts, getRankMathSEO, getAllTags, getTagBySlug, getCategories } from '../lib/content';
 import BlogSchema from '../components/seo/BlogSchema';
 import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 import BlogHeader from '../components/blog/BlogHeader';
@@ -107,7 +107,7 @@ export async function generateMetadata({ searchParams }: { searchParams: tSearch
 
     let base: Metadata;
     try {
-        const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/blog`);
+        const seoData = await getRankMathSEO();
         if (seoData) {
             const parser = parseHTML(seoData.head);
             base = createMetadataFromSEO(parser, siteUrl);

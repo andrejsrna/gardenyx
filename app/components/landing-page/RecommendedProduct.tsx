@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { WooCommerceProduct } from '../../lib/wordpress';
+import type { Product } from '../../lib/content-types';
+import { getProducts } from '../../lib/orders';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../../context/CartContext';
@@ -10,12 +11,12 @@ import { tracking } from '../../lib/tracking';
 const RECOMMENDED_PRODUCT_ID = 824;
 
 export default function RecommendedProduct() {
-  const [product, setProduct] = useState<WooCommerceProduct | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addToCart, appliedCoupon, openCart } = useCart();
 
-  const handleAddToCart = (p: WooCommerceProduct) => {
+  const handleAddToCart = (p: Product) => {
     tracking.addToCart({
       id: p.id,
       name: p.name,
@@ -38,13 +39,7 @@ export default function RecommendedProduct() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/woocommerce/products?include=${RECOMMENDED_PRODUCT_ID}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data?.message || 'Nepodarilo sa načítať odporúčaný produkt');
-        }
-
+        const data = await getProducts({ include: String(RECOMMENDED_PRODUCT_ID) });
         setProduct(Array.isArray(data) ? data[0] ?? null : null);
       } catch (err) {
         console.error('Recommended product fetch error:', err);
@@ -173,5 +168,3 @@ export default function RecommendedProduct() {
     </section>
   );
 }
-
-

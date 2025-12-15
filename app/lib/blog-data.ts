@@ -5,7 +5,7 @@ import {
   getLatestPosts, 
   getPopularPosts,
   getPostsByCategory
-} from './wordpress';
+} from './content';
 
 // Blog post interface that matches our components
 export interface BlogPost {
@@ -72,13 +72,13 @@ export async function getRelatedBlogPosts(
     
     // Try category-based related posts if category is provided
     if (categorySlug) {
-      wpPosts = await getPostsByCategory(categorySlug, limit, currentPostId);
+      wpPosts = await getPostsByCategory(categorySlug, limit);
     }
     
     // If no category posts or not enough, try general related posts
     if (wpPosts.length < limit) {
       const remainingCount = limit - wpPosts.length;
-      const additionalPosts = await getRelatedPosts(currentPostId, remainingCount);
+      const additionalPosts = await getRelatedPosts(String(currentPostId), remainingCount);
       wpPosts = [...wpPosts, ...additionalPosts];
     }
 

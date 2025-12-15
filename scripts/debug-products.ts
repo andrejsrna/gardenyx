@@ -1,5 +1,5 @@
 
-import { getProductsByCategory, getProductsByIds, getProductCategories } from '../app/lib/wordpress';
+import { getAllProducts, getProductsByIds as getLocalProductsByIds } from '../app/lib/products';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
@@ -21,12 +21,10 @@ try {
 }
 
 async function debug() {
-    const key = process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY;
-    console.log('Key loaded:', key ? 'Yes (' + key.substring(0, 5) + '...)' : 'No');
-
+    console.log('Debugging local products (markdown source)...');
     console.log('Fetching hero product (824)...');
     try {
-        const heroProduct = await getProductsByIds([824]);
+        const heroProduct = await getLocalProductsByIds([824]);
         console.log('Hero product count:', heroProduct.length);
         if (heroProduct.length > 0) {
             console.log('Hero product:', heroProduct[0].name, heroProduct[0].id);
@@ -35,22 +33,13 @@ async function debug() {
         console.error('Hero fetch failed:', e.message);
     }
 
-    console.log('Fetching categories...');
+    console.log('Listing all products...');
     try {
-        const categories = await getProductCategories();
-        console.log('Categories found:', categories.length);
-        categories.forEach(c => console.log(`${c.id}: ${c.name} (${c.slug}) - count: ${c.count}`));
+        const all = await getAllProducts();
+        console.log('Products found:', all.length);
+        all.slice(0, 10).forEach(p => console.log(p.id, p.name, p.slug));
     } catch (e: any) {
-        console.error('Categories fetch failed:', e.message);
-    }
-
-    console.log('Fetching category products (akciove)...');
-    try {
-        const categoryProducts = await getProductsByCategory('akciove', 5);
-        console.log('Category products count:', categoryProducts.length);
-        categoryProducts.forEach(p => console.log(p.id, p.name));
-    } catch (e: any) {
-        console.error('Category fetch failed:', e.message);
+        console.error('List fetch failed:', e.message);
     }
 }
 

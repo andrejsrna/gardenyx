@@ -13,7 +13,7 @@ export const sessionConfig: SessionOptions = {
 
 // Type for session data
 export interface SessionData {
-  customerId?: number;
+  customerId?: string;
   customerToken?: string;
   isLoggedIn: boolean;
   csrfToken?: string;

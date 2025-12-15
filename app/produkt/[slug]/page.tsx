@@ -1,4 +1,5 @@
-import { getWooCommerceUrl, WooCommerceProduct, getMediaDetails } from '@/app/lib/wordpress';
+import { WooCommerceProduct } from '@/app/lib/content';
+import { getAllProducts } from '@/app/lib/products';
 import AddToCartButton from './AddToCartButton';
 import ProductTracking from './ProductTracking';
 import Image from 'next/image';
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 
 
-  const cleanDescription = product.short_description.replace(/(<([^>]+)>)/gi, '');
+  const cleanDescription = (product.short_description || '').replace(/(<([^>]+)>)/gi, '');
   const price = parseFloat(product.price);
   const hasDiscount = product.sale_price !== '';
   
@@ -77,20 +78,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 async function getProduct(slug: string) {
-  try {
-    const response = await fetch(getWooCommerceUrl('products', { slug }), {
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch product');
-    }
-
-    const products = await response.json();
-    return products[0]; // WooCommerce returns an array, we want the first item
-  } catch {
-    return null;
-  }
+  const products = await getAllProducts();
+  return products.find((p) => p.slug === slug) || null;
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -101,8 +90,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const mediaDetails = await getMediaDetails(product.images[0]?.id);
-  const imageUrl = mediaDetails?.source_url || product.images[0]?.src;
+  const imageUrl = product.images[0]?.src;
 
   const hasDiscount = product.sale_price !== '';
   const price = parseFloat(product.price);
@@ -175,10 +163,10 @@ const showComposition = ['Najsilnejšia kĺbová výživa', 'Najsilnejšej kĺbo
                   )}
                 </div>
 
-                <div 
-                  className="prose prose-lg prose-green mb-8"
-                  dangerouslySetInnerHTML={{ __html: product.short_description }}
-                />
+              <div 
+                className="prose prose-lg prose-green mb-8"
+                dangerouslySetInnerHTML={{ __html: product.short_description || '' }}
+              />
               </div>
 
               <div className="mt-auto space-y-6">

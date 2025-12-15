@@ -8,9 +8,6 @@ export default async function SettingsPage() {
   const envStatus = [
     { name: 'POSTGRES_URL', status: requireEnv('POSTGRES_URL') },
     { name: 'PRISMA_DB_SCHEMA', status: process.env.PRISMA_DB_SCHEMA || 'nkv_admin (default)' },
-    { name: 'WORDPRESS_URL', status: requireEnv('WORDPRESS_URL') },
-    { name: 'WC_CONSUMER_KEY', status: requireEnv('WC_CONSUMER_KEY') },
-    { name: 'WC_CONSUMER_SECRET', status: requireEnv('WC_CONSUMER_SECRET') },
     { name: 'BREVO_API_KEY', status: requireEnv('BREVO_API_KEY') },
     { name: 'BREVO_LIST_ID', status: process.env.BREVO_LIST_ID || '—' },
     { name: 'NEWSLETTER_ADMIN_TOKEN', status: requireEnv('NEWSLETTER_ADMIN_TOKEN') },

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { WordPressPost, getPaginatedPosts, getTagBySlug } from '../lib/wordpress';
+import { WordPressPost, getPaginatedPosts, getTagBySlug } from '../lib/content';
 
 interface RelatedPostsByTagProps {
   tagSlug: string;

@@ -74,8 +74,8 @@ export default async function RootLayout({
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
-        <link rel="preconnect" href={process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'} />
-        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'} />
+        <link rel="preconnect" href={process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'} />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'} />
         <link rel="preconnect" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
         <link rel="dns-prefetch" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
         <script

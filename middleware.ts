@@ -49,7 +49,7 @@ const CSP_DIRECTIVES = {
     'https://*.facebook.net', 'https://*.facebook.com',
     'https://connect.facebook.net', 'https://js.stripe.com',
     'https://www.googletagmanager.com', 'https://www.google-analytics.com',
-    'https://widget.packeta.com', 'https://backup.widget.packeta.com',
+    'https://widget.packeta.com', 'https://backup.widget.packeta.com', 'https://*.packeta.com',
     'https://maps.googleapis.com', 'https://eu-assets.i.posthog.com'
   ],
   styleSrc: ["'self'", "'unsafe-inline'"],
@@ -64,20 +64,22 @@ const CSP_DIRECTIVES = {
     'https://*.gstatic.com', 'https://maps.gstatic.com', 'https://upload.wikimedia.org'
   ],
   frameSrc: [
-    "'self'", 'https://js.stripe.com',
-    'https://widget.packeta.com', 'https://backup.widget.packeta.com',
+    "'self'", 'https://js.stripe.com', 'https://www.googletagmanager.com',
+    'https://widget.packeta.com', 'https://backup.widget.packeta.com', 'https://*.packeta.com',
     'https://www.youtube.com', 'https://youtube.com'
   ],
   connectSrc: [
-    "'self'", 'https://api.stripe.com', 'https://maps.googleapis.com',
+    "'self'",
+    'https://api.stripe.com', 'https://js.stripe.com', 'https://maps.googleapis.com',
     'https://najsilnejsiaklbovavyziva.sk/wp-json/wc/v3/*',
     'https://admin.najsilnejsiaklbovavyziva.sk',
     'https://*.facebook.net', 'https://*.facebook.com',
     'https://connect.facebook.net', 'https://*.sentry.io',
     'https://*.ingest.sentry.io', 'https://eu.i.posthog.com',
-    'https://www.googletagmanager.com', 'https://www.google-analytics.com',
+    'https://www.googletagmanager.com', 'https://www.google-analytics.com', 'https://region1.google-analytics.com',
     'https://stats.g.doubleclick.net', 'https://googleads.g.doubleclick.net',
-    'https://www.google.com'
+    'https://www.google.com',
+    'https://widget.packeta.com', 'https://backup.widget.packeta.com', 'https://*.packeta.com'
   ],
   fontSrc: ["'self'"],
   workerSrc: ["'self'", 'blob:', 'https://js.stripe.com']

@@ -21,12 +21,13 @@ export default function SuccessLanding() {
     const timer = setInterval(async () => {
       attempts += 1;
       try {
-        const res = await fetch(`/api/woocommerce/orders/by-payment-intent?id=${encodeURIComponent(id)}`, { cache: 'no-store' });
+        const res = await fetch(`/api/orders?payment_intent=${encodeURIComponent(id)}`, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (data?.orderId) {
+          if (data?.order?.id || data?.orderId) {
             clearInterval(timer);
-            router.replace(`/objednavka/uspesna/${data.orderId}`);
+            const oid = data.order?.id || data.orderId;
+            router.replace(`/objednavka/uspesna/${oid}`);
           }
         }
       } catch {}
@@ -47,5 +48,4 @@ export default function SuccessLanding() {
     </div>
   );
 }
-
 

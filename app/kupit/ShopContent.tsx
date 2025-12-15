@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import CategoryTracking from '../components/CategoryTracking';
-import { WooCommerceProduct } from '../lib/wordpress';
+import { getProducts } from '../lib/orders';
+import type { Product } from '../lib/content-types';
 
 type ProductSection = {
   title: string;
   taxonomy: string;
   gridCols: string;
-  products: WooCommerceProduct[];
+  products: Product[];
 };
 
 const INITIAL_SECTIONS: ProductSection[] = [
@@ -19,7 +20,7 @@ const INITIAL_SECTIONS: ProductSection[] = [
   { title: 'Ďalšie produkty', taxonomy: '30', gridCols: 'grid-cols-1 md:grid-cols-4', products: [] }
 ];
 
-const sortProductsByPrice = (products: WooCommerceProduct[]): WooCommerceProduct[] => {
+const sortProductsByPrice = (products: Product[]): Product[] => {
   return [...products].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
 };
 
@@ -66,23 +67,14 @@ export default function ShopContent() {
 
     try {
       // Fetch all products in one go
-      const response = await fetch(`/api/woocommerce/products`);
-      const allProducts = await response.json();
-
-      if (!response.ok) {
-        throw new Error(allProducts.message || 'Failed to fetch products');
-      }
-
-      if (!Array.isArray(allProducts) || allProducts.length === 0) {
-        throw new Error('No products found');
-      }
+      const allProducts = await getProducts();
 
       // Create a map of sections for easy lookup
-      const sectionsMap = new Map<string, WooCommerceProduct[]>();
+      const sectionsMap = new Map<string, Product[]>();
       INITIAL_SECTIONS.forEach(section => sectionsMap.set(section.taxonomy, []));
 
       // Distribute products into sections
-      allProducts.forEach((product: WooCommerceProduct) => {
+      allProducts.forEach((product: Product) => {
         product.categories.forEach(category => {
           const categoryId = category.id.toString();
           if (sectionsMap.has(categoryId)) {

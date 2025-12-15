@@ -1,4 +1,4 @@
-import { getProductsByCategory, getProductsByIds } from '../lib/wordpress';
+import { getProductsByCategory, getProductsByIds } from '../lib/content';
 import RecommendedProducts from './RecommendedProducts';
 
 export default async function RecommendedProductsWrapper() {

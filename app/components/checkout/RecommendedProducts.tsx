@@ -1,13 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import type { WooCommerceProduct } from '../../lib/wordpress';
+import type { Product } from '../../lib/content-types';
 import { FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
 
 interface RecommendedProductsProps {
   totalPrice: number;
-  recommendedProducts: WooCommerceProduct[];
-  onAddToCart: (product: WooCommerceProduct) => void;
+  recommendedProducts: Product[];
+  onAddToCart: (product: Product) => void;
 }
 
 export default function RecommendedProducts({

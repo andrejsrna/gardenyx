@@ -1,4 +1,4 @@
-import { WordPressPost } from '@/app/lib/wordpress';
+import { WordPressPost } from '@/app/lib/content';
 
 interface EnhancedArticleSchemaProps {
   post: WordPressPost;

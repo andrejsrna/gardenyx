@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import type { WordPressTag } from '@/app/lib/wordpress';
+import type { WordPressTag } from '@/app/lib/content';
 
 interface TagFilterProps {
   allTags: WordPressTag[];

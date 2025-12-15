@@ -6,7 +6,7 @@ import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import remarkGfm from 'remark-gfm';
 import { z } from 'zod';
-import type { WordPressCategory, WordPressPost, WordPressTag } from './wordpress-types';
+import type { WordPressCategory, WordPressPost, WordPressTag } from './content-types';
 
 const CONTENT_ROOT = path.join(process.cwd(), 'content', 'posts');
 export const LOCAL_POST_ID_OFFSET = 2_000_000;

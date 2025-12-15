@@ -17,9 +17,6 @@ declare global {
       NEWSLETTER_ADMIN_TOKEN: string;
       POSTGRES_URL_PRISMA?: string;
       PRISMA_DB_SCHEMA?: string;
-      WC_CONSUMER_KEY: string;
-      WC_CONSUMER_SECRET: string;
-      WORDPRESS_URL: string;
       ADMIN_DASHBOARD_USER: string;
       ADMIN_DASHBOARD_PASSWORD: string;
     }

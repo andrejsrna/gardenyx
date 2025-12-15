@@ -1,47 +1,38 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import { getIronSession } from 'iron-session';
+import prisma from '@/app/lib/prisma';
+import { sessionConfig } from '@/app/lib/config/session';
+import type { SessionData } from '@/app/lib/config/session';
 
-// Initialize WooCommerce API
-const api = new WooCommerceRestApi({
-  url: process.env.WORDPRESS_URL!,
-  consumerKey: process.env.WC_CONSUMER_KEY!,
-  consumerSecret: process.env.WC_CONSUMER_SECRET!,
-  version: 'wc/v3'
-});
+export const runtime = 'nodejs';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = await cookieStore.get('customerToken');
-    const customerId = await cookieStore.get('customerId');
+    const response = NextResponse.json({});
+    const session = await getIronSession<SessionData>(request, response, sessionConfig);
 
-    if (!token || !customerId) {
-      return NextResponse.json({
-        isAuthenticated: false
-      });
+    if (!session.isLoggedIn || !session.customerId) {
+      return NextResponse.json({ isAuthenticated: false });
     }
 
-    try {
-      // Use WooCommerce API to verify customer exists and get their data
-      const response = await api.get(`customers/${customerId.value}`);
-      
-      return NextResponse.json({
-        isAuthenticated: true,
-        customerId: response.data.id,
-        customerData: response.data
-      });
-    } catch (error) {
-      console.error('Error fetching customer data:', error);
-      return NextResponse.json({
-        isAuthenticated: false
-      });
+    const user = await prisma.user.findUnique({ where: { id: session.customerId } });
+    if (!user) {
+      session.destroy();
+      await session.save();
+      return NextResponse.json({ isAuthenticated: false });
     }
 
-  } catch (error) {
-    console.error('Error checking auth status:', error);
     return NextResponse.json({
-      isAuthenticated: false
+      isAuthenticated: true,
+      customerData: {
+        id: user.id,
+        email: user.email,
+        first_name: user.firstName || '',
+        last_name: user.lastName || ''
+      }
     });
+  } catch (error) {
+    console.error('[auth/check] error', error);
+    return NextResponse.json({ isAuthenticated: false });
   }
-} 
+}

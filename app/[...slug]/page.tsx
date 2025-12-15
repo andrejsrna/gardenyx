@@ -15,7 +15,7 @@ import BlogDataProvider from '../components/blog-seo/BlogDataProvider';
 import BlogAnalytics from '../components/blog-seo/BlogAnalytics';
 import { getBlogBreadcrumbs } from '../lib/internal-linking-data';
 import { parseHTML } from '../lib/html-parser';
-import { getPostBySlug, getRankMathSEO, WordPressPost } from '../lib/wordpress';
+import { getPostBySlug, getRankMathSEO, WordPressPost } from '../lib/content';
 import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa';
 import FeaturedImageWithFallback from '../components/FeaturedImageWithFallback';
 import CopyLinkButton from '../components/CopyLinkButton';
@@ -424,16 +424,8 @@ export async function generateMetadata({ params }: { params: tParams }): Promise
       return buildLocalPostMetadata(post, slugPath);
     }
 
-    const postDate = new Date(post.date);
-    const year = postDate.getFullYear();
-    const month = String(postDate.getMonth() + 1).padStart(2, '0');
-    const day = String(postDate.getDate()).padStart(2, '0');
-
-    const postSlug = slug[slug.length - 1];
-    const wpPermalink = `${year}/${month}/${day}/${postSlug}`;
-
     try {
-      const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/${wpPermalink}`);
+      const seoData = await getRankMathSEO();
 
       if (seoData) {
         const parser = parseHTML(seoData.head);

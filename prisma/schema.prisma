@@ -7,30 +7,33 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  passwordHash   String
-  firstName      String?
-  lastName       String?
-  role           String   @default("user")
-  isActive       Boolean  @default(true)
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  firstName       String?
+  lastName        String?
+  role            String    @default("user")
+  isActive        Boolean   @default(true)
   emailVerifiedAt DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  orders          Order[]
+  resetTokens     PasswordResetToken[]
+  verificationTokens EmailVerificationToken[]
 }
 
 model NewsletterSubscriber {
-  id              String   @id @default(cuid())
-  email           String   @unique
-  firstName       String?
-  lastName        String?
-  source          String?  // e.g. blog, checkout, popup
-  status          String   @default("active") // active | unsubscribed
-  brevoContactId  Int?
-  unsubscribedAt  DateTime?
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  firstName          String?
+  lastName           String?
+  source             String? // e.g. blog, checkout, popup
+  status             String    @default("active") // active | unsubscribed
+  brevoContactId     Int?
+  unsubscribedAt     DateTime?
   reactivationSentAt DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
 model FeatureFlag {
@@ -39,4 +42,181 @@ model FeatureFlag {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+enum OrderStatus {
+  pending
+  processing
+  on_hold
+  completed
+  cancelled
+  refunded
+  failed
+}
+
+enum PaymentStatus {
+  pending
+  authorized
+  paid
+  refunded
+  failed
+}
+
+enum PaymentMethod {
+  cod
+  stripe
+  bank_transfer
+  other
+}
+
+enum OrderAddressType {
+  BILLING
+  SHIPPING
+}
+
+enum ProductStatus {
+  draft
+  pending
+  private
+  publish
+}
+
+model Order {
+  id                 String         @id @default(cuid())
+  orderNumber        Int            @default(autoincrement())
+  userId             String?
+  user               User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status             OrderStatus    @default(pending)
+  paymentStatus      PaymentStatus  @default(pending)
+  paymentMethod      PaymentMethod
+  transactionId      String?
+  currency           String         @default("EUR")
+  subtotal           Decimal        @db.Decimal(10, 2)
+  shippingTotal      Decimal        @default(0) @db.Decimal(10, 2)
+  taxTotal           Decimal        @default(0) @db.Decimal(10, 2)
+  discountTotal      Decimal        @default(0) @db.Decimal(10, 2)
+  total              Decimal        @db.Decimal(10, 2)
+  shippingMethod     String?
+  customerNote       String?
+  marketingConsent   Boolean        @default(false)
+  sessionId          String?
+  packetaPointId     String?
+  packetaPointName   String?
+  packetaPointCity   String?
+  packetaPointStreet String?
+  packetaPointZip    String?
+  items              OrderItem[]
+  addresses          OrderAddress[]
+  meta               OrderMeta[]
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@index([orderNumber])
+  @@index([userId])
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   Int
+  productName String
+  sku         String?
+  variationId Int?
+  imageUrl    String?
+  price       Decimal @db.Decimal(10, 2)
+  quantity    Int
+  total       Decimal @db.Decimal(10, 2)
+  meta        Json?
+
+  @@index([orderId])
+}
+
+model OrderAddress {
+  id        String           @id @default(cuid())
+  orderId   String
+  order     Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type      OrderAddressType
+  firstName String
+  lastName  String
+  company   String?
+  address1  String
+  address2  String?
+  city      String
+  state     String?
+  postcode  String
+  country   String
+  phone     String?
+  email     String?
+  ic        String?
+  dic       String?
+  dicDph    String?
+
+  @@unique([orderId, type])
+}
+
+model OrderMeta {
+  id      String  @id @default(cuid())
+  orderId String
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  key     String
+  value   String?
+  json    Json?
+
+  @@index([orderId])
+  @@index([key])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  wcId             Int           @unique
+  name             String
+  slug             String        @unique
+  type             String        @default("simple")
+  status           ProductStatus @default(publish)
+  sku              String?       @unique
+  price            Decimal       @db.Decimal(10, 2)
+  regularPrice     Decimal       @db.Decimal(10, 2)
+  salePrice        Decimal?      @db.Decimal(10, 2)
+  currency         String        @default("EUR")
+  stockStatus      String?
+  stockQuantity    Int?
+  weight           Decimal?      @db.Decimal(10, 3)
+  categories       Json?
+  images           Json?
+  attributes       Json?
+  meta             Json?
+  shortDescription String?
+  description      String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([wcId])
+  @@index([slug])
 }

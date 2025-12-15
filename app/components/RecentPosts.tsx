@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { getLatestPosts } from '../lib/wordpress';
-import type { WordPressPost } from '../lib/wordpress';
+import { getLatestPosts } from '../lib/content';
+import type { WordPressPost } from '../lib/content';
 import FeaturedImageWithFallback from './FeaturedImageWithFallback';
 
 export default async function RecentPosts() {

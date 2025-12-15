@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
-import { runReactivationJob } from '../../lib/newsletter/reactivation-job';
 
 const isAuthorized = (request: Request) => {
   const token = process.env.NEWSLETTER_ADMIN_TOKEN;
   if (!token) return false;
   return request.headers.get('x-admin-token') === token;
+};
+
+const handlers: Record<string, string> = {
+  reactivation: '/api/cron/reactivation',
+  packeta: '/api/cron/packeta',
 };
 
 export async function POST(request: Request) {
@@ -13,12 +17,26 @@ export async function POST(request: Request) {
   }
 
   const url = new URL(request.url);
-  const limit = Number(url.searchParams.get('limit')) || 200;
+  const job = url.searchParams.get('job') || 'reactivation';
+  const target = handlers[job];
 
-  const reactivation = await runReactivationJob(limit);
+  if (!target) {
+    return NextResponse.json({ error: 'Unknown job' }, { status: 400 });
+  }
 
-  return NextResponse.json({
-    status: 'ok',
-    reactivation,
+  const targetUrl = new URL(target, url.origin);
+  // forward all params except job
+  url.searchParams.forEach((value, key) => {
+    if (key !== 'job') targetUrl.searchParams.set(key, value);
   });
+
+  const res = await fetch(targetUrl.toString(), {
+    method: 'POST',
+    headers: {
+      'x-admin-token': request.headers.get('x-admin-token') || '',
+    },
+  });
+
+  const data = await res.json().catch(() => ({}));
+  return NextResponse.json({ proxied: target, status: res.status, data });
 }

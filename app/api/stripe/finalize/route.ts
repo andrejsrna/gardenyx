@@ -1,19 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import prisma from '../../../lib/prisma';
 import { upsertBrevoContact } from '../../../lib/newsletter/brevo';
+import { getProductsByIds } from '@/app/lib/products';
+import { sendOrderConfirmationEmail } from '@/app/lib/email/order-confirmation';
+import type { Prisma } from '@prisma/client';
 
 const stripe = getStripe();
 const creatingByPi = new Set<string>();
-
-const api = new WooCommerceRestApi({
-  url: process.env.WORDPRESS_URL!,
-  consumerKey: process.env.WC_CONSUMER_KEY!,
-  consumerSecret: process.env.WC_CONSUMER_SECRET!,
-  version: 'wc/v3'
-});
 
 export async function POST(request: Request) {
   try {
@@ -47,16 +42,17 @@ export async function POST(request: Request) {
     }
 
     try {
-      const existing = await api.get('orders', {
-        per_page: 100,
-        orderby: 'date',
-        order: 'desc',
-        status: ['pending', 'processing', 'on-hold', 'completed']
+      const existing = await prisma.order.findFirst({
+        where: {
+          OR: [
+            { transactionId: pi.id },
+            { meta: { some: { key: '_stripe_payment_intent_id', value: pi.id } } }
+          ]
+        },
+        select: { id: true }
       });
-      const orders = Array.isArray(existing.data) ? existing.data as Array<{ id: number; transaction_id?: string; meta_data?: Array<{ key: string; value: string }> }> : [];
-      const match = orders.find(o => o.transaction_id === pi.id || o.meta_data?.some(m => m.key === '_stripe_payment_intent_id' && m.value === pi.id));
-      if (match?.id) {
-        return NextResponse.json({ orderId: match.id });
+      if (existing?.id) {
+        return NextResponse.json({ orderId: existing.id });
       }
     } catch {
       return NextResponse.json({ error: 'Order check failed' }, { status: 503 });
@@ -82,17 +78,35 @@ export async function POST(request: Request) {
       const sc = typeof md.sc === 'string' ? md.sc : '0.00'; // gross shipping
       const sct = typeof md.sct === 'string' ? md.sct : undefined; // net shipping
       const sctx = typeof md.sctx === 'string' ? md.sctx : undefined; // shipping tax
-      
+      const productIds = decoded.li.map(i => i.product_id);
+      const products = await getProductsByIds(productIds);
+      const priceMap = new Map<number, { price: number; name: string; sku?: string | null }>();
+      for (const p of products) {
+        priceMap.set(p.id, { price: Number(p.price || 0), name: p.name, sku: p.sku || null });
+      }
 
+      const lineItems = decoded.li.map(i => {
+        const data = priceMap.get(i.product_id);
+        const price = data ? data.price : 0;
+        const total = price * i.quantity;
+        return {
+          product_id: i.product_id,
+          quantity: i.quantity,
+          price,
+          total,
+          name: data?.name || `Product ${i.product_id}`,
+          sku: data?.sku || undefined
+        };
+      });
 
-      const created = await api.post('orders', {
+      const payload = {
         status: 'processing',
         transaction_id: pi.id,
         billing: b,
         shipping: s,
         payment_method: 'stripe',
         payment_method_title: 'Platba kartou',
-        line_items: decoded.li.map(i => ({ product_id: i.product_id, quantity: i.quantity })),
+        line_items: lineItems,
         shipping_lines: decoded.sm === 'packeta_pickup' || decoded.sm === 'packeta_home' ? [{
           method_id: decoded.sm,
           method_title: decoded.sm === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
@@ -106,11 +120,35 @@ export async function POST(request: Request) {
           ...(mc ? [{ key: '_marketing_consent', value: 'yes' }] : []),
           ...(cn ? [{ key: '_customer_note', value: cn }] : []),
           ...metaData
-        ]
+        ],
+        total: (pi.amount_received || pi.amount || 0) / 100,
+        idempotency_key: pi.id
+      };
+
+      const orderUrl = new URL('/api/orders', request.url);
+      const created = await fetch(orderUrl.toString(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-      const orderId = created.data?.id as number | undefined;
+      if (!created.ok) {
+        return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
+      }
+      const body = await created.json();
+      const orderId = body?.order?.id as string | undefined;
       if (!orderId) {
         return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
+      }
+
+      if (b?.email) {
+        const orderRecord = await prisma.order.findUnique({
+          where: { id: orderId },
+          include: { items: true, addresses: true, meta: true }
+        });
+        if (orderRecord) {
+          type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
+          sendOrderConfirmationEmail(orderRecord as OrderWithRelations, b.email).catch(err => console.warn('[order email] failed', err));
+        }
       }
 
       if (mc && b?.email) {

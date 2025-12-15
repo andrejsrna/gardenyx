@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCategoryBySlug, getPaginatedPosts } from '../../../lib/wordpress';
+import { getCategoryBySlug, getPaginatedPosts } from '../../../lib/content';
 import CategoryHeader from '@/app/components/blog/category/CategoryHeader';
 import PostList from '@/app/components/blog/PostList';
 import CategoryPagination from '@/app/components/blog/category/CategoryPagination';

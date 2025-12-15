@@ -17,8 +17,8 @@ import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/
 import { validatePassword } from '../lib/utils/password';
 import { sanitizeInput, sanitizePhone, sanitizePostcode } from '../lib/utils/sanitize';
 import { checkoutFormSchema } from '../lib/validations/checkout';
-import { createOrder, getProducts } from '../lib/woocommerce';
-import type { WooCommerceProduct } from '../lib/wordpress';
+import { createOrder, getProducts } from '../lib/orders';
+import type { Product } from '../lib/content-types';
 
 // Import all our new components
 import {
@@ -60,7 +60,7 @@ export default function CheckoutClient() {
   } = useCheckoutForm();
 
   // Component state
-  const [recommendedProducts, setRecommendedProducts] = useState<WooCommerceProduct[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
   const [showStripePayment, setShowStripePayment] = useState(false);
@@ -68,7 +68,7 @@ export default function CheckoutClient() {
   const [showPacketaSelector, setShowPacketaSelector] = useState(false);
   const [paymentError, setPaymentError] = useState<PaymentError | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
-  const orderIdRef = useRef<number | null>(null);
+  const orderIdRef = useRef<string | number | null>(null);
 
   // Derived state
   const selectedPacketaPoint = formData.meta_data.find(item => item.key === '_packeta_point_name')?.value ? {
@@ -229,7 +229,7 @@ export default function CheckoutClient() {
   const finalTotal = parseFloat((totalPrice + shippingCostWithVat - discountAmount).toFixed(2));
 
   // Add to cart handler for recommended products
-  const handleAddToCart = useCallback((product: WooCommerceProduct) => {
+  const handleAddToCart = useCallback((product: Product) => {
     addToCart({
       id: product.id,
       name: product.name,
@@ -435,6 +435,11 @@ export default function CheckoutClient() {
         line_items: items.map(item => ({
           product_id: item.id,
           quantity: item.quantity,
+          price: item.price,
+          total: item.price * item.quantity,
+          name: item.name,
+          sku: item.sku,
+          image: item.image
         })),
         shipping_lines: shippingCostBase > 0 ? [{
           method_id: formData.shipping_method,

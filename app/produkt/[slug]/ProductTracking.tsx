@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 import { tracking } from '../../lib/tracking';
-import { WooCommerceProduct } from '../../lib/wordpress';
+import type { Product } from '../../lib/content-types';
 
 interface ProductTrackingProps {
-  product: WooCommerceProduct;
+  product: Product;
 }
 
 export default function ProductTracking({ product }: ProductTrackingProps) {

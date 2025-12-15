@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
     try {
       await rateLimit(ip, 'newsletter');
-    } catch (error) {
+    } catch {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
             data: { brevoContactId: brevoId },
           });
         }
-      } catch (error) {
-        console.warn('[newsletter] Failed to sync to Brevo', error);
+      } catch (err) {
+        console.warn('[newsletter] Failed to sync to Brevo', err);
       }
     }
 

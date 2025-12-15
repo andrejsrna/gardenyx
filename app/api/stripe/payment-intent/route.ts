@@ -2,9 +2,9 @@ import {NextResponse} from 'next/server';
 import {z} from 'zod';
 import crypto from 'crypto';
 import { getStripe } from '@/app/lib/stripe';
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { rateLimit } from '@/app/lib/utils/rateLimit';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
+import { getProductsByIds } from '@/app/lib/products';
 
 const stripe = getStripe();
 
@@ -32,13 +32,6 @@ const requestSchema = z.object({
     })
 });
 
-const wc = new WooCommerceRestApi({
-    url: process.env.WORDPRESS_URL!,
-    consumerKey: process.env.WC_CONSUMER_KEY!,
-    consumerSecret: process.env.WC_CONSUMER_SECRET!,
-    version: 'wc/v3'
-});
-
 export async function POST(request: Request) {
     try {
         // Check if sales are suspended
@@ -60,8 +53,7 @@ export async function POST(request: Request) {
             try {
                 const ids = validatedData.cart.line_items.map(li => li.product_id);
                 const uniqueIds = Array.from(new Set(ids));
-                const res = await wc.get('products', { include: uniqueIds.join(',') });
-                const products = Array.isArray(res.data) ? res.data as Array<{ id: number; price: string }> : [];
+                const products = await getProductsByIds(uniqueIds);
                 const priceMap = new Map<number, number>();
                 for (const p of products) {
                     priceMap.set(p.id, Number(p.price || '0'));

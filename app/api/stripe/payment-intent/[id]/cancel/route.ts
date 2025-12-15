@@ -1,8 +1,8 @@
 import { logError } from '@/app/lib/utils/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import { rateLimit } from '@/app/lib/utils/rateLimit';
+import prisma from '@/app/lib/prisma';
 import type Stripe from 'stripe';
 
 const stripe = getStripe();
@@ -25,13 +25,6 @@ export async function POST(
     }
 
     try {
-      const wc = new WooCommerceRestApi({
-        url: process.env.WORDPRESS_URL!,
-        consumerKey: process.env.WC_CONSUMER_KEY!,
-        consumerSecret: process.env.WC_CONSUMER_SECRET!,
-        version: 'wc/v3'
-      });
-
       let orderId: string | undefined;
       try {
         const pi = await stripe.paymentIntents.retrieve(id);
@@ -43,9 +36,12 @@ export async function POST(
 
       if (orderId) {
         try {
-          await wc.put(`orders/${orderId}`, {
-            status: 'cancelled',
-            customer_note: 'Platba bola zrušená.'
+          await prisma.order.update({
+            where: { id: orderId },
+            data: {
+              status: 'cancelled',
+              paymentStatus: 'failed'
+            }
           });
         } catch {}
       }

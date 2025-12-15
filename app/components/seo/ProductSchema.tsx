@@ -1,7 +1,7 @@
-import { WooCommerceProduct } from '@/app/lib/wordpress';
+import { Product } from '@/app/lib/content-types';
 
 interface ProductSchemaProps {
-  product: WooCommerceProduct;
+  product: Product;
 }
 
 export default function ProductSchema({ product }: ProductSchemaProps) {
@@ -11,7 +11,7 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": product.name,
-    "description": product.short_description.replace(/(<([^>]+)>)/gi, ''),
+    "description": (product.short_description || '').replace(/(<([^>]+)>)/gi, ''),
     "sku": product.id.toString(),
     "brand": {
       "@type": "Brand",

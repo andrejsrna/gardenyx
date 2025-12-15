@@ -1,4 +1,4 @@
-import { getCategories, WordPressCategory } from '@/app/lib/wordpress';
+import { getCategories, WordPressCategory } from '@/app/lib/content';
 import Link from 'next/link';
 import { Metadata } from 'next';
 

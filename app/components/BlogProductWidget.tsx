@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
-import { WooCommerceProduct } from '../lib/wordpress';
+import { getProducts } from '../lib/orders';
 import { toast } from 'sonner';
+
+type Product = Awaited<ReturnType<typeof getProducts>>[number];
 
 interface BlogProductWidgetProps {
   productIds: number[];
@@ -13,24 +15,20 @@ interface BlogProductWidgetProps {
 }
 
 export default function BlogProductWidget({ productIds, title, description }: BlogProductWidgetProps) {
-  const [products, setProducts] = useState<WooCommerceProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`/api/woocommerce/products?include=${productIds.join(',')}`);
-        if (!response.ok) throw new Error('Failed to fetch products');
-        const data = await response.json();
+        const data = await getProducts({ include: productIds.join(',') });
         // Filter products to only include the ones we specified
-        const filteredProducts = data.filter((product: WooCommerceProduct) => 
-          productIds.includes(product.id)
-        );
+        const filteredProducts = data.filter((product) => productIds.includes(product.id));
         // Sort products to match the order of productIds
         const sortedProducts = productIds.map(id => 
-          filteredProducts.find((p: WooCommerceProduct) => p.id === id)
-        ).filter(p => p !== undefined) as WooCommerceProduct[];
+          filteredProducts.find((p) => p.id === id)
+        ).filter((p): p is Product => Boolean(p));
         setProducts(sortedProducts);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -76,8 +74,9 @@ export default function BlogProductWidget({ productIds, title, description }: Bl
           {products.map((product) => {
             if (!product) return null;
             const price = parseFloat(product.price);
-            const hasDiscount = product.sale_price !== '';
-            const regularPrice = parseFloat(product.regular_price);
+            const hasDiscount = false;
+            const regularPrice = price;
+            const image = product.images?.[0];
 
             return (
               <div 
@@ -85,16 +84,21 @@ export default function BlogProductWidget({ productIds, title, description }: Bl
                 className="bg-white rounded-xl shadow-sm overflow-hidden transform transition-all duration-300 hover:shadow-md hover:-translate-y-1"
               >
                 <div className="aspect-square relative">
-                  {product.images[0] && (
+                  {image?.src && (
                     <Link href={`/produkt/${product.slug}`} className="block relative w-full h-full">
                       <Image
-                        src={product.images[0].src}
-                        alt={product.images[0].alt || product.name}
+                        src={image.src}
+                        alt={(image as { alt?: string }).alt || product.name}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-contain p-4"
                       />
                     </Link>
+                  )}
+                  {!image?.src && (
+                    <div className="flex h-full w-full items-center justify-center bg-gray-50 text-sm text-gray-400">
+                      Bez obrázka
+                    </div>
                   )}
                 </div>
                 <div className="p-4">
@@ -124,7 +128,7 @@ export default function BlogProductWidget({ productIds, title, description }: Bl
                         id: product.id,
                         name: product.name,
                         price: price,
-                        image: product.images[0]?.src,
+                        image: image?.src,
                         quantity: 1
                       });
                       toast.success('Produkt bol pridaný do košíka');

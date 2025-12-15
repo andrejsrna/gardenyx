@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import TagFilter from '@/app/components/blog/TagFilter';
-import type { WordPressCategory, WordPressTag } from '@/app/lib/wordpress';
+import type { WordPressCategory, WordPressTag } from '@/app/lib/content';
 
 const SearchForm = ({ searchQuery }: { searchQuery?: string }) => (
     <form action="/blog" method="get" className="flex gap-2">

@@ -1,7 +1,7 @@
-import { WooCommerceProduct } from '@/app/lib/wordpress';
+import { Product } from '@/app/lib/content-types';
 
 interface CollectionPageSchemaProps {
-  products: WooCommerceProduct[];
+  products: Product[];
   pageTitle: string;
   pageDescription: string;
   pageUrl: string;
@@ -30,7 +30,7 @@ export default function CollectionPageSchema({
           "name": product.name,
           "url": `https://najsilnejsiaklbovavyziva.sk/produkt/${product.slug}`,
           "image": product.images[0]?.src || '',
-          "description": product.short_description.replace(/(<([^>]+)>)/gi, ''),
+          "description": (product.short_description || '').replace(/(<([^>]+)>)/gi, ''),
           "offers": {
             "@type": "Offer",
             "priceCurrency": "EUR",

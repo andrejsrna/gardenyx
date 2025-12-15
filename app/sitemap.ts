@@ -1,50 +1,14 @@
 import { MetadataRoute } from 'next';
-import { WooCommerceProduct, WordPressPost, WordPressCategory } from './lib/wordpress';
+import { WordPressPost, WordPressCategory } from './lib/content';
 import { getLocalPosts as getLocalWordPressPosts, getLocalCategories as getLocalWordPressCategories } from './lib/local-posts';
+import { getAllProducts } from './lib/products';
 
 const BASE_URL = 'https://najsilnejsiaklbovavyziva.sk';
 
-const API_BASE_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.najsilnejsiaklbovavyziva.sk'}/wp-json`;
-const WOO_CONSUMER_KEY = process.env.NEXT_PUBLIC_WOO_CONSUMER_KEY || '';
-const WOO_CONSUMER_SECRET = process.env.NEXT_PUBLIC_WOO_CONSUMER_SECRET || '';
-
-// Helper function to fetch data from an API with revalidation
-async function fetchApiData<T>(url: string, errorMessage: string): Promise<T[]> {
-  try {
-    const response = await fetch(url, { next: { revalidate: 3600 } });
-    if (!response.ok) {
-      throw new Error(`${errorMessage} (status: ${response.status})`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(`Sitemap fetch error from ${url}:`, error);
-    return [];
-  }
-}
-
-// Fetch all published WooCommerce products
-const getProducts = () => {
-  const params = new URLSearchParams({
-    per_page: '100',
-    status: 'publish',
-    consumer_key: WOO_CONSUMER_KEY,
-    consumer_secret: WOO_CONSUMER_SECRET,
-  });
-  const url = `${API_BASE_URL}/wc/v3/products?${params.toString()}`;
-  return fetchApiData<WooCommerceProduct>(url, 'Failed to fetch products');
-};
-
-// Fetch all published WordPress posts
-const getPosts = () => {
-  const url = `${API_BASE_URL}/wp/v2/posts?per_page=100&status=publish&_fields=slug,date`;
-  return fetchApiData<WordPressPost>(url, 'Failed to fetch posts');
-};
-
-// Fetch all WordPress categories
-const getCategories = () => {
-  const url = `${API_BASE_URL}/wp/v2/categories?per_page=100&_fields=slug,id`;
-  return fetchApiData<WordPressCategory>(url, 'Failed to fetch categories');
-};
+// Fetch products and posts from local sources
+const getProducts = () => getAllProducts();
+const getPosts = async (): Promise<WordPressPost[]> => getLocalWordPressPosts();
+const getCategories = async (): Promise<WordPressCategory[]> => getLocalWordPressCategories();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || BASE_URL;
@@ -93,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const productUrls = products.map((product) => ({
     url: `${siteUrl}/produkt/${product.slug}`,
-    lastModified: new Date(product.date_modified),
+    lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));

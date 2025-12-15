@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext'; // Adjust path if necessary
-import type { WooCommerceProduct } from '../lib/wordpress'; // Adjust path if necessary
+import type { Product } from '../lib/content-types'; // Adjust path if necessary
 import { tracking } from '../lib/tracking';
 import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
 
 interface ProductCardProps {
-  product: WooCommerceProduct;
+  product: Product;
   isPriority?: boolean;
   isHero?: boolean;
 }
@@ -14,7 +14,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, isPriority = false, isHero = false }: ProductCardProps) {
   const { addToCart, appliedCoupon, openCart } = useCart();
 
-  const handleAddToCart = (product: WooCommerceProduct) => {
+  const handleAddToCart = (product: Product) => {
     // Check if sales are suspended
     if (isSalesSuspendedClient()) {
       const message = getSalesSuspensionMessageClient();

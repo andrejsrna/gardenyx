@@ -12,7 +12,9 @@
     "build": "NODE_ENV=production next build",
     "start": "NODE_ENV=production next start",
     "lint": "next lint",
-    "export:wp-posts": "node scripts/export-wordpress-posts.js"
+    "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
+    "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
+    "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
@@ -25,8 +27,8 @@
     "@types/xml2js": "^0.4.14",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
-    "@woocommerce/woocommerce-rest-api": "^1.0.2",
     "axios": "^1.11.0",
+    "bcryptjs": "^3.0.3",
     "cheerio": "^1.1.2",
     "cookies-next": "^6.1.0",
     "fast-xml-parser": "^5.2.5",
@@ -51,7 +53,7 @@
     "remark-html": "^16.0.1",
     "resend": "^6.0.1",
     "sonner": "^2.0.7",
-    "stripe": "^18.4.0",
+    "stripe": "^18.5.0",
     "xml2js": "^0.6.2",
     "zod": "^4.0.17",
     "zustand": "^5.0.7"
@@ -72,7 +74,6 @@
     "@types/node-fetch": "^2.6.13",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/woocommerce__woocommerce-rest-api": "^1.0.5",
     "eslint": "^9",
     "eslint-config-next": "^15.5.4",
     "postcss": "^8",

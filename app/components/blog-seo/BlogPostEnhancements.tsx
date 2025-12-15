@@ -4,7 +4,7 @@ import { BlogPost } from '../../lib/blog-data';
 import InlineContentSuggestions, { getSuggestionsByTopic } from './InlineContentSuggestions';
 import SmartBreadcrumbs from '../internal-linking/SmartBreadcrumbs';
 import { getBlogBreadcrumbs } from '../../lib/internal-linking-data';
-import { WordPressPost } from '../../lib/wordpress';
+import { WordPressPost } from '../../lib/content';
 
 interface BlogPostEnhancementsProps {
   post: WordPressPost;

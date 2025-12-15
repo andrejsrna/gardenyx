@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useCart } from '@/app/context/CartContext';
-import { WooCommerceProduct } from '@/app/lib/wordpress';
+import { Product } from '@/app/lib/content-types';
 import { tracking } from '@/app/lib/tracking';
 import { toast } from 'sonner';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import { ShoppingCart, Minus, Plus } from 'lucide-react';
 import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@/app/lib/utils/sales-suspension';
 
 interface AddToCartButtonProps {
-  product: WooCommerceProduct;
+  product: Product;
 }
 
 export default function AddToCartButton({ product }: AddToCartButtonProps) {

@@ -1,166 +1,54 @@
 import { NextResponse } from 'next/server';
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import { getIronSession } from 'iron-session';
+import bcrypt from 'bcryptjs';
+import prisma from '@/app/lib/prisma';
+import { sessionConfig } from '@/app/lib/config/session';
+import type { SessionData } from '@/app/lib/config/session';
+import { attachOrdersToUser } from '@/app/lib/auth/attach-orders';
 
-// Initialize WooCommerce API
-const api = new WooCommerceRestApi({
-  url: process.env.WORDPRESS_URL!,
-  consumerKey: process.env.WC_CONSUMER_KEY!,
-  consumerSecret: process.env.WC_CONSUMER_SECRET!,
-  version: 'wc/v3',
-  queryStringAuth: true
-});
+export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password } = body;
+    const { email, password } = body as { email?: string; password?: string };
 
-    // First authenticate with WordPress
-    const authResponse = await fetch(`${process.env.WORDPRESS_URL}/wp-json/jwt-auth/v1/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: email,
-        password: password
-      })
+    if (!email || !password) {
+      return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    if (!user || !user.passwordHash) {
+      return NextResponse.json({ error: 'Nesprávne prihlasovacie údaje' }, { status: 401 });
+    }
+
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      return NextResponse.json({ error: 'Nesprávne prihlasovacie údaje' }, { status: 401 });
+    }
+
+    if (!user.emailVerifiedAt) {
+      return NextResponse.json({ error: 'Email nie je overený' }, { status: 401 });
+    }
+
+    // attach historical orders by billing email
+    attachOrdersToUser(user.email, user.id).catch(() => {});
+
+    const response = NextResponse.json({
+      id: user.id,
+      email: user.email,
+      first_name: user.firstName,
+      last_name: user.lastName
     });
 
-    const authData = await authResponse.json();
+    const session = await getIronSession<SessionData>(request, response, sessionConfig);
+    session.customerId = user.id;
+    session.isLoggedIn = true;
+    await session.save();
 
-    if (!authResponse.ok || !authData.token) {
-      return NextResponse.json(
-        { 
-          error: 'Nesprávne prihlasovacie údaje',
-          details: authData.message || 'Authentication failed'
-        },
-        { status: 401 }
-      );
-    }
-
-    try {
-      // Get customer data from WooCommerce using the email from JWT response
-      const { data: customers } = await api.get('customers', {
-        search: authData.user_email // Use the email from JWT response
-      });
-      if (!customers || customers.length === 0) {
-        return NextResponse.json(
-          { 
-            error: 'Nesprávne prihlasovacie údaje',
-            details: 'Customer not found'
-          },
-          { status: 401 }
-        );
-      }
-
-      const userData = customers[0];
-      
-      const response = NextResponse.json({
-        customerToken: authData.token,
-        customerId: userData.id,
-        firstName: userData.first_name || authData.user_display_name || '',
-        lastName: userData.last_name || '',
-        email: userData.email,
-        message: 'Login successful'
-      });
-
-      response.cookies.set({
-        name: 'customerToken',
-        value: authData.token,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/'
-      });
-
-      response.cookies.set({
-        name: 'customerId',
-        value: userData.id.toString(),
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/'
-      });
-
-      response.cookies.set({
-        name: 'customerName',
-        value: userData.first_name || authData.user_display_name || '',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/'
-      });
-
-      return response;
-
-    } catch (error) {
-      console.error('WooCommerce API error:', error);
-      if (error instanceof Error) {
-        console.error('Error details:', error.message);
-        // Log the full error object for debugging
-        console.error('Full error:', JSON.stringify(error, null, 2));
-      }
-      
-      // Try to get the customer directly using the user ID from JWT
-      try {
-        const userId = authData.data?.user?.id;
-        if (userId) {
-          const { data: customer } = await api.get(`customers/${userId}`);
-          
-          const response = NextResponse.json({
-            customerToken: authData.token,
-            customerId: customer.id,
-            message: 'Login successful',
-            user: {
-              id: customer.id,
-              email: customer.email,
-              first_name: customer.first_name,
-              last_name: customer.last_name,
-              username: authData.user_nicename
-            }
-          });
-
-          response.cookies.set({
-            name: 'customerToken',
-            value: authData.token,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/'
-          });
-
-          response.cookies.set({
-            name: 'customerId',
-            value: customer.id.toString(),
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/'
-          });
-
-          return response;
-        }
-      } catch (fallbackError) {
-        console.error('Fallback error:', fallbackError);
-      }
-
-      return NextResponse.json(
-        { 
-          error: 'Nepodarilo sa načítať údaje zákazníka',
-          details: error instanceof Error ? error.message : 'Failed to fetch customer data'
-        },
-        { status: 500 }
-      );
-    }
-
+    return response;
   } catch (error) {
-    console.error('Login error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Prihlásenie zlyhalo',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    );
+    console.error('[auth/login] error', error);
+    return NextResponse.json({ error: 'Prihlásenie zlyhalo' }, { status: 500 });
   }
-} 
+}

@@ -1,4 +1,4 @@
-import type { WordPressCategory } from "@/app/lib/wordpress";
+import type { WordPressCategory } from "@/app/lib/content";
 
 export default function CategoryHeader({ category }: { category: WordPressCategory }) {
     return (

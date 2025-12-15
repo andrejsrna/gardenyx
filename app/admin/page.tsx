@@ -1,55 +1,23 @@
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import prisma from '@/app/lib/prisma';
 
 export const dynamic = 'force-dynamic';
-
-type WooOrder = {
-  id: number;
-  total: string;
-  status: string;
-  date_created: string;
-  payment_method_title?: string;
-  billing?: {
-    first_name?: string;
-    last_name?: string;
-  };
-  shipping_lines?: Array<{ method_title?: string }>;
-  total_refunded?: string;
-};
-
-const api = new WooCommerceRestApi({
-  url: process.env.WORDPRESS_URL || '',
-  consumerKey: process.env.WC_CONSUMER_KEY || '',
-  consumerSecret: process.env.WC_CONSUMER_SECRET || '',
-  version: 'wc/v3'
-});
-
-async function fetchOrders(): Promise<WooOrder[]> {
-  if (!process.env.WORDPRESS_URL || !process.env.WC_CONSUMER_KEY || !process.env.WC_CONSUMER_SECRET) {
-    console.warn('[admin-dashboard] Missing WooCommerce credentials');
-    return [];
-  }
-
-  try {
-    const response = await api.get('orders', {
-      per_page: 25,
-      orderby: 'date',
-      order: 'desc'
-    });
-    return Array.isArray(response.data) ? (response.data as WooOrder[]) : [];
-  } catch (error) {
-    console.error('[admin-dashboard] Failed to fetch orders', error);
-    return [];
-  }
-}
 
 function formatCurrency(value: number) {
   return value.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 });
 }
 
-function formatDate(value: string) {
+function formatDate(value: string | Date) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '—';
   return date.toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+async function fetchOrders() {
+  return prisma.order.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 50,
+    include: { items: true, addresses: true }
+  });
 }
 
 export default async function AdminPage() {
@@ -58,12 +26,11 @@ export default async function AdminPage() {
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const last30d = orders.filter((order) => new Date(order.date_created) >= thirtyDaysAgo);
+  const last30d = orders.filter((order) => new Date(order.createdAt) >= thirtyDaysAgo);
 
   const revenue30d = last30d.reduce((sum, order) => {
-    const total = parseFloat(order.total || '0');
-    const refunded = parseFloat(order.total_refunded || '0');
-    return sum + (total - refunded);
+    const total = Number(order.total || 0);
+    return sum + total;
   }, 0);
 
   const metrics = [
@@ -78,93 +45,72 @@ export default async function AdminPage() {
   ];
 
   return (
-    <div className="space-y-10">
-      <header className="rounded-3xl border border-slate-800 bg-gradient-to-r from-emerald-500/15 via-slate-900 to-slate-950 p-8 shadow-2xl shadow-emerald-900/20">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-emerald-300/80">Admin</p>
-            <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">Riadiaca doska</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-300">
-              Rýchly prehľad objednávok, obsahu a zdravia kampaní. Čísla sú zatiaľ statické – napojíme na API, keď budú dostupné.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <button className="rounded-full border border-emerald-400/60 bg-emerald-500/15 px-4 py-2 text-sm font-medium text-emerald-100 transition hover:bg-emerald-500/25">
-              Exportovať prehľad
-            </button>
-            <button className="rounded-full border border-slate-700 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:border-emerald-400/60 hover:text-emerald-100">
-              Nastavenia
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="space-y-8">
+      <div className="rounded-3xl border border-slate-800 bg-gradient-to-r from-emerald-500/15 via-slate-900 to-slate-950 p-8 shadow-2xl shadow-emerald-900/20">
+        <p className="text-sm uppercase tracking-[0.2em] text-emerald-200/80">Dashboard</p>
+        <h1 className="mt-1 text-3xl font-semibold text-white">Prehľad objednávok</h1>
+        <p className="mt-2 text-sm text-slate-300">Údaje z internej databázy.</p>
+      </div>
 
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric) => (
-          <div
-            key={metric.label}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg shadow-emerald-900/10"
-          >
-            <p className="text-sm text-slate-400">{metric.label}</p>
-            <p className="mt-2 text-3xl font-semibold text-white">{metric.value}</p>
-            <p className="mt-2 text-xs font-medium text-emerald-300">{metric.change || 'Aktualizované z WooCommerce'}</p>
+          <div key={metric.label} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 shadow">
+            <p className="text-sm text-slate-300">{metric.label}</p>
+            <p className="mt-2 text-2xl font-semibold text-white">{metric.value}</p>
           </div>
         ))}
-      </section>
+      </div>
 
-      <section className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-3 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white">Posledné objednávky</h2>
-            <button className="text-sm text-emerald-300 hover:text-emerald-200">Zobraziť všetky</button>
-          </div>
-          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800">
-            {recentOrders.length ? (
-              <table className="min-w-full divide-y divide-slate-800 text-sm">
-                <thead className="bg-slate-900/80 text-slate-300">
-                  <tr>
-                    <th className="px-4 py-3 text-left font-medium">ID</th>
-                    <th className="px-4 py-3 text-left font-medium">Zákazník</th>
-                    <th className="px-4 py-3 text-left font-medium">Celkom</th>
-                    <th className="px-4 py-3 text-left font-medium">Stav</th>
-                    <th className="px-4 py-3 text-left font-medium">Platba / doprava</th>
-                    <th className="px-4 py-3 text-left font-medium">Dátum</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/80 bg-slate-950/40">
-                  {recentOrders.map((order) => {
-                    const hasName = order.billing?.first_name || order.billing?.last_name;
-                    const customerName = hasName
-                      ? `${order.billing?.first_name ?? ''} ${order.billing?.last_name ?? ''}`.trim()
-                      : '—';
-
-                    return (
-                    <tr key={order.id} className="hover:bg-slate-900/60">
-                      <td className="px-4 py-3 font-semibold text-white">#{order.id}</td>
-                      <td className="px-4 py-3 text-slate-200">{customerName}</td>
-                      <td className="px-4 py-3 text-slate-100">{formatCurrency(parseFloat(order.total || '0'))}</td>
-                      <td className="px-4 py-3">
-                        <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-200">
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-slate-300">
-                        {order.payment_method_title || order.shipping_lines?.[0]?.method_title || '—'}
-                      </td>
-                      <td className="px-4 py-3 text-slate-300">{formatDate(order.date_created)}</td>
-                    </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            ) : (
-              <div className="bg-slate-950/40 px-6 py-5 text-sm text-slate-300">
-                Nepodarilo sa načítať objednávky alebo žiadne nie sú k dispozícii.
-              </div>
-            )}
-          </div>
+      <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">Posledné objednávky</h2>
+          <span className="text-sm text-slate-300">Spolu: {orders.length}</span>
         </div>
-      </section>
+        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800">
+          <table className="min-w-full divide-y divide-slate-800 text-sm">
+            <thead className="bg-slate-900/80 text-slate-300">
+              <tr>
+                <th className="px-4 py-3 text-left font-medium">ID</th>
+                <th className="px-4 py-3 text-left font-medium">Zákazník</th>
+                <th className="px-4 py-3 text-left font-medium">Email</th>
+                <th className="px-4 py-3 text-left font-medium">Stav</th>
+                <th className="px-4 py-3 text-left font-medium">Platba</th>
+                <th className="px-4 py-3 text-left font-medium">Suma</th>
+                <th className="px-4 py-3 text-left font-medium">Dátum</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/80 bg-slate-950/40">
+              {recentOrders.map((order) => {
+                const billing = order.addresses.find((a) => a.type === 'BILLING');
+                return (
+                  <tr key={order.id} className="hover:bg-slate-900/60">
+                    <td className="px-4 py-3 font-semibold text-white">#{order.id}</td>
+                    <td className="px-4 py-3 text-slate-200">
+                      {[billing?.firstName, billing?.lastName].filter(Boolean).join(' ') || '—'}
+                    </td>
+                    <td className="px-4 py-3 text-slate-300">{billing?.email || '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide bg-emerald-500/15 text-emerald-200">
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-slate-300">{order.paymentMethod}</td>
+                    <td className="px-4 py-3 text-slate-100">{order.total.toString()} EUR</td>
+                    <td className="px-4 py-3 text-slate-300">{formatDate(order.createdAt)}</td>
+                  </tr>
+                );
+              })}
+              {recentOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-4 py-6 text-center text-slate-300">
+                    Nepodarilo sa načítať objednávky.
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

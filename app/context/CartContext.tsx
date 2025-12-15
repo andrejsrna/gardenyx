@@ -12,6 +12,8 @@ interface CartItem {
     price: number;
     quantity: number;
     image?: string;
+    sku?: string;
+    slug?: string;
 }
 
 interface AbandonedCart {
@@ -77,33 +79,12 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             toast.error("Pridajte produkty do košíka pre aplikáciu kupónu.");
             return false;
         }
-        const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        try {
-            const response = await fetch('/api/woocommerce/coupons/validate', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({code, items, totalAmount}),
-            });
-            if (!response.ok) {
-                const error = await response.json();
-                if (appliedCoupon === code) removeCoupon();
-                toast.error(error.message || 'Neplatný kupón alebo nespĺňa podmienky.');
-                return false;
-            }
-            const data = await response.json();
-            setAppliedCoupon(code);
-            setDiscountAmount(data.discount || 0);
-            setCouponType(data.coupon?.discount_type || null);
-            setCouponAmountRaw(data.coupon?.amount ? parseFloat(data.coupon.amount) : null);
-            localStorage.setItem('appliedCoupon', code);
-            toast.success('Kupón bol úspešne aplikovaný');
-            return true;
-        } catch (error) {
-            console.error('[CartContext] Error applying coupon:', error);
-            toast.error('Chyba pri aplikácii kupónu. Skúste znova.');
-            if (appliedCoupon === code) removeCoupon();
-            return false;
+        // Coupons disabled
+        if (appliedCoupon === code) {
+            removeCoupon();
         }
+        toast.error('Kupóny momentálne nie sú podporované.');
+        return false;
     }, [items, appliedCoupon, removeCoupon]);
 
     const applyExitCoupon = useCallback(async (code: string) => {

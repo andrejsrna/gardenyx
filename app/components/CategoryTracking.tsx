@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import { tracking } from '../lib/tracking';
-import { WooCommerceProduct } from '../lib/wordpress';
+import type { Product } from '../lib/content-types';
 
 interface CategoryTrackingProps {
   categoryName: string;
-  products?: WooCommerceProduct[];
+  products?: Product[];
 }
 
 export default function CategoryTracking({ categoryName, products }: CategoryTrackingProps) {

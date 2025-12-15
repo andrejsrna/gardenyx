@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { WordPressPost } from '@/app/lib/wordpress';
+import type { WordPressPost } from '@/app/lib/content';
 import FeaturedImageWithFallback from '../FeaturedImageWithFallback';
 
 const PostCard = ({ post, index }: { post: WordPressPost; index: number }) => {

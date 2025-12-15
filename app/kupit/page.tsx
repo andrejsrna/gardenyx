@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getRankMathSEO } from '../lib/wordpress';
+import { getRankMathSEO } from '../lib/content';
 import { parseHTML } from '../lib/html-parser';
 import ShopContent from './ShopContent';
 import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   
   // Get RankMath SEO data for shop page
-  const seoData = await getRankMathSEO(`${process.env.WORDPRESS_URL}/kupit`);
+  const seoData = await getRankMathSEO();
   
   if (seoData) {
     // Parse the head HTML using our utility

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { WooCommerceProduct } from '../../lib/wordpress';
+import type { Product } from '../../lib/content-types';
+import { getProducts } from '../../lib/orders';
 import ProductCard from '../ProductCard'; // Import the shared ProductCard component
 
 const DEFAULT_PRODUCT_IDS = [47, 49, 24, 27, 30];
@@ -21,7 +22,7 @@ export default function Products({
   gridClassName = 'grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
   loadingGridClassName = 'animate-pulse grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
 }: ProductsProps) {
-  const [products, setProducts] = useState<WooCommerceProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,17 +39,7 @@ export default function Products({
       setError(null);
       try {
         // Fetch products by specific IDs using the 'include' parameter
-        const url = includeIds ? `/api/woocommerce/products?include=${includeIds}` : '/api/woocommerce/products';
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (!response.ok) {
-          console.error('API Error Response:', data);
-          throw new Error(
-            data.message ||
-              (includeIds ? `Failed to fetch products with IDs: ${includeIds}` : 'Failed to fetch products'),
-          );
-        }
+        const data = includeIds ? await getProducts({ include: includeIds }) : await getProducts();
 
         const orderMap = new Map(productIds.map((id, index) => [id, index]));
 

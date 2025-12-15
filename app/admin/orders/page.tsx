@@ -1,21 +1,25 @@
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import Link from 'next/link';
+import { Prisma } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+import prisma from '@/app/lib/prisma';
 
 type Order = {
-  id: number;
+  id: string;
   status: string;
-  total: string;
+  total: Prisma.Decimal;
   currency: string;
-  billing?: {
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-  };
-  shipping?: {
-    city?: string;
-  };
-  payment_method_title?: string;
-  date_created?: string;
+  addresses: Array<{
+    type: string;
+    firstName: string;
+    lastName: string;
+    email: string | null;
+  }>;
+  paymentMethod: string;
+  createdAt: string;
+  meta: Array<{
+    key: string;
+    value: string | null;
+  }>;
 };
 
 const statusLabels: Record<string, string> = {
@@ -52,31 +56,16 @@ const formatDate = (value?: string) => {
   }).format(new Date(value));
 };
 
-const getWooClient = () => {
-  const url = process.env.WORDPRESS_URL;
-  const consumerKey = process.env.WC_CONSUMER_KEY;
-  const consumerSecret = process.env.WC_CONSUMER_SECRET;
-  if (!url || !consumerKey || !consumerSecret) {
-    throw new Error('WooCommerce credentials are missing');
-  }
-  return new WooCommerceRestApi({
-    url,
-    consumerKey,
-    consumerSecret,
-    version: 'wc/v3',
-  });
-};
+const getMetaValue = (order: Order, key: string) => order.meta?.find(m => m.key === key)?.value || null;
 
-async function fetchOrders(page: number, perPage: number): Promise<{ orders: Order[]; total: number }> {
-  const api = getWooClient();
-  const { data, headers } = await api.get('orders', {
-    per_page: perPage,
-    page,
-    orderby: 'date',
-    order: 'desc',
-  });
-  const total = Number(headers?.['x-wp-total'] || data.length || 0);
-  return { orders: data as Order[], total };
+async function deleteOrderAction(formData: FormData) {
+  'use server';
+  const id = formData.get('orderId');
+  if (!id || typeof id !== 'string') {
+    throw new Error('Missing order id');
+  }
+  await prisma.order.delete({ where: { id } });
+  revalidatePath('/admin/orders');
 }
 
 type PageProps = {
@@ -90,15 +79,15 @@ export default async function OrdersPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const currentPage = Math.max(1, Number(params?.page) || 1);
 
-  let orders: Order[] = [];
-  let total = 0;
-  try {
-    const result = await fetchOrders(currentPage, perPage);
-    orders = result.orders;
-    total = result.total;
-  } catch (error) {
-    console.error('[admin-orders] Failed to fetch orders', error);
-  }
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: perPage,
+      skip: (currentPage - 1) * perPage,
+      include: { addresses: true, meta: true }
+    }) as unknown as Promise<Order[]>,
+    prisma.order.count()
+  ]);
 
   const totalPages = Math.max(1, Math.ceil(total / perPage));
 
@@ -109,7 +98,7 @@ export default async function OrdersPage({ searchParams }: PageProps) {
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-emerald-200/80">Objednávky</p>
             <h1 className="mt-1 text-3xl font-semibold text-white">Správa objednávok</h1>
-            <p className="mt-2 text-sm text-slate-300">Posledné objednávky z WooCommerce (stránkovanie po {perPage}).</p>
+            <p className="mt-2 text-sm text-slate-300">Posledné objednávky z internej DB (stránkovanie po {perPage}).</p>
           </div>
           <div className="flex gap-3">
             <Link
@@ -138,6 +127,8 @@ export default async function OrdersPage({ searchParams }: PageProps) {
                 <th className="px-4 py-3 text-left font-medium">Platba</th>
                 <th className="px-4 py-3 text-left font-medium">Suma</th>
                 <th className="px-4 py-3 text-left font-medium">Dátum</th>
+                <th className="px-4 py-3 text-left font-medium">Packeta</th>
+                <th className="px-4 py-3 text-left font-medium">Akcie</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/80 bg-slate-950/40">
@@ -145,19 +136,51 @@ export default async function OrdersPage({ searchParams }: PageProps) {
                 <tr key={order.id} className="hover:bg-slate-900/60">
                   <td className="px-4 py-3 font-semibold text-white">#{order.id}</td>
                   <td className="px-4 py-3 text-slate-200">
-                    {[order.billing?.first_name, order.billing?.last_name].filter(Boolean).join(' ') || '—'}
+                    {(() => {
+                      const billing = order.addresses?.find(a => a.type === 'BILLING');
+                      return billing ? [billing.firstName, billing.lastName].filter(Boolean).join(' ') || '—' : '—';
+                    })()}
                   </td>
-                  <td className="px-4 py-3 text-slate-300">{order.billing?.email || '—'}</td>
+                  <td className="px-4 py-3 text-slate-300">
+                    {order.addresses?.find(a => a.type === 'BILLING')?.email || '—'}
+                  </td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusClass(order.status)}`}>
                       {statusLabels[order.status] || order.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-300">{order.payment_method_title || '—'}</td>
+                  <td className="px-4 py-3 text-slate-300">{order.paymentMethod || '—'}</td>
                   <td className="px-4 py-3 text-slate-100">
-                    {order.total} {order.currency}
+                    {order.total?.toString()} {order.currency}
                   </td>
-                  <td className="px-4 py-3 text-slate-300">{formatDate(order.date_created)}</td>
+                  <td className="px-4 py-3 text-slate-300">{formatDate(order.createdAt)}</td>
+                  <td className="px-4 py-3 text-slate-300">
+                    {(() => {
+                      const code = getMetaValue(order, '_packeta_status_code');
+                      const text = getMetaValue(order, '_packeta_status_text');
+                      const barcode = getMetaValue(order, '_packeta_barcode');
+                      const display = text || (code ? `Status ${code}` : '—');
+                      if (barcode) {
+                        return (
+                          <Link href={`https://tracking.packeta.com/sk/?id=${barcode}`} className="text-emerald-200 hover:text-emerald-100 underline">
+                            {display}
+                          </Link>
+                        );
+                      }
+                      return display;
+                    })()}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <form action={deleteOrderAction}>
+                      <input type="hidden" name="orderId" value={order.id} />
+                      <button
+                        type="submit"
+                        className="rounded-lg border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-100 hover:border-rose-300 hover:text-white"
+                      >
+                        Vymazať
+                      </button>
+                    </form>
+                  </td>
                 </tr>
               ))}
               {orders.length === 0 ? (
