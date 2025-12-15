@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { runReactivationJob } from '@/app/lib/newsletter/reactivation-job';
 import { runReviewRequestJob } from '@/app/lib/reviews/review-request-job';
-import packetaHandler from './packeta/route';
+import * as packetaHandler from './packeta/route';
 
 const isAuthorized = (request: Request) => {
   const token = process.env.NEWSLETTER_ADMIN_TOKEN;
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         return;
       }
       if (key === 'packeta') {
-        const res = await packetaHandler(request);
+        const res = await packetaHandler.POST(request);
         results.push({ job: key, status: res.status, data: await res.json().catch(() => ({})) });
         return;
       }
