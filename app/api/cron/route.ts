@@ -1,16 +1,12 @@
 import { NextResponse } from 'next/server';
+import { runReactivationJob } from '@/app/lib/newsletter/reactivation-job';
+import { runReviewRequestJob } from '@/app/lib/reviews/review-request-job';
+import packetaHandler from './packeta/route';
 
 const isAuthorized = (request: Request) => {
   const token = process.env.NEWSLETTER_ADMIN_TOKEN;
   if (!token) return false;
   return request.headers.get('x-admin-token') === token;
-};
-
-const handlers: Record<string, string | string[]> = {
-  reactivation: '/api/cron/reactivation',
-  packeta: '/api/cron/packeta',
-  reviews: '/api/cron/reviews',
-  all: ['/api/cron/reactivation', '/api/cron/packeta', '/api/cron/reviews'],
 };
 
 export async function POST(request: Request) {
@@ -20,45 +16,42 @@ export async function POST(request: Request) {
 
   const url = new URL(request.url);
   const job = url.searchParams.get('job') || 'reactivation';
-  const target = handlers[job];
+  const limit = Math.max(1, Math.min(500, Number(url.searchParams.get('limit')) || 200));
 
-  if (!target) {
-    return NextResponse.json({ error: 'Unknown job' }, { status: 400 });
-  }
-
-  const targets = Array.isArray(target) ? target : [target];
-  const results: Array<{ proxied: string; status: number; data: unknown }> = [];
+  const results: Array<{ job: string; status: number; data: unknown }> = [];
 
   try {
-    for (const path of targets) {
-      const targetUrl = new URL(path, url.origin);
-      // forward all params except job
-      url.searchParams.forEach((value, key) => {
-        if (key !== 'job') targetUrl.searchParams.set(key, value);
-      });
-
-      try {
-        const res = await fetch(targetUrl.toString(), {
-          method: 'POST',
-          headers: {
-            'x-admin-token': request.headers.get('x-admin-token') || '',
-          },
-        });
-
-        const data = await res.json().catch(() => ({ error: 'No JSON body' }));
-        results.push({ proxied: path, status: res.status, data });
-      } catch (error) {
-        results.push({ proxied: path, status: 500, data: { error: String(error) } });
+    const runJob = async (key: string) => {
+      if (key === 'reactivation') {
+        const data = await runReactivationJob(limit);
+        results.push({ job: key, status: 200, data });
+        return;
       }
+      if (key === 'reviews') {
+        const data = await runReviewRequestJob(limit);
+        results.push({ job: key, status: 200, data });
+        return;
+      }
+      if (key === 'packeta') {
+        const res = await packetaHandler(request);
+        results.push({ job: key, status: res.status, data: await res.json().catch(() => ({})) });
+        return;
+      }
+      results.push({ job: key, status: 400, data: { error: 'Unknown job' } });
+    };
+
+    if (job === 'all') {
+      await runJob('reactivation');
+      await runJob('packeta');
+      await runJob('reviews');
+    } else {
+      await runJob(job);
     }
 
-    return NextResponse.json({
-      proxied: targets,
-      results,
-    });
+    return NextResponse.json({ results });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Cron proxy failed', detail: error instanceof Error ? error.message : String(error) },
+      { error: 'Cron handler failed', detail: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
