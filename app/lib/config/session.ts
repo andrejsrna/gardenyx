@@ -1,8 +1,14 @@
+import crypto from 'crypto';
 import { SessionOptions } from 'iron-session';
+
+const rawSessionSecret =
+  process.env.SESSION_SECRET || 'complex_password_at_least_32_characters_long';
+
+const derivedSessionPassword = crypto.createHash('sha256').update(rawSessionSecret).digest('hex');
 
 export const sessionConfig: SessionOptions = {
   cookieName: 'session',
-  password: process.env.SESSION_SECRET || 'complex_password_at_least_32_characters_long',
+  password: derivedSessionPassword,
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
