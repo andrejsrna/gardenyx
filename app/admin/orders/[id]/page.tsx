@@ -33,13 +33,13 @@ const formatDate = (value?: Date | string) => {
   }).format(date);
 };
 
-type PageProps = {
+type OrderPageProps = {
   params: {
     id: string;
   };
 };
 
-export default async function OrderDetailPage({ params }: PageProps) {
+export default async function OrderDetailPage({ params }: OrderPageProps) {
   const order = await prisma.order.findUnique({
     where: { id: params.id },
     include: {
