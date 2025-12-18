@@ -74,9 +74,30 @@ export async function POST(request: Request) {
               .catch(err => console.warn(`[invoice email] failed for order ${order.id}`, err));
           }
         }
-        if (billingEmail && emailStatusCodes.has(status.code)) {
-          sendPacketaStatusEmail(order as Prisma.OrderGetPayload<{ include: { items: true; addresses: true } }>, billingEmail, status.code, barcode)
-            .catch(err => console.warn('[packeta status email] failed', err));
+        const notifiedCode = order.meta.find(m => m.key === '_packeta_status_notified_code')?.value;
+        if (billingEmail && emailStatusCodes.has(status.code) && String(status.code) !== notifiedCode) {
+          try {
+            await sendPacketaStatusEmail(order as Prisma.OrderGetPayload<{ include: { items: true; addresses: true } }>, billingEmail, status.code, barcode);
+            const existingNotified = await prisma.orderMeta.findFirst({
+              where: { orderId: order.id, key: '_packeta_status_notified_code' }
+            });
+            if (existingNotified) {
+              await prisma.orderMeta.update({
+                where: { id: existingNotified.id },
+                data: { value: String(status.code) }
+              });
+            } else {
+              await prisma.orderMeta.create({
+                data: {
+                  orderId: order.id,
+                  key: '_packeta_status_notified_code',
+                  value: String(status.code)
+                }
+              });
+            }
+          } catch (err) {
+            console.warn('[packeta status email] failed', err);
+          }
         }
       } catch (err) {
         console.warn(`[packeta sync] failed for order ${order.id}`, err);
