@@ -134,9 +134,32 @@ export async function sendOrderNotificationToAdmin(order: OrderWithRelations, cu
     { label: 'Doprava', value: order.shippingMethod || '—' }
   ]);
 
+  const itemsHtml = order.items.map(item => `
+    <tr>
+      <td style="padding:8px;border:1px solid #e2e8f0;">${item.productName}</td>
+      <td style="padding:8px;border:1px solid #e2e8f0;text-align:right;">${item.quantity}</td>
+      <td style="padding:8px;border:1px solid #e2e8f0;text-align:right;">${formatCurrency(item.total)}</td>
+    </tr>
+  `).join('');
+
+  const itemsTable = order.items.length ? `
+    <h3 style="margin:16px 0 8px 0;color:#0f172a;">Položky objednávky</h3>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
+      <thead>
+        <tr style="background:#f8fafc;">
+          <th style="padding:8px;border:1px solid #e2e8f0;text-align:left;">Produkt</th>
+          <th style="padding:8px;border:1px solid #e2e8f0;text-align:right;">Množ.</th>
+          <th style="padding:8px;border:1px solid #e2e8f0;text-align:right;">Spolu</th>
+        </tr>
+      </thead>
+      <tbody>${itemsHtml}</tbody>
+    </table>
+  ` : '';
+
   const content = `
     ${summary}
     ${customerEmail ? infoNote(`Email zákazníka: <strong>${customerEmail}</strong>`) : ''}
+    ${itemsTable}
     <p style="margin:0;color:#475569;">Podrobnosti nájdete v admin DB.</p>
   `;
 

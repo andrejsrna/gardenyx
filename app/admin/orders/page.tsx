@@ -3,6 +3,7 @@ import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import prisma from '@/app/lib/prisma';
 import { fetchPacketaStatus, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
+import { statusClass, statusLabels } from '@/app/admin/orders/constants';
 
 type Order = {
   id: string;
@@ -21,29 +22,6 @@ type Order = {
     key: string;
     value: string | null;
   }>;
-};
-
-const statusLabels: Record<string, string> = {
-  pending: 'Čaká na platbu',
-  processing: 'Spracovanie',
-  on_hold: 'Pozdržané',
-  completed: 'Doručené',
-  cancelled: 'Zrušené',
-  refunded: 'Vrátené',
-  failed: 'Zlyhalo',
-};
-
-const statusClass = (status: string) => {
-  switch (status) {
-    case 'processing':
-    case 'completed':
-      return 'bg-emerald-500/15 text-emerald-200';
-    case 'pending':
-    case 'on_hold':
-      return 'bg-amber-500/15 text-amber-200';
-    default:
-      return 'bg-rose-500/15 text-rose-200';
-  }
 };
 
 const formatDate = (value?: string) => {
@@ -192,7 +170,15 @@ export default async function OrdersPage({ searchParams }: PageProps) {
             <tbody className="divide-y divide-slate-800/80 bg-slate-950/40">
               {orders.map((order) => (
                 <tr key={order.id} className="hover:bg-slate-900/60">
-                  <td className="px-4 py-3 font-semibold text-white">#{order.id}</td>
+                  <td className="px-4 py-3 font-semibold text-white">
+                    <Link
+                      href={`/admin/orders/${order.id}`}
+                      className="text-emerald-200 hover:text-emerald-100 underline-offset-4 hover:underline"
+                      title="Zobraziť objednávku"
+                    >
+                      #{order.id}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3 text-slate-200">
                     {(() => {
                       const billing = order.addresses?.find(a => a.type === 'BILLING');
@@ -236,15 +222,23 @@ export default async function OrdersPage({ searchParams }: PageProps) {
                     })()}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <form action={deleteOrderAction}>
-                      <input type="hidden" name="orderId" value={order.id} />
-                      <button
-                        type="submit"
-                        className="rounded-lg border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-100 hover:border-rose-300 hover:text-white"
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/admin/orders/${order.id}`}
+                        className="rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-xs font-semibold text-slate-200 hover:border-emerald-400/70 hover:text-emerald-100"
                       >
-                        Vymazať
-                      </button>
-                    </form>
+                        Detaily
+                      </Link>
+                      <form action={deleteOrderAction}>
+                        <input type="hidden" name="orderId" value={order.id} />
+                        <button
+                          type="submit"
+                          className="rounded-lg border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-100 hover:border-rose-300 hover:text-white"
+                        >
+                          Vymazať
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               ))}
