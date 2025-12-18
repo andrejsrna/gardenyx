@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
+import type { PageProps } from '../../../../.next/types/app/admin/orders/[id]/page';
 
 const paymentMethodLabels: Record<string, string> = {
   cod: 'Dobierka',
@@ -33,17 +34,15 @@ const formatDate = (value?: Date | string) => {
   }).format(date);
 };
 
-type OrderPageParams = {
-  id: string;
-};
+export default async function OrderDetailPage({ params }: PageProps) {
+  const resolvedParams = params ? await params : undefined;
+  const orderId = resolvedParams?.id;
+  if (!orderId) {
+    notFound();
+  }
 
-export default async function OrderDetailPage({
-  params,
-}: {
-  params: OrderPageParams;
-}) {
   const order = await prisma.order.findUnique({
-    where: { id: params.id },
+    where: { id: orderId },
     include: {
       addresses: true,
       items: true,
