@@ -152,7 +152,7 @@ export default async function OrdersPage({ searchParams }: PageProps) {
           <h2 className="text-lg font-semibold text-white">Posledné objednávky</h2>
           <span className="text-sm text-slate-300">Spolu: {total}</span>
         </div>
-        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800">
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-800">
           <table className="min-w-full divide-y divide-slate-800 text-sm">
             <thead className="bg-slate-900/80 text-slate-300">
               <tr>
@@ -164,6 +164,7 @@ export default async function OrdersPage({ searchParams }: PageProps) {
                 <th className="px-4 py-3 text-left font-medium">Suma</th>
                 <th className="px-4 py-3 text-left font-medium">Dátum</th>
                 <th className="px-4 py-3 text-left font-medium">Packeta</th>
+                <th className="px-4 py-3 text-left font-medium">Faktúra</th>
                 <th className="px-4 py-3 text-left font-medium">Akcie</th>
               </tr>
             </thead>
@@ -219,6 +220,24 @@ export default async function OrdersPage({ searchParams }: PageProps) {
                         );
                       }
                       return display;
+                    })()}
+                  </td>
+                  <td className="px-4 py-3 text-slate-300">
+                    {(() => {
+                      const rawInvoiceUrl = getMetaValue(order, '_invoice_url');
+                      const invoiceUrl = rawInvoiceUrl?.startsWith('http') ? rawInvoiceUrl : rawInvoiceUrl ? `https://${rawInvoiceUrl.replace(/^\/+/, '')}` : null;
+                      const invoiceNumber = getMetaValue(order, '_invoice_number');
+                      if (!invoiceUrl) return '—';
+                      return (
+                        <Link
+                          href={invoiceUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm text-emerald-300 underline hover:text-emerald-200"
+                        >
+                          {invoiceNumber ? `Stiahnuť (${invoiceNumber})` : 'Stiahnuť faktúru'}
+                        </Link>
+                      );
                     })()}
                   </td>
                   <td className="px-4 py-3 text-right">

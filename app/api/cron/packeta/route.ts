@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
-import { sendPacketaStatusEmail } from '@/app/lib/email/order-confirmation';
+import { sendInvoiceLinkEmail, sendPacketaStatusEmail } from '@/app/lib/email/order-confirmation';
 import { fetchPacketaStatus, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
+import { createInvoiceForOrder } from '@/app/lib/invoice/create-invoice';
 
 const isAuthorized = (request: Request) => {
   const token = process.env.NEWSLETTER_ADMIN_TOKEN;
@@ -63,6 +64,16 @@ export async function POST(request: Request) {
           }
         });
         updated += 1;
+        if (newStatus === OrderStatus.completed) {
+          const invoiceResult = await createInvoiceForOrder(order).catch(err => {
+            console.warn(`[invoice] failed for order ${order.id}`, err);
+            return null;
+          });
+          if (invoiceResult && billingEmail) {
+            sendInvoiceLinkEmail(order as Prisma.OrderGetPayload<{ include: { items: true; addresses: true } }>, billingEmail, invoiceResult.url, invoiceResult.invoiceNumber)
+              .catch(err => console.warn(`[invoice email] failed for order ${order.id}`, err));
+          }
+        }
         if (billingEmail && emailStatusCodes.has(status.code)) {
           sendPacketaStatusEmail(order as Prisma.OrderGetPayload<{ include: { items: true; addresses: true } }>, billingEmail, status.code, barcode)
             .catch(err => console.warn('[packeta status email] failed', err));

@@ -399,54 +399,72 @@ export default function AccountPage() {
               <div className="border-t border-gray-200">
                 {orders.length > 0 ? (
                   <div className="divide-y divide-gray-200">
-                    {orders.map((order) => (
-                      <div key={order.id} className="p-4 hover:bg-gray-50">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              Objednávka #{order.id}
+                    {orders.map((order) => {
+                      const rawInvoiceUrl = order.meta?.find(meta => meta.key === '_invoice_url')?.value;
+                      const invoiceUrl = rawInvoiceUrl?.startsWith('http') ? rawInvoiceUrl : rawInvoiceUrl ? `https://${rawInvoiceUrl.replace(/^\/+/, '')}` : null;
+                      const invoiceNumber = order.meta?.find(meta => meta.key === '_invoice_number')?.value;
+                      return (
+                        <div key={order.id} className="p-4 hover:bg-gray-50">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">
+                                Objednávka #{order.id}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {new Date(order.createdAt).toLocaleDateString('sk-SK')}
+                              </div>
+                              <div className="mt-2">
+                                {order.items.map((item, index) => (
+                                  <div key={index} className="text-sm text-gray-600">
+                                    {item.productName} × {item.quantity}
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="mt-2 flex flex-col gap-1">
+                                {order.meta?.find(meta => meta.key === '_packeta_barcode')?.value && (
+                                  <a
+                                    href={`https://tracking.app.packeta.com/sk/${order.meta.find(meta => meta.key === '_packeta_barcode')?.value}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-sm text-green-600 hover:text-green-700"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                    </svg>
+                                    Sledovať zásielku
+                                  </a>
+                                )}
+                                {invoiceUrl && (
+                                  <a
+                                    href={invoiceUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-green-600 hover:text-green-700 inline-flex items-center gap-1"
+                                  >
+                                    <span>Stiahnuť faktúru</span>
+                                    {invoiceNumber && (
+                                      <span className="text-xs text-gray-500">({invoiceNumber})</span>
+                                    )}
+                                  </a>
+                                )}
+                              </div>
                             </div>
-                            <div className="text-sm text-gray-500">
-                              {new Date(order.createdAt).toLocaleDateString('sk-SK')}
-                            </div>
-                            <div className="mt-2">
-                              {order.items.map((item, index) => (
-                                <div key={index} className="text-sm text-gray-600">
-                                  {item.productName} × {item.quantity}
-                                </div>
-                              ))}
-                            </div>
-                            <div className="mt-2">
-                              {order.meta?.find(meta => meta.key === '_packeta_barcode')?.value && (
-                                <a
-                                  href={`https://tracking.app.packeta.com/sk/${order.meta.find(meta => meta.key === '_packeta_barcode')?.value}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-2 text-sm text-green-600 hover:text-green-700"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                                  </svg>
-                                  Sledovať zásielku
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm font-medium text-gray-900">
-                              {order.total.toString()} €
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {order.status === 'processing'
-                                ? 'Spracováva sa'
-                                : order.status === 'completed'
-                                ? 'Dokončená'
-                                : order.status}
+                            <div className="text-right">
+                              <div className="text-sm font-medium text-gray-900">
+                                {order.total.toString()} €
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {order.status === 'processing'
+                                  ? 'Spracováva sa'
+                                  : order.status === 'completed'
+                                  ? 'Dokončená'
+                                  : order.status}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="p-4 text-center text-gray-500">

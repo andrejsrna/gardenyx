@@ -19,6 +19,17 @@ declare global {
       PRISMA_DB_SCHEMA?: string;
       ADMIN_DASHBOARD_USER: string;
       ADMIN_DASHBOARD_PASSWORD: string;
+      INVOICE_SERVICE_URL?: string;
+      INVOICE_SERVICE_KEY?: string;
+      INVOICE_DUE_DAYS?: string;
+      R2_API?: string;
+      R2_DOMAIN?: string;
+      R2_TOKEN?: string;
+      R2_ACCESS_KEY?: string;
+      R2_SECRET_KEY?: string;
+      R2_ENDPOINT?: string;
+      R2_BUCKET?: string;
+      INVOICE_MIN_DATE?: string;
     }
   }
 }

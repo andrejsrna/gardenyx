@@ -241,3 +241,47 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
 
   return api.sendTransacEmail(email);
 }
+
+export async function sendInvoiceLinkEmail(order: OrderWithRelations, to: string, invoiceUrl: string, invoiceNumber: string) {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey || !to || !invoiceUrl) return;
+
+  const billing = order.addresses.find(a => a.type === 'BILLING');
+  const api = new TransactionalEmailsApi();
+  api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
+
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
+  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+
+  const rows = [
+    { label: 'Objednávka', value: `#${order.orderNumber}` },
+    { label: 'Spôsob platby', value: order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou' },
+    { label: 'Doprava', value: order.shippingMethod || '—' },
+    { label: 'Suma', value: `${order.total.toString()} ${order.currency}` }
+  ];
+
+  const content = `
+    ${infoNote(`Faktúra <strong>${invoiceNumber}</strong> je už pripravená. Nájdete ju vždy v sekcii "Moje objednávky".`)}
+    ${keyValueTable(rows)}
+    <p style="margin:0;color:#475569;">Ak chcete faktúru ihneď stiahnuť, kliknite na tlačidlo nižšie.</p>
+  `;
+
+  const greeting = billing?.firstName ? `Ahoj ${billing.firstName},` : 'Ahoj,';
+  const footerNote = 'Faktúru nájdete aj vo svojom účte pod objednávkami.';
+
+  const email = new SendSmtpEmail();
+  email.subject = `Faktúra ${invoiceNumber} k objednávke #${order.orderNumber}`;
+  email.htmlContent = renderEmail({
+    title: 'Faktúra je pripravená',
+    preheader: `Stiahni faktúru ${invoiceNumber}`,
+    greeting,
+    content,
+    highlight: `Faktúra ${invoiceNumber}`,
+    cta: { label: 'Stiahnuť faktúru', url: invoiceUrl },
+    footerNote
+  });
+  email.sender = { name: senderName, email: senderEmail };
+  email.to = [{ email: to }];
+
+  return api.sendTransacEmail(email);
+}

@@ -18,10 +18,12 @@
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.954.0",
     "@getbrevo/brevo": "^3.0.1",
     "@heroicons/react": "^2.2.0",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
+    "@react-pdf/renderer": "^4.3.1",
     "@sentry/nextjs": "^10.30.0",
     "@stripe/react-stripe-js": "^3.9.0",
     "@stripe/stripe-js": "^7.8.0",
@@ -79,6 +81,8 @@
     "eslint-config-next": "^15.5.4",
     "postcss": "^8",
     "tailwindcss": "^4.1.11",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"
   }
 }

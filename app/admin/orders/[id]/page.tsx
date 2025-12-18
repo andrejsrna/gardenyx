@@ -56,6 +56,9 @@ export default async function OrderDetailPage({ params }: PageProps) {
 
   const billingAddress = order.addresses.find(address => address.type === 'BILLING');
   const shippingAddress = order.addresses.find(address => address.type === 'SHIPPING');
+  const rawInvoiceUrl = order.meta.find(m => m.key === '_invoice_url')?.value;
+  const invoiceUrl = rawInvoiceUrl?.startsWith('http') ? rawInvoiceUrl : rawInvoiceUrl ? `https://${rawInvoiceUrl.replace(/^\/+/, '')}` : null;
+  const invoiceNumber = order.meta.find(m => m.key === '_invoice_number')?.value;
 
   const orderNumberLabel = order.orderNumber ? `#${order.orderNumber}` : `#${order.id}`;
 
@@ -156,7 +159,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
+        <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
             <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Fakturačná adresa</p>
@@ -178,14 +181,33 @@ export default async function OrderDetailPage({ params }: PageProps) {
             <p className="mt-2 text-sm text-slate-200">{order.customerNote}</p>
           </div>
         ) : null}
-      </div>
-
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Položky objednávky</h2>
-          <p className="text-sm text-slate-300">{order.items.length} položiek</p>
         </div>
-        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/40">
+
+        {invoiceUrl && (
+          <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Faktúra</p>
+            <div className="mt-2">
+              <Link
+                href={invoiceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-emerald-300 hover:text-emerald-200 underline flex items-center gap-2"
+              >
+                <span>Stiahnuť faktúru {invoiceNumber ? `(${invoiceNumber})` : ''}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12.75h-15m7.5-7.5v15" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-white">Položky objednávky</h2>
+            <p className="text-sm text-slate-300">{order.items.length} položiek</p>
+          </div>
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/40">
           <table className="min-w-full divide-y divide-slate-800 text-sm">
             <thead className="bg-slate-900/80 text-slate-300">
               <tr>
