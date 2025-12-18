@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { runReactivationJob } from '@/app/lib/newsletter/reactivation-job';
 import { runReviewRequestJob } from '@/app/lib/reviews/review-request-job';
+import { runGuidanceCheckinJob } from '@/app/lib/orders/guidance-checkin-job';
 import * as packetaHandler from './packeta/route';
 
 const isAuthorized = (request: Request) => {
@@ -32,6 +33,11 @@ export async function POST(request: Request) {
         results.push({ job: key, status: 200, data });
         return;
       }
+      if (key === 'guidance') {
+        const data = await runGuidanceCheckinJob(limit);
+        results.push({ job: key, status: 200, data });
+        return;
+      }
       if (key === 'packeta') {
         const res = await packetaHandler.POST(request);
         results.push({ job: key, status: res.status, data: await res.json().catch(() => ({})) });
@@ -44,6 +50,7 @@ export async function POST(request: Request) {
       await runJob('reactivation');
       await runJob('packeta');
       await runJob('reviews');
+      await runJob('guidance');
     } else {
       await runJob(job);
     }
