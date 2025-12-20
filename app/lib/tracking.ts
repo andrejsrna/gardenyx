@@ -1,6 +1,6 @@
 import { event as gtagEvent } from '../components/GoogleAnalytics';
 import { fbq } from '../components/FacebookPixel';
-import { sendFacebookConversionEvent, hashUserData } from './facebook-conversion';
+import { sendFacebookConversionEvent } from './facebook-conversion';
 import { getCookie } from 'cookies-next';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -54,8 +54,7 @@ const trackFbEventWithConversionAPI = async (
   
   // Track with both client-side pixel and server-side conversion API
   fbq('track', eventName, eventParams, { eventID: eventId });
-  const hashedUserData = hashUserData(enrichedUserData);
-  await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
+  await sendFacebookConversionEvent(eventName, eventParams, enrichedUserData, PIXEL_ID);
 };
 
 interface Product {

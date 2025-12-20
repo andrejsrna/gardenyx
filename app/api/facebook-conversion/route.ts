@@ -7,6 +7,72 @@ function sha256Hash(value: string): string {
   return createHash('sha256').update(value.toLowerCase().trim()).digest('hex');
 }
 
+function hashUserDataForConversion(data: Record<string, unknown>): Record<string, unknown> {
+  const hashedData: Record<string, unknown> = {};
+  const safeString = (value?: unknown): string | undefined =>
+    typeof value === 'string' && value.trim() ? value.trim() : undefined;
+
+  const email = safeString(data.email);
+  if (email) {
+    hashedData.em = sha256Hash(email);
+  }
+
+  const phone = safeString(data.phone);
+  if (phone) {
+    const cleanPhone = phone.replace(/\D/g, '');
+    const phoneWithCountry = cleanPhone.startsWith('421') ? cleanPhone : `421${cleanPhone}`;
+    hashedData.ph = sha256Hash(phoneWithCountry);
+  }
+
+  const firstName = safeString(data.firstName);
+  if (firstName) {
+    hashedData.fn = sha256Hash(firstName);
+  }
+
+  const lastName = safeString(data.lastName);
+  if (lastName) {
+    hashedData.ln = sha256Hash(lastName);
+  }
+
+  const city = safeString(data.city);
+  if (city) {
+    hashedData.ct = sha256Hash(city);
+  }
+
+  const state = safeString(data.state);
+  if (state) {
+    hashedData.st = sha256Hash(state);
+  }
+
+  const zip = safeString(data.zip);
+  if (zip) {
+    hashedData.zp = sha256Hash(zip);
+  }
+
+  const country = safeString(data.country);
+  if (country) {
+    hashedData.country = sha256Hash(country);
+  }
+
+  if (data.fbp) {
+    hashedData.fbp = data.fbp;
+  }
+
+  if (data.fbc) {
+    hashedData.fbc = data.fbc;
+  }
+
+  if (data.client_ip_address) {
+    hashedData.client_ip_address = data.client_ip_address;
+  }
+
+  if (data.client_user_agent) {
+    hashedData.client_user_agent = data.client_user_agent;
+  }
+
+  return hashedData;
+}
+
 export async function POST(request: Request) {
   if (!ACCESS_TOKEN) {
     return NextResponse.json({ error: 'Configuration missing' }, { status: 500 });
@@ -32,16 +98,16 @@ export async function POST(request: Request) {
     
     const userAgent = request.headers.get('user-agent') || '';
     
-    // Enhance user data with IP and user agent
-    const enhancedUserData: Record<string, unknown> = {
+    const userDataWithContext: Record<string, unknown> = {
       ...userData,
       client_ip_address: clientIp,
       client_user_agent: userAgent,
     };
 
-    // If we don't have good user data, add country as fallback
-    if (!enhancedUserData.em && !enhancedUserData.ph && !enhancedUserData.fn) {
-      enhancedUserData.country = sha256Hash('sk'); // Slovakia - your target market
+    const hashedUserData = hashUserDataForConversion(userDataWithContext);
+
+    if (!hashedUserData.em && !hashedUserData.ph && !hashedUserData.fn) {
+      hashedUserData.country = sha256Hash('sk'); // Slovakia - your target market
     }
     
     const safeEventData = (eventData ?? {}) as Record<string, unknown>;
@@ -61,7 +127,7 @@ export async function POST(request: Request) {
     delete (event.custom_data as Record<string, unknown>).event_id;
 
     // Always include user data (even if just IP and user agent)
-    event.user_data = enhancedUserData;
+    event.user_data = hashedUserData;
 
     const response = await fetch(
       `https://graph.facebook.com/v17.0/${pixelId}/events`,

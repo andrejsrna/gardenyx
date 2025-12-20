@@ -1,4 +1,4 @@
-import { sendFacebookConversionEvent, hashUserData } from './facebook-conversion';
+import { sendFacebookConversionEvent } from './facebook-conversion';
 import { getCookie } from 'cookies-next';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -35,8 +35,7 @@ export async function trackServerSideEvent(
     };
     
     // Server-side conversion API only
-    const hashedUserData = hashUserData(userData);
-    await sendFacebookConversionEvent(eventName, eventParams, hashedUserData, PIXEL_ID);
+    await sendFacebookConversionEvent(eventName, eventParams, userData, PIXEL_ID);
     
   } catch (error) {
     console.error('Error sending server-side tracking event:', error);
