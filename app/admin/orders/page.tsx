@@ -5,6 +5,8 @@ import prisma from '@/app/lib/prisma';
 import { fetchPacketaStatus, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
 
+export const dynamic = 'force-dynamic';
+
 type Order = {
   id: string;
   status: string;

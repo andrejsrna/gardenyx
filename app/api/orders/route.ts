@@ -90,6 +90,7 @@ type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addre
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
 const PACKETA_CARRIER_ID = '131';
+const VAT_RATE = 0.19;
 
 function generateOrderHash(orderData: OrderData): string {
   const orderSignature = JSON.stringify({
@@ -241,6 +242,11 @@ function toDecimal(value: number | string | undefined, fallback = 0) {
   return new Prisma.Decimal(safe.toFixed(2));
 }
 
+function calculateVatFromGross(grossValue: number) {
+  if (!Number.isFinite(grossValue) || grossValue <= 0) return 0;
+  return grossValue * (VAT_RATE / (1 + VAT_RATE));
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
@@ -365,6 +371,14 @@ export async function POST(request: Request) {
       const tax = Number(line.total_tax) || 0;
       return sum + net + tax;
     }, 0) || 0;
+    const shippingTaxTotal = orderData.shipping_lines?.reduce((sum, line) => {
+      const explicitTax = Number(line.total_tax);
+      if (Number.isFinite(explicitTax)) {
+        return sum + explicitTax;
+      }
+      const net = Number(line.total);
+      return Number.isFinite(net) ? sum + net * VAT_RATE : sum;
+    }, 0) || 0;
 
     const metaPacketa = {
       id: orderData.meta_data.find(m => m.key === '_packeta_point_id')?.value || null,
@@ -387,7 +401,10 @@ export async function POST(request: Request) {
     const discountTotal = Number(discountMeta) || 0;
     const couponCode = orderData.meta_data.find(m => m.key === '_coupon_code')?.value;
 
-    const total = orderData.total ? Number(orderData.total) : Math.max(0, subtotal + shippingTotal - discountTotal);
+    const itemsGross = Math.max(0, subtotal - discountTotal);
+    const itemsTaxTotal = calculateVatFromGross(itemsGross);
+    const taxTotal = itemsTaxTotal + shippingTaxTotal;
+    const total = orderData.total ? Number(orderData.total) : Math.max(0, itemsGross + shippingTotal);
 
     // link to user if session or email matches
     let userId: string | undefined;
@@ -412,7 +429,7 @@ export async function POST(request: Request) {
         currency: 'EUR',
         subtotal: toDecimal(subtotal),
         shippingTotal: toDecimal(shippingTotal),
-        taxTotal: toDecimal(0),
+        taxTotal: toDecimal(taxTotal),
         discountTotal: toDecimal(discountTotal),
         total: toDecimal(total),
         shippingMethod: orderData.shipping_method,

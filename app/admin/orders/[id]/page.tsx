@@ -5,6 +5,8 @@ import prisma from '@/app/lib/prisma';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
 import type { PageProps } from '../../../../.next/types/app/admin/orders/[id]/page';
 
+export const dynamic = 'force-dynamic';
+
 const paymentMethodLabels: Record<string, string> = {
   cod: 'Dobierka',
   stripe: 'Stripe',

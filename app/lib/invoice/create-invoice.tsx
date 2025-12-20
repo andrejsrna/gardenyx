@@ -1,5 +1,6 @@
 import { OrderAddress, PaymentMethod, Prisma } from '@prisma/client';
 import React from 'react';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import prisma from '../prisma';
@@ -15,6 +16,11 @@ const R2_SECRET_KEY = process.env.R2_SECRET_KEY;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const resolveFontPath = () => {
+  const localPath = path.join(__dirname, 'DejaVuSans.ttf');
+  if (fs.existsSync(localPath)) return localPath;
+  return path.join(process.cwd(), 'app', 'lib', 'invoice', 'DejaVuSans.ttf');
+};
 
 const MIN_INVOICE_DATE = process.env.INVOICE_MIN_DATE ? new Date(process.env.INVOICE_MIN_DATE) : null;
 const hasR2Config = Boolean(R2_BUCKET && R2_ENDPOINT && R2_ACCESS_KEY && R2_SECRET_KEY);
@@ -23,7 +29,7 @@ Font.register({
   family: 'DejaVuSans',
   fonts: [
     {
-      src: path.join(__dirname, 'DejaVuSans.ttf')
+      src: resolveFontPath()
     }
   ]
 });
