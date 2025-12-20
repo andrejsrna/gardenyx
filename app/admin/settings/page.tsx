@@ -1,6 +1,7 @@
 import prisma from '../../lib/prisma';
 import ReactivationToggle from './ReactivationToggle';
 import ReactivationPreview from './ReactivationPreview';
+import InvoiceExportForm from './InvoiceExportForm';
 
 const requireEnv = (name: string) => process.env[name] ? 'OK' : 'Chýba';
 
@@ -61,6 +62,12 @@ export default async function SettingsPage() {
           <ReactivationToggle initialEnabled={reactivationFlag.enabled} adminToken={process.env.NEWSLETTER_ADMIN_TOKEN} />
           <ReactivationPreview />
         </div>
+      </div>
+
+      <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10 space-y-4">
+        <h2 className="text-lg font-semibold text-white">Export faktúr</h2>
+        <p className="text-sm text-slate-300">Vyber mesiac a rok, vygeneruje sa CSV s číslami objednávok, faktúr a linkami na stiahnutie.</p>
+        <InvoiceExportForm />
       </div>
     </div>
   );

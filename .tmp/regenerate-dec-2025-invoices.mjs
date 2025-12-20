@@ -1,3 +1,6 @@
+// scripts/regenerate-dec-2025-invoices.ts
+import { Prisma } from "@prisma/client";
+
 // app/lib/prisma.ts
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -44,6 +47,7 @@ var R2_API = process.env.R2_API;
 var R2_ENDPOINT = process.env.R2_ENDPOINT;
 var R2_ACCESS_KEY = process.env.R2_ACCESS_KEY;
 var R2_SECRET_KEY = process.env.R2_SECRET_KEY;
+var VAT_PERCENT_LABEL = 19;
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = path.dirname(__filename);
 var resolveFontPath = () => {
@@ -246,10 +250,6 @@ var SHIPPING_LABELS = {
 };
 var getPaymentLabel = (method) => method ? PAYMENT_LABELS[method] : "\u2014";
 var getShippingLabel = (method) => method ? SHIPPING_LABELS[method] ?? method : "\u2014";
-var computeVatRate = (net, tax) => {
-  if (net <= 0) return 0;
-  return tax / net * 100;
-};
 var InvoiceDocument = ({
   order,
   invoiceNumber,
@@ -263,7 +263,7 @@ var InvoiceDocument = ({
   const discountTotal = toNumber(order.discountTotal);
   const grandTotal = toNumber(order.total);
   const netSum = Math.max(0, grandTotal - taxTotal);
-  const vatPercent = computeVatRate(netSum, taxTotal);
+  const vatPercentLabel = VAT_PERCENT_LABEL;
   const paymentLabel = getPaymentLabel(order.paymentMethod);
   const shippingLabel = getShippingLabel(order.shippingMethod);
   const vatShare = grandTotal > 0 ? taxTotal / grandTotal : 0;
@@ -278,7 +278,7 @@ var InvoiceDocument = ({
     const total = toNumber(item.total);
     const itemTax = total * vatShare;
     return /* @__PURE__ */ React.createElement(View, { key: item.id, style: styles.tableRow }, /* @__PURE__ */ React.createElement(Text, { style: styles.cell }, item.productName), /* @__PURE__ */ React.createElement(Text, { style: styles.cellQty }, item.quantity), /* @__PURE__ */ React.createElement(Text, { style: styles.cellDph }, formatCurrency(itemTax)), /* @__PURE__ */ React.createElement(Text, { style: styles.cellPrice }, formatCurrency(total)));
-  }), /* @__PURE__ */ React.createElement(View, { style: styles.divider }), /* @__PURE__ */ React.createElement(View, { style: styles.totals }, /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, null, "Medzis\xFA\u010Det"), /* @__PURE__ */ React.createElement(Text, null, formatCurrency(subtotal))), /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, null, "Doprava"), /* @__PURE__ */ React.createElement(Text, null, formatCurrency(shippingTotal))), /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, null, "DPH (", vatPercent.toFixed(0), "%)"), /* @__PURE__ */ React.createElement(Text, null, formatCurrency(taxTotal))), /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, null, "Z\u013Eava"), /* @__PURE__ */ React.createElement(Text, null, formatCurrency(discountTotal))), /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, { style: styles.detailTitle }, "Cena spolu"), /* @__PURE__ */ React.createElement(Text, { style: styles.detailTitle }, formatCurrency(grandTotal))))), /* @__PURE__ */ React.createElement(Text, { style: styles.footer }, "\u010Eakujeme za v\xE1\u0161 n\xE1kup. V pr\xEDpade ot\xE1zok kontaktujte info@fitdoplnky.sk.")));
+  }), /* @__PURE__ */ React.createElement(View, { style: styles.divider }), /* @__PURE__ */ React.createElement(View, { style: styles.totals }, /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, null, "Medzis\xFA\u010Det (bez DPH)"), /* @__PURE__ */ React.createElement(Text, null, formatCurrency(netSum))), /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, null, "DPH (", vatPercentLabel, "%)"), /* @__PURE__ */ React.createElement(Text, null, formatCurrency(taxTotal))), /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, null, "Z\u013Eava"), /* @__PURE__ */ React.createElement(Text, null, formatCurrency(discountTotal))), /* @__PURE__ */ React.createElement(View, { style: styles.totalsRow }, /* @__PURE__ */ React.createElement(Text, { style: styles.detailTitle }, "Cena spolu"), /* @__PURE__ */ React.createElement(Text, { style: styles.detailTitle }, formatCurrency(grandTotal))))), /* @__PURE__ */ React.createElement(Text, { style: styles.footer }, "\u010Eakujeme za v\xE1\u0161 n\xE1kup. V pr\xEDpade ot\xE1zok kontaktujte info@fitdoplnky.sk.")));
 };
 var renderInvoicePdf = async (order, invoiceNumber, issueDate, orderDate) => {
   const stream = await renderToStream(
@@ -365,6 +365,13 @@ async function createInvoiceForOrder(order, options) {
 var START = /* @__PURE__ */ new Date("2025-12-01T00:00:00.000Z");
 var END = /* @__PURE__ */ new Date("2026-01-01T00:00:00.000Z");
 var INVOICE_META_KEYS = ["_invoice_created_at", "_invoice_url", "_invoice_filename", "_invoice_number"];
+var VAT_RATE = 0.19;
+var toNumber2 = (value) => {
+  if (value === null || value === void 0) return 0;
+  const num = typeof value === "string" ? Number(value) : Number(value);
+  return Number.isFinite(num) ? num : 0;
+};
+var grossToVat = (gross) => gross > 0 ? gross * (VAT_RATE / (1 + VAT_RATE)) : 0;
 async function main() {
   const orders = await prisma_default.order.findMany({
     where: {
@@ -376,6 +383,19 @@ async function main() {
   console.log(`[invoices] Found ${orders.length} orders for Dec 2025 with Packeta status delivered`);
   for (const order of orders) {
     console.log(`[invoices] Regenerating for order ${order.id} (${order.orderNumber})`);
+    const subtotal = toNumber2(order.subtotal);
+    const shippingTotal = toNumber2(order.shippingTotal);
+    const discountTotal = toNumber2(order.discountTotal);
+    const itemsGross = Math.max(0, subtotal - discountTotal);
+    const newTaxTotal = Number((grossToVat(itemsGross) + grossToVat(shippingTotal)).toFixed(2));
+    if (newTaxTotal !== toNumber2(order.taxTotal)) {
+      await prisma_default.order.update({
+        where: { id: order.id },
+        data: { taxTotal: new Prisma.Decimal(newTaxTotal.toFixed(2)) }
+      });
+      order.taxTotal = new Prisma.Decimal(newTaxTotal.toFixed(2));
+      console.log(`  \u2022 taxTotal updated to ${newTaxTotal}`);
+    }
     await prisma_default.orderMeta.deleteMany({
       where: { orderId: order.id, key: { in: INVOICE_META_KEYS } }
     });

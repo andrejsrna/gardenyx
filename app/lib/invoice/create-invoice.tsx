@@ -13,6 +13,7 @@ const R2_API = process.env.R2_API;
 const R2_ENDPOINT = process.env.R2_ENDPOINT;
 const R2_ACCESS_KEY = process.env.R2_ACCESS_KEY;
 const R2_SECRET_KEY = process.env.R2_SECRET_KEY;
+const VAT_PERCENT_LABEL = 19;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -255,8 +256,8 @@ const InvoiceDocument = ({
   const taxTotal = toNumber(order.taxTotal);
   const discountTotal = toNumber(order.discountTotal);
   const grandTotal = toNumber(order.total);
-  const netSum = Math.max(0, grandTotal - taxTotal);
-  const vatPercent = computeVatRate(netSum, taxTotal);
+  const netSum = Math.max(0, grandTotal - taxTotal); // cena bez DPH (vrátane dopravy a zľavy)
+  const vatPercentLabel = VAT_PERCENT_LABEL;
   const paymentLabel = getPaymentLabel(order.paymentMethod as PaymentMethod);
   const shippingLabel = getShippingLabel(order.shippingMethod);
   const vatShare = grandTotal > 0 ? taxTotal / grandTotal : 0;
@@ -329,15 +330,11 @@ const InvoiceDocument = ({
           <View style={styles.divider} />
           <View style={styles.totals}>
             <View style={styles.totalsRow}>
-              <Text>Medzisúčet</Text>
-              <Text>{formatCurrency(subtotal)}</Text>
+              <Text>Medzisúčet (bez DPH)</Text>
+              <Text>{formatCurrency(netSum)}</Text>
             </View>
             <View style={styles.totalsRow}>
-              <Text>Doprava</Text>
-              <Text>{formatCurrency(shippingTotal)}</Text>
-            </View>
-            <View style={styles.totalsRow}>
-              <Text>DPH ({vatPercent.toFixed(0)}%)</Text>
+              <Text>DPH ({vatPercentLabel}%)</Text>
               <Text>{formatCurrency(taxTotal)}</Text>
             </View>
             <View style={styles.totalsRow}>
