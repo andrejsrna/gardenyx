@@ -4,8 +4,20 @@ import { revalidatePath } from 'next/cache';
 import prisma from '@/app/lib/prisma';
 import { fetchPacketaStatus, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
+import { sendReturnNoticeEmail } from '@/app/lib/email/order-confirmation';
 
 export const dynamic = 'force-dynamic';
+
+const RETURN_NOTIFY_AFTER = process.env.RETURN_NOTIFY_AFTER ? new Date(process.env.RETURN_NOTIFY_AFTER) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+const resolvePaymentStatus = (newStatus: OrderStatus, paymentMethod: string, current: PaymentStatus) => {
+  if (newStatus === OrderStatus.completed) return PaymentStatus.paid;
+  if (newStatus === OrderStatus.cancelled) {
+    if (paymentMethod === 'cod') return PaymentStatus.failed;
+    return PaymentStatus.refunded;
+  }
+  return current;
+};
 
 type Order = {
   id: string;
@@ -54,14 +66,14 @@ async function ensurePacketaStatuses(orders: Order[]) {
       const status = await fetchPacketaStatus(packetId);
       const newStatus = mapPacketaStatusToOrderStatus(status.code);
 
-      await prisma.$transaction(async (tx) => {
-        await tx.order.update({
-          where: { id: order.id },
-          data: {
-            status: newStatus,
-            paymentStatus: newStatus === OrderStatus.completed ? PaymentStatus.paid : undefined,
-          }
-        });
+        await prisma.$transaction(async (tx) => {
+          await tx.order.update({
+            where: { id: order.id },
+            data: {
+              status: newStatus,
+            paymentStatus: resolvePaymentStatus(newStatus, order.paymentMethod as PaymentStatus, order.paymentStatus as PaymentStatus),
+            }
+          });
 
         const existingCode = await tx.orderMeta.findFirst({
           where: { orderId: order.id, key: '_packeta_status_code' }
@@ -88,6 +100,26 @@ async function ensurePacketaStatuses(orders: Order[]) {
         { key: '_packeta_status_code', value: String(status.code) },
         { key: '_packeta_status_text', value: status.text }
       ];
+
+      if (
+        billingEmail &&
+        newStatus === OrderStatus.cancelled &&
+        order.paymentMethod !== 'cod' &&
+        new Date(order.createdAt) >= RETURN_NOTIFY_AFTER
+      ) {
+        const alreadyNotified = order.meta.find(m => m.key === '_return_notified_at');
+        if (!alreadyNotified) {
+          try {
+            await sendReturnNoticeEmail(order as unknown as any, billingEmail);
+            await prisma.orderMeta.create({
+              data: { orderId: order.id, key: '_return_notified_at', value: new Date().toISOString() }
+            });
+            order.meta.push({ key: '_return_notified_at', value: new Date().toISOString() } as any);
+          } catch (err) {
+            console.warn('[admin packeta return email] failed', err);
+          }
+        }
+      }
     } catch (error) {
       console.warn(`[admin packeta sync] failed for order ${order.id}`, error);
     }

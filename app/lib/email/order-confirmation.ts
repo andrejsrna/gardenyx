@@ -242,6 +242,46 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
   return api.sendTransacEmail(email);
 }
 
+export async function sendReturnNoticeEmail(order: OrderWithRelations, to: string) {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey || !to) return;
+
+  const api = new TransactionalEmailsApi();
+  api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
+
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
+  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+
+  const rows = [
+    { label: 'Objednávka', value: `#${order.orderNumber}` },
+    { label: 'Spôsob platby', value: order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou' },
+    { label: 'Suma', value: `${order.total.toString()} ${order.currency}` }
+  ];
+
+  const content = `
+    ${infoNote('Zásielka sa nám vrátila ako neprevzatá.')}
+    <p style="margin:0 0 12px 0;color:#475569;">Ak si prajete opätovné odoslanie, odpovedzte na tento email a dohodneme detaily. Pri platbe kartou vieme riešiť refund alebo opätovné odoslanie podľa vašej preferencie.</p>
+    ${keyValueTable(rows)}
+  `;
+
+  const billing = order.addresses.find(a => a.type === 'BILLING');
+  const greeting = billing?.firstName ? `Ahoj ${billing.firstName},` : 'Ahoj,';
+
+  const email = new SendSmtpEmail();
+  email.subject = `Zásielka k objednávke #${order.orderNumber} sa vrátila`;
+  email.htmlContent = renderEmail({
+    title: 'Zásielka sa vrátila',
+    preheader: 'Neprevzatá zásielka – daj nám vedieť, ako pokračovať',
+    greeting,
+    content,
+    footerNote: 'Stačí odpovedať na tento email a dohodneme opätovné odoslanie alebo refund.'
+  });
+  email.sender = { name: senderName, email: senderEmail };
+  email.to = [{ email: to }];
+
+  return api.sendTransacEmail(email);
+}
+
 export async function sendInvoiceLinkEmail(order: OrderWithRelations, to: string, invoiceUrl: string, invoiceNumber: string) {
   const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey || !to || !invoiceUrl) return;

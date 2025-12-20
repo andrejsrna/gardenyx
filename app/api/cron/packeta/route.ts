@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
-import { sendInvoiceLinkEmail, sendPacketaStatusEmail } from '@/app/lib/email/order-confirmation';
+import { sendInvoiceLinkEmail, sendPacketaStatusEmail, sendReturnNoticeEmail } from '@/app/lib/email/order-confirmation';
 import { fetchPacketaStatus, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
 import { createInvoiceForOrder } from '@/app/lib/invoice/create-invoice';
+
+const RETURN_NOTIFY_AFTER = process.env.RETURN_NOTIFY_AFTER ? new Date(process.env.RETURN_NOTIFY_AFTER) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
 const isAuthorized = (request: Request) => {
   const token = process.env.NEWSLETTER_ADMIN_TOKEN;
@@ -12,6 +14,16 @@ const isAuthorized = (request: Request) => {
 };
 
 const emailStatusCodes = new Set([2, 4, 5]);
+
+const resolvePaymentStatus = (newStatus: OrderStatus, paymentMethod: string, current: PaymentStatus) => {
+  if (newStatus === OrderStatus.completed) return PaymentStatus.paid;
+  if (newStatus === OrderStatus.cancelled) {
+    if (paymentMethod === 'cod') return PaymentStatus.failed;
+    // For prepaid, mark refunded to unblock finance flow
+    return PaymentStatus.refunded;
+  }
+  return current;
+};
 
 export async function POST(request: Request) {
   if (!isAuthorized(request)) {
@@ -41,7 +53,7 @@ export async function POST(request: Request) {
             where: { id: order.id },
             data: {
               status: newStatus,
-              paymentStatus: newStatus === OrderStatus.completed ? PaymentStatus.paid : order.paymentStatus,
+              paymentStatus: resolvePaymentStatus(newStatus, order.paymentMethod, order.paymentStatus),
             }
           });
 
@@ -97,6 +109,29 @@ export async function POST(request: Request) {
             }
           } catch (err) {
             console.warn('[packeta status email] failed', err);
+          }
+        }
+
+        if (
+          billingEmail &&
+          newStatus === OrderStatus.cancelled &&
+          order.paymentMethod !== 'cod' &&
+          new Date(order.createdAt) >= RETURN_NOTIFY_AFTER
+        ) {
+          const alreadyNotified = order.meta.find(m => m.key === '_return_notified_at');
+          if (!alreadyNotified) {
+            try {
+              await sendReturnNoticeEmail(order as Prisma.OrderGetPayload<{ include: { items: true; addresses: true } }>, billingEmail);
+              await prisma.orderMeta.create({
+                data: {
+                  orderId: order.id,
+                  key: '_return_notified_at',
+                  value: new Date().toISOString()
+                }
+              });
+            } catch (err) {
+              console.warn('[packeta return email] failed', err);
+            }
           }
         }
       } catch (err) {
