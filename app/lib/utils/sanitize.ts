@@ -17,24 +17,55 @@ export function sanitizePhone(input: string): string {
   if (!input) return '';
 
   // Remove spaces and keep only leading + and digits
-  let cleaned = input.replace(/[^\d+]/g, '').replace(/(?!^)[+]/g, '');
+  const cleaned = input.trim().replace(/[^\d+]/g, '').replace(/(?!^)[+]/g, '');
 
-  if (!cleaned) {
-    return '';
+  if (!cleaned) return '';
+
+  // Accept either:
+  // - local SK input: 09xxxxxxxx / 9xxxxxxxx
+  // - international: +421xxxxxxxxx / 00421xxxxxxxxx
+  // and avoid producing "+4210..." (trunk prefix 0 should be dropped after country code).
+
+  // Normalize 00 prefix to +
+  if (cleaned.startsWith('00')) {
+    return sanitizePhone(`+${cleaned.slice(2)}`);
   }
 
-  // Handle Slovak numbers convenience
-  if (cleaned.startsWith('00421')) {
-    cleaned = '+421' + cleaned.substring(5);
-  } else if (cleaned.startsWith('+421')) {
-    cleaned = '+' + cleaned.substring(1).replace(/\D/g, '');
-  } else if (cleaned.startsWith('0') && cleaned.length >= 9) {
-    cleaned = '+421' + cleaned.substring(1);
-  } else if (!cleaned.startsWith('+')) {
-    cleaned = '+' + cleaned.replace(/\D/g, '');
+  // Already international
+  if (cleaned.startsWith('+')) {
+    let digits = cleaned.slice(1).replace(/\D/g, '');
+    if (digits.startsWith('4210') && digits.length === 13) {
+      digits = `421${digits.slice(4)}`;
+    }
+    return digits ? `+${digits}` : '';
   }
 
-  // Ensure only digits after plus
-  const normalized = '+' + cleaned.slice(1).replace(/\D/g, '');
-  return normalized;
+  const digits = cleaned.replace(/\D/g, '');
+  if (!digits) return '';
+
+  // Keep partial local input as-is while the user is typing (avoid forcing "+" early).
+  if (digits.startsWith('0') && digits.length < 10) {
+    return digits;
+  }
+
+  // Local SK number with leading 0 (e.g. 0912345678) -> +421912345678
+  if (digits.startsWith('0') && digits.length === 10) {
+    return `+421${digits.slice(1)}`;
+  }
+
+  // Local SK number without leading 0 (e.g. 912345678) -> +421912345678
+  if (digits.length === 9) {
+    return `+421${digits}`;
+  }
+
+  // International typed without "+" (e.g. 421912345678 or 4210912345678)
+  if (digits.startsWith('4210') && digits.length === 13) {
+    return `+421${digits.slice(4)}`;
+  }
+  if (digits.startsWith('421') && digits.length === 12) {
+    return `+${digits}`;
+  }
+
+  // Generic fallback: treat it as full international digits
+  return `+${digits}`;
 }

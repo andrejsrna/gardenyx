@@ -92,6 +92,23 @@ const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
 const PACKETA_CARRIER_ID = '131';
 const VAT_RATE = 0.19;
 
+function normalizePacketaHomeAddress(shipping: OrderData['shipping']) {
+  const address1 = (shipping.address_1 || '').trim();
+  const address2 = (shipping.address_2 || '').trim();
+  const postcode = (shipping.postcode || '').trim();
+  if (!address1 || !address2) return shipping;
+
+  const digitsOnly = /^[\d\s]+$/.test(address1);
+  const sameAsPostcode = postcode && address1.replace(/\s/g, '') === postcode.replace(/\s/g, '');
+  const address2HasLetters = /[A-Za-zÀ-ž]/.test(address2);
+
+  if ((digitsOnly || sameAsPostcode) && address2HasLetters) {
+    return { ...shipping, address_1: address2, address_2: '' };
+  }
+
+  return shipping;
+}
+
 function generateOrderHash(orderData: OrderData): string {
   const orderSignature = JSON.stringify({
     billing_email: orderData.billing.email,
@@ -155,16 +172,22 @@ async function createPacketaPacket(orderData: OrderData, order: OrderWithRelatio
   };
 
   if (isHomeDelivery) {
-    const { street, houseNumber } = parseAddress(orderData.shipping.address_1);
-    if (!street && !houseNumber) {
-      throw new Error(`Invalid address format for home delivery: ${orderData.shipping.address_1}`);
+    let addressLine = orderData.shipping.address_1;
+    let parsed = parseAddress(addressLine);
+    if (!parsed.street && orderData.shipping.address_2) {
+      addressLine = orderData.shipping.address_2;
+      parsed = parseAddress(addressLine);
+    }
+    const { street, houseNumber } = parsed;
+    if (!street) {
+      throw new Error(`Invalid address format for home delivery (missing street): ${addressLine}`);
     }
     if (!houseNumber) {
       logError('Packeta Address Warning', {
         error: {
-          message: `Address '${orderData.shipping.address_1}' parsed without house number. Sending empty houseNumber.`,
+          message: `Address '${addressLine}' parsed without house number. Sending empty houseNumber.`,
           parsedStreet: street,
-          parsedHouseNumber: houseNumber
+          parsedHouseNumber: houseNumber,
         },
         orderId: order.id,
         timestamp: new Date().toISOString()
@@ -341,6 +364,9 @@ export async function POST(request: Request) {
 
     const orderData: OrderData = await request.json();
     orderData.line_items = orderData.line_items || [];
+    if (orderData.shipping_method === 'packeta_home') {
+      orderData.shipping = normalizePacketaHomeAddress(orderData.shipping);
+    }
     const idempotencyKey = orderData.idempotency_key || generateOrderHash(orderData);
     const existingOrder = await findExistingOrder(idempotencyKey);
     if (existingOrder) {
@@ -550,7 +576,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      order: createdOrder,
+      order: fullOrder || createdOrder,
       isExisting: false
     });
   } catch (error) {

@@ -234,11 +234,6 @@ const getPaymentLabel = (method?: PaymentMethod) => (method ? PAYMENT_LABELS[met
 
 const getShippingLabel = (method?: string | null) => (method ? SHIPPING_LABELS[method] ?? method : '—');
 
-const computeVatRate = (net: number, tax: number) => {
-  if (net <= 0) return 0;
-  return (tax / net) * 100;
-};
-
 const InvoiceDocument = ({
   order,
   invoiceNumber,
@@ -251,8 +246,6 @@ const InvoiceDocument = ({
   orderDate: Date;
 }) => {
   const billing = order.addresses.find(a => a.type === 'BILLING');
-  const subtotal = toNumber(order.subtotal);
-  const shippingTotal = toNumber(order.shippingTotal);
   const taxTotal = toNumber(order.taxTotal);
   const discountTotal = toNumber(order.discountTotal);
   const grandTotal = toNumber(order.total);

@@ -416,10 +416,17 @@ export default function CheckoutClient() {
     setPaymentError(null);
 
     try {
+      const normalizedShipping =
+        formData.shipping_method === 'packeta_home' &&
+        /^\d+$/.test((formData.shipping.address_1 || '').replace(/\s/g, '')) &&
+        /[A-Za-zÀ-ž]/.test(formData.shipping.address_2 || '')
+          ? { ...formData.shipping, address_1: formData.shipping.address_2 || '', address_2: '' }
+          : formData.shipping;
+
       const orderData: WooCommerceOrder = {
         status: 'pending',
         billing: formData.billing,
-        shipping: formData.shipping,
+        shipping: normalizedShipping,
         shipping_method: formData.shipping_method,
         payment_method: formData.payment_method,
         payment_method_title: formData.payment_method === 'stripe' ? 'Platba kartou' : 'Dobierka',

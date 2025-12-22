@@ -49,8 +49,8 @@ export async function GET(request: Request) {
     throw err;
   });
 
-  const nodeStream = archive as unknown as NodeJS.ReadableStream;
-  const webStream = Readable.toWeb(nodeStream) as unknown as ReadableStream;
+  const nodeStream = archive as unknown as Readable;
+  const webStream = Readable.toWeb(nodeStream) as unknown as BodyInit;
 
   (async () => {
     for (const order of orders) {

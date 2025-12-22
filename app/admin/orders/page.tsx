@@ -19,37 +19,36 @@ const resolvePaymentStatus = (newStatus: OrderStatus, paymentMethod: string, cur
   return current;
 };
 
-type Order = {
-  id: string;
-  status: string;
-  total: Prisma.Decimal;
-  currency: string;
-  addresses: Array<{
-    type: string;
-    firstName: string;
-    lastName: string;
-    email: string | null;
-  }>;
-  paymentMethod: string;
-  createdAt: string;
-  meta: Array<{
-    key: string;
-    value: string | null;
-  }>;
-};
+type Order = Prisma.OrderGetPayload<{ include: { addresses: true; meta: true } }>;
 
-const formatDate = (value?: string) => {
+const formatDate = (value?: string | Date) => {
   if (!value) return '—';
+  const date = typeof value === 'string' ? new Date(value) : value;
   return new Intl.DateTimeFormat('sk-SK', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  }).format(new Date(value));
+  }).format(date);
 };
 
 const getMetaValue = (order: Order, key: string) => order.meta?.find(m => m.key === key)?.value || null;
+
+const upsertLocalMeta = (order: Order, key: string, value: string) => {
+  const existing = order.meta.find(m => m.key === key);
+  if (existing) {
+    existing.value = value;
+    return;
+  }
+  order.meta.push({
+    id: `local_${order.id}_${key}`,
+    orderId: order.id,
+    key,
+    value,
+    json: null
+  });
+};
 
 async function ensurePacketaStatuses(orders: Order[]) {
   if (!hasPacketaCredentials()) return;
@@ -65,15 +64,17 @@ async function ensurePacketaStatuses(orders: Order[]) {
     try {
       const status = await fetchPacketaStatus(packetId);
       const newStatus = mapPacketaStatusToOrderStatus(status.code);
+      const billingEmail = order.addresses?.find(a => a.type === 'BILLING')?.email || null;
 
-        await prisma.$transaction(async (tx) => {
-          await tx.order.update({
-            where: { id: order.id },
-            data: {
-              status: newStatus,
-            paymentStatus: resolvePaymentStatus(newStatus, order.paymentMethod as PaymentStatus, order.paymentStatus as PaymentStatus),
-            }
-          });
+      await prisma.$transaction(async (tx) => {
+        const nextPaymentStatus = resolvePaymentStatus(newStatus, order.paymentMethod, order.paymentStatus);
+        await tx.order.update({
+          where: { id: order.id },
+          data: {
+            status: newStatus,
+            paymentStatus: nextPaymentStatus
+          }
+        });
 
         const existingCode = await tx.orderMeta.findFirst({
           where: { orderId: order.id, key: '_packeta_status_code' }
@@ -95,11 +96,9 @@ async function ensurePacketaStatuses(orders: Order[]) {
       });
 
       order.status = newStatus;
-      order.meta = [
-        ...order.meta.filter(m => m.key !== '_packeta_status_code' && m.key !== '_packeta_status_text'),
-        { key: '_packeta_status_code', value: String(status.code) },
-        { key: '_packeta_status_text', value: status.text }
-      ];
+      order.paymentStatus = resolvePaymentStatus(newStatus, order.paymentMethod, order.paymentStatus);
+      upsertLocalMeta(order, '_packeta_status_code', String(status.code));
+      upsertLocalMeta(order, '_packeta_status_text', status.text);
 
       if (
         billingEmail &&
@@ -110,11 +109,18 @@ async function ensurePacketaStatuses(orders: Order[]) {
         const alreadyNotified = order.meta.find(m => m.key === '_return_notified_at');
         if (!alreadyNotified) {
           try {
-            await sendReturnNoticeEmail(order as unknown as any, billingEmail);
-            await prisma.orderMeta.create({
-              data: { orderId: order.id, key: '_return_notified_at', value: new Date().toISOString() }
+            const fullOrder = await prisma.order.findUnique({
+              where: { id: order.id },
+              include: { items: true, addresses: true }
             });
-            order.meta.push({ key: '_return_notified_at', value: new Date().toISOString() } as any);
+            if (fullOrder) {
+              await sendReturnNoticeEmail(fullOrder, billingEmail);
+              const now = new Date().toISOString();
+              await prisma.orderMeta.create({
+                data: { orderId: order.id, key: '_return_notified_at', value: now }
+              });
+              upsertLocalMeta(order, '_return_notified_at', now);
+            }
           } catch (err) {
             console.warn('[admin packeta return email] failed', err);
           }
@@ -153,7 +159,7 @@ export default async function OrdersPage({ searchParams }: PageProps) {
       take: perPage,
       skip: (currentPage - 1) * perPage,
       include: { addresses: true, meta: true }
-    }) as unknown as Promise<Order[]>,
+    }),
     prisma.order.count()
   ]);
 

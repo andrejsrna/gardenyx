@@ -25,6 +25,11 @@ export default function ShippingInformationSection({
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
       <h2 className="text-xl font-semibold mb-4">Adresa doručenia</h2>
+      {formData.shipping_method === 'packeta_home' && (
+        <p className="mb-4 text-sm text-gray-600">
+          Pri doručení domov (Packeta) zadajte do poľa „Adresa“ ulicu a číslo domu (napr. Mládeže 559).
+        </p>
+      )}
       
       {/* Same as billing checkbox */}
       <div className="mb-4">
@@ -125,7 +130,7 @@ export default function ShippingInformationSection({
               id="shipping-address_2"
               name="address_2"
               type="text"
-              placeholder="Číslo bytu"
+              placeholder="Byt / poschodie (voliteľné)"
               value={formData.shipping.address_2 || ''}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
