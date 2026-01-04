@@ -32,6 +32,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Objednávky
             </Link>
             <Link
+              href="/admin/stats"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800"
+            >
+              Štatistiky
+            </Link>
+            <Link
               href="/admin/reviews"
               className="rounded-lg px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800"
             >

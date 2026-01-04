@@ -3,7 +3,10 @@ import { notFound } from 'next/navigation';
 import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
-import type { PageProps } from '../../../../.next/types/app/admin/orders/[id]/page';
+
+type PageProps = {
+  params?: Promise<{ id: string }>;
+};
 
 export const dynamic = 'force-dynamic';
 
