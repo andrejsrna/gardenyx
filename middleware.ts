@@ -42,6 +42,8 @@ const ALLOWED_PARAMS = new Set([
   'token',
   // Admin stats filters
   'days',
+  // Admin invoice export filters
+  'year', 'month',
   // Cron job selector
   'job',
   // Needed for Stripe success + internal lookups

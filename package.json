@@ -12,7 +12,7 @@
     "build": "NODE_ENV=production next build",
     "postbuild": "echo \"[postbuild] Build finished at $(date -u '+%Y-%m-%dT%H:%M:%SZ')\"",
     "start": "NODE_ENV=production next start",
-    "lint": "next lint",
+    "lint": "eslint . --max-warnings=0",
     "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
     "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""

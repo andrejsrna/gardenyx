@@ -1,5 +1,6 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
+import type { Configuration } from 'webpack';
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -80,6 +81,13 @@ const nextConfig = {
   compiler: {
     // Strip all console.* calls in production builds
     removeConsole: process.env.NODE_ENV === 'production',
+  },
+  webpack: (config: Configuration) => {
+    config.infrastructureLogging = {
+      ...(config.infrastructureLogging || {}),
+      level: 'error',
+    };
+    return config;
   },
 }
 
