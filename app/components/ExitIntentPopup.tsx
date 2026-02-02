@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import ExitIntentModal from './ExitIntentModal';
 import { tracking } from '../lib/tracking';
+import { safeSetItem, safeGetItem } from '../lib/utils/safe-local-storage';
 
 export default function ExitIntentPopup() {
   const [showModal, setShowModal] = useState(false);
@@ -40,7 +41,7 @@ export default function ExitIntentPopup() {
 
   const isWithinCooldown = () => {
     try {
-      const ts = localStorage.getItem('exitIntentLastShownAt');
+      const ts = safeGetItem('exitIntentLastShownAt');
       if (!ts) return false;
       const last = parseInt(ts, 10);
       if (Number.isNaN(last)) return false;
@@ -95,7 +96,7 @@ export default function ExitIntentPopup() {
       if (response.ok) {
         const { code } = await response.json();
         setCouponCode(code);
-        localStorage.setItem('exitIntentLastShownAt', String(Date.now()));
+        safeSetItem('exitIntentLastShownAt', String(Date.now()));
 
         // Track exit intent offer shown
         tracking.custom('exit_intent_offer_shown', {
@@ -189,7 +190,7 @@ export default function ExitIntentPopup() {
         <ExitIntentModal
           code={couponCode}
           onCloseAction={() => {
-            localStorage.setItem('exitIntentLastShownAt', String(Date.now()));
+            safeSetItem('exitIntentLastShownAt', String(Date.now()));
             tracking.custom('exit_intent_dismissed');
             setShowModal(false);
             setErrorMessage(null);

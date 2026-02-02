@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import CartButton from './CartButton';
+import { safeGetItem } from '../lib/utils/safe-local-storage';
 
 const INGREDIENTS_SUBMENU = [
   { title: 'Glukozamín', href: '/zlozenie/glukozamin' },
@@ -57,7 +58,7 @@ export default function Header() {
 
   useEffect(() => {
     if (customerData) {
-      const firstName = customerData.billing?.first_name || customerData.first_name || localStorage.getItem('customerName') || 'používateľ';
+      const firstName = customerData.billing?.first_name || customerData.first_name || safeGetItem('customerName') || 'používateľ';
       setCustomerName(firstName);
     }
   }, [customerData]);

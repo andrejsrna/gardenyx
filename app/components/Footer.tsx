@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { resetCookieConsentValue } from 'react-cookie-consent';
 import { deleteCookie } from 'cookies-next';
 import { FormEvent, useState } from 'react';
+import { safeRemoveItem } from '../lib/utils/safe-local-storage';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function Footer() {
     resetCookieConsentValue();
     deleteCookie('cookieConsent', { path: '/' });
     deleteCookie('CookieConsent', { path: '/' });
-    localStorage.removeItem('cookieConsentDetails');
+    safeRemoveItem('cookieConsentDetails');
     window.location.reload();
   };
 

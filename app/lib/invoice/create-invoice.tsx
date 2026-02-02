@@ -133,6 +133,10 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center'
   },
+  cellNet: {
+    flex: 1,
+    textAlign: 'right'
+  },
   cellDph: {
     flex: 1,
     textAlign: 'right'
@@ -246,14 +250,20 @@ const InvoiceDocument = ({
   orderDate: Date;
 }) => {
   const billing = order.addresses.find(a => a.type === 'BILLING');
-  const taxTotal = toNumber(order.taxTotal);
+  const vatRate = VAT_PERCENT_LABEL / 100;
+  const vatFactor = vatRate / (1 + vatRate); // share of VAT in gross
   const discountTotal = toNumber(order.discountTotal);
-  const grandTotal = toNumber(order.total);
-  const netSum = Math.max(0, grandTotal - taxTotal); // cena bez DPH (vrátane dopravy a zľavy)
+  const shippingTotal = toNumber(order.shippingTotal);
+  const grossTotal = Math.max(0, toNumber(order.total)); // should already include DPH
+  const itemsBaseSum = order.items.reduce((sum, item) => sum + toNumber(item.total), 0) || 0;
+  const itemsGrossPool = Math.max(0, grossTotal - shippingTotal);
+  const lineFactor = itemsBaseSum > 0 ? itemsGrossPool / itemsBaseSum : 0;
+  const taxTotal = Math.max(0, grossTotal * vatFactor);
+  const netSum = Math.max(0, grossTotal - taxTotal); // cena bez DPH (vrátane dopravy a zľavy)
   const vatPercentLabel = VAT_PERCENT_LABEL;
   const paymentLabel = getPaymentLabel(order.paymentMethod as PaymentMethod);
   const shippingLabel = getShippingLabel(order.shippingMethod);
-  const vatShare = grandTotal > 0 ? taxTotal / grandTotal : 0;
+  const shippingTax = shippingTotal * vatFactor;
 
   return (
     <Document>
@@ -305,21 +315,33 @@ const InvoiceDocument = ({
           <View style={styles.tableHeader}>
             <Text style={styles.cell}>Produkt</Text>
             <Text style={styles.cellQty}>Množ.</Text>
-            <Text style={styles.cellDph}>DPH</Text>
+            <Text style={styles.cellNet}>Cena bez DPH</Text>
+            <Text style={styles.cellDph}>DPH ({vatPercentLabel}%)</Text>
             <Text style={styles.cellPrice}>Cena s DPH</Text>
           </View>
           {order.items.map(item => {
-            const total = toNumber(item.total);
-            const itemTax = total * vatShare;
+            const weightedGross = toNumber(item.total) * lineFactor; // distribute gross so rows sum to total
+            const itemTax = weightedGross * vatFactor;
+            const itemNet = weightedGross - itemTax;
             return (
               <View key={item.id} style={styles.tableRow}>
                 <Text style={styles.cell}>{item.productName}</Text>
                 <Text style={styles.cellQty}>{item.quantity}</Text>
+                <Text style={styles.cellNet}>{formatCurrency(itemNet)}</Text>
                 <Text style={styles.cellDph}>{formatCurrency(itemTax)}</Text>
-                <Text style={styles.cellPrice}>{formatCurrency(total)}</Text>
+                <Text style={styles.cellPrice}>{formatCurrency(weightedGross)}</Text>
               </View>
             );
           })}
+          {shippingTotal > 0 && (
+            <View style={styles.tableRow}>
+              <Text style={styles.cell}>Doprava</Text>
+              <Text style={styles.cellQty}>—</Text>
+              <Text style={styles.cellNet}>{formatCurrency(shippingTotal - shippingTax)}</Text>
+              <Text style={styles.cellDph}>{formatCurrency(shippingTax)}</Text>
+              <Text style={styles.cellPrice}>{formatCurrency(shippingTotal)}</Text>
+            </View>
+          )}
           <View style={styles.divider} />
           <View style={styles.totals}>
             <View style={styles.totalsRow}>
@@ -336,7 +358,7 @@ const InvoiceDocument = ({
             </View>
             <View style={styles.totalsRow}>
               <Text style={styles.detailTitle}>Cena spolu</Text>
-              <Text style={styles.detailTitle}>{formatCurrency(grandTotal)}</Text>
+              <Text style={styles.detailTitle}>{formatCurrency(grossTotal)}</Text>
             </View>
           </View>
         </View>

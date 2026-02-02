@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import CookieConsent, { getCookieConsentValue } from 'react-cookie-consent';
+import { safeGetItem } from '../lib/utils/safe-local-storage';
 
 type ConsentDetails = {
   necessary: boolean;
@@ -49,7 +50,7 @@ export default function CookieConsentBanner() {
     
     if (!existingConsent) {
       setIsVisible(true);
-    } else if (typeof window !== 'undefined' && !localStorage.getItem('cookieConsentDetails')) {
+    } else if (typeof window !== 'undefined' && !safeGetItem('cookieConsentDetails')) {
       storeConsentDetails(existingConsent === 'true' ? ACCEPTED_DETAILS : DECLINED_DETAILS);
     }
   }, [isSeznamBrowser]);

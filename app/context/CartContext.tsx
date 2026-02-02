@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { tracking } from '../lib/tracking';
 import { trackConversion, reportAddToCartConversion } from '../components/GoogleAds';
 import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
+import { safeGetItem, safeRemoveItem, safeSetItem } from '../lib/utils/safe-local-storage';
 
 interface CartItem {
     id: number;
@@ -71,8 +72,8 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         setCouponType(null);
         setCouponAmountRaw(null);
         setCouponFreeShipping(false);
-        localStorage.removeItem('appliedCoupon');
-        localStorage.removeItem('pendingCoupon');
+        safeRemoveItem('appliedCoupon');
+        safeRemoveItem('pendingCoupon');
         toast.info('Kupón bol odstránený');
     }, []);
 
@@ -103,7 +104,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             setCouponType(data.type || null);
             setCouponAmountRaw(data.amount ?? null);
             setCouponFreeShipping(Boolean(data.freeShipping));
-            localStorage.setItem('appliedCoupon', data.code || normalized);
+            safeSetItem('appliedCoupon', data.code || normalized);
             toast.success('Kupón bol aplikovaný.');
             return true;
         } catch (error) {
@@ -133,7 +134,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     }, [items, applyCoupon]);
 
     useEffect(() => {
-        const savedCart = localStorage.getItem('cart');
+        const savedCart = safeGetItem('cart');
         if (savedCart) {
             try {
                 const parsedItems = JSON.parse(savedCart);
@@ -145,7 +146,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             }
         }
 
-        const savedCouponCode = localStorage.getItem('appliedCoupon');
+        const savedCouponCode = safeGetItem('appliedCoupon');
         if (savedCouponCode) {
             setAppliedCoupon(savedCouponCode);
         }
@@ -165,11 +166,11 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                 return;
             }
 
-            const pendingCoupon = localStorage.getItem('pendingCoupon');
+            const pendingCoupon = safeGetItem('pendingCoupon');
             if (pendingCoupon) {
                 await new Promise(resolve => setTimeout(resolve, 300));
                 await applyCoupon(pendingCoupon);
-                localStorage.removeItem('pendingCoupon');
+                safeRemoveItem('pendingCoupon');
                 isProcessing = false;
                 return;
             }
@@ -192,9 +193,9 @@ export function CartProvider({children}: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (items.length > 0) {
-            localStorage.setItem('cart', JSON.stringify(items));
+            safeSetItem('cart', JSON.stringify(items));
         } else {
-            localStorage.removeItem('cart');
+            safeRemoveItem('cart');
         }
     }, [items]);
 
@@ -208,7 +209,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                     totalPrice: currentSubtotal,
                     timestamp: new Date().toISOString()
                 };
-                localStorage.setItem('abandonedCart', JSON.stringify(abandonedCart));
+                safeSetItem('abandonedCart', JSON.stringify(abandonedCart));
                 setLastSavedCart(cartKey);
 
                 if (items.length > 0) {
@@ -216,7 +217,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                 }
             }
         } else {
-            localStorage.removeItem('abandonedCart');
+            safeRemoveItem('abandonedCart');
             setLastSavedCart(null);
         }
     }, [items, lastSavedCart]);
@@ -231,7 +232,7 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                 email
             };
             try {
-                localStorage.setItem('abandonedCart', JSON.stringify(abandonedCart));
+                safeSetItem('abandonedCart', JSON.stringify(abandonedCart));
                 const response = await fetch('/api/cart/abandoned', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -311,8 +312,8 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         setCouponType(null);
         setCouponAmountRaw(null);
         setCouponFreeShipping(false);
-        localStorage.removeItem('cart');
-        localStorage.removeItem('appliedCoupon');
+        safeRemoveItem('cart');
+        safeRemoveItem('appliedCoupon');
         toast.info("Košík bol vyprázdnený");
     }, []);
 
@@ -320,10 +321,10 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     const totalPrice = Math.max(0, subtotal - discountAmount);
 
     const applyPendingCoupon = useCallback(() => {
-        const pendingCoupon = localStorage.getItem('pendingCoupon');
+        const pendingCoupon = safeGetItem('pendingCoupon');
         if (pendingCoupon) {
             applyCoupon(pendingCoupon);
-            localStorage.removeItem('pendingCoupon');
+            safeRemoveItem('pendingCoupon');
         }
     }, [applyCoupon]);
 
