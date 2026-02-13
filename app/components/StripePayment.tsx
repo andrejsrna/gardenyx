@@ -30,15 +30,22 @@ const logPaymentEvent = (type: string, data: Record<string, unknown>) => {
   }
 };
 
-if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+if (!stripePublishableKey) {
   throw new Error('Missing Stripe publishable key');
 }
 
-if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.startsWith('pk_')) {
+if (!stripePublishableKey.startsWith('pk_')) {
   throw new Error('Invalid Stripe publishable key format');
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+// Guardrail: prevent accidentally running production with test keys.
+if (process.env.NODE_ENV === 'production' && stripePublishableKey.startsWith('pk_test_')) {
+  throw new Error('Stripe publishable key is a test key (pk_test_) but NODE_ENV=production. Set a live key (pk_live_).');
+}
+
+const stripePromise = loadStripe(stripePublishableKey);
 
 interface StripePaymentFormProps {
   clientSecret: string;
