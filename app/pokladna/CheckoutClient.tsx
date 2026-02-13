@@ -468,6 +468,36 @@ export default function CheckoutClient() {
       const result = await createOrder(orderData);
       orderIdRef.current = result.order.id;
 
+      // Optional: create customer account after a successful order.
+      // NOTE: The checkout form can collect a password (create_account), but previously it never called the register API.
+      if (formData.create_account && customerData === null) {
+        try {
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: formData.billing.email,
+              password: formData.account_password,
+              firstName: formData.billing.first_name,
+              lastName: formData.billing.last_name,
+              consent: Boolean(formData.consents?.termsAndPrivacy),
+              newsletter: Boolean(formData.consents?.marketing),
+            }),
+          });
+
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data?.error || 'Registrácia zlyhala');
+          }
+
+          toast.success('Účet bol vytvorený. Skontrolujte email pre overenie.');
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : 'Registrácia zlyhala';
+          // Do not block order success on account creation.
+          toast.error(`Objednávka je OK, ale účet sa nepodarilo vytvoriť: ${msg}`);
+        }
+      }
+
       void subscribeToNewsletter();
       tracking.purchase(result.order.id.toString(), items, finalTotal);
 
