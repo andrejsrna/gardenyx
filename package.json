@@ -21,8 +21,8 @@
     "@aws-sdk/client-s3": "^3.954.0",
     "@getbrevo/brevo": "^3.0.1",
     "@heroicons/react": "^2.2.0",
-    "@prisma/adapter-pg": "^7.1.0",
-    "@prisma/client": "^7.1.0",
+    "@prisma/adapter-pg": "7.4.0",
+    "@prisma/client": "7.4.0",
     "@react-pdf/renderer": "^4.3.1",
     "@sentry/nextjs": "^10.30.0",
     "@stripe/react-stripe-js": "^3.9.0",
@@ -43,10 +43,9 @@
     "isomorphic-dompurify": "^2.26.0",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.539.0",
-    "next": "^15.5.8",
+    "next": "15.5.11",
     "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
-    "prisma": "^7.1.0",
     "react": "^19.1.1",
     "react-cookie-consent": "^9.0.0",
     "react-dom": "^19.1.1",
@@ -79,11 +78,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "^15.5.4",
+    "eslint-config-next": "15.5.11",
     "postcss": "^8",
     "tailwindcss": "^4.1.11",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "prisma": "7.4.0"
   }
 }
