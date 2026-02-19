@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
+import { sendOrderConfirmationEmail, sendOrderNotificationToAdmin } from '@/app/lib/email/order-confirmation';
+import { Builder, Parser } from 'xml2js';
 
 type PageProps = {
   params?: Promise<{ id: string }>;
@@ -39,6 +41,22 @@ const formatDate = (value?: Date | string) => {
   }).format(date);
 };
 
+const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
+const PACKETA_CARRIER_ID = '131';
+
+function parseAddress(addressLine: string): { street: string; houseNumber: string } {
+  if (!addressLine) return { street: '', houseNumber: '' };
+  const match = addressLine.match(/^(.*?)\s*([\d/A-Za-z-]+)$/);
+  if (match && match[2] && /\d/.test(match[2])) {
+    return { street: (match[1] || '').trim(), houseNumber: match[2].trim() };
+  }
+  return { street: addressLine.trim(), houseNumber: '' };
+}
+
+function calculateTotalWeight(items: Array<{ quantity: number }>): number {
+  return items.reduce((total, item) => total + (Number(item.quantity || 0) * 0.5), 0);
+}
+
 export default async function OrderDetailPage({ params }: PageProps) {
   const resolvedParams = params ? await params : undefined;
   const orderId = resolvedParams?.id;
@@ -61,11 +79,117 @@ export default async function OrderDetailPage({ params }: PageProps) {
 
   const billingAddress = order.addresses.find(address => address.type === 'BILLING');
   const shippingAddress = order.addresses.find(address => address.type === 'SHIPPING');
+  const packetaError = order.meta.find(m => m.key === '_packeta_error')?.value || null;
+  const packetaErrorAt = order.meta.find(m => m.key === '_packeta_error_at')?.value || null;
+
   const rawInvoiceUrl = order.meta.find(m => m.key === '_invoice_url')?.value;
   const invoiceUrl = rawInvoiceUrl?.startsWith('http') ? rawInvoiceUrl : rawInvoiceUrl ? `https://${rawInvoiceUrl.replace(/^\/+/, '')}` : null;
   const invoiceNumber = order.meta.find(m => m.key === '_invoice_number')?.value;
 
   const orderNumberLabel = order.orderNumber ? `#${order.orderNumber}` : `#${order.id}`;
+
+  async function retryPacketaAndResend() {
+    'use server';
+
+    const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
+    if (!PACKETA_API_PASSWORD) {
+      throw new Error('Missing PACKETA_API_SECRET');
+    }
+
+    const fresh = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true, addresses: true, meta: true }
+    });
+    if (!fresh) throw new Error('Order not found');
+
+    const billing = fresh.addresses.find(a => a.type === 'BILLING');
+    const shipping = fresh.addresses.find(a => a.type === 'SHIPPING');
+    if (!billing?.email) throw new Error('Missing billing email');
+    if (!shipping) throw new Error('Missing shipping address');
+
+    // Keep in processing.
+    await prisma.order.update({ where: { id: orderId }, data: { status: 'processing' } });
+
+    // Resend emails (best-effort)
+    await sendOrderConfirmationEmail(fresh as any, billing.email);
+    await sendOrderNotificationToAdmin(fresh as any, billing.email);
+
+    // Recreate Packeta packet
+    const packetAttributes: Record<string, string | undefined> = {
+      number: String(fresh.orderNumber ?? fresh.id),
+      name: shipping.firstName,
+      surname: shipping.lastName,
+      email: billing.email,
+      phone: String(billing.phone || '').replace(/[^\d]/g, ''),
+      value: String(fresh.total),
+      currency: String(fresh.currency || 'EUR'),
+      weight: String(calculateTotalWeight(fresh.items)),
+      eshop: 'FITDOPLNKY',
+      cod: fresh.paymentMethod === 'cod' ? String(fresh.total) : undefined,
+    };
+
+    const isHomeDelivery = fresh.shippingMethod === 'packeta_home';
+    if (isHomeDelivery) {
+      let addressLine = shipping.address1;
+      let parsed = parseAddress(addressLine);
+      if (!parsed.street && shipping.address2) {
+        addressLine = shipping.address2;
+        parsed = parseAddress(addressLine);
+      }
+      if (!parsed.street) throw new Error(`Invalid address for home delivery: ${addressLine}`);
+
+      Object.assign(packetAttributes, {
+        addressId: PACKETA_CARRIER_ID,
+        street: parsed.street,
+        houseNumber: parsed.houseNumber,
+        city: shipping.city,
+        zip: String(shipping.postcode || '').replace(/\s/g, ''),
+        country: String(shipping.country || 'SK'),
+      });
+    } else {
+      const pointId = fresh.packetaPointId || fresh.meta.find(m => m.key === '_packeta_point_id')?.value;
+      if (!pointId) throw new Error('Missing Packeta point id');
+      Object.assign(packetAttributes, { addressId: String(pointId) });
+    }
+
+    const xmlData = { createPacket: { apiPassword: PACKETA_API_PASSWORD, packetAttributes } };
+    const builder = new Builder({
+      renderOpts: { pretty: true, indent: '  ' },
+      xmldec: { version: '1.0', encoding: 'UTF-8' }
+    });
+    const xmlRequest = builder.buildObject(xmlData);
+
+    const resp = await fetch(PACKETA_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/xml', 'Accept': 'application/xml' },
+      body: xmlRequest
+    });
+    const respText = await resp.text();
+    if (!resp.ok) throw new Error(`Packeta HTTP ${resp.status}: ${resp.statusText} :: ${respText}`);
+
+    const parser = new Parser({ explicitArray: false });
+    const result = await parser.parseStringPromise(respText) as any;
+    if (result?.response?.status !== 'ok') {
+      throw new Error(result?.response?.string || result?.response?.message || `Packeta status: ${result?.response?.status}`);
+    }
+    const r = result.response.result;
+    if (!r?.id || !r?.barcode || !r?.barcodeText) throw new Error('Packeta response missing result fields');
+
+    // Store new packeta meta + clear error meta.
+    await prisma.orderMeta.deleteMany({
+      where: {
+        orderId,
+        key: { in: ['_packeta_packet_id', '_packeta_barcode', '_packeta_barcode_text', '_packeta_error', '_packeta_error_at'] }
+      }
+    });
+    await prisma.orderMeta.createMany({
+      data: [
+        { orderId: String(orderId), key: '_packeta_packet_id', value: String(r.id) },
+        { orderId: String(orderId), key: '_packeta_barcode', value: String(r.barcode) },
+        { orderId: String(orderId), key: '_packeta_barcode_text', value: String(r.barcodeText) },
+      ]
+    });
+  }
 
   const addressLine = (address?: (typeof order.addresses)[number]) => {
     if (!address) return <p className="text-sm text-slate-300">—</p>;
@@ -115,6 +239,28 @@ export default async function OrderDetailPage({ params }: PageProps) {
             </Link>
           </div>
         </div>
+
+        {packetaError ? (
+          <div className="mt-6 rounded-2xl border border-rose-700/50 bg-rose-950/30 p-4 text-rose-100">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-rose-200/80">Packeta chyba</p>
+                <p className="mt-1 text-sm text-rose-100 break-words">{packetaError}</p>
+                {packetaErrorAt ? (
+                  <p className="mt-1 text-xs text-rose-200/70">Čas: {packetaErrorAt}</p>
+                ) : null}
+              </div>
+              <form action={retryPacketaAndResend}>
+                <button
+                  type="submit"
+                  className="rounded-full bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-500"
+                >
+                  Retry Packeta + email
+                </button>
+              </form>
+            </div>
+          </div>
+        ) : null}
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
