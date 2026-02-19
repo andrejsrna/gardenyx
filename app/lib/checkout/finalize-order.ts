@@ -3,8 +3,12 @@ import { sendOrderConfirmationEmail, sendOrderNotificationToAdmin } from '@/app/
 import { createPacketaPacketForOrder } from '@/app/lib/packeta';
 
 export type FinalizeOrderOptions = {
+  /** Force sending customer+admin emails even if _email_sent_at exists. */
   forceEmail?: boolean;
+  /** Force recreating Packeta packet even if _packeta_packet_id exists. */
   forcePacketa?: boolean;
+  /** Whether finalizeOrder is allowed to send customer/admin emails. */
+  allowCustomerEmail?: boolean;
 };
 
 const nowIso = () => new Date().toISOString();
@@ -76,11 +80,20 @@ export async function finalizeOrder(orderId: string, opts?: FinalizeOrderOptions
 
   // EMAIL
   const emailSentAt = order.meta.find(m => m.key === '_email_sent_at')?.value || null;
-  if ((opts?.forceEmail || !emailSentAt) && billingEmail) {
+  const canEmail = opts?.allowCustomerEmail !== false;
+
+  if (!canEmail) {
+    // avoid spam from automated retries (cron)
+    if (!emailSentAt) {
+      await setMeta(orderId, '_email_skipped_reason', 'disabled');
+      await setMeta(orderId, '_email_skipped_at', nowIso());
+    }
+  } else if ((opts?.forceEmail || !emailSentAt) && billingEmail) {
     try {
       await sendOrderConfirmationEmail(order as any, billingEmail);
       await sendOrderNotificationToAdmin(order as any, billingEmail);
       await setMeta(orderId, '_email_sent_at', nowIso());
+      await deleteMeta(orderId, ['_email_error', '_email_error_at', '_email_skipped_reason', '_email_skipped_at']);
     } catch (err) {
       const anyErr = err as any;
       const msg = err instanceof Error ? (err.message || '') : String(err);

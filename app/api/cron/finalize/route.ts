@@ -59,7 +59,8 @@ export async function POST(request: Request) {
 
     attempted += 1;
     try {
-      const res = await finalizeOrder(order.id);
+      // Cron retries should NOT send customer emails to avoid spam.
+      const res = await finalizeOrder(order.id, { allowCustomerEmail: false });
       results.push({ orderId: order.id, result: res });
     } catch (err) {
       results.push({ orderId: order.id, result: { ok: false, error: err instanceof Error ? err.message : String(err) } });
