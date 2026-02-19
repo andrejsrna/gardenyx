@@ -29,6 +29,7 @@ interface CartContextType {
     totalItems: number;
     totalPrice: number;
     subtotal: number;
+    /** Total discount applied to cart (coupons OR manual bundle discounts). */
     discountAmount: number;
     appliedCoupon: string | null;
     couponType: string | null;
@@ -42,6 +43,9 @@ interface CartContextType {
     applyPendingCoupon: () => void;
     applyCoupon: (code: string) => Promise<boolean>;
     removeCoupon: () => void;
+    /** Apply a manual discount (used for “kúry” bundles). Clears any coupon code. */
+    setManualDiscount: (amount: number) => void;
+    clearManualDiscount: () => void;
     exitCoupon: string | null;
     applyExitCoupon: (code: string) => Promise<boolean>;
     isCartOpen: boolean;
@@ -77,10 +81,38 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         toast.info('Kupón bol odstránený');
     }, []);
 
+    const setManualDiscount = useCallback((amount: number) => {
+        const safe = Math.max(0, Number(amount) || 0);
+        // Clear coupon state (we treat this as its own discount mechanism)
+        setAppliedCoupon(null);
+        safeRemoveItem('appliedCoupon');
+        safeRemoveItem('pendingCoupon');
+        setCouponType('manual');
+        setCouponAmountRaw(null);
+        setCouponFreeShipping(false);
+        setDiscountAmount(safe);
+        if (safe > 0) {
+            toast.success(`Zľava na kúru bola aplikovaná (-${safe.toFixed(2)} €)`);
+        }
+    }, []);
+
+    const clearManualDiscount = useCallback(() => {
+        if (couponType === 'manual') {
+            setDiscountAmount(0);
+            setCouponType(null);
+            toast.info('Zľava na kúru bola odstránená');
+        }
+    }, [couponType]);
+
     const applyCoupon = useCallback(async (code: string) => {
         if (!code) return false;
         if (items.length === 0) {
             toast.error("Pridajte produkty do košíka pre aplikáciu kupónu.");
+            return false;
+        }
+        // Don’t stack coupons on top of manual bundle discounts (keeps pricing predictable).
+        if (couponType === 'manual') {
+            toast.error('Kupón nie je možné použiť spolu so zľavou na kúru.');
             return false;
         }
         const normalized = code.trim();
@@ -353,6 +385,8 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             applyPendingCoupon,
             applyCoupon,
             removeCoupon,
+            setManualDiscount,
+            clearManualDiscount,
             exitCoupon,
             applyExitCoupon,
             isCartOpen,

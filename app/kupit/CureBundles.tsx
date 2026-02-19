@@ -17,10 +17,13 @@ type Bundle = {
   subtitle: string;
   imageSrc: string;
   badge?: string;
+  usp: string[];
   /** Original list-price items (for UI “bežne”) */
   baseItems: BundleItem[];
-  /** Actual items we add to cart (promo pricing) */
+  /** Items we add to cart (always list prices; discount is applied separately) */
   items: BundleItem[];
+  /** Desired final bundle price (exact .99) */
+  targetTotal: number;
   optional?: BundleItem[];
 };
 
@@ -29,8 +32,9 @@ const LIST_PRICE_GEL = 11.99;
 const LIST_PRICE_ROLLER = 14.99;
 
 /**
- * Bundle promo prices (so it feels like existing “Akciové sety”).
- * Note: We intentionally push promo prices into cart line items (server trusts li.price).
+ * Cure bundles:
+ * - Add items to cart at list prices (so products stay “real” items).
+ * - Apply an exact manual discount so final totals land on .99.
  */
 const bundles: Bundle[] = [
   {
@@ -38,15 +42,16 @@ const bundles: Bundle[] = [
     title: 'Kúra na 1 mesiac',
     subtitle: '1× kapsule + 1× gél',
     imageSrc: '/cures/cure-1m.png',
+    usp: ['Štart pre kĺby zvnútra aj zvonka', 'Ideálne na vyskúšanie', 'Rýchla lokálna úľava + dlhodobá podpora'],
     baseItems: [
       { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 1, image: '/kapsule-hero.jpeg' },
       { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: LIST_PRICE_GEL, quantity: 1, image: '/jointboost-gel.jpg' },
     ],
-    // ~-26% vs 26.98€ => ~19.99€
     items: [
-      { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: 11.11, quantity: 1, image: '/kapsule-hero.jpeg' },
-      { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: 8.88, quantity: 1, image: '/jointboost-gel.jpg' },
+      { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 1, image: '/kapsule-hero.jpeg' },
+      { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: LIST_PRICE_GEL, quantity: 1, image: '/jointboost-gel.jpg' },
     ],
+    targetTotal: 19.99,
   },
   {
     key: '2m',
@@ -54,15 +59,16 @@ const bundles: Bundle[] = [
     subtitle: '2× kapsule + 2× gél',
     imageSrc: '/cures/cure-2m.png',
     badge: 'Najobľúbenejšie',
+    usp: ['Najlepší pomer cena / výkon', '2 mesiace pravidelnej podpory', 'Najčastejšia voľba zákazníkov'],
     baseItems: [
       { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 2, image: '/kapsule-hero.jpeg' },
       { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: LIST_PRICE_GEL, quantity: 2, image: '/jointboost-gel.jpg' },
     ],
-    // ~-35% vs 53.96€ => ~35.00€ (close to existing set pricing)
     items: [
-      { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: 9.75, quantity: 2, image: '/kapsule-hero.jpeg' },
-      { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: 7.75, quantity: 2, image: '/jointboost-gel.jpg' },
+      { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 2, image: '/kapsule-hero.jpeg' },
+      { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: LIST_PRICE_GEL, quantity: 2, image: '/jointboost-gel.jpg' },
     ],
+    targetTotal: 34.99,
   },
   {
     key: '3m',
@@ -70,15 +76,16 @@ const bundles: Bundle[] = [
     subtitle: '3× kapsule + 3× gél',
     imageSrc: '/cures/cure-3m.png',
     badge: 'Najlepšia cena',
+    usp: ['Najvýhodnejšia voľba na 90 dní', 'Najnižšia cena za 1 mesiac', 'Zásoba bez stresu (a menej objednávok)'],
     baseItems: [
       { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 3, image: '/kapsule-hero.jpeg' },
       { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: LIST_PRICE_GEL, quantity: 3, image: '/jointboost-gel.jpg' },
     ],
-    // ~-32% vs 80.94€ => ~55.00€
     items: [
-      { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: 10.17, quantity: 3, image: '/kapsule-hero.jpeg' },
-      { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: 8.16, quantity: 3, image: '/jointboost-gel.jpg' },
+      { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 3, image: '/kapsule-hero.jpeg' },
+      { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: LIST_PRICE_GEL, quantity: 3, image: '/jointboost-gel.jpg' },
     ],
+    targetTotal: 54.99,
     optional: [
       { id: ROLLER_ID, name: 'Maderoterapický valček', price: LIST_PRICE_ROLLER, quantity: 1, image: '/product-image.png' },
     ],
@@ -88,7 +95,7 @@ const bundles: Bundle[] = [
 const format = (n: number) => new Intl.NumberFormat('sk-SK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 
 export default function CureBundles() {
-  const { addToCart, openCart } = useCart();
+  const { addToCart, openCart, setManualDiscount, clearManualDiscount } = useCart();
 
   const addBundle = (bundle: Bundle) => {
     if (isSalesSuspendedClient()) {
@@ -96,14 +103,24 @@ export default function CureBundles() {
       return;
     }
 
+    // Add products at list prices
     for (const item of bundle.items) {
       addToCart(item);
     }
 
+    // Apply an exact discount so final price lands on .99
+    const baseTotal = bundle.baseItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const desired = bundle.targetTotal;
+    const discount = Math.max(0, Number((baseTotal - desired).toFixed(2)));
+
+    // Reset any previous manual discount and apply a new one
+    clearManualDiscount();
+    if (discount > 0) setManualDiscount(discount);
+
     tracking.addToCart({
       id: `bundle-${bundle.key}`,
       name: bundle.title,
-      price: bundle.items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+      price: desired,
       quantity: 1,
     } as any);
 
@@ -115,15 +132,15 @@ export default function CureBundles() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Vyber si kúru</h2>
-          <p className="mt-1 text-slate-600">Odporúčané kombinácie na 1–3 mesiace (pridáme ako samostatné produkty do košíka).</p>
+          <p className="mt-1 text-slate-600">Odporúčané kombinácie na 1–3 mesiace.</p>
         </div>
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {bundles.map((b) => {
           const baseTotal = b.baseItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
-          const promoTotal = b.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-          const saved = Math.max(0, baseTotal - promoTotal);
+          const promoTotal = b.targetTotal;
+          const saved = Math.max(0, Number((baseTotal - promoTotal).toFixed(2)));
           const savedPct = baseTotal > 0 ? Math.round((saved / baseTotal) * 100) : 0;
           return (
             <div key={b.key} className={`relative overflow-hidden rounded-2xl border bg-white p-5 shadow-sm ${b.badge ? 'border-emerald-300 ring-1 ring-emerald-200' : 'border-slate-200'}`}>
@@ -157,23 +174,28 @@ export default function CureBundles() {
                 ) : null}
               </div>
 
+              <ul className="mt-4 space-y-1 text-sm text-slate-700">
+                {b.usp.map((t) => (
+                  <li key={t} className="flex gap-2">
+                    <span className="mt-[0.4rem] h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+
               <button
                 onClick={() => addBundle(b)}
                 className="mt-4 w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
               >
                 Pridať kúru do košíka
               </button>
-
-              <div className="mt-3 text-xs text-slate-500">
-                Tip: po pridání môžeš v košíku upraviť množstvá.
-              </div>
             </div>
           );
         })}
       </div>
 
       <div className="mt-6 text-xs text-slate-500">
-        Pozn.: Ceny a názvy produktov tu sú zatiaľ natvrdo podľa aktuálneho cenníka v contente. Keď doplníš vlastné obrázky, len ich prepojíme.
+        Obrázky kúry môžeš kedykoľvek vymeniť (sú v <code className="rounded bg-slate-100 px-1 py-0.5">public/cures</code>).
       </div>
     </section>
   );
