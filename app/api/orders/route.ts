@@ -6,7 +6,6 @@ import prisma from '@/app/lib/prisma';
 import { logError } from '@/app/lib/utils/logger';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { Prisma, OrderStatus, PaymentMethod as PaymentMethodEnum, PaymentStatus as PaymentStatusEnum } from '@prisma/client';
-import { sendOrderConfirmationEmail, sendOrderNotificationToAdmin } from '@/app/lib/email/order-confirmation';
 import { recordCouponRedemption } from '@/app/lib/coupons';
 import { getIronSession } from 'iron-session';
 import { sessionConfig } from '@/app/lib/config/session';
@@ -87,17 +86,7 @@ interface OrderData {
 
 type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
 
-const logBrevoFailure = (tag: string, err: unknown) => {
-  const maybeAxiosError = err as {
-    response?: { status?: number; data?: unknown };
-    message?: string;
-  };
-  console.warn(tag, {
-    message: maybeAxiosError?.message,
-    status: maybeAxiosError?.response?.status,
-    data: maybeAxiosError?.response?.data
-  });
-};
+// logBrevoFailure removed: finalizeOrder handles email error logging now.
 
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
@@ -548,56 +537,22 @@ export async function POST(request: Request) {
         .catch(err => console.warn('[coupon redemption cod] failed', err));
     }
 
-    if (
-      (orderData.shipping_method === 'packeta_pickup' || orderData.shipping_method === 'packeta_home') &&
-      desiredStatus === 'processing'
-    ) {
-      try {
-        await createPacketaPacket(orderData, createdOrder as unknown as OrderWithRelations);
-      } catch (packetaError) {
-        const packetaErrorMessage = packetaError instanceof Error ? packetaError.message : String(packetaError);
-        const ts = new Date().toISOString();
-
-        // IMPORTANT: keep order in processing; store Packeta failure in meta for admin retry.
-        try {
-          await prisma.orderMeta.deleteMany({
-            where: {
-              orderId: createdOrder.id,
-              key: { in: ['_packeta_error', '_packeta_error_at'] }
-            }
-          });
-          await prisma.orderMeta.createMany({
-            data: [
-              { orderId: createdOrder.id, key: '_packeta_error', value: packetaErrorMessage },
-              { orderId: createdOrder.id, key: '_packeta_error_at', value: ts }
-            ]
-          });
-        } catch {
-          // ignore secondary failure
-        }
-
-        logError('Packeta Packet Creation Failed', {
-          error: packetaErrorMessage,
-          orderId: createdOrder.id,
-          customerEmail: orderData.billing.email,
-          timestamp: ts
-        });
-      }
-    }
-
     const fullOrder = await prisma.order.findUnique({
       where: { id: createdOrder.id },
       include: { items: true, addresses: true, meta: true }
     }) as unknown as OrderWithRelations | null;
 
-    if (orderData.billing?.email && fullOrder) {
-      sendOrderConfirmationEmail(fullOrder, orderData.billing.email)
-        .catch(err => logBrevoFailure('[order confirmation email] failed', err));
-      sendOrderNotificationToAdmin(fullOrder, orderData.billing.email)
-        .catch(err => logBrevoFailure('[order admin email] failed', err));
-    } else if (fullOrder) {
-      sendOrderNotificationToAdmin(fullOrder)
-        .catch(err => logBrevoFailure('[order admin email] failed', err));
+    // Side effects (emails + Packeta) are handled in one place.
+    // We intentionally don't block order creation on these.
+    if (fullOrder) {
+      const { finalizeOrder } = await import('@/app/lib/checkout/finalize-order');
+      finalizeOrder(fullOrder.id).catch(err => {
+        logError('Order Finalize Failed', {
+          error: err instanceof Error ? err.message : String(err),
+          orderId: fullOrder.id,
+          timestamp: new Date().toISOString()
+        });
+      });
     }
 
     return NextResponse.json({
