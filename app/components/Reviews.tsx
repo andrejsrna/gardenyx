@@ -50,6 +50,20 @@ const defaultReviews: Review[] = [
     rating: 5,
     date: '1 novembra, 2023',
     content: 'Najlepšia kĺbová výživa, akú som kedy vyskúšal!'
+  },
+  {
+    id: '6',
+    author: { name: 'Dušan B.', initials: 'DB' },
+    rating: 5,
+    date: 'február, 2026',
+    content: 'Po 3 týždňoch prestala bolesť kolien pri behaní. Výborný produkt.'
+  },
+  {
+    id: '7',
+    author: { name: 'Zoltán F.', initials: 'ZF' },
+    rating: 5,
+    date: 'február, 2026',
+    content: 'Takýto produkt som ešte nemal, mal som operáciu kolena a po pár týždňoch ma koleno prestalo bolieť. Super, odporúčam!'
   }
 ];
 
