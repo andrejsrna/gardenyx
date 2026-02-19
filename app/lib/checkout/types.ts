@@ -68,6 +68,7 @@ export interface WooCommerceOrder {
   meta_data: Array<{ key: string; value: string }>;
   line_items: Array<{ product_id: number; quantity: number }>;
   shipping_lines: Array<{ method_id: string; method_title: string; total: string; total_tax?: string; taxes?: Array<unknown> }>;
+  idempotency_key?: string;
 }
 
 export interface AddressComponents {
