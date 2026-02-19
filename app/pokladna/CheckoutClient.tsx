@@ -423,6 +423,13 @@ export default function CheckoutClient() {
           ? { ...formData.shipping, address_1: formData.shipping.address_2 || '', address_2: '' }
           : formData.shipping;
 
+      const attemptKeyStorage = 'checkout_idempotency_key';
+      const existingAttemptKey = typeof window !== 'undefined' ? sessionStorage.getItem(attemptKeyStorage) : null;
+      const attemptKey = existingAttemptKey || (typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : String(Date.now()) + '-' + Math.random().toString(16).slice(2));
+      if (typeof window !== 'undefined' && !existingAttemptKey) {
+        sessionStorage.setItem(attemptKeyStorage, attemptKey);
+      }
+
       const orderData: WooCommerceOrder = {
         status: 'pending',
         billing: formData.billing,
@@ -459,6 +466,7 @@ export default function CheckoutClient() {
           total_tax: (shippingCostBase * 0.19).toFixed(2),
           taxes: []
         }] : [],
+        idempotency_key: attemptKey,
       };
 
       if (formData.create_account && customerData === null) {
@@ -509,6 +517,8 @@ export default function CheckoutClient() {
         clearCart();
         resetForm();
         localStorage.removeItem('checkoutFormData');
+        // new checkout attempt next time
+        try { sessionStorage.removeItem('checkout_idempotency_key'); } catch {}
         window.location.href = `/objednavka/uspesna/${result.order.id}`;
       }, 100);
     } catch (error: unknown) {
