@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import Comparsion from '../components/landing-page/Comparsion';
-import Products from '../components/landing-page/Products';
+import CureBundlesSection from '../components/CureBundlesSection';
 
 export const metadata: Metadata = {
   title: 'Joint Boost – najkomplexnejšia výživa pre kĺby, šľachy a väzy',
@@ -279,7 +279,7 @@ export default function JointBoostPage() {
         </div>
       </section>
 
-      <Products />
+      <CureBundlesSection />
 
       <section className="bg-emerald-50/60 py-16">
         <div className="container mx-auto px-4">

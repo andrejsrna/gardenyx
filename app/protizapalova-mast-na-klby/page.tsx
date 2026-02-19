@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import Products from '../components/landing-page/Products';
+import CureBundlesSection from '../components/CureBundlesSection';
 import JointBoostGelIngredients from '../components/product/JointBoostGelIngredients';
 
 export const metadata: Metadata = {
@@ -386,13 +386,7 @@ export default function ProtizapalovyGelPage() {
         </div>
       </section>
 
-      <Products
-        productIds={[669, 824, 684]}
-        title="Protizápalová masť a výhodné balíčky"
-        description="Vyber si samostatnú masť alebo siahnite po zvýhodnených setoch, ktoré kombinujú gél s výživou Joint Boost pre intenzívnu starostlivosť o kĺby zvnútra aj zvonka."
-        gridClassName="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        loadingGridClassName="animate-pulse grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-      />
+      <CureBundlesSection buttonText="Zobraziť všetky produkty" />
 
       <section id="faq" className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">

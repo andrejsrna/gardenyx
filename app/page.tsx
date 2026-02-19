@@ -8,7 +8,7 @@ import CTAWithContent from './components/CTAWithContent';
 import Reviews from './components/Reviews';
 import Composition from './components/Composition';
 import RecentPosts from './components/RecentPosts';
-import RecommendedProductsWrapper from './components/RecommendedProductsWrapper';
+import CureBundlesSection from './components/CureBundlesSection';
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -115,7 +115,7 @@ export default function Home() {
       <Composition />
       <CTAWithContent />
       <Reviews />
-      <RecommendedProductsWrapper />
+      <CureBundlesSection />
       <RecentPosts />
       <CTA />
     </main>
