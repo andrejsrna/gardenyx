@@ -8,10 +8,11 @@ import { sendOrderConfirmationEmail } from '@/app/lib/email/order-confirmation';
 import type { Prisma } from '@prisma/client';
 import { recordCouponRedemption } from '@/app/lib/coupons';
 
-const stripe = getStripe();
+// NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 const creatingByPi = new Set<string>();
 
 export async function POST(request: Request) {
+  const stripe = getStripe();
   try {
     // Check if sales are suspended
     if (isSalesSuspended()) {

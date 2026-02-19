@@ -7,7 +7,7 @@ import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sal
 import { getProductsByIds } from '@/app/lib/products';
 import { validateCoupon } from '@/app/lib/coupons';
 
-const stripe = getStripe();
+// NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
 // Shipping pricing configuration (keep in sync with client constants)
 const FREE_SHIPPING_THRESHOLD = 29;
@@ -35,6 +35,7 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request) {
+    const stripe = getStripe();
     try {
         // Check if sales are suspended
         if (isSalesSuspended()) {

@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
 
-const stripe = getStripe();
+// NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
 export async function POST(request: Request) {
+  const stripe = getStripe();
   try {
     const { paymentIntentId, orderId } = await request.json();
 
