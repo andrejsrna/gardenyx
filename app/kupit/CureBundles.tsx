@@ -148,7 +148,7 @@ export default function CureBundles() {
               className={`relative overflow-hidden rounded-2xl border bg-white p-5 shadow-sm ${b.badge ? 'border-emerald-300 ring-1 ring-emerald-200' : 'border-slate-200'}`}
             >
               {b.badge ? (
-                <div className="absolute right-4 top-4 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white">
+                <div className="absolute -right-3 -top-3 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-md">
                   {b.badge}
                 </div>
               ) : null}
@@ -196,10 +196,6 @@ export default function CureBundles() {
             </div>
           );
         })}
-      </div>
-
-      <div className="mt-6 text-xs text-slate-500">
-        Obrázky kúry môžeš kedykoľvek vymeniť (sú v <code className="rounded bg-slate-100 px-1 py-0.5">public/cures</code>).
       </div>
     </section>
   );

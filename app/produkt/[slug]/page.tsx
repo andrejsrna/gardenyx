@@ -4,7 +4,7 @@ import AddToCartButton from './AddToCartButton';
 import ProductTracking from './ProductTracking';
 import Image from 'next/image';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { CheckCircle, CreditCard } from 'lucide-react';
 import ProductSchema from '@/app/components/seo/ProductSchema';
 import BreadcrumbSchema from '@/app/components/seo/BreadcrumbSchema';
@@ -84,6 +84,18 @@ async function getProduct(slug: string) {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
+
+  // Redirect old “Akciové sety” product pages to the new /kupit cures.
+  // (We still keep product data for historical reasons, but don’t want to sell them directly.)
+  const redirectSlugs = new Set([
+    '2x-jointboost-1x-mast-na-klby-siddhalepa',
+    '2x-joint-boost-gel-2x-joint-boost-kapsule',
+    'akciovy-set-trojbalenie-mast-25g-valcek',
+  ]);
+  if (redirectSlugs.has(slug)) {
+    redirect('/kupit');
+  }
+
   const product = await getProduct(slug);
 
   if (!product) {
