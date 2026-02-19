@@ -170,6 +170,7 @@ model OrderMeta {
 
   @@index([orderId])
   @@index([key])
+  @@unique([orderId, key])
 }
 
 model Coupon {
