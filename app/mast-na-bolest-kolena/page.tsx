@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Activity, ArrowRight, Flame, Leaf, Shield, Snowflake } from 'lucide-react';
-import Products from '../components/landing-page/Products';
+import CureBundlesSection from '../components/CureBundlesSection';
 
 export const metadata: Metadata = {
   title: 'Masť na bolesť kolena – rýchla úľava a ochladenie | Joint Boost Gél',
@@ -417,13 +417,7 @@ export default function MastNaBolestKolenaPage() {
         </div>
       </section>
 
-      <Products
-        productIds={[669, 824, 684]}
-        title="Vyber si starostlivosť o koleno"
-        description="Joint Boost Gél za 11,90 € alebo zvýhodnený balíček 2× doplnok + 1× gél – ideálny pri dlhodobej záťaži kolien."
-        gridClassName="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        loadingGridClassName="animate-pulse grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-      />
+      <CureBundlesSection buttonText="Zobraziť všetky produkty" />
     </main>
   );
 }

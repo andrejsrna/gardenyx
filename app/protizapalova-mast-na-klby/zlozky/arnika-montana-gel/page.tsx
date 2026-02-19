@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import Products from '../../../components/landing-page/Products';
+import CureBundlesSection from '../../../components/CureBundlesSection';
 import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
 
 export const metadata: Metadata = {
@@ -176,13 +176,7 @@ export default function ArnikaMontanaGelPage() {
         </div>
       </div>
 
-      <Products
-        productIds={[669, 824, 684]}
-        title="Najsilnejší kĺbový gél s arnikou"
-        description="Vyber si samostatnú tubu gélu alebo zvýhodnené balíčky, ktoré spájajú arniku montanu s Boswelliou, MSM a mentolom pre komplexnú starostlivosť o kĺby."
-        gridClassName="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        loadingGridClassName="animate-pulse grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-      />
+      <CureBundlesSection buttonText="Zobraziť všetky produkty" />
     </main>
   );
 }

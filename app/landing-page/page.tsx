@@ -5,7 +5,7 @@ import Comparsion from "../components/landing-page/Comparsion";
 import DosageHighlight from "../components/landing-page/DosageHighlight";
 import FAQ from "../components/landing-page/FAQ";
 import Hero from "../components/landing-page/Hero";
-import Products from "../components/landing-page/Products";
+import CureBundlesSection from "../components/CureBundlesSection";
 import RecommendedProduct from "../components/landing-page/RecommendedProduct";
 import Reviews from "../components/Reviews";
 
@@ -20,7 +20,7 @@ export default function LandingPage() {
       <Comparsion />
       <CTAWithContent />
       <RecommendedProduct />
-      <Products />
+      <CureBundlesSection />
       <FAQ />
     </>
   );

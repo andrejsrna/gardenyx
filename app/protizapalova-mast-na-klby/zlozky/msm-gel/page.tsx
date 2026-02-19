@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import Products from '../../../components/landing-page/Products';
+import CureBundlesSection from '../../../components/CureBundlesSection';
 import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
 
 export const metadata: Metadata = {
@@ -171,13 +171,7 @@ export default function MsmGelPage() {
         </div>
       </div>
 
-      <Products
-        productIds={[669, 824, 684]}
-        title="Najsilnejší kĺbový gél s MSM"
-        description="MSM na kĺby, Boswellia, arnika a mentol v jednom géle. Vyber si samostatné balenie alebo zvýhodnené sety pre komplexnú starostlivosť."
-        gridClassName="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        loadingGridClassName="animate-pulse grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-      />
+      <CureBundlesSection buttonText="Zobraziť všetky produkty" />
     </main>
   );
 }
