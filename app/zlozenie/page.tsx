@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Leaf, TestTube, Brain, Shield } from 'lucide-react';
 import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
-import ContentHub, { ANTI_INFLAMMATORY_HUB } from '../components/internal-linking/ContentHub';
+import { ANTI_INFLAMMATORY_HUB } from '../components/internal-linking/ContentHub';
+import CureBundlesSection from '../components/CureBundlesSection';
 
 export const metadata: Metadata = {
   title: 'Zloženie JointBoost | Najsilnejšia kĺbová výživa',
@@ -168,15 +169,9 @@ export default function CompositionPage() {
           ))}
         </div>
 
-        {/* Anti-inflammatory ingredients hub */}
-        <ContentHub 
-          topic="Protizápalové zložky"
-          title="Prírodné protizápalové zložky"
-          description="Objavte silné prírodné ingrediencie, ktoré pomáhajú zmierňovať zápaly a podporujú zdravie vašich kĺbov."
-          items={ANTI_INFLAMMATORY_HUB}
-          layout="grid"
-          maxItems={3}
-        />
+        <div className="pb-16">
+          <CureBundlesSection buttonText="Zobraziť všetky produkty" />
+        </div>
       </div>
     </main>
     </>
