@@ -117,7 +117,6 @@ export default function Home() {
       <Reviews />
       <CureBundlesSection />
       <RecentPosts />
-      <CTA />
     </main>
   );
 }
