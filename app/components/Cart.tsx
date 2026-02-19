@@ -22,6 +22,7 @@ export default function Cart({onCloseAction}: CartProps) {
         appliedCoupon,
         couponType,
         couponAmountRaw,
+        manualDiscountLabel,
     } = useCart();
     const {customerData, isAuthenticated, isLoading} = useAuth();
     const [userName, setUserName] = useState<string | null>(null);
@@ -191,7 +192,13 @@ export default function Cart({onCloseAction}: CartProps) {
                         <span className="text-gray-600">Medzisúčet:</span>
                         <span className="font-medium">{subtotal.toFixed(2)} €</span>
                     </div>
-                    {appliedCoupon && (
+                    {discountAmount > 0 && couponType === 'manual' && (
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-green-700">{manualDiscountLabel || 'Zľava za kúru'}:</span>
+                            <span className="text-green-700 font-medium">-{discountAmount.toFixed(2)} €</span>
+                        </div>
+                    )}
+                    {appliedCoupon && couponType !== 'manual' && (
                         <div className="flex justify-between items-center text-sm">
                             <span className="text-green-600">Kupón ({appliedCoupon}):</span>
                             {discountAmount > 0 ? (
