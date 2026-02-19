@@ -17,6 +17,8 @@ type Bundle = {
   subtitle: string;
   imageSrc: string;
   badge?: string;
+  /** One-line “why this bundle” explanation */
+  reason: string;
   usp: string[];
   /** Original list-price items (for UI “bežne”) */
   baseItems: BundleItem[];
@@ -42,6 +44,7 @@ const bundles: Bundle[] = [
     title: 'Kúra na 1 mesiac',
     subtitle: '1× kapsule + 1× gél',
     imageSrc: '/cures/cure-1m.png',
+    reason: 'Najlepší štart, ak chcete otestovať účinok a nastaviť rutinu.',
     usp: ['Štart pre kĺby zvnútra aj zvonka', 'Ideálne na vyskúšanie', 'Rýchla lokálna úľava + dlhodobá podpora'],
     baseItems: [
       { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 1, image: '/kapsule-hero.jpeg' },
@@ -59,6 +62,7 @@ const bundles: Bundle[] = [
     subtitle: '2× kapsule + 2× gél',
     imageSrc: '/cures/cure-2m.png',
     badge: 'Najobľúbenejšie',
+    reason: 'Odporúčané pri dlhodobejších ťažkostiach – výsledky často prichádzajú po 2–4 týždňoch.',
     usp: ['Najlepší pomer cena / výkon', '2 mesiace pravidelnej podpory', 'Najčastejšia voľba zákazníkov'],
     baseItems: [
       { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 2, image: '/kapsule-hero.jpeg' },
@@ -76,6 +80,7 @@ const bundles: Bundle[] = [
     subtitle: '3× kapsule + 3× gél',
     imageSrc: '/cures/cure-3m.png',
     badge: 'Najlepšia cena',
+    reason: 'Najlepšia voľba pre pravidelnosť – 90 dní bez výpadkov je typicky najlepšia stratégia.',
     usp: ['Najvýhodnejšia voľba na 90 dní', 'Najnižšia cena za 1 mesiac', 'Zásoba bez stresu (a menej objednávok)'],
     baseItems: [
       { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 3, image: '/kapsule-hero.jpeg' },
@@ -163,6 +168,7 @@ export default function CureBundles() {
                 <div>
                   <div className="text-lg font-semibold text-slate-900">{b.title}</div>
                   <div className="text-sm text-slate-600">{b.subtitle}</div>
+                  <div className="mt-1 text-xs text-slate-500">{b.reason}</div>
                 </div>
               </div>
 
