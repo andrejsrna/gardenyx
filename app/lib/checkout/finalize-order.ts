@@ -11,8 +11,11 @@ const nowIso = () => new Date().toISOString();
 const nowMs = () => Date.now();
 
 async function setMeta(orderId: string, key: string, value: string) {
-  await prisma.orderMeta.deleteMany({ where: { orderId, key } });
-  await prisma.orderMeta.create({ data: { orderId, key, value } });
+  await prisma.orderMeta.upsert({
+    where: { orderId_key: { orderId, key } },
+    create: { orderId, key, value },
+    update: { value },
+  });
 }
 
 async function deleteMeta(orderId: string, keys: string[]) {
