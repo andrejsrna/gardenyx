@@ -128,7 +128,7 @@ export default function CureBundles() {
   };
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-white p-6 sm:p-10">
+    <section className="rounded-3xl border border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-white p-6 sm:p-10 pb-10 sm:pb-14">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Vyber si kúru</h2>
@@ -145,7 +145,7 @@ export default function CureBundles() {
           return (
             <div
               key={b.key}
-              className={`relative overflow-hidden rounded-2xl border bg-white p-5 shadow-sm ${b.badge ? 'border-emerald-300 ring-1 ring-emerald-200' : 'border-slate-200'}`}
+              className={`relative overflow-visible rounded-2xl border bg-white p-5 shadow-sm ${b.badge ? 'border-emerald-300 ring-1 ring-emerald-200' : 'border-slate-200'}`}
             >
               {b.badge ? (
                 <div className="absolute -right-3 -top-3 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-md">
