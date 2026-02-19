@@ -13,7 +13,8 @@ const R2_API = process.env.R2_API;
 const R2_ENDPOINT = process.env.R2_ENDPOINT;
 const R2_ACCESS_KEY = process.env.R2_ACCESS_KEY;
 const R2_SECRET_KEY = process.env.R2_SECRET_KEY;
-const VAT_PERCENT_LABEL = 19;
+const PRODUCT_VAT_PERCENT = 19;
+const SHIPPING_VAT_PERCENT = 23;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,6 +26,7 @@ const resolveFontPath = () => {
 
 const MIN_INVOICE_DATE = process.env.INVOICE_MIN_DATE ? new Date(process.env.INVOICE_MIN_DATE) : null;
 const hasR2Config = Boolean(R2_BUCKET && R2_ENDPOINT && R2_ACCESS_KEY && R2_SECRET_KEY);
+const INVOICE_META_KEYS = ['_invoice_created_at', '_invoice_url', '_invoice_filename', '_invoice_number'] as const;
 
 Font.register({
   family: 'DejaVuSans',
@@ -250,20 +252,28 @@ const InvoiceDocument = ({
   orderDate: Date;
 }) => {
   const billing = order.addresses.find(a => a.type === 'BILLING');
-  const vatRate = VAT_PERCENT_LABEL / 100;
-  const vatFactor = vatRate / (1 + vatRate); // share of VAT in gross
+  const productVatRate = PRODUCT_VAT_PERCENT / 100;
+  const shippingVatRate = SHIPPING_VAT_PERCENT / 100;
+  const productVatFactor = productVatRate / (1 + productVatRate); // share of VAT in gross
+  const shippingVatFactor = shippingVatRate / (1 + shippingVatRate); // share of VAT in gross
   const discountTotal = toNumber(order.discountTotal);
   const shippingTotal = toNumber(order.shippingTotal);
   const grossTotal = Math.max(0, toNumber(order.total)); // should already include DPH
   const itemsBaseSum = order.items.reduce((sum, item) => sum + toNumber(item.total), 0) || 0;
   const itemsGrossPool = Math.max(0, grossTotal - shippingTotal);
   const lineFactor = itemsBaseSum > 0 ? itemsGrossPool / itemsBaseSum : 0;
-  const taxTotal = Math.max(0, grossTotal * vatFactor);
+  const itemRows = order.items.map(item => {
+    const weightedGross = toNumber(item.total) * lineFactor; // distribute gross so rows sum to total
+    const itemTax = weightedGross * productVatFactor;
+    const itemNet = weightedGross - itemTax;
+    return { item, weightedGross, itemTax, itemNet };
+  });
+  const itemsTaxTotal = itemRows.reduce((sum, row) => sum + row.itemTax, 0);
+  const shippingTax = shippingTotal * shippingVatFactor;
+  const taxTotal = Math.max(0, itemsTaxTotal + shippingTax);
   const netSum = Math.max(0, grossTotal - taxTotal); // cena bez DPH (vrátane dopravy a zľavy)
-  const vatPercentLabel = VAT_PERCENT_LABEL;
   const paymentLabel = getPaymentLabel(order.paymentMethod as PaymentMethod);
   const shippingLabel = getShippingLabel(order.shippingMethod);
-  const shippingTax = shippingTotal * vatFactor;
 
   return (
     <Document>
@@ -316,13 +326,10 @@ const InvoiceDocument = ({
             <Text style={styles.cell}>Produkt</Text>
             <Text style={styles.cellQty}>Množ.</Text>
             <Text style={styles.cellNet}>Cena bez DPH</Text>
-            <Text style={styles.cellDph}>DPH ({vatPercentLabel}%)</Text>
+            <Text style={styles.cellDph}>DPH</Text>
             <Text style={styles.cellPrice}>Cena s DPH</Text>
           </View>
-          {order.items.map(item => {
-            const weightedGross = toNumber(item.total) * lineFactor; // distribute gross so rows sum to total
-            const itemTax = weightedGross * vatFactor;
-            const itemNet = weightedGross - itemTax;
+          {itemRows.map(({ item, weightedGross, itemTax, itemNet }) => {
             return (
               <View key={item.id} style={styles.tableRow}>
                 <Text style={styles.cell}>{item.productName}</Text>
@@ -335,7 +342,7 @@ const InvoiceDocument = ({
           })}
           {shippingTotal > 0 && (
             <View style={styles.tableRow}>
-              <Text style={styles.cell}>Doprava</Text>
+              <Text style={styles.cell}>Doprava (DPH {SHIPPING_VAT_PERCENT}%)</Text>
               <Text style={styles.cellQty}>—</Text>
               <Text style={styles.cellNet}>{formatCurrency(shippingTotal - shippingTax)}</Text>
               <Text style={styles.cellDph}>{formatCurrency(shippingTax)}</Text>
@@ -349,9 +356,15 @@ const InvoiceDocument = ({
               <Text>{formatCurrency(netSum)}</Text>
             </View>
             <View style={styles.totalsRow}>
-              <Text>DPH ({vatPercentLabel}%)</Text>
-              <Text>{formatCurrency(taxTotal)}</Text>
+              <Text>DPH ({PRODUCT_VAT_PERCENT}%)</Text>
+              <Text>{formatCurrency(itemsTaxTotal)}</Text>
             </View>
+            {shippingTotal > 0 && (
+              <View style={styles.totalsRow}>
+                <Text>DPH ({SHIPPING_VAT_PERCENT}%)</Text>
+                <Text>{formatCurrency(shippingTax)}</Text>
+              </View>
+            )}
             <View style={styles.totalsRow}>
               <Text>Zľava</Text>
               <Text>{formatCurrency(discountTotal)}</Text>
@@ -460,7 +473,16 @@ export async function createInvoiceForOrder(
     { orderId: order.id, key: '_invoice_number', value: invoiceNumber }
   ];
 
-  await prisma.orderMeta.createMany({ data: metaEntries, skipDuplicates: true });
+  if (options?.force) {
+    await prisma.$transaction(async tx => {
+      await tx.orderMeta.deleteMany({
+        where: { orderId: order.id, key: { in: [...INVOICE_META_KEYS] } }
+      });
+      await tx.orderMeta.createMany({ data: metaEntries });
+    });
+  } else {
+    await prisma.orderMeta.createMany({ data: metaEntries, skipDuplicates: true });
+  }
 
   return { url: invoiceUrl, invoiceNumber };
 }

@@ -13,6 +13,8 @@
     "postbuild": "echo \"[postbuild] Build finished at $(date -u '+%Y-%m-%dT%H:%M:%SZ')\"",
     "start": "NODE_ENV=production next start",
     "lint": "eslint . --max-warnings=0",
+    "invoices:regenerate-dec-2025": "tsx scripts/regenerate-dec-2025-invoices.ts",
+    "invoices:regenerate-month": "tsx scripts/regenerate-invoices-month.ts",
     "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
     "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
@@ -30,12 +32,12 @@
     "@types/xml2js": "^0.4.14",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
+    "archiver": "^7.0.1",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.1.2",
     "cookies-next": "^6.1.0",
     "fast-xml-parser": "^5.2.5",
-    "archiver": "^7.0.1",
     "fbq": "^0.1.4",
     "gray-matter": "^4.0.3",
     "html-entities": "^2.6.0",
@@ -84,6 +86,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2",
+    "tsx": "^4.21.0",
     "prisma": "7.4.0"
   }
 }

@@ -1,11 +1,12 @@
+import 'dotenv/config';
 import { Prisma } from '@prisma/client';
 import prisma from '../app/lib/prisma';
 import { createInvoiceForOrder, type OrderWithRelations } from '../app/lib/invoice/create-invoice';
 
 const START = new Date('2025-12-01T00:00:00.000Z');
 const END = new Date('2026-01-01T00:00:00.000Z');
-const INVOICE_META_KEYS = ['_invoice_created_at', '_invoice_url', '_invoice_filename', '_invoice_number'];
-const VAT_RATE = 0.19;
+const PRODUCT_VAT_RATE = 0.19;
+const SHIPPING_VAT_RATE = 0.23;
 
 const toNumber = (value: Prisma.Decimal | number | string | null | undefined) => {
   if (value === null || value === undefined) return 0;
@@ -13,7 +14,7 @@ const toNumber = (value: Prisma.Decimal | number | string | null | undefined) =>
   return Number.isFinite(num) ? num : 0;
 };
 
-const grossToVat = (gross: number) => (gross > 0 ? gross * (VAT_RATE / (1 + VAT_RATE)) : 0);
+const grossToVat = (gross: number, vatRate: number) => (gross > 0 ? gross * (vatRate / (1 + vatRate)) : 0);
 
 async function main() {
   const orders = await prisma.order.findMany({
@@ -34,7 +35,7 @@ async function main() {
     const shippingTotal = toNumber(order.shippingTotal);
     const discountTotal = toNumber(order.discountTotal);
     const itemsGross = Math.max(0, subtotal - discountTotal);
-    const newTaxTotal = Number((grossToVat(itemsGross) + grossToVat(shippingTotal)).toFixed(2));
+    const newTaxTotal = Number((grossToVat(itemsGross, PRODUCT_VAT_RATE) + grossToVat(shippingTotal, SHIPPING_VAT_RATE)).toFixed(2));
 
     if (newTaxTotal !== toNumber(order.taxTotal)) {
       await prisma.order.update({
@@ -44,10 +45,6 @@ async function main() {
       order.taxTotal = new Prisma.Decimal(newTaxTotal.toFixed(2));
       console.log(`  • taxTotal updated to ${newTaxTotal}`);
     }
-
-    await prisma.orderMeta.deleteMany({
-      where: { orderId: order.id, key: { in: INVOICE_META_KEYS } }
-    });
 
     const result = await createInvoiceForOrder(order, { force: true });
     if (result) {

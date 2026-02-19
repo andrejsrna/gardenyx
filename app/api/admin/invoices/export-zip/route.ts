@@ -4,6 +4,13 @@ import prisma from '@/app/lib/prisma';
 import { createInvoiceForOrder, type OrderWithRelations } from '@/app/lib/invoice/create-invoice';
 import { Readable } from 'node:stream';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
+
+const INVOICE_FETCH_TIMEOUT_MS = 15_000;
+const WORKER_CONCURRENCY = 4;
+
 const parseIntSafe = (value: string | null) => {
   if (!value) return null;
   const num = Number(value);
@@ -53,33 +60,57 @@ export async function GET(request: Request) {
   const webStream = Readable.toWeb(nodeStream) as unknown as BodyInit;
 
   (async () => {
-    for (const order of orders) {
-      let invoiceNumber = order.meta.find(m => m.key === '_invoice_number')?.value || '';
-      let invoiceUrl = toHttps(order.meta.find(m => m.key === '_invoice_url')?.value);
+    const usedNames = new Set<string>();
+    const queue = [...orders];
 
-      if (!invoiceUrl) {
-        const result = await createInvoiceForOrder(order, { force: true });
-        if (result) {
-          invoiceNumber = result.invoiceNumber;
-          invoiceUrl = toHttps(result.url);
+    const getUniqueName = (invoiceNumber: string, orderId: string) => {
+      const baseName = `${invoiceNumber || orderId}.pdf`;
+      if (!usedNames.has(baseName)) {
+        usedNames.add(baseName);
+        return baseName;
+      }
+      const fallbackName = `${invoiceNumber || orderId}-${orderId}.pdf`;
+      usedNames.add(fallbackName);
+      return fallbackName;
+    };
+
+    const worker = async () => {
+      while (queue.length > 0) {
+        const order = queue.shift();
+        if (!order) return;
+
+        let invoiceNumber = order.meta.find(m => m.key === '_invoice_number')?.value || '';
+        let invoiceUrl = toHttps(order.meta.find(m => m.key === '_invoice_url')?.value);
+
+        if (!invoiceUrl) {
+          const result = await createInvoiceForOrder(order, { force: true });
+          if (result) {
+            invoiceNumber = result.invoiceNumber;
+            invoiceUrl = toHttps(result.url);
+          }
+        }
+
+        if (!invoiceUrl) continue;
+
+        try {
+          const response = await fetch(invoiceUrl, {
+            cache: 'no-store',
+            signal: AbortSignal.timeout(INVOICE_FETCH_TIMEOUT_MS)
+          });
+          if (!response.ok) {
+            console.warn(`[invoice zip] fetch failed ${invoiceUrl} status ${response.status}`);
+            continue;
+          }
+
+          const buffer = Buffer.from(await response.arrayBuffer());
+          archive.append(buffer, { name: getUniqueName(invoiceNumber, order.id) });
+        } catch (error) {
+          console.warn('[invoice zip] fetch error', error);
         }
       }
+    };
 
-      if (!invoiceUrl) continue;
-
-      try {
-        const response = await fetch(invoiceUrl);
-        if (!response.ok) {
-          console.warn(`[invoice zip] fetch failed ${invoiceUrl} status ${response.status}`);
-          continue;
-        }
-        const buffer = Buffer.from(await response.arrayBuffer());
-        const fileName = `${invoiceNumber || order.id}.pdf`;
-        archive.append(buffer, { name: fileName });
-      } catch (error) {
-        console.warn('[invoice zip] fetch error', error);
-      }
-    }
+    await Promise.all(Array.from({ length: Math.min(WORKER_CONCURRENCY, orders.length || 1) }, () => worker()));
     await archive.finalize();
   })().catch(err => console.error('[invoice zip] worker error', err));
 
