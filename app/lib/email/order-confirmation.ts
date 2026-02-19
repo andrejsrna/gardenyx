@@ -7,6 +7,8 @@ type OrderWithRelations = Order & {
   addresses: OrderAddress[];
 };
 
+const getBrevoApiKey = () => process.env.BREVO_API_KEY?.trim().replace(/^['"]|['"]$/g, '');
+
 const formatCurrency = (value: unknown) => {
   const num = typeof value === 'string' || typeof value === 'number'
     ? Number(value)
@@ -99,7 +101,7 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
 };
 
 export async function sendOrderConfirmationEmail(order: OrderWithRelations, to: string) {
-  const apiKey = process.env.BREVO_API_KEY;
+  const apiKey = getBrevoApiKey();
   if (!apiKey || !to) return;
 
   const api = new TransactionalEmailsApi();
@@ -119,7 +121,7 @@ export async function sendOrderConfirmationEmail(order: OrderWithRelations, to: 
 
 export async function sendOrderNotificationToAdmin(order: OrderWithRelations, customerEmail?: string) {
   const adminEmail = process.env.ORDER_NOTIFY_EMAIL || 'info@fitdoplnky.sk';
-  const apiKey = process.env.BREVO_API_KEY;
+  const apiKey = getBrevoApiKey();
   if (!apiKey || !adminEmail) return;
 
   const api = new TransactionalEmailsApi();
@@ -211,7 +213,7 @@ const statusTexts: Record<number, string> = {
 };
 
 export async function sendPacketaStatusEmail(order: OrderWithRelations, to: string, code: number, barcode?: string | null) {
-  const apiKey = process.env.BREVO_API_KEY;
+  const apiKey = getBrevoApiKey();
   if (!apiKey || !to) return;
 
   const api = new TransactionalEmailsApi();
@@ -243,7 +245,7 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
 }
 
 export async function sendReturnNoticeEmail(order: OrderWithRelations, to: string) {
-  const apiKey = process.env.BREVO_API_KEY;
+  const apiKey = getBrevoApiKey();
   if (!apiKey || !to) return;
 
   const api = new TransactionalEmailsApi();
@@ -283,7 +285,7 @@ export async function sendReturnNoticeEmail(order: OrderWithRelations, to: strin
 }
 
 export async function sendInvoiceLinkEmail(order: OrderWithRelations, to: string, invoiceUrl: string, invoiceNumber: string) {
-  const apiKey = process.env.BREVO_API_KEY;
+  const apiKey = getBrevoApiKey();
   if (!apiKey || !to || !invoiceUrl) return;
 
   const billing = order.addresses.find(a => a.type === 'BILLING');

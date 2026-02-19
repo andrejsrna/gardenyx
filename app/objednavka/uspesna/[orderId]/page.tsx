@@ -16,8 +16,9 @@ export default async function OrderSuccessPage({ params }: PageProps) {
     include: { items: true, meta: true }
   }).catch(() => null);
 
-  const packetaId = order?.meta?.find((m: { key: string; value: string }) => m.key === '_packeta_packet_id')?.value;
-  const packetaBarcode = order?.meta?.find((m: { key: string; value: string }) => m.key === '_packeta_barcode')?.value;
+  const getMetaValue = (key: string) => order?.meta?.find(m => m.key === key)?.value ?? null;
+  const packetaId = getMetaValue('_packeta_packet_id');
+  const packetaBarcode = getMetaValue('_packeta_barcode');
   const shippingTotal = Number(order?.shippingTotal || 0);
   const taxTotal = Number(order?.taxTotal || 0);
   const items = (order?.items as OrderItem[] | undefined)?.map((i) => ({

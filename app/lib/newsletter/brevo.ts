@@ -8,7 +8,7 @@ type UpsertBrevoContactInput = {
 };
 
 const getBrevoClient = () => {
-  const apiKey = process.env.BREVO_API_KEY;
+  const apiKey = process.env.BREVO_API_KEY?.trim().replace(/^['"]|['"]$/g, '');
   if (!apiKey) {
     throw new Error('Missing BREVO_API_KEY');
   }

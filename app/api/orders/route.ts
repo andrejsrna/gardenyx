@@ -87,6 +87,18 @@ interface OrderData {
 
 type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
 
+const logBrevoFailure = (tag: string, err: unknown) => {
+  const maybeAxiosError = err as {
+    response?: { status?: number; data?: unknown };
+    message?: string;
+  };
+  console.warn(tag, {
+    message: maybeAxiosError?.message,
+    status: maybeAxiosError?.response?.status,
+    data: maybeAxiosError?.response?.data
+  });
+};
+
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
 const PACKETA_CARRIER_ID = '131';
@@ -567,12 +579,12 @@ export async function POST(request: Request) {
 
     if (orderData.billing?.email && fullOrder) {
       sendOrderConfirmationEmail(fullOrder, orderData.billing.email)
-        .catch(err => console.warn('[order confirmation email] failed', err));
+        .catch(err => logBrevoFailure('[order confirmation email] failed', err));
       sendOrderNotificationToAdmin(fullOrder, orderData.billing.email)
-        .catch(err => console.warn('[order admin email] failed', err));
+        .catch(err => logBrevoFailure('[order admin email] failed', err));
     } else if (fullOrder) {
       sendOrderNotificationToAdmin(fullOrder)
-        .catch(err => console.warn('[order admin email] failed', err));
+        .catch(err => logBrevoFailure('[order admin email] failed', err));
     }
 
     return NextResponse.json({

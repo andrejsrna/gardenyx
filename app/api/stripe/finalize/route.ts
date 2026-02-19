@@ -206,7 +206,15 @@ export async function POST(request: Request) {
                 });
               }
             } catch (error) {
-              console.warn('[stripe-finalize] Failed to sync newsletter to Brevo', error);
+              const maybeAxiosError = error as {
+                response?: { status?: number; data?: unknown };
+                message?: string;
+              };
+              console.warn('[stripe-finalize] Failed to sync newsletter to Brevo', {
+                message: maybeAxiosError?.message,
+                status: maybeAxiosError?.response?.status,
+                data: maybeAxiosError?.response?.data
+              });
             }
           }
         } catch (error) {
