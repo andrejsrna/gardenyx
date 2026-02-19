@@ -3,6 +3,7 @@ import { runReactivationJob } from '@/app/lib/newsletter/reactivation-job';
 import { runReviewRequestJob } from '@/app/lib/reviews/review-request-job';
 import { runGuidanceCheckinJob } from '@/app/lib/orders/guidance-checkin-job';
 import * as packetaHandler from './packeta/route';
+import * as finalizeHandler from './finalize/route';
 
 const isAuthorized = (request: Request) => {
   const token = process.env.NEWSLETTER_ADMIN_TOKEN;
@@ -43,11 +44,17 @@ export async function POST(request: Request) {
         results.push({ job: key, status: res.status, data: await res.json().catch(() => ({})) });
         return;
       }
+      if (key === 'finalize') {
+        const res = await finalizeHandler.POST(request);
+        results.push({ job: key, status: res.status, data: await res.json().catch(() => ({})) });
+        return;
+      }
       results.push({ job: key, status: 400, data: { error: 'Unknown job' } });
     };
 
     if (job === 'all') {
       await runJob('reactivation');
+      await runJob('finalize');
       await runJob('packeta');
       await runJob('reviews');
       await runJob('guidance');
