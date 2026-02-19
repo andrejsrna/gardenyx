@@ -131,6 +131,12 @@ export default function ShopContent() {
         <p className="mt-2 text-lg text-gray-600">Objavte našu ponuku kĺbovej výživy</p>
       </div>
 
+      {/* Cure bundles (manual, adds separate products) */}
+      {(() => {
+        const CureBundles = require('./CureBundles').default;
+        return <CureBundles />;
+      })()}
+
       {productSections.map((section) => (
         section.products.length > 0 && (
           <section key={section.taxonomy} className="space-y-6">
