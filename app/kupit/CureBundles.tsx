@@ -115,7 +115,10 @@ export default function CureBundles() {
 
     // Reset any previous manual discount and apply a new one
     clearManualDiscount();
-    if (discount > 0) setManualDiscount(discount);
+    if (discount > 0) {
+      const months = bundle.key === '1m' ? '1 mesiac' : bundle.key === '2m' ? '2 mesiace' : '3 mesiace';
+      setManualDiscount(discount, `Zľava za kúru (${months})`, `cure_${bundle.key}`);
+    }
 
     tracking.addToCart({
       id: `bundle-${bundle.key}`,

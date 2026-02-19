@@ -41,7 +41,7 @@ import { updateShippingFromBilling, translateFieldName } from '../lib/checkout/u
 import { useCheckoutForm } from '../hooks/checkout';
 
 export default function CheckoutClient() {
-  const { items, totalPrice, subtotal, clearCart, addToCart, discountAmount, removeFromCart, appliedCoupon, couponFreeShipping } = useCart();
+  const { items, totalPrice, subtotal, clearCart, addToCart, discountAmount, removeFromCart, appliedCoupon, couponFreeShipping, couponType, manualDiscountKey, manualDiscountLabel } = useCart();
   const { customerData } = useAuth();
   const { hasConsented, consentDetails } = useCookieConsent();
 
@@ -424,6 +424,8 @@ export default function CheckoutClient() {
           ...(appliedCoupon ? [{ key: '_coupon_code', value: appliedCoupon }] : []),
           ...(discountAmount > 0 ? [{ key: '_discount_total', value: discountAmount.toFixed(2) }] : []),
           ...(couponFreeShipping ? [{ key: '_coupon_free_shipping', value: 'true' }] : []),
+          ...(couponType === 'manual' ? [{ key: '_bundle', value: manualDiscountKey || 'cure' }] : []),
+          ...(couponType === 'manual' && manualDiscountLabel ? [{ key: '_bundle_label', value: manualDiscountLabel }] : []),
         ],
         line_items: items.map(item => ({
           product_id: item.id,

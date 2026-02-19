@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { FormData } from '../../lib/checkout/types';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
 import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
+import { useCart } from '../../context/CartContext';
 import CouponSection from '../CouponSection';
 
 interface CartItem {
@@ -42,6 +43,7 @@ export default function OrderSummarySection({
   appliedCoupon = null,
   couponFreeShipping = false,
 }: OrderSummarySectionProps) {
+  const { couponType, manualDiscountLabel } = useCart();
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
   const isFreeShipping = couponFreeShipping || subtotal >= FREE_SHIPPING_THRESHOLD;
@@ -126,7 +128,11 @@ export default function OrderSummarySection({
         {discountAmount > 0 && (
           <>
             <div className="flex justify-between text-sm text-green-700">
-              <span>Zľava{appliedCoupon ? ` (${appliedCoupon})` : ''}</span>
+              <span>
+                {couponType === 'manual'
+                  ? (manualDiscountLabel || 'Zľava za kúru')
+                  : `Zľava${appliedCoupon ? ` (${appliedCoupon})` : ''}`}
+              </span>
               <span className="font-medium">- {discountAmount.toFixed(2)} €</span>
             </div>
             <div className="flex justify-between text-xs text-gray-500">

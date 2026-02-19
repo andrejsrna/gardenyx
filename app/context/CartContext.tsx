@@ -35,6 +35,10 @@ interface CartContextType {
     couponType: string | null;
     couponAmountRaw: number | null;
     couponFreeShipping: boolean;
+    /** Manual discount display label (e.g. “Zľava za kúru (3 mesiace)”). */
+    manualDiscountLabel: string | null;
+    /** Manual discount key for analytics / order meta (e.g. “cure_3m”). */
+    manualDiscountKey: string | null;
     addToCart: (item: CartItem) => void;
     removeFromCart: (itemId: number) => void;
     updateQuantity: (itemId: number, quantity: number) => void;
@@ -44,7 +48,7 @@ interface CartContextType {
     applyCoupon: (code: string) => Promise<boolean>;
     removeCoupon: () => void;
     /** Apply a manual discount (used for “kúry” bundles). Clears any coupon code. */
-    setManualDiscount: (amount: number) => void;
+    setManualDiscount: (amount: number, label?: string, key?: string) => void;
     clearManualDiscount: () => void;
     exitCoupon: string | null;
     applyExitCoupon: (code: string) => Promise<boolean>;
@@ -62,6 +66,8 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     const [couponType, setCouponType] = useState<string | null>(null);
     const [couponAmountRaw, setCouponAmountRaw] = useState<number | null>(null);
     const [couponFreeShipping, setCouponFreeShipping] = useState(false);
+    const [manualDiscountLabel, setManualDiscountLabel] = useState<string | null>(null);
+    const [manualDiscountKey, setManualDiscountKey] = useState<string | null>(null);
     const lastActionRef = useRef<{ type: 'add' | 'update', itemId: number } | null>(null);
     const [lastSavedCart, setLastSavedCart] = useState<string | null>(null);
     const [exitCoupon, setExitCoupon] = useState<string | null>(null);
@@ -76,23 +82,38 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         setCouponType(null);
         setCouponAmountRaw(null);
         setCouponFreeShipping(false);
+        setManualDiscountLabel(null);
+        setManualDiscountKey(null);
         safeRemoveItem('appliedCoupon');
         safeRemoveItem('pendingCoupon');
+        safeRemoveItem('manualDiscountLabel');
+        safeRemoveItem('manualDiscountKey');
         toast.info('Kupón bol odstránený');
     }, []);
 
-    const setManualDiscount = useCallback((amount: number) => {
+    const setManualDiscount = useCallback((amount: number, label?: string, key?: string) => {
         const safe = Math.max(0, Number(amount) || 0);
+        const safeLabel = (label || '').trim() || 'Zľava za kúru';
+        const safeKey = (key || '').trim() || null;
+
         // Clear coupon state (we treat this as its own discount mechanism)
         setAppliedCoupon(null);
         safeRemoveItem('appliedCoupon');
         safeRemoveItem('pendingCoupon');
+
         setCouponType('manual');
         setCouponAmountRaw(null);
         setCouponFreeShipping(false);
+
+        setManualDiscountLabel(safeLabel);
+        setManualDiscountKey(safeKey);
+        safeSetItem('manualDiscountLabel', safeLabel);
+        if (safeKey) safeSetItem('manualDiscountKey', safeKey);
+        else safeRemoveItem('manualDiscountKey');
+
         setDiscountAmount(safe);
         if (safe > 0) {
-            toast.success(`Zľava na kúru bola aplikovaná (-${safe.toFixed(2)} €)`);
+            toast.success(`${safeLabel} (-${safe.toFixed(2)} €)`);
         }
     }, []);
 
@@ -100,7 +121,11 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         if (couponType === 'manual') {
             setDiscountAmount(0);
             setCouponType(null);
-            toast.info('Zľava na kúru bola odstránená');
+            setManualDiscountLabel(null);
+            setManualDiscountKey(null);
+            safeRemoveItem('manualDiscountLabel');
+            safeRemoveItem('manualDiscountKey');
+            toast.info('Zľava za kúru bola odstránená');
         }
     }, [couponType]);
 
@@ -182,6 +207,11 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         if (savedCouponCode) {
             setAppliedCoupon(savedCouponCode);
         }
+
+        const savedManualLabel = safeGetItem('manualDiscountLabel');
+        if (savedManualLabel) setManualDiscountLabel(savedManualLabel);
+        const savedManualKey = safeGetItem('manualDiscountKey');
+        if (savedManualKey) setManualDiscountKey(savedManualKey);
     }, []);
 
     useEffect(() => {
@@ -344,8 +374,12 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         setCouponType(null);
         setCouponAmountRaw(null);
         setCouponFreeShipping(false);
+        setManualDiscountLabel(null);
+        setManualDiscountKey(null);
         safeRemoveItem('cart');
         safeRemoveItem('appliedCoupon');
+        safeRemoveItem('manualDiscountLabel');
+        safeRemoveItem('manualDiscountKey');
         toast.info("Košík bol vyprázdnený");
     }, []);
 
@@ -377,6 +411,8 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             couponType,
             couponAmountRaw,
             couponFreeShipping,
+            manualDiscountLabel,
+            manualDiscountKey,
             addToCart,
             removeFromCart,
             updateQuantity,
