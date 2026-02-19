@@ -111,7 +111,6 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <CTA />
       <Benefits />
       <Composition />
       <CTAWithContent />

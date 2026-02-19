@@ -85,7 +85,7 @@ const bundles: Bundle[] = [
       { id: CAPSULES_ID, name: 'Najsilnejšia kĺbová výživa', price: LIST_PRICE_CAPSULES, quantity: 3, image: '/kapsule-hero.jpeg' },
       { id: GEL_ID, name: 'Joint Boost Gél 100 ml', price: LIST_PRICE_GEL, quantity: 3, image: '/jointboost-gel.jpg' },
     ],
-    targetTotal: 54.99,
+    targetTotal: 49.99,
     optional: [
       { id: ROLLER_ID, name: 'Maderoterapický valček', price: LIST_PRICE_ROLLER, quantity: 1, image: '/product-image.png' },
     ],
@@ -143,7 +143,10 @@ export default function CureBundles() {
           const saved = Math.max(0, Number((baseTotal - promoTotal).toFixed(2)));
           const savedPct = baseTotal > 0 ? Math.round((saved / baseTotal) * 100) : 0;
           return (
-            <div key={b.key} className={`relative overflow-hidden rounded-2xl border bg-white p-5 shadow-sm ${b.badge ? 'border-emerald-300 ring-1 ring-emerald-200' : 'border-slate-200'}`}>
+            <div
+              key={b.key}
+              className={`relative overflow-hidden rounded-2xl border bg-white p-5 shadow-sm ${b.badge ? 'border-emerald-300 ring-1 ring-emerald-200' : 'border-slate-200'}`}
+            >
               {b.badge ? (
                 <div className="absolute right-4 top-4 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white">
                   {b.badge}
@@ -166,12 +169,13 @@ export default function CureBundles() {
                   <span className="text-xl font-bold text-slate-900">{format(promoTotal)} €</span>
                 </div>
                 <div className="mt-1 flex items-center justify-between text-xs">
-                  <span className="text-slate-500">Bežne <span className="line-through">{format(baseTotal)} €</span></span>
-                  <span className="font-semibold text-emerald-700">Ušetríš {format(saved)} € ({savedPct}%)</span>
+                  <span className="text-slate-500">
+                    Bežne <span className="line-through">{format(baseTotal)} €</span>
+                  </span>
+                  <span className="font-semibold text-emerald-700">
+                    Ušetríš {format(saved)} € ({savedPct}%)
+                  </span>
                 </div>
-                {b.optional?.length ? (
-                  <p className="mt-2 text-xs text-slate-500">Voliteľne: valček pridaj ako extra (zatiaľ nie je v tejto karte zahrnutý).</p>
-                ) : null}
               </div>
 
               <ul className="mt-4 space-y-1 text-sm text-slate-700">
