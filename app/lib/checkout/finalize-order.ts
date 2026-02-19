@@ -22,6 +22,19 @@ async function deleteMeta(orderId: string, keys: string[]) {
   await prisma.orderMeta.deleteMany({ where: { orderId, key: { in: keys } } });
 }
 
+function safeJson(value: unknown) {
+  try {
+    const text = JSON.stringify(value);
+    return text.length > 2000 ? text.slice(0, 2000) + '…' : text;
+  } catch {
+    try {
+      return String(value);
+    } catch {
+      return '[unserializable]';
+    }
+  }
+}
+
 async function sleep(ms: number) {
   await new Promise((r) => setTimeout(r, ms));
 }
@@ -69,7 +82,17 @@ export async function finalizeOrder(orderId: string, opts?: FinalizeOrderOptions
       await sendOrderNotificationToAdmin(order as any, billingEmail);
       await setMeta(orderId, '_email_sent_at', nowIso());
     } catch (err) {
-      await setMeta(orderId, '_email_error', err instanceof Error ? err.message : String(err));
+      const anyErr = err as any;
+      const msg = err instanceof Error ? (err.message || '') : String(err);
+      const status = anyErr?.response?.status;
+      const data = anyErr?.response?.data;
+      const detail = [
+        msg,
+        status ? `status=${status}` : null,
+        data ? `data=${safeJson(data)}` : null
+      ].filter(Boolean).join(' | ');
+
+      await setMeta(orderId, '_email_error', detail);
       await setMeta(orderId, '_email_error_at', nowIso());
     }
   }
@@ -90,11 +113,20 @@ export async function finalizeOrder(orderId: string, opts?: FinalizeOrderOptions
       await deleteMeta(orderId, [lockUntilKey]);
       return { ok: true, email: billingEmail, packeta: res };
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      await setMeta(orderId, '_packeta_error', msg);
+      const anyErr = err as any;
+      const msg = err instanceof Error ? (err.message || '') : String(err);
+      const causeCode = anyErr?.cause?.code;
+      const causeMsg = anyErr?.cause?.message;
+      const detail = [
+        msg,
+        causeCode ? `cause=${causeCode}` : null,
+        causeMsg ? `causeMsg=${causeMsg}` : null
+      ].filter(Boolean).join(' | ');
+
+      await setMeta(orderId, '_packeta_error', detail);
       await setMeta(orderId, '_packeta_error_at', nowIso());
       await deleteMeta(orderId, [lockUntilKey]);
-      return { ok: false, email: billingEmail, packetaError: msg };
+      return { ok: false, email: billingEmail, packetaError: detail };
     }
   }
 
