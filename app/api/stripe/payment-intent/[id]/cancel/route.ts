@@ -5,7 +5,7 @@ import { rateLimit } from '@/app/lib/utils/rateLimit';
 import prisma from '@/app/lib/prisma';
 import type Stripe from 'stripe';
 
-const stripe = getStripe();
+// NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -13,6 +13,7 @@ export async function POST(
   request: NextRequest,
   props: { params: RouteParams }
 ) {
+  const stripe = getStripe();
   try {
     const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0]?.trim() || 'unknown';
     await rateLimit(ip, 'payment');

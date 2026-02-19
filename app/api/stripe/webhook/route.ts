@@ -3,9 +3,10 @@ import { getStripe } from '@/app/lib/stripe';
 import prisma from '@/app/lib/prisma';
 import { OrderStatus, PaymentStatus } from '@prisma/client';
 
-const stripe = getStripe();
+// NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
 export async function POST(request: Request) {
+  const stripe = getStripe();
   try {
     const signature = request.headers.get('stripe-signature');
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;

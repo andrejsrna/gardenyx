@@ -13,8 +13,6 @@
     "postbuild": "echo \"[postbuild] Build finished at $(date -u '+%Y-%m-%dT%H:%M:%SZ')\"",
     "start": "NODE_ENV=production next start",
     "lint": "eslint . --max-warnings=0",
-    "invoices:regenerate-dec-2025": "tsx scripts/regenerate-dec-2025-invoices.ts",
-    "invoices:regenerate-month": "tsx scripts/regenerate-invoices-month.ts",
     "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
     "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
@@ -45,7 +43,7 @@
     "isomorphic-dompurify": "^2.26.0",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.539.0",
-    "next": "15.5.11",
+    "next": "^16.1.6",
     "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
     "react": "^19.1.1",
@@ -80,13 +78,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.11",
+    "eslint-config-next": "^16.1.6",
     "postcss": "^8",
+    "prisma": "7.4.0",
     "tailwindcss": "^4.1.11",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.2",
-    "tsx": "^4.21.0",
-    "prisma": "7.4.0"
+    "typescript": "^5.9.2"
   }
 }

@@ -2,13 +2,16 @@ import { NextResponse } from 'next/server';
 import * as SibApiV3Sdk from '@getbrevo/brevo';
 import { renderEmail, emailButton, infoNote } from '@/app/lib/email/template';
 
-const apiKey = process.env.BREVO_API_KEY;
-if (!apiKey) {
-  throw new Error('BREVO_API_KEY is not set in environment variables');
-}
+function getBrevoClient() {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) {
+    throw new Error('BREVO_API_KEY is not set in environment variables');
+  }
 
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, apiKey);
+  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+  apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, apiKey);
+  return apiInstance;
+}
 
 interface CartItem {
   id: number;
@@ -82,6 +85,7 @@ export async function POST(request: Request) {
     sendSmtpEmail.to = [{ email: cart.email }];
 
     // Send the email
+    const apiInstance = getBrevoClient();
     await apiInstance.sendTransacEmail(sendSmtpEmail);
 
     // Store the abandoned cart in your database here if needed

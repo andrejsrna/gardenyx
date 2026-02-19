@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import SuccessTracking from '../SuccessTracking';
 import type { OrderItem } from '@prisma/client';
-import prisma from '@/app/lib/prisma';
 
 interface PageProps {
   params: Promise<{
@@ -11,14 +10,13 @@ interface PageProps {
 
 export default async function OrderSuccessPage({ params }: PageProps) {
   const { orderId } = await params;
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: { items: true, meta: true }
-  }).catch(() => null);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const orderResponse = await fetch(`${baseUrl}/api/orders?id=${orderId}`, { cache: 'no-store' });
+  const orderJson = orderResponse.ok ? await orderResponse.json().catch(() => null) : null;
+  const order = orderJson?.order || null;
 
-  const getMetaValue = (key: string) => order?.meta?.find(m => m.key === key)?.value ?? null;
-  const packetaId = getMetaValue('_packeta_packet_id');
-  const packetaBarcode = getMetaValue('_packeta_barcode');
+  const packetaId = order?.meta?.find((m: { key: string; value: string }) => m.key === '_packeta_packet_id')?.value;
+  const packetaBarcode = order?.meta?.find((m: { key: string; value: string }) => m.key === '_packeta_barcode')?.value;
   const shippingTotal = Number(order?.shippingTotal || 0);
   const taxTotal = Number(order?.taxTotal || 0);
   const items = (order?.items as OrderItem[] | undefined)?.map((i) => ({
@@ -35,7 +33,7 @@ export default async function OrderSuccessPage({ params }: PageProps) {
       {order && (
         <SuccessTracking
           orderId={orderId}
-          total={Number(order.total || 0)}
+          total={order.total}
           tax={taxTotal}
           shipping={shippingTotal}
           items={items}
