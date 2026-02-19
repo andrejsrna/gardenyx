@@ -17,7 +17,7 @@ import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/
 import { validatePassword } from '../lib/utils/password';
 import { sanitizeInput, sanitizePhone, sanitizePostcode } from '../lib/utils/sanitize';
 import { checkoutFormSchema } from '../lib/validations/checkout';
-import { createOrder, getProducts } from '../lib/orders';
+import { createOrder } from '../lib/orders';
 import type { Product } from '../lib/content-types';
 
 // Import all our new components
@@ -36,7 +36,7 @@ import {
 
 // Import types, constants and hooks
 import type { PacketaPoint, PaymentError, WooCommerceOrder } from '../lib/checkout/types';
-import { FREE_SHIPPING_THRESHOLD, RECOMMENDED_PRODUCT_IDS } from '../lib/checkout/constants';
+import { FREE_SHIPPING_THRESHOLD } from '../lib/checkout/constants';
 import { updateShippingFromBilling, translateFieldName } from '../lib/checkout/utils';
 import { useCheckoutForm } from '../hooks/checkout';
 
@@ -60,7 +60,7 @@ export default function CheckoutClient() {
   } = useCheckoutForm();
 
   // Component state
-  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
+  // recommendedProducts removed: cure bundles CTA is shown instead.
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
   const [showStripePayment, setShowStripePayment] = useState(false);
@@ -92,32 +92,7 @@ export default function CheckoutClient() {
     }
   }, [items, totalPrice]);
 
-  // Fetch recommended products effect
-  useEffect(() => {
-    const fetchRecommended = async () => {
-      try {
-        const products = await getProducts({ include: RECOMMENDED_PRODUCT_IDS });
-        setRecommendedProducts(products);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        // Reduce noise for transient client-side fetch errors
-        if (/Load failed|NetworkError|TypeError|AbortError/i.test(message)) {
-          Sentry.captureMessage('Recommended products fetch transient failure', {
-            level: 'info',
-            extra: { message }
-          });
-        } else {
-          Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
-        }
-      }
-    };
-
-    if (totalPrice < FREE_SHIPPING_THRESHOLD) {
-      void fetchRecommended();
-    } else {
-      setRecommendedProducts([]);
-    }
-  }, [totalPrice]);
+  // Recommended products fetch removed (we show Cure bundles CTA instead).
 
   // Load saved form data effect
   useEffect(() => {
@@ -616,7 +591,7 @@ export default function CheckoutClient() {
               
               <RecommendedProducts 
                 totalPrice={totalPrice}
-                recommendedProducts={recommendedProducts}
+                recommendedProducts={[]}
                 onAddToCart={handleAddToCart}
               />
 
