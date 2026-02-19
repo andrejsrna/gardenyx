@@ -555,19 +555,32 @@ export async function POST(request: Request) {
       try {
         await createPacketaPacket(orderData, createdOrder as unknown as OrderWithRelations);
       } catch (packetaError) {
+        const packetaErrorMessage = packetaError instanceof Error ? packetaError.message : String(packetaError);
+        const ts = new Date().toISOString();
+
+        // IMPORTANT: keep order in processing; store Packeta failure in meta for admin retry.
         try {
-          await prisma.order.update({
-            where: { id: createdOrder.id },
-            data: { status: OrderStatus.on_hold },
+          await prisma.orderMeta.deleteMany({
+            where: {
+              orderId: createdOrder.id,
+              key: { in: ['_packeta_error', '_packeta_error_at'] }
+            }
+          });
+          await prisma.orderMeta.createMany({
+            data: [
+              { orderId: createdOrder.id, key: '_packeta_error', value: packetaErrorMessage },
+              { orderId: createdOrder.id, key: '_packeta_error_at', value: ts }
+            ]
           });
         } catch {
           // ignore secondary failure
         }
+
         logError('Packeta Packet Creation Failed', {
-          error: packetaError instanceof Error ? packetaError.message : String(packetaError),
+          error: packetaErrorMessage,
           orderId: createdOrder.id,
           customerEmail: orderData.billing.email,
-          timestamp: new Date().toISOString()
+          timestamp: ts
         });
       }
     }
