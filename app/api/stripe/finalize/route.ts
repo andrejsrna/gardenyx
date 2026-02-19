@@ -4,8 +4,7 @@ import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sal
 import prisma from '../../../lib/prisma';
 import { upsertBrevoContact } from '../../../lib/newsletter/brevo';
 import { getProductsByIds } from '@/app/lib/products';
-import { sendOrderConfirmationEmail } from '@/app/lib/email/order-confirmation';
-import type { Prisma } from '@prisma/client';
+// Emails + Packeta are handled by /api/orders finalizeOrder step.
 import { recordCouponRedemption } from '@/app/lib/coupons';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
@@ -156,16 +155,7 @@ export async function POST(request: Request) {
         recordCouponRedemption({ couponCode, orderId, email: b?.email }).catch(err => console.warn('[coupon redemption] failed', err));
       }
 
-      if (b?.email) {
-        const orderRecord = await prisma.order.findUnique({
-          where: { id: orderId },
-          include: { items: true, addresses: true, meta: true }
-        });
-        if (orderRecord) {
-          type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
-          sendOrderConfirmationEmail(orderRecord as OrderWithRelations, b.email).catch(err => console.warn('[order email] failed', err));
-        }
-      }
+      // Email sending is handled asynchronously by /api/orders (finalizeOrder)
 
       if (mc && b?.email) {
         const email = String(b.email).trim().toLowerCase();
