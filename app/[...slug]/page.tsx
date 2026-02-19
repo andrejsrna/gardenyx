@@ -3,7 +3,7 @@ import { decode } from 'html-entities';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import BlogProductWidget from '../components/BlogProductWidget';
+import CureBundlesSection from '../components/CureBundlesSection';
 import CTA from '../components/CTA';
 import TableOfContents from '../components/TableOfContents';
 import Toast from '../components/Toast';
@@ -731,11 +731,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
               />
             </div>
             <div className="my-12">
-              <BlogProductWidget 
-                productIds={productRecommendation.ids}
-                title={productRecommendation.title}
-                description={productRecommendation.description}
-              />
+              <CureBundlesSection buttonText="Zobraziť všetky produkty" />
             </div>
             {contentSplit.after.trim() && (
               <div className="overflow-x-auto pb-4 w-full">
@@ -755,11 +751,7 @@ export default async function BlogPost({ params }: { params: tParams }) {
               />
             </div>
             <div className="my-12">
-              <BlogProductWidget 
-                productIds={productRecommendation.ids}
-                title={productRecommendation.title}
-                description={productRecommendation.description}
-              />
+              <CureBundlesSection buttonText="Zobraziť všetky produkty" />
             </div>
           </>
         )}
