@@ -339,7 +339,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
                 });
               }
 
-              window.location.href = `/objednavka/uspesna/${result.orderId}`;
+              window.location.href = `/objednavka/uspesna/${orderId}`;
               onSuccess?.();
               return;
             } else {

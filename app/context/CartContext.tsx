@@ -155,12 +155,12 @@ export function CartProvider({children}: { children: React.ReactNode }) {
                 return false;
             }
             const data = await response.json();
-            const discount = Math.max(0, Number(data.discountAmount) || 0);
+            const discount = Math.max(0, Number(data.discountAmount ?? data.discount_amount) || 0);
             setAppliedCoupon(data.code || normalized);
             setDiscountAmount(discount);
             setCouponType(data.type || null);
             setCouponAmountRaw(data.amount ?? null);
-            setCouponFreeShipping(Boolean(data.freeShipping));
+            setCouponFreeShipping(Boolean(data.freeShipping ?? data.free_shipping));
             safeSetItem('appliedCoupon', data.code || normalized);
             toast.success('Kupón bol aplikovaný.');
             return true;
