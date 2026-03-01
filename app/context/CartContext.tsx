@@ -59,6 +59,74 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const CURE_CAPSULES_ID = 47;
+const CURE_GEL_ID = 669;
+
+const CURE_TARGET_TOTALS: Record<number, number> = {
+    1: 19.99,
+    2: 34.99,
+    3: 49.99,
+};
+
+function computeDynamicCureDiscount(items: CartItem[]) {
+    const capsules = items.find(i => i.id === CURE_CAPSULES_ID);
+    const gels = items.find(i => i.id === CURE_GEL_ID);
+    if (!capsules || !gels) return null;
+
+    const months = Math.min(capsules.quantity, gels.quantity);
+    if (!Number.isFinite(months) || months <= 0) return null;
+
+    const monthRegular = Number(capsules.price || 0) + Number(gels.price || 0);
+    if (!Number.isFinite(monthRegular) || monthRegular <= 0) return null;
+
+    // Unbounded DP for exact month count with packs 1/2/3; minimize promo total.
+    const dp = Array<number>(months + 1).fill(Number.POSITIVE_INFINITY);
+    const prev = Array<number>(months + 1).fill(0);
+    dp[0] = 0;
+
+    for (let m = 1; m <= months; m++) {
+        for (const pack of [1, 2, 3]) {
+            if (m - pack < 0) continue;
+            const packPrice = CURE_TARGET_TOTALS[pack];
+            const candidate = dp[m - pack] + packPrice;
+            if (candidate < dp[m]) {
+                dp[m] = candidate;
+                prev[m] = pack;
+            }
+        }
+    }
+
+    if (!Number.isFinite(dp[months])) return null;
+
+    const regularTotal = monthRegular * months;
+    const promoTotal = dp[months];
+    const discount = Math.max(0, Number((regularTotal - promoTotal).toFixed(2)));
+    if (discount <= 0) return null;
+
+    const packCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+    let cur = months;
+    while (cur > 0 && prev[cur] > 0) {
+        const p = prev[cur];
+        packCounts[p] += 1;
+        cur -= p;
+    }
+
+    const comboParts = [3, 2, 1]
+        .filter(p => packCounts[p] > 0)
+        .map(p => `${packCounts[p]}x${p}m`);
+    const combo = comboParts.join('+') || `${months}m`;
+
+    const label = months === 1
+        ? 'Zľava za kúru (1 mesiac)'
+        : `Zľava za kúru (${months} mesiace)`;
+
+    return {
+        amount: discount,
+        label,
+        key: `cure_auto_${combo}`,
+    };
+}
+
 export function CartProvider({children}: { children: React.ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
@@ -252,6 +320,45 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         };
 
     }, [items, applyCoupon, removeCoupon, appliedCoupon]);
+
+    useEffect(() => {
+        // Auto-apply cure discount dynamically by quantity (47 + 669 pairs), unless a non-manual coupon is active.
+        if (appliedCoupon && couponType !== 'manual') return;
+
+        const dynamicCure = computeDynamicCureDiscount(items);
+        if (!dynamicCure) {
+            if (couponType === 'manual' && manualDiscountKey?.startsWith('cure_')) {
+                setDiscountAmount(0);
+                setCouponType(null);
+                setManualDiscountLabel(null);
+                setManualDiscountKey(null);
+                safeRemoveItem('manualDiscountLabel');
+                safeRemoveItem('manualDiscountKey');
+            }
+            return;
+        }
+
+        const nextAmount = dynamicCure.amount;
+        const changed =
+            couponType !== 'manual' ||
+            Math.abs((Number(discountAmount) || 0) - nextAmount) > 0.001 ||
+            manualDiscountLabel !== dynamicCure.label ||
+            manualDiscountKey !== dynamicCure.key;
+
+        if (!changed) return;
+
+        setAppliedCoupon(null);
+        safeRemoveItem('appliedCoupon');
+        safeRemoveItem('pendingCoupon');
+        setCouponType('manual');
+        setCouponAmountRaw(null);
+        setCouponFreeShipping(false);
+        setDiscountAmount(nextAmount);
+        setManualDiscountLabel(dynamicCure.label);
+        setManualDiscountKey(dynamicCure.key);
+        safeSetItem('manualDiscountLabel', dynamicCure.label);
+        safeSetItem('manualDiscountKey', dynamicCure.key);
+    }, [items, appliedCoupon, couponType, discountAmount, manualDiscountLabel, manualDiscountKey]);
 
     useEffect(() => {
         if (items.length > 0) {
