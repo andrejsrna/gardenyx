@@ -16,6 +16,9 @@
     "test:pricing": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/test-pricing.ts",
     "test:stripe-meta": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/test-stripe-metadata-consistency.ts",
     "test:e2e": "playwright test",
+    "test:e2e:mock": "playwright test tests/e2e/checkout-mocked.spec.ts",
+    "test:e2e:real": "E2E_REAL=1 playwright test tests/e2e/checkout-real.spec.ts",
+    "test:order-flow": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/e2e-order-flow.ts",
     "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
     "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
