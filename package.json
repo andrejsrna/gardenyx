@@ -15,6 +15,7 @@
     "lint": "eslint . --max-warnings=0",
     "test:pricing": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/test-pricing.ts",
     "test:stripe-meta": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/test-stripe-metadata-consistency.ts",
+    "test:e2e": "playwright test",
     "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
     "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
@@ -71,6 +72,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@next/bundle-analyzer": "^15.4.6",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5.16",
     "@types/facebook-pixel": "^0.0.31",
