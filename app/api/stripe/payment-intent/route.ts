@@ -6,13 +6,11 @@ import { rateLimit } from '@/app/lib/utils/rateLimit';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { getProductsByIds } from '@/app/lib/products';
 import { validateCoupon } from '@/app/lib/coupons';
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST_PACKETA_HOME, SHIPPING_COST_PACKETA_PICKUP } from '@/app/lib/checkout/constants';
+import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
+import { grossFromNet, taxFromNet } from '@/app/lib/pricing/math';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
-
-// Shipping pricing configuration (keep in sync with client constants)
-const FREE_SHIPPING_THRESHOLD = 29;
-const SHIPPING_COST_PACKETA_PICKUP = 2.9;
-const SHIPPING_COST_PACKETA_HOME = 3.8;
 
 const requestSchema = z.object({
     cart: z.object({
@@ -69,6 +67,9 @@ export async function POST(request: Request) {
         })();
         const billingEmail = validatedData.customer?.billing?.email as string | undefined;
         const couponCode = validatedData.couponCode?.trim();
+        const requestedDiscount = Math.max(0, Number(validatedData.discountAmount || 0));
+        const bundleKey = validatedData.customer.meta_data?.find((m) => m.key === '_bundle')?.value;
+
         let discountAmount = 0;
         let freeShipping = false;
         let couponType: string | undefined;
@@ -87,6 +88,12 @@ export async function POST(request: Request) {
             freeShipping = Boolean(coupon.freeShipping);
             couponType = coupon.type;
             couponRawAmount = coupon.amount;
+        } else if (requestedDiscount > 0 && bundleKey) {
+            // Manual bundle discount (e.g. cure_1m/2m/3m) comes from curated storefront bundles.
+            // Keep it bounded so client input can never exceed subtotal.
+            discountAmount = Math.min(requestedDiscount, productsTotal);
+            couponType = 'manual';
+            couponRawAmount = discountAmount;
         }
 
         // Recalculate shipping based on actual productsTotal minus discount
@@ -106,7 +113,7 @@ export async function POST(request: Request) {
             }
         }
         
-        const computedShippingCost = computedShippingCostBase * 1.19; // s DPH
+        const computedShippingCost = grossFromNet(computedShippingCostBase, SHIPPING_VAT_RATE); // s DPH
 
         const total = Math.max(0, productsTotal + computedShippingCost - discountAmount);
         if (!Number.isFinite(total) || total <= 0) {
@@ -136,7 +143,7 @@ export async function POST(request: Request) {
                     md: validatedData.customer.meta_data ? Buffer.from(JSON.stringify(validatedData.customer.meta_data)).toString('base64') : '',
                     sc: computedShippingCost.toFixed(2), // shipping cost in EUR as string (gross)
                     sct: computedShippingCostBase.toFixed(2), // net shipping total (base)
-                    sctx: (computedShippingCostBase * 0.19).toFixed(2), // shipping tax
+                    sctx: taxFromNet(computedShippingCostBase, SHIPPING_VAT_RATE).toFixed(2), // shipping tax
                     cp: couponCode || '',
                     da: discountAmount.toFixed(2),
                     fs: freeShipping ? '1' : '',

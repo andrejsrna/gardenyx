@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import prisma from '../prisma';
 import { Document, Font, Page, StyleSheet, Text, View, renderToStream } from '@react-pdf/renderer';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { PRODUCT_VAT_PERCENT, SHIPPING_VAT_PERCENT } from '@/app/lib/pricing/constants';
 
 const R2_BUCKET = process.env.R2_BUCKET;
 const R2_DOMAIN = process.env.R2_DOMAIN;
@@ -13,8 +14,6 @@ const R2_API = process.env.R2_API;
 const R2_ENDPOINT = process.env.R2_ENDPOINT;
 const R2_ACCESS_KEY = process.env.R2_ACCESS_KEY;
 const R2_SECRET_KEY = process.env.R2_SECRET_KEY;
-const PRODUCT_VAT_PERCENT = 19;
-const SHIPPING_VAT_PERCENT = 23;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

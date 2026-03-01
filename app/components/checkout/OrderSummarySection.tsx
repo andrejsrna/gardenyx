@@ -4,6 +4,8 @@ import { FormEvent } from 'react';
 import Image from 'next/image';
 import type { FormData } from '../../lib/checkout/types';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
+import { PRODUCT_VAT_PERCENT, PRODUCT_VAT_RATE, SHIPPING_VAT_PERCENT, SHIPPING_VAT_RATE } from '../../lib/pricing/constants';
+import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
 import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
 import { useCart } from '../../context/CartContext';
 import CouponSection from '../CouponSection';
@@ -26,6 +28,7 @@ interface OrderSummarySectionProps {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onCustomerNoteChange: (note: string) => void;
   onRemoveItem: (id: number) => void;
+  onUpdateQuantity: (id: number, quantity: number) => void;
   discountAmount?: number;
   appliedCoupon?: string | null;
   couponFreeShipping?: boolean;
@@ -39,6 +42,7 @@ export default function OrderSummarySection({
   onSubmit,
   onCustomerNoteChange,
   onRemoveItem,
+  onUpdateQuantity,
   discountAmount = 0,
   appliedCoupon = null,
   couponFreeShipping = false,
@@ -48,8 +52,7 @@ export default function OrderSummarySection({
   const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
   const isFreeShipping = couponFreeShipping || subtotal >= FREE_SHIPPING_THRESHOLD;
   const isSalesSuspended = isSalesSuspendedClient();
-  const VAT_RATE = 0.19;
-  const netSubtotal = subtotalAfterDiscount / (1 + VAT_RATE);
+  const netSubtotal = subtotalAfterDiscount / (1 + PRODUCT_VAT_RATE);
   const vatAmount = subtotalAfterDiscount - netSubtotal;
   
   const getShippingCostBase = () => {
@@ -60,14 +63,14 @@ export default function OrderSummarySection({
   };
   
   const shippingCostBase = getShippingCostBase(); // základ bez DPH
-  const shippingCostWithVat = shippingCostBase ? shippingCostBase * 1.19 : 0; // s DPH
-  const shippingVat = shippingCostBase ? shippingCostBase * 0.19 : 0; // len DPH
+  const shippingCostWithVat = shippingCostBase ? grossFromNet(shippingCostBase, SHIPPING_VAT_RATE) : 0; // s DPH
+  const shippingVat = shippingCostBase ? taxFromNet(shippingCostBase, SHIPPING_VAT_RATE) : 0; // len DPH
   const total = Math.max(0, subtotalAfterDiscount + shippingCostWithVat);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm sticky top-20">
       <h2 className="text-xl font-semibold mb-2">Súhrn objednávky</h2>
-      <div className="text-xs text-gray-500 mb-4">Ceny sú uvedené vrátane DPH 19%.</div>
+      <div className="text-xs text-gray-500 mb-4">Ceny sú uvedené vrátane DPH.</div>
 
       {/* Cart Items */}
       <div className="space-y-3 mb-4">
@@ -88,7 +91,27 @@ export default function OrderSummarySection({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-              <p className="text-xs text-gray-500">Množstvo: {item.quantity}</p>
+              <div className="mt-1 inline-flex items-center rounded-md border border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                  className="px-2 py-0.5 text-sm text-gray-600 hover:bg-gray-50"
+                  aria-label={`Znížiť množstvo produktu ${item.name}`}
+                >
+                  −
+                </button>
+                <span className="px-2 py-0.5 text-xs text-gray-700 border-x border-gray-200 min-w-8 text-center">
+                  {item.quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                  className="px-2 py-0.5 text-sm text-gray-600 hover:bg-gray-50"
+                  aria-label={`Zvýšiť množstvo produktu ${item.name}`}
+                >
+                  +
+                </button>
+              </div>
             </div>
             <div className="text-sm font-medium text-gray-900 pr-2">
               {(item.price * item.quantity).toFixed(2)} €
@@ -114,16 +137,16 @@ export default function OrderSummarySection({
       <div className="border-t pt-4 space-y-2">
         {/* Subtotal */}
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Medzisúčet (vrátane DPH 19%)</span>
+          <span className="text-gray-600">Medzisúčet (vrátane DPH)</span>
           <span className="font-medium">{subtotal.toFixed(2)} €</span>
         </div>
         <div className="flex justify-between text-xs text-gray-500">
           <span>Základ bez DPH</span>
-          <span>{(subtotal / (1 + VAT_RATE)).toFixed(2)} €</span>
+          <span>{(subtotal / (1 + PRODUCT_VAT_RATE)).toFixed(2)} €</span>
         </div>
         <div className="flex justify-between text-xs text-gray-500">
-          <span>DPH (19%)</span>
-          <span>{(subtotal - subtotal / (1 + VAT_RATE)).toFixed(2)} €</span>
+          <span>DPH ({PRODUCT_VAT_PERCENT}%)</span>
+          <span>{(subtotal - subtotal / (1 + PRODUCT_VAT_RATE)).toFixed(2)} €</span>
         </div>
         {discountAmount > 0 && (
           <>
@@ -144,7 +167,7 @@ export default function OrderSummarySection({
               <span>{netSubtotal.toFixed(2)} €</span>
             </div>
             <div className="flex justify-between text-xs text-gray-500">
-              <span>DPH po zľave (19%)</span>
+              <span>DPH po zľave ({PRODUCT_VAT_PERCENT}%)</span>
               <span>{vatAmount.toFixed(2)} €</span>
             </div>
           </>
@@ -168,7 +191,7 @@ export default function OrderSummarySection({
               <span>{shippingCostBase.toFixed(2)} €</span>
             </div>
             <div className="flex justify-between text-xs text-gray-500">
-              <span>DPH dopravy (19%)</span>
+              <span>DPH dopravy ({SHIPPING_VAT_PERCENT}%)</span>
               <span>{shippingVat.toFixed(2)} €</span>
             </div>
           </>

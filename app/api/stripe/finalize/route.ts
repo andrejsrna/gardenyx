@@ -6,6 +6,8 @@ import { upsertBrevoContact } from '../../../lib/newsletter/brevo';
 import { getProductsByIds } from '@/app/lib/products';
 // Emails + Packeta are handled by /api/orders finalizeOrder step.
 import { recordCouponRedemption } from '@/app/lib/coupons';
+import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
+import { netFromGross, taxFromGross } from '@/app/lib/pricing/math';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 const creatingByPi = new Set<string>();
@@ -116,8 +118,8 @@ export async function POST(request: Request) {
         shipping_lines: decoded.sm === 'packeta_pickup' || decoded.sm === 'packeta_home' ? [{
           method_id: decoded.sm,
           method_title: decoded.sm === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
-          total: sct || (Number(sc) / 1.19).toFixed(2),
-          total_tax: sctx || (Number(sc) * 0.19 / 1.19).toFixed(2),
+          total: sct || netFromGross(Number(sc), SHIPPING_VAT_RATE).toFixed(2),
+          total_tax: sctx || taxFromGross(Number(sc), SHIPPING_VAT_RATE).toFixed(2),
           taxes: []
         }] : [],
         meta_data: [

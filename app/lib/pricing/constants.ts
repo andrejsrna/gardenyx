@@ -1,0 +1,8 @@
+export const PRODUCT_VAT_RATE = 0.19;
+export const SHIPPING_VAT_RATE = 0.23;
+
+export const PRODUCT_VAT_PERCENT = Math.round(PRODUCT_VAT_RATE * 100);
+export const SHIPPING_VAT_PERCENT = Math.round(SHIPPING_VAT_RATE * 100);
+
+export const SHIPPING_COST_PACKETA_PICKUP_NET = 2.9;
+export const SHIPPING_COST_PACKETA_HOME_NET = 3.8;

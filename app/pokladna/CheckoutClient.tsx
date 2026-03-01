@@ -37,11 +37,13 @@ import {
 // Import types, constants and hooks
 import type { PacketaPoint, PaymentError, WooCommerceOrder } from '../lib/checkout/types';
 import { FREE_SHIPPING_THRESHOLD } from '../lib/checkout/constants';
+import { SHIPPING_VAT_RATE } from '../lib/pricing/constants';
+import { grossFromNet, taxFromNet } from '../lib/pricing/math';
 import { updateShippingFromBilling, translateFieldName } from '../lib/checkout/utils';
 import { useCheckoutForm } from '../hooks/checkout';
 
 export default function CheckoutClient() {
-  const { items, totalPrice, subtotal, clearCart, addToCart, discountAmount, removeFromCart, appliedCoupon, couponFreeShipping, couponType, manualDiscountKey, manualDiscountLabel } = useCart();
+  const { items, totalPrice, subtotal, clearCart, addToCart, updateQuantity, discountAmount, removeFromCart, appliedCoupon, couponFreeShipping, couponType, manualDiscountKey, manualDiscountLabel } = useCart();
   const { customerData } = useAuth();
   const { hasConsented, consentDetails } = useCookieConsent();
 
@@ -201,7 +203,7 @@ export default function CheckoutClient() {
   }, [couponFreeShipping, totalPrice, formData.shipping_method]);
 
   const shippingCostBase = getShippingCost(); // základ bez DPH
-  const shippingCostWithVat = shippingCostBase * 1.19; // s DPH
+  const shippingCostWithVat = grossFromNet(shippingCostBase, SHIPPING_VAT_RATE); // s DPH
   const finalTotal = parseFloat((totalPrice + shippingCostWithVat).toFixed(2));
 
   // Add to cart handler for recommended products
@@ -440,7 +442,7 @@ export default function CheckoutClient() {
           method_id: formData.shipping_method,
           method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
           total: shippingCostBase.toFixed(2),
-          total_tax: (shippingCostBase * 0.19).toFixed(2),
+          total_tax: taxFromNet(shippingCostBase, SHIPPING_VAT_RATE).toFixed(2),
           taxes: []
         }] : [],
         idempotency_key: attemptKey,
@@ -663,6 +665,7 @@ export default function CheckoutClient() {
                 onSubmit={handleSubmit}
                 onCustomerNoteChange={handleCustomerNoteChange}
                 onRemoveItem={removeFromCart}
+                onUpdateQuantity={updateQuantity}
                 discountAmount={Math.max(0, Number(discountAmount) || 0)}
                 appliedCoupon={appliedCoupon}
                 couponFreeShipping={couponFreeShipping}
@@ -704,7 +707,11 @@ export default function CheckoutClient() {
           isBusiness={Boolean(formData.is_business)}
           customerNote={formData.customer_note?.slice(0, 500) || ''}
           marketingConsent={Boolean(formData.consents.marketing)}
-          metaData={formData.meta_data}
+          metaData={[
+            ...formData.meta_data,
+            ...(couponType === 'manual' ? [{ key: '_bundle', value: manualDiscountKey || 'cure' }] : []),
+            ...(couponType === 'manual' && manualDiscountLabel ? [{ key: '_bundle_label', value: manualDiscountLabel }] : []),
+          ]}
           onSuccess={() => {
             try {
               setIsPaymentSuccessful(true);

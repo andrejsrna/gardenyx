@@ -1,6 +1,8 @@
+import { SHIPPING_COST_PACKETA_HOME_NET, SHIPPING_COST_PACKETA_PICKUP_NET } from '@/app/lib/pricing/constants';
+
 export const FREE_SHIPPING_THRESHOLD = 29;
-export const SHIPPING_COST_PACKETA_PICKUP = 2.9; // základ bez DPH
-export const SHIPPING_COST_PACKETA_HOME = 3.8;   // základ bez DPH
+export const SHIPPING_COST_PACKETA_PICKUP = SHIPPING_COST_PACKETA_PICKUP_NET; // základ bez DPH
+export const SHIPPING_COST_PACKETA_HOME = SHIPPING_COST_PACKETA_HOME_NET;   // základ bez DPH
 export const RECOMMENDED_PRODUCT_IDS = '839,680,669,47';
 
 export const INITIAL_BILLING_INFO = {

@@ -7,6 +7,8 @@ import { logError } from '@/app/lib/utils/logger';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { Prisma, OrderStatus, PaymentMethod as PaymentMethodEnum, PaymentStatus as PaymentStatusEnum } from '@prisma/client';
 import { recordCouponRedemption } from '@/app/lib/coupons';
+import { PRODUCT_VAT_RATE, SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
+import { taxFromGross, taxFromNet } from '@/app/lib/pricing/math';
 import { getIronSession } from 'iron-session';
 import { sessionConfig } from '@/app/lib/config/session';
 import type { SessionData } from '@/app/lib/config/session';
@@ -91,7 +93,6 @@ type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addre
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
 const PACKETA_CARRIER_ID = '131';
-const VAT_RATE = 0.19;
 
 function normalizePacketaHomeAddress(shipping: OrderData['shipping']) {
   const address1 = (shipping.address_1 || '').trim();
@@ -266,9 +267,9 @@ function toDecimal(value: number | string | undefined, fallback = 0) {
   return new Prisma.Decimal(safe.toFixed(2));
 }
 
-function calculateVatFromGross(grossValue: number) {
+function calculateVatFromGross(grossValue: number, vatRate: number) {
   if (!Number.isFinite(grossValue) || grossValue <= 0) return 0;
-  return grossValue * (VAT_RATE / (1 + VAT_RATE));
+  return taxFromGross(grossValue, vatRate);
 }
 
 export async function GET(request: Request) {
@@ -404,7 +405,7 @@ export async function POST(request: Request) {
         return sum + explicitTax;
       }
       const net = Number(line.total);
-      return Number.isFinite(net) ? sum + net * VAT_RATE : sum;
+      return Number.isFinite(net) ? sum + taxFromNet(net, SHIPPING_VAT_RATE) : sum;
     }, 0) || 0;
 
     const metaPacketa = {
@@ -429,7 +430,7 @@ export async function POST(request: Request) {
     const couponCode = orderData.meta_data.find(m => m.key === '_coupon_code')?.value;
 
     const itemsGross = Math.max(0, subtotal - discountTotal);
-    const itemsTaxTotal = calculateVatFromGross(itemsGross);
+    const itemsTaxTotal = calculateVatFromGross(itemsGross, PRODUCT_VAT_RATE);
     const taxTotal = itemsTaxTotal + shippingTaxTotal;
     const total = orderData.total ? Number(orderData.total) : Math.max(0, itemsGross + shippingTotal);
 

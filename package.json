@@ -13,6 +13,8 @@
     "postbuild": "echo \"[postbuild] Build finished at $(date -u '+%Y-%m-%dT%H:%M:%SZ')\"",
     "start": "NODE_ENV=production next start",
     "lint": "eslint . --max-warnings=0",
+    "test:pricing": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/test-pricing.ts",
+    "test:stripe-meta": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/test-stripe-metadata-consistency.ts",
     "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
     "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
