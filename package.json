@@ -42,7 +42,7 @@
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.1.2",
     "cookies-next": "^6.1.0",
-    "fast-xml-parser": "^5.2.5",
+    "fast-xml-parser": "^5.4.2",
     "fbq": "^0.1.4",
     "gray-matter": "^4.0.3",
     "html-entities": "^2.6.0",
