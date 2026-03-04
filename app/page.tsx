@@ -3,7 +3,6 @@ import { getRankMathSEO } from './lib/content';
 import { parseHTML } from './lib/html-parser';
 import Hero from './components/Hero';
 import Benefits from './components/Benefits';
-import CTA from './components/CTA';
 import CTAWithContent from './components/CTAWithContent';
 import Reviews from './components/Reviews';
 import Composition from './components/Composition';

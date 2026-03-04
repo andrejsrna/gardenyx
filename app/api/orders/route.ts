@@ -154,6 +154,8 @@ function calculateTotalWeight(lineItems: Array<{ quantity: number }>): number {
   return lineItems.reduce((total, item) => total + (item.quantity * 0.5), 0);
 }
 
+/** Reserved for future Packeta integration from order creation flow */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- keep for potential use
 async function createPacketaPacket(orderData: OrderData, order: OrderWithRelations) {
   if (!PACKETA_API_PASSWORD) {
     throw new Error('Missing Packeta API Password');

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 // Prevent client-side access
 export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 // Add rate limiting
 import { Ratelimit } from '@upstash/ratelimit';

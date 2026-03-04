@@ -342,7 +342,7 @@ function detectPostTopic(post: WordPressPost): PostTopic {
   return 'joint-health';
 }
 
-const PRODUCT_RECOMMENDATIONS: Record<PostTopic, { ids: number[]; title: string; description: string }> = {
+const _PRODUCT_RECOMMENDATIONS: Record<PostTopic, { ids: number[]; title: string; description: string }> = {
   'joint-health': {
     ids: [824, 49, 684],
     title: 'Top produkty na podporu kĺbov',
@@ -360,7 +360,7 @@ const PRODUCT_RECOMMENDATIONS: Record<PostTopic, { ids: number[]; title: string;
   }
 };
 
-const DEFAULT_PRODUCT_RECOMMENDATION = {
+const _DEFAULT_PRODUCT_RECOMMENDATION = {
   ids: [49, 684, 824],
   title: 'Odporúčané produkty pre vás',
   description: 'Vybrali sme pre vás produkty, ktoré vám pomôžu s vašimi problémami'
@@ -614,7 +614,6 @@ export default async function BlogPost({ params }: { params: tParams }) {
     .filter(Boolean).length;
   const readTime = meta.readingTimeMinutes ?? Math.max(1, Math.ceil(wordCount / 200));
   const postTopic = detectPostTopic(post);
-  const productRecommendation = PRODUCT_RECOMMENDATIONS[postTopic] || DEFAULT_PRODUCT_RECOMMENDATION;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk';
   const articleUrl = `${siteUrl}/${slugPath}`;
   const canonicalUrl = meta.canonicalUrl

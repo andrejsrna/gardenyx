@@ -515,6 +515,8 @@ export default function CheckoutClient() {
     } finally {
       setIsSubmitting(false);
     }
+  // couponType, manualDiscountKey, manualDiscountLabel intentionally omitted to avoid submit loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData, subscribeToNewsletter, appliedCoupon, discountAmount, couponFreeShipping]);
 
   // Check if form is valid for submit button

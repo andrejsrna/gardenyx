@@ -102,7 +102,7 @@ function generateCSPHeader() {
 function handleErrorResponse(error: unknown, corsHeaders: Record<string, string>) {
   if (error instanceof Error && error.message.includes('rate limit')) {
     return new NextResponse(
-      JSON.stringify({ 
+      JSON.stringify({
         error: 'Too many requests',
         message: 'Please wait a moment before trying again',
         retryAfter: 60 // seconds
@@ -141,15 +141,13 @@ function sanitizeUrlParams(url: URL): URLSearchParams {
 }
 
 function shouldApplyRateLimit(pathname: string): boolean {
-  // Skip rate limiting for static assets and exempt paths
-  return !RATE_LIMIT_EXEMPT_PATHS.some(exemptPath => 
+  return !RATE_LIMIT_EXEMPT_PATHS.some(exemptPath =>
     pathname.startsWith(exemptPath) || pathname.includes(exemptPath)
   );
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   try {
-    // Force HTTPS in production
     if (process.env.NODE_ENV === 'production') {
       const url = request.nextUrl.clone();
       if (url.protocol === 'http:') {
@@ -164,7 +162,6 @@ export async function middleware(request: NextRequest) {
 
     const isAdmin = isAdminPath(request.nextUrl.pathname);
 
-    // Only apply rate limiting to dynamic routes and API endpoints
     if (shouldApplyRateLimit(request.nextUrl.pathname)) {
       const ip = request.headers.get('x-forwarded-for') || 'unknown';
       await rateLimit(ip);
@@ -192,7 +189,7 @@ export async function middleware(request: NextRequest) {
       .join('');
 
     if (!request.url) {
-      console.error('[Middleware] Request URL is null or undefined');
+      console.error('[Proxy] Request URL is null or undefined');
       return NextResponse.next();
     }
 
@@ -243,15 +240,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images (public images)
-     * - public (public assets)
-     */
     '/((?!_next/static|_next/image|favicon.ico|images|public|.*\\.(?:css|js|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$).*)',
   ],
 };
@@ -290,7 +278,7 @@ function requireAdminAuth(request: NextRequest): NextResponse | null {
   const password = process.env.ADMIN_DASHBOARD_PASSWORD;
 
   if (!password) {
-    console.warn('[Middleware] ADMIN_DASHBOARD_PASSWORD is not set, admin route will be blocked.');
+    console.warn('[Proxy] ADMIN_DASHBOARD_PASSWORD is not set, admin route will be blocked.');
     return new NextResponse('Admin access not configured', { status: 503 });
   }
 

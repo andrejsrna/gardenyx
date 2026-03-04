@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Percent, Truck } from 'lucide-react';
+import { ArrowRight, Truck } from 'lucide-react';
 import Link from 'next/link';
 import { trackServerSideEvent } from '../lib/server-side-tracking';
 

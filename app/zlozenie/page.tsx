@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Leaf, TestTube, Brain, Shield } from 'lucide-react';
 import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
-import { ANTI_INFLAMMATORY_HUB } from '../components/internal-linking/ContentHub';
 import CureBundlesSection from '../components/CureBundlesSection';
 
 export const metadata: Metadata = {

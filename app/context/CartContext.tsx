@@ -237,6 +237,8 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             toast.error('Kupón sa nepodarilo overiť.');
             return false;
         }
+    // couponType intentionally omitted to avoid re-creating handler on coupon change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [items]);
 
     const applyExitCoupon = useCallback(async (code: string) => {
