@@ -10,7 +10,7 @@ import { taxFromGross } from '@/app/lib/pricing/math';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
-type StripePI = {
+export type StripePI = {
   id: string;
   amount?: number;
   amount_received?: number;
@@ -33,7 +33,7 @@ const parseBase64Json = <T>(value?: string): T | undefined => {
   }
 };
 
-async function ensureOrderFromPaymentIntent(pi: StripePI) {
+export async function ensureOrderFromPaymentIntent(pi: StripePI) {
   const existing = await prisma.order.findFirst({
     where: {
       OR: [
@@ -101,6 +101,24 @@ async function ensureOrderFromPaymentIntent(pi: StripePI) {
     zip: metaData.find(m => m.key === '_packeta_point_zip')?.value || null,
   };
 
+  const rawMetaList = [
+    { key: '_stripe_payment_intent_id', value: pi.id },
+    ...(md.cp ? [{ key: '_coupon_code', value: md.cp }] : []),
+    ...(discountTotal > 0 ? [{ key: '_discount_total', value: discountTotal.toFixed(2) }] : []),
+    ...(md.cpt ? [{ key: '_coupon_type', value: md.cpt }] : []),
+    ...(md.cpa ? [{ key: '_coupon_value', value: md.cpa }] : []),
+    ...(md.fs === '1' ? [{ key: '_coupon_free_shipping', value: 'true' }] : []),
+    ...metaData,
+  ];
+
+  const metaMap = new Map<string, string>();
+  for (const m of rawMetaList) {
+    if (m.key && typeof m.value !== 'undefined') {
+      metaMap.set(m.key, String(m.value));
+    }
+  }
+  const uniqueMetaData = Array.from(metaMap.entries()).map(([key, value]) => ({ key, value }));
+
   const created = await prisma.order.create({
     data: {
       status: OrderStatus.processing,
@@ -122,15 +140,7 @@ async function ensureOrderFromPaymentIntent(pi: StripePI) {
       packetaPointStreet: packeta.street,
       packetaPointZip: packeta.zip,
       meta: {
-        create: [
-          { key: '_stripe_payment_intent_id', value: pi.id },
-          ...(md.cp ? [{ key: '_coupon_code', value: md.cp }] : []),
-          ...(discountTotal > 0 ? [{ key: '_discount_total', value: discountTotal.toFixed(2) }] : []),
-          ...(md.cpt ? [{ key: '_coupon_type', value: md.cpt }] : []),
-          ...(md.cpa ? [{ key: '_coupon_value', value: md.cpa }] : []),
-          ...(md.fs === '1' ? [{ key: '_coupon_free_shipping', value: 'true' }] : []),
-          ...metaData,
-        ]
+        create: uniqueMetaData
       },
       items: { create: lineItems },
       addresses: {
@@ -233,7 +243,8 @@ export async function POST(request: Request) {
           }
 
           await ensureOrderFromPaymentIntent(pi);
-        } catch {
+        } catch (err) {
+          console.error('[Stripe Webhook] ensureOrderFromPaymentIntent failed:', err);
           // keep webhook resilient
         }
         break;

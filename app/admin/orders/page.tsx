@@ -5,6 +5,7 @@ import prisma from '@/app/lib/prisma';
 import { fetchPacketaStatus, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
 import { sendReturnNoticeEmail } from '@/app/lib/email/order-confirmation';
+import { RecoverOrderForm } from '@/app/admin/orders/RecoverOrderForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -177,6 +178,7 @@ export default async function OrdersPage({ searchParams }: PageProps) {
             <p className="mt-2 text-sm text-slate-300">Posledné objednávky z internej DB (stránkovanie po {perPage}).</p>
           </div>
           <div className="flex gap-3">
+            <RecoverOrderForm />
             <Link
               href="/admin"
               className="rounded-full border border-slate-700 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:border-emerald-400/60 hover:text-emerald-100"

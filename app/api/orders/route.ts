@@ -383,9 +383,19 @@ export async function POST(request: Request) {
     if (!orderData.meta_data) {
       orderData.meta_data = [];
     }
-    if (!orderData.meta_data.some(m => m.key === '_idempotency_key')) {
-      orderData.meta_data.push({ key: '_idempotency_key', value: idempotencyKey });
+    
+    // Deduplicate meta_data by key (last one wins) to prevent Prisma Unique constraint failed
+    const metaMap = new Map<string, string>();
+    for (const m of orderData.meta_data) {
+      if (m.key && typeof m.value !== 'undefined') {
+        metaMap.set(m.key, String(m.value));
+      }
     }
+    if (!metaMap.has('_idempotency_key')) {
+      metaMap.set('_idempotency_key', idempotencyKey);
+    }
+    
+    const uniqueMetaData = Array.from(metaMap.entries()).map(([key, value]) => ({ key, value }));
 
     const cookiesStore = await cookies();
     const sessionId = cookiesStore.get('next-auth.session-token')?.value ||
@@ -472,10 +482,7 @@ export async function POST(request: Request) {
         packetaPointStreet: metaPacketa.street,
         packetaPointZip: metaPacketa.zip,
         meta: {
-          create: orderData.meta_data.map(m => ({
-            key: m.key,
-            value: m.value
-          }))
+          create: uniqueMetaData
         },
         items: {
           create: orderData.line_items.map(li => {
