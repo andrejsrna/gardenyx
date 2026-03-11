@@ -112,6 +112,7 @@ export async function POST(request: Request) {
         transaction_id: pi.id,
         billing: b,
         shipping: s,
+        shipping_method: decoded.sm,
         payment_method: 'stripe',
         payment_method_title: 'Platba kartou',
         line_items: lineItems,
