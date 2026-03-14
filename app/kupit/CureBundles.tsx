@@ -161,15 +161,22 @@ export default function CureBundles() {
                 </div>
               ) : null}
 
-              <div className="flex items-center gap-4">
-                <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-slate-100">
-                  <Image src={b.imageSrc} alt={b.title} fill sizes="64px" className="object-cover" />
+              <div className="-mx-5 -mt-5">
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-2xl bg-slate-100">
+                  <Image
+                    src={b.imageSrc}
+                    alt={b.title}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover"
+                  />
                 </div>
-                <div>
-                  <div className="text-lg font-semibold text-slate-900">{b.title}</div>
-                  <div className="text-sm text-slate-600">{b.subtitle}</div>
-                  <div className="mt-1 text-xs text-slate-500">{b.reason}</div>
-                </div>
+              </div>
+
+              <div className="mt-4">
+                <div className="text-lg font-semibold text-slate-900">{b.title}</div>
+                <div className="text-sm text-slate-600">{b.subtitle}</div>
+                <div className="mt-1 text-xs text-slate-500">{b.reason}</div>
               </div>
 
               <div className="mt-4 rounded-xl bg-slate-50 p-4">
