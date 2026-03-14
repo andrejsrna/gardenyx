@@ -9,6 +9,33 @@ export const metadata: Metadata = {
   title: 'Chladivá masť (gél) na kĺby – rýchla úľava a svieži pocit pri napätí a stuhnutosti',
   description:
     'Chladivá protizápalová masť na kĺby pre okamžitú úľavu od napätia, stuhnutosti a bolesti po záťaži. Rýchlo sa vstrebáva, nezanecháva mastný film a podporuje regeneráciu.',
+  alternates: {
+    canonical: 'https://najsilnejsiaklbovavyziva.sk/protizapalova-mast-na-klby',
+  },
+  openGraph: {
+    title: 'Chladivá masť (gél) na kĺby – rýchla úľava a svieži pocit pri napätí a stuhnutosti',
+    description:
+      'Chladivá protizápalová masť na kĺby pre okamžitú úľavu od napätia, stuhnutosti a bolesti po záťaži. Rýchlo sa vstrebáva, nezanecháva mastný film a podporuje regeneráciu.',
+    url: 'https://najsilnejsiaklbovavyziva.sk/protizapalova-mast-na-klby',
+    siteName: 'Najsilnejšia kĺbová výživa',
+    locale: 'sk_SK',
+    type: 'website',
+    images: [
+      {
+        url: 'https://najsilnejsiaklbovavyziva.sk/jointboost-gel.jpg',
+        width: 1200,
+        height: 1200,
+        alt: 'Joint Boost Gél',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Chladivá masť (gél) na kĺby – rýchla úľava a svieži pocit pri napätí a stuhnutosti',
+    description:
+      'Chladivá protizápalová masť na kĺby pre okamžitú úľavu od napätia, stuhnutosti a bolesti po záťaži. Rýchlo sa vstrebáva, nezanecháva mastný film a podporuje regeneráciu.',
+    images: ['https://najsilnejsiaklbovavyziva.sk/jointboost-gel.jpg'],
+  },
 };
 
 const heroHighlights = [

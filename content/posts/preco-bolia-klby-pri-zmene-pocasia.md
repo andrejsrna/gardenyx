@@ -12,7 +12,7 @@ categories:
 seoTitle: "Prečo bolia kĺby pri zmene počasia? Meteosenzitivita vysvetlená + tipy na úľavu"
 seoDescription: "Bolí ťa koleno alebo prsty vždy, keď sa mení počasie? Zisti, prečo kĺby reagujú na tlak a vlhkosť, čo je meteosenzitivita a ako zmierniť bolesť prírodne aj výživou."
 seoImage: "/articles/meteosenzi.jpeg"
-canonicalUrl: "/articles/meteosenzi.jpeg"
+canonicalUrl: "https://najsilnejsiaklbovavyziva.sk/preco-bolia-klby-pri-zmene-pocasia"
 ---
 
 ## Úvod

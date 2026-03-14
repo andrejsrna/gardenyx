@@ -9,6 +9,33 @@ export const metadata: Metadata = {
   title: 'Joint Boost – najkomplexnejšia výživa pre kĺby, šľachy a väzy',
   description:
     'Objav Joint Boost – doplnok s 9 účinnými látkami (glukozamín, chondroitín, MSM, kolagén, vitamín C, kurkumín, Boswellia, kyselina hyalurónová, BioPerine). Regenerácia, pohyblivosť a úľava pre tvoje kĺby.',
+  alternates: {
+    canonical: 'https://najsilnejsiaklbovavyziva.sk/joint-boost',
+  },
+  openGraph: {
+    title: 'Joint Boost – najkomplexnejšia výživa pre kĺby, šľachy a väzy',
+    description:
+      'Objav Joint Boost – doplnok s 9 účinnými látkami (glukozamín, chondroitín, MSM, kolagén, vitamín C, kurkumín, Boswellia, kyselina hyalurónová, BioPerine). Regenerácia, pohyblivosť a úľava pre tvoje kĺby.',
+    url: 'https://najsilnejsiaklbovavyziva.sk/joint-boost',
+    siteName: 'Najsilnejšia kĺbová výživa',
+    locale: 'sk_SK',
+    type: 'website',
+    images: [
+      {
+        url: 'https://najsilnejsiaklbovavyziva.sk/product-image.png',
+        width: 1200,
+        height: 1200,
+        alt: 'Joint Boost',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Joint Boost – najkomplexnejšia výživa pre kĺby, šľachy a väzy',
+    description:
+      'Objav Joint Boost – doplnok s 9 účinnými látkami (glukozamín, chondroitín, MSM, kolagén, vitamín C, kurkumín, Boswellia, kyselina hyalurónová, BioPerine). Regenerácia, pohyblivosť a úľava pre tvoje kĺby.',
+    images: ['https://najsilnejsiaklbovavyziva.sk/product-image.png'],
+  },
 };
 
 const reasons = [

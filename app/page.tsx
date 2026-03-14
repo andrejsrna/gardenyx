@@ -59,7 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       icons: {
         icon: '/favicon.ico',
-        apple: '/apple-touch-icon.png',
+        apple: '/logo.png',
       },
       verification: {
         google: parser.getMetaTag('google-site-verification'),
@@ -101,7 +101,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     icons: {
       icon: '/favicon.ico',
-      apple: '/apple-touch-icon.png',
+      apple: '/logo.png',
     },
   };
 }

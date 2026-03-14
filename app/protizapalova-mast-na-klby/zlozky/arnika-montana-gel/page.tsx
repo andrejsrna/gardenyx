@@ -3,12 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CureBundlesSection from '../../../components/CureBundlesSection';
 import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
+import { buildStaticMetadata } from '../../../lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticMetadata({
   title: 'Arnika montana gél – prírodná pomoc na stuhnuté kĺby a svaly',
   description:
     'Objav arnika montana gél – horská arnika v modernej, rýchlo vstrebateľnej forme pre stuhnuté kĺby a unavené svaly. Účinky, použitie a dôvody, prečo je v Najsilnejšom kĺbovom géle.',
-};
+  path: '/protizapalova-mast-na-klby/zlozky/arnika-montana-gel',
+  image: 'https://najsilnejsiaklbovavyziva.sk/jointboost-gel.jpg',
+});
 
 const benefitBullets = [
   'Podporuje regeneráciu svalov po športovom výkone',

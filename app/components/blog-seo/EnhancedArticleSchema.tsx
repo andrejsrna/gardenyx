@@ -21,8 +21,15 @@ export default function EnhancedArticleSchema({
   relatedArticles = []
 }: EnhancedArticleSchemaProps) {
   const cleanText = (html: string) => html.replace(/(<([^>]+)>)/gi, '');
+  const siteUrl = 'https://najsilnejsiaklbovavyziva.sk';
+  const authorName = cleanText(post._embedded?.['author']?.[0]?.name || 'Náš tím');
   const publishDate = new Date(post.date).toISOString();
-  const modifiedDate = new Date().toISOString(); // Use current date as modified date
+  const modifiedDate = new Date(post.meta?.updated || post.date).toISOString();
+  const canonicalUrl = post.meta?.canonicalUrl
+    ? post.meta.canonicalUrl.startsWith('http')
+      ? post.meta.canonicalUrl
+      : `${siteUrl}${post.meta.canonicalUrl.startsWith('/') ? post.meta.canonicalUrl : `/${post.meta.canonicalUrl}`}`
+    : `${siteUrl}/${post.slug}`;
   
   const structuredData = {
     "@context": "https://schema.org",
@@ -31,13 +38,10 @@ export default function EnhancedArticleSchema({
     "description": cleanText(post.excerpt.rendered),
     "articleBody": cleanText(post.content.rendered).substring(0, 1000) + "...", // First 1000 chars
     "wordCount": wordCount,
-    "timeRequired": `PT${readTime}M`, // ISO 8601 duration format
+    "timeRequired": `PT${readTime}M`,
     "author": {
       "@type": "Person",
-      "name": "Andrej Srna",
-      "jobTitle": "Odborník na kĺbovú výživu",
-      "description": "Špecialista na prírodné doplnky výživy so zameraním na zdravie kĺbov",
-      "url": "https://najsilnejsiaklbovavyziva.sk/autor/andrej-srna"
+      "name": authorName
     },
     "publisher": {
       "@type": "Organization",
@@ -46,7 +50,7 @@ export default function EnhancedArticleSchema({
       "url": "https://najsilnejsiaklbovavyziva.sk",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://najsilnejsiaklbovavyziva.sk/images/logo.png",
+        "url": "https://najsilnejsiaklbovavyziva.sk/logo.png",
         "width": 300,
         "height": 100
       },
@@ -65,9 +69,9 @@ export default function EnhancedArticleSchema({
     "dateModified": modifiedDate,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://najsilnejsiaklbovavyziva.sk/${post.slug}`
+      "@id": canonicalUrl
     },
-    "url": `https://najsilnejsiaklbovavyziva.sk/${post.slug}`,
+    "url": canonicalUrl,
     "isPartOf": {
       "@type": "WebSite",
       "name": "Najsilnejšia kĺbová výživa",
@@ -76,7 +80,7 @@ export default function EnhancedArticleSchema({
     "inLanguage": "sk-SK",
     "potentialAction": {
       "@type": "ReadAction",
-      "target": [`https://najsilnejsiaklbovavyziva.sk/${post.slug}`]
+      "target": [canonicalUrl]
     },
     ...(post._embedded?.['wp:featuredmedia']?.[0]?.source_url && {
       "image": {

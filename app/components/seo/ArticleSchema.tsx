@@ -29,7 +29,7 @@ export default function ArticleSchema({ post }: ArticleSchemaProps) {
       "name": "Najsilnejšia kĺbová výživa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://najsilnejsiaklbovavyziva.sk/images/logo.png"
+        "url": "https://najsilnejsiaklbovavyziva.sk/logo.png"
       }
     },
     "datePublished": post.date,

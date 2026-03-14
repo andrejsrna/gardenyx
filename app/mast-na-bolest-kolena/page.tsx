@@ -8,6 +8,33 @@ export const metadata: Metadata = {
   title: 'Masť na bolesť kolena – rýchla úľava a ochladenie | Joint Boost Gél',
   description:
     'Chladivá masť na bolesť kolena, ktorá zmierňuje pocit bolesti, napätia a stuhnutosti už po prvom použití. Rýchlo sa vstrebáva, nemastí a prináša úľavu do niekoľkých minút.',
+  alternates: {
+    canonical: 'https://najsilnejsiaklbovavyziva.sk/mast-na-bolest-kolena',
+  },
+  openGraph: {
+    title: 'Masť na bolesť kolena – rýchla úľava a ochladenie | Joint Boost Gél',
+    description:
+      'Chladivá masť na bolesť kolena, ktorá zmierňuje pocit bolesti, napätia a stuhnutosti už po prvom použití. Rýchlo sa vstrebáva, nemastí a prináša úľavu do niekoľkých minút.',
+    url: 'https://najsilnejsiaklbovavyziva.sk/mast-na-bolest-kolena',
+    siteName: 'Najsilnejšia kĺbová výživa',
+    locale: 'sk_SK',
+    type: 'website',
+    images: [
+      {
+        url: 'https://najsilnejsiaklbovavyziva.sk/jointboost-gel.jpg',
+        width: 1200,
+        height: 1200,
+        alt: 'Masť na bolesť kolena Joint Boost Gél',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Masť na bolesť kolena – rýchla úľava a ochladenie | Joint Boost Gél',
+    description:
+      'Chladivá masť na bolesť kolena, ktorá zmierňuje pocit bolesti, napätia a stuhnutosti už po prvom použití. Rýchlo sa vstrebáva, nemastí a prináša úľavu do niekoľkých minút.',
+    images: ['https://najsilnejsiaklbovavyziva.sk/jointboost-gel.jpg'],
+  },
 };
 
 const heroBullets = [

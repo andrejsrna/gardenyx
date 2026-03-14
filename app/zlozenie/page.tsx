@@ -4,11 +4,14 @@ import Link from 'next/link';
 import { ArrowRight, Leaf, TestTube, Brain, Shield } from 'lucide-react';
 import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
 import CureBundlesSection from '../components/CureBundlesSection';
+import { buildStaticMetadata } from '../lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticMetadata({
   title: 'Zloženie JointBoost | Najsilnejšia kĺbová výživa',
   description: 'Objavte prírodné a účinné zloženie našej kĺbovej výživy. Glukozamín, chondroitín, MSM, kolagén a ďalšie aktívne látky pre zdravé kĺby.',
-};
+  path: '/zlozenie',
+  image: 'https://najsilnejsiaklbovavyziva.sk/product-image.png',
+});
 
 const ingredients = [
   {

@@ -1,11 +1,13 @@
 import { Metadata } from 'next';
 import { Mail, Phone, MapPin, Building2, Facebook, Instagram } from 'lucide-react';
 import Link from 'next/link';
+import { buildStaticMetadata } from '../lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticMetadata({
   title: 'Kontakt | Najsilnejšia kĺbová výživa',
   description: 'Kontaktujte nás s vašimi otázkami o kĺbovej výžive. Sme tu pre vás od pondelka do piatka, 9:00-18:00.',
-};
+  path: '/kontakt',
+});
 
 export default function ContactPage() {
   return (

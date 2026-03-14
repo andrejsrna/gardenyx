@@ -99,29 +99,7 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
         "@type": "Organization",
         "name": "Najsilnejšia kĺbová výživa"
       }
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "156",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
-    "review": [
-      {
-        "@type": "Review",
-        "author": {
-          "@type": "Person",
-          "name": "Marta K."
-        },
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        },
-        "reviewBody": "Vynikajúci produkt pre kĺby. Už po týždni som cítila zlepšenie."
-      }
-    ]
+    }
   };
 
   return (

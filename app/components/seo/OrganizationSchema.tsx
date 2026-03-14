@@ -4,7 +4,7 @@ export default function OrganizationSchema() {
     "@type": "Organization",
     "name": "Najsilnejšia kĺbová výživa",
     "url": "https://najsilnejsiaklbovavyziva.sk",
-    "logo": "https://najsilnejsiaklbovavyziva.sk/images/logo.png",
+    "logo": "https://najsilnejsiaklbovavyziva.sk/logo.png",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+421-914-230-321",

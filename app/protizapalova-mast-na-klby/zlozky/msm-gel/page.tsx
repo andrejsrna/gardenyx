@@ -3,12 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CureBundlesSection from '../../../components/CureBundlesSection';
 import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
+import { buildStaticMetadata } from '../../../lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticMetadata({
   title: 'MSM gél – síra pre zdravé a pružné kĺby',
   description:
     'Zisti, ako MSM gél (metylsulfonylmetán) pomáha kĺbom, chrupavkám a svalom. Účinky, použitie a dôvody, prečo je MSM kľúčovou zložkou Najsilnejšieho kĺbového gélu.',
-};
+  path: '/protizapalova-mast-na-klby/zlozky/msm-gel',
+  image: 'https://najsilnejsiaklbovavyziva.sk/jointboost-gel.jpg',
+});
 
 const benefits = [
   'Podporuje tvorbu kolagénu a elastínu v tkanivách',

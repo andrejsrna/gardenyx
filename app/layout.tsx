@@ -24,6 +24,8 @@ import { isSalesSuspended, getSalesSuspensionMessage } from './lib/utils/sales-s
 import { GoogleTagManagerHead, GoogleTagManagerBody } from "./components/GoogleTagManager";
 import "./globals.css";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://najsilnejsiaklbovavyziva.sk";
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter'
@@ -36,6 +38,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Najsilnejšia kĺbová výživa | Prírodné riešenie pre zdravé kĺby",
   description: "Objavte našu prírodnú kĺbovú výživu s kurkumínom, boswelliou a ďalšími účinnými látkami. Pomáha pri bolestiach kĺbov a podporuje ich zdravie.",
   keywords: "kĺbová výživa, kurkumín, boswellia, zdravé kĺby, prírodný doplnok",
@@ -50,12 +53,11 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://najsilnejsiaklbovavyziva.sk"
+    canonical: SITE_URL
   },
   icons: {
     apple: [
-      { url: '/apple-touch-icon.png' },
-      { url: '/apple-touch-icon-precomposed.png' }
+      { url: '/logo.png' }
     ],
     icon: [
       { url: '/favicon.ico' }
@@ -74,8 +76,8 @@ export default async function RootLayout({
   return (
     <html lang="sk" className={`${inter.variable} antialiased`}>
       <head>
-        <link rel="preconnect" href={process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'} />
-        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'} />
+        <link rel="preconnect" href={SITE_URL} />
+        <link rel="dns-prefetch" href={SITE_URL} />
         <link rel="preconnect" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
         <link rel="dns-prefetch" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
         <script

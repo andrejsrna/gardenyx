@@ -18,16 +18,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: '/', changeFrequency: 'daily', priority: 1.0 },
     { url: '/kupit', changeFrequency: 'weekly', priority: 0.9 },
     { url: '/blog', changeFrequency: 'weekly', priority: 0.8 },
+    { url: '/joint-boost', changeFrequency: 'weekly', priority: 0.8 },
+    { url: '/protizapalova-mast-na-klby', changeFrequency: 'weekly', priority: 0.8 },
+    { url: '/mast-na-bolest-kolena', changeFrequency: 'weekly', priority: 0.7 },
     { url: '/zlozenie', changeFrequency: 'monthly', priority: 0.7 },
+    { url: '/recenzie', changeFrequency: 'weekly', priority: 0.7 },
     { url: '/casto-kladene-otazky', changeFrequency: 'monthly', priority: 0.7 },
     { url: '/obchodne-podmienky', changeFrequency: 'monthly', priority: 0.6 },
     { url: '/ochrana-osobnych-udajov', changeFrequency: 'monthly', priority: 0.6 },
     { url: '/doprava-a-platba', changeFrequency: 'monthly', priority: 0.6 },
     { url: '/uzivanie', changeFrequency: 'monthly', priority: 0.6 },
     { url: '/kontakt', changeFrequency: 'monthly', priority: 0.5 },
-    { url: '/registracia', changeFrequency: 'yearly', priority: 0.4 },
     { url: '/reklamacie', changeFrequency: 'yearly', priority: 0.4 },
-    { url: '/moj-ucet', changeFrequency: 'yearly', priority: 0.4 },
   ].map(route => ({
     url: `${siteUrl}${route.url}`,
     lastModified: new Date(),
@@ -74,15 +76,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   });
 
-  localPosts.forEach((post) => {
-    const url = `${siteUrl}/${post.slug}`;
-    postUrlMap.set(url, {
-      url,
-      lastModified: new Date(post.meta?.updated || post.date),
-      changeFrequency: 'monthly' as MetadataRoute.Sitemap[0]['changeFrequency'],
-      priority: 0.6,
+  localPosts
+    .filter((post) => !post.meta?.noindex)
+    .forEach((post) => {
+      const url = `${siteUrl}/${post.slug}`;
+      postUrlMap.set(url, {
+        url,
+        lastModified: new Date(post.meta?.updated || post.date),
+        changeFrequency: 'monthly' as MetadataRoute.Sitemap[0]['changeFrequency'],
+        priority: 0.6,
+      });
     });
-  });
 
   const postUrls = Array.from(postUrlMap.values());
 

@@ -1,11 +1,14 @@
 import { Metadata } from 'next';
 import Accordion from './Accordion';
 import FAQSchema from '../components/seo/FAQSchema';
+import { buildStaticMetadata } from '../lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticMetadata({
   title: 'Často kladené otázky | Najsilnejšia kĺbová výživa',
   description: 'Nájdite odpovede na najčastejšie otázky o kĺbovej výžive JointBoost. Zloženie, dávkovanie, účinky a ďalšie informácie.',
-};
+  path: '/casto-kladene-otazky',
+  image: 'https://najsilnejsiaklbovavyziva.sk/product-image.png',
+});
 
 const faqs = [
   {

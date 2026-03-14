@@ -1,11 +1,13 @@
 import { getCategories, WordPressCategory } from '@/app/lib/content';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { buildStaticMetadata } from '@/app/lib/seo';
 
-export const metadata: Metadata = {
-    title: 'Kategórie | Nôž na krk',
-    description: 'Všetky kategórie článkov na našom blogu.',
-};
+export const metadata: Metadata = buildStaticMetadata({
+    title: 'Kategórie blogu | Najsilnejšia kĺbová výživa',
+    description: 'Prehľad všetkých kategórií článkov na blogu o zdraví kĺbov, výžive a pohybovom aparáte.',
+    path: '/kategorie',
+});
 
 async function fetchCategories(): Promise<WordPressCategory[]> {
     try {

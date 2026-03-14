@@ -6,6 +6,28 @@ export const metadata = {
   description: 'Skúsenosti a hodnotenia zákazníkov s Najsilnejšou kĺbovou výživou. Pridajte svoju recenziu a získajte kupón na ďalší nákup.',
   alternates: {
     canonical: 'https://najsilnejsiaklbovavyziva.sk/recenzie'
+  },
+  openGraph: {
+    title: 'Recenzie zákazníkov | Najsilnejšia kĺbová výživa',
+    description: 'Skúsenosti a hodnotenia zákazníkov s Najsilnejšou kĺbovou výživou. Pridajte svoju recenziu a získajte kupón na ďalší nákup.',
+    url: 'https://najsilnejsiaklbovavyziva.sk/recenzie',
+    siteName: 'Najsilnejšia kĺbová výživa',
+    locale: 'sk_SK',
+    type: 'website',
+    images: [
+      {
+        url: 'https://najsilnejsiaklbovavyziva.sk/logo.png',
+        width: 1200,
+        height: 1200,
+        alt: 'Recenzie zákazníkov',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Recenzie zákazníkov | Najsilnejšia kĺbová výživa',
+    description: 'Skúsenosti a hodnotenia zákazníkov s Najsilnejšou kĺbovou výživou. Pridajte svoju recenziu a získajte kupón na ďalší nákup.',
+    images: ['https://najsilnejsiaklbovavyziva.sk/logo.png'],
   }
 };
 

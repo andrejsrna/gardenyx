@@ -3,12 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CureBundlesSection from '../../../components/CureBundlesSection';
 import JointBoostGelIngredients from '../../../components/product/JointBoostGelIngredients';
+import { buildStaticMetadata } from '../../../lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticMetadata({
   title: 'Mentolový a gáforový gél – okamžité osvieženie pre kĺby',
   description:
     'Mentolový a gáforový gél prináša okamžitý chladivý efekt, uvoľňuje stuhnuté kĺby a svaly a zvyšuje vstrebávanie ďalších aktívnych látok v Najsilnejšom kĺbovom géle.',
-};
+  path: '/protizapalova-mast-na-klby/zlozky/mentol-a-gafor-gel',
+  image: 'https://najsilnejsiaklbovavyziva.sk/jointboost-gel.jpg',
+});
 
 const benefits = [
   'Prinášajú okamžitý chladivý efekt a pocit úľavy.',

@@ -1,11 +1,14 @@
 import { Metadata } from 'next';
 import { Calendar, AlertTriangle, Package, Sun, Droplets } from 'lucide-react';
 import Link from 'next/link';
+import { buildStaticMetadata } from '../lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildStaticMetadata({
   title: 'Užívanie JointBoost | Najsilnejšia kĺbová výživa',
   description: 'Správne dávkovanie a užívanie kĺbovej výživy JointBoost. Odporúčané dávkovanie je 1 kapsula denne.',
-};
+  path: '/uzivanie',
+  image: 'https://najsilnejsiaklbovavyziva.sk/product-image.png',
+});
 
 export default function UsagePage() {
   return (

@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
               height: parseInt(parser.getMetaTag('og:image:height') || '630'),
             }]
           : [{
-              url: `${siteUrl}/og-image-shop.jpg`,
+              url: `${siteUrl}/logo.png`,
               width: 1200,
               height: 630,
             }],
@@ -42,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
         description: parser.getMetaTag('twitter:description') || 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
         images: parser.getMetaTag('twitter:image') 
           ? [{ url: parser.getMetaTag('twitter:image')! }]
-          : [`${siteUrl}/og-image-shop.jpg`],
+          : [`${siteUrl}/logo.png`],
       },
       alternates: {
         canonical: parser.getCanonical() || `${siteUrl}/kupit`,
@@ -79,7 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Najsilnejšia kĺbová výživa',
       images: [
         {
-          url: `${siteUrl}/og-image-shop.jpg`,
+          url: `${siteUrl}/logo.png`,
           width: 1200,
           height: 630,
         },
@@ -91,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: 'Kúpiť kĺbovú výživu | Najsilnejšia kĺbová výživa',
       description: 'Kúpte si najsilnejšiu kĺbovú výživu na trhu. Prírodné zloženie, overené zákazníkmi. Doprava zadarmo nad 39€. Doručenie do 48 hodín.',
-      images: [`${siteUrl}/og-image-shop.jpg`],
+      images: [`${siteUrl}/logo.png`],
     },
     alternates: {
       canonical: `${siteUrl}/kupit`,
