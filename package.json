@@ -20,6 +20,7 @@
     "test:e2e:mock": "playwright test tests/e2e/checkout-mocked.spec.ts",
     "test:e2e:real": "E2E_REAL=1 playwright test tests/e2e/checkout-real.spec.ts",
     "test:order-flow": "ts-node --compiler-options '{\"allowImportingTsExtensions\":true}' scripts/e2e-order-flow.ts",
+    "post:facebook": "node scripts/post-to-facebook.mjs",
     "export:wp-posts": "echo \"Deprecated: WordPress export removed\"",
     "export:woo-products": "echo \"Deprecated: WooCommerce export removed\"",
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
