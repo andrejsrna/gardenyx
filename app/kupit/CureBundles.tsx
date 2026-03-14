@@ -156,12 +156,12 @@ export default function CureBundles() {
               className={`relative overflow-visible rounded-2xl border bg-white p-5 shadow-sm ${b.badge ? 'border-emerald-300 ring-1 ring-emerald-200' : 'border-slate-200'}`}
             >
               {b.badge ? (
-                <div className="absolute -right-3 -top-3 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-md">
+                <div className="absolute -right-3 -top-3 z-20 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-md">
                   {b.badge}
                 </div>
               ) : null}
 
-              <div className="-mx-5 -mt-5">
+              <div className="relative z-0 -mx-5 -mt-5">
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-2xl bg-slate-100">
                   <Image
                     src={b.imageSrc}
