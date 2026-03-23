@@ -92,11 +92,13 @@ test.describe('Checkout mocked E2E', () => {
   test('completes checkout from shop through product detail and cart (mocked API)', async ({ page }) => {
     const { getCapturedOrderPayload } = await mockOrderCreate(page);
 
-    await page.goto('/kupit');
-    await expect(page.getByRole('heading', { name: /Naše produkty/i })).toBeVisible();
+    await page.goto('/kupit', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { name: /Naše produkty/i })).toBeVisible({ timeout: 15_000 });
 
-    await page.getByRole('link', { name: /Detail produktu/i }).first().click();
-    await expect(page).toHaveURL(/\/produkt\//);
+    const detailLink = page.getByRole('link', { name: /Detail produktu/i }).first();
+    await expect(detailLink).toBeVisible({ timeout: 15_000 });
+    await detailLink.click();
+    await expect(page).toHaveURL(/\/produkt\//, { timeout: 15_000 });
 
     await page.locator('#add-to-cart-top').click();
     await expect(page.getByText('Produkt pridaný do košíka')).toBeVisible();

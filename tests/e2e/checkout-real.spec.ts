@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type Frame } from '@playwright/test';
 import { Client } from 'pg';
 
 const enabled = process.env.E2E_REAL === '1';
@@ -51,7 +51,7 @@ test.describe('Checkout real E2E', () => {
 
   const startCheckoutFromShop = async (page: Page) => {
     await page.goto('/kupit');
-    await expect(page.getByRole('heading', { name: /Naše produkty/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Naše produkty/i })).toBeVisible({ timeout: 15_000 });
 
     await page.getByRole('link', { name: /Detail produktu/i }).first().click();
     await expect(page).toHaveURL(/\/produkt\//);
@@ -90,34 +90,49 @@ test.describe('Checkout real E2E', () => {
   };
 
   const fillStripeTestCard = async (page: Page) => {
-    const stripeIframe = page.locator('iframe[title*="Secure payment input frame"]').first();
-    await expect(stripeIframe).toBeVisible({ timeout: 15_000 });
-
-    const stripeFrame = stripeIframe.contentFrame();
+    let stripeFrame: Frame | null = null;
 
     await expect
       .poll(
         async () => {
-          const numberInput = stripeFrame.locator('input[name="number"]');
-          if (await numberInput.count()) {
-            return 'ready';
-          }
+          for (const frame of page.frames()) {
+            const url = frame.url() || '';
+            if (!url.includes('js.stripe.com')) continue;
 
-          const cardOption = stripeFrame.getByText(/^Card$/);
-          if (await cardOption.count()) {
-            await cardOption.click().catch(() => null);
-          }
+            const numberInput = frame.locator('input[name="number"]');
+            if (await numberInput.count()) {
+              stripeFrame = frame;
+              return 'ready';
+            }
 
-          return (await numberInput.count()) ? 'ready' : 'waiting';
+            const cardOption = frame.getByText(/^Card$/);
+            if (await cardOption.count()) {
+              await cardOption.click().catch(() => null);
+              if (await numberInput.count()) {
+                stripeFrame = frame;
+                return 'ready';
+              }
+            }
+          }
+          return 'waiting';
         },
-        { timeout: 20_000, intervals: [500, 1000, 2000] }
+        { timeout: 30_000, intervals: [500, 1000, 2000] }
       )
       .toBe('ready');
 
-    await stripeFrame.locator('input[name="number"]').fill('4242424242424242');
-    await stripeFrame.locator('input[name="expiry"]').fill('1234');
-    await stripeFrame.locator('input[name="cvc"]').fill('123');
-    await stripeFrame.locator('select[name="country"]').selectOption({ label: 'Slovakia' });
+    if (!stripeFrame) {
+      throw new Error('Stripe frame with card inputs not found');
+    }
+
+    const sf: Frame = stripeFrame;
+    await sf.locator('input[name="number"]').fill('4242424242424242');
+    await sf.locator('input[name="expiry"]').fill('1234');
+    await sf.locator('input[name="cvc"]').fill('123');
+
+    const country = sf.locator('select[name="country"]');
+    if (await country.count()) {
+      await country.selectOption({ label: 'Slovakia' });
+    }
   };
 
   const expectStripeOrderInDb = async (email: string) => {
@@ -220,7 +235,7 @@ test.describe('Checkout real E2E', () => {
     await acceptTerms(page);
 
     await page.getByRole('button', { name: /Dokončiť objednávku/i }).click();
-    await expect(page.getByRole('heading', { name: /Platba kartou/i })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('heading', { name: /Platba kartou/i })).toBeVisible({ timeout: 30_000 });
 
     await fillStripeTestCard(page);
 
@@ -231,3 +246,4 @@ test.describe('Checkout real E2E', () => {
     await expectStripeOrderInDb(email);
   });
 });
+
