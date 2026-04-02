@@ -50,7 +50,7 @@ Najtypickejším príznakom je bolesť na vonkajšej strane lakťa. Môže byť 
 
 Na rozdiel od vnútorného lakťa, kde býva problémom takzvaný golfový lakeť, tenisový lakeť bolí zvonka. Ak sa pridá výrazný opuch, začervenanie, teplota alebo bolesť po páde, treba myslieť aj na inú príčinu než len preťaženie šliach.
 
-![Bolesť tenisového lakťa pri bežnej dennej činnosti, citlivá vonkajšia strana lakťa a predlaktia.](https://cdn.najsilnejsiaklbovavyziva.sk/2026/04/tenisovy-laket-priznaky.png)
+![Bolesť tenisového lakťa pri bežnej dennej činnosti, citlivá vonkajšia strana lakťa a predlaktia.](https://cdn.najsilnejsiaklbovavyziva.sk/2026/04/tenisovy-laket-priznaky-v2.png)
 
 ## Ako odlíšiť tenisový lakeť od iných problémov
 
