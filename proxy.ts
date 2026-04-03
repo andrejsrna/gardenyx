@@ -9,7 +9,6 @@ const MAX_PARAM_LENGTH = 250;
 // Paths that should bypass rate limiting
 const RATE_LIMIT_EXEMPT_PATHS = [
   '/api/auth',
-  '/api/create-exit-coupon',
   '/_next',
   '/favicon.ico',
   '/images',

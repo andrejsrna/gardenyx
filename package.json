@@ -36,8 +36,6 @@
     "@stripe/react-stripe-js": "^5.6.1",
     "@stripe/stripe-js": "^8.9.0",
     "@types/xml2js": "^0.4.14",
-    "@upstash/ratelimit": "^2.0.8",
-    "@upstash/redis": "^1.36.3",
     "archiver": "^7.0.1",
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",

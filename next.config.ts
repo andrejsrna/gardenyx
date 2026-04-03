@@ -10,7 +10,6 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   env: {
     WP_API_URL: process.env.WP_API_URL,
-    REDIS_URL: process.env.REDIS_URL,
   },
   images: {
     remotePatterns: [
