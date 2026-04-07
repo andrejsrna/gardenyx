@@ -16,6 +16,10 @@ function requireArg(name) {
   return value;
 }
 
+function hasFlag(name) {
+  return args.includes(`--${name}`);
+}
+
 async function graphGet(path, token) {
   const url = new URL(`https://graph.facebook.com/v23.0/${path}`);
   url.searchParams.set("access_token", token);
@@ -46,17 +50,23 @@ async function graphPost(path, token, body) {
   return json;
 }
 
-async function resolvePage({ pageId, pageName, userToken }) {
-  if (pageId) {
-    const page = await graphGet(pageId, userToken);
-    return { id: page.id, name: page.name, access_token: userToken };
-  }
-
+async function getManagedPages(userToken) {
   const pages = await graphGet("me/accounts", userToken);
-  const match = (pages.data || []).find((page) => page.name === pageName);
+  return pages.data || [];
+}
+
+async function resolvePage({ pageId, pageName, userToken }) {
+  const pages = await getManagedPages(userToken);
+  const match = pages.find((page) => {
+    if (pageId && page.id === pageId) return true;
+    if (pageName && page.name === pageName) return true;
+    return false;
+  });
+
   if (!match) {
-    const available = (pages.data || []).map((page) => page.name).join(", ");
-    throw new Error(`Page "${pageName}" not found. Visible pages: ${available || "none"}`);
+    const available = pages.map((page) => `${page.name} (${page.id})`).join(", ");
+    const target = pageId ? `ID "${pageId}"` : `name "${pageName}"`;
+    throw new Error(`Page with ${target} not found in /me/accounts. Visible pages: ${available || "none"}`);
   }
   return match;
 }
@@ -64,7 +74,8 @@ async function resolvePage({ pageId, pageName, userToken }) {
 async function main() {
   const pageId = getArg("pageId");
   const pageName = getArg("pageName");
-  const message = requireArg("message");
+  const listPages = hasFlag("listPages");
+  const message = listPages ? null : requireArg("message");
   const link = getArg("link");
   const imageUrl = getArg("imageUrl");
   const userToken =
@@ -74,6 +85,23 @@ async function main() {
 
   if (!userToken) {
     throw new Error("Missing FACEBOOK_USER_ACCESS_TOKEN or FB_ACCESS_TOKEN in environment");
+  }
+
+  if (listPages) {
+    const pages = await getManagedPages(userToken);
+    console.log(
+      JSON.stringify(
+        pages.map((page) => ({
+          id: page.id,
+          name: page.name,
+          tasks: page.tasks || [],
+          category: page.category || null,
+        })),
+        null,
+        2
+      )
+    );
+    return;
   }
 
   if (!pageId && !pageName) {
@@ -91,7 +119,8 @@ async function main() {
           ? { message, link }
           : { message };
 
-  const result = await graphPost(endpoint, page.access_token || userToken, body);
+  const tokenToUse = page.access_token || userToken;
+  const result = await graphPost(endpoint, tokenToUse, body);
   console.log(
     JSON.stringify(
       {
