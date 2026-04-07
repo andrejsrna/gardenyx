@@ -1,8 +1,8 @@
 'use client';
 
 import { ArrowRight, Truck } from 'lucide-react';
-import Link from 'next/link';
 import { trackServerSideEvent } from '../lib/server-side-tracking';
+import { Link } from '../../i18n/navigation';
 
 export default function CTA() {
   const handleBuyClick = () => {

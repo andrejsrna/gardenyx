@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import CookieConsent, { getCookieConsentValue } from 'react-cookie-consent';
 import { safeGetItem } from '../lib/utils/safe-local-storage';
 
@@ -10,6 +11,63 @@ type ConsentDetails = {
   analytics: boolean;
   marketing: boolean;
 };
+
+const cookieBannerCopy = {
+  sk: {
+    acceptAll: 'Prijať všetko',
+    declineAll: 'Odmietnuť všetko',
+    ariaAccept: 'Prijať všetky cookies',
+    ariaDecline: 'Odmietnuť voliteľné cookies',
+    title: 'Nastavenia cookies',
+    description:
+      'Používame cookies na zlepšenie vášho zážitku z nakupovania a na analýzu návštevnosti. Niektoré sú nevyhnutné pre fungovanie stránky, zatiaľ čo iné nám pomáhajú zlepšovať služby a personalizovať obsah.',
+    necessaryTitle: 'Nevyhnutné cookies',
+    necessaryDescription: 'Potrebné pre základné fungovanie stránky',
+    alwaysActive: '✓ Vždy aktívne',
+    analyticsTitle: 'Analytické cookies',
+    analyticsDescription: 'Google Analytics - pomáhajú nám pochopiť návštevnosť',
+    marketingTitle: 'Marketingové cookies',
+    marketingDescription: 'Facebook Pixel, Google Ads - pre relevantné reklamy',
+    privacyPrefix: 'Podrobnosti nájdete v našich',
+    privacyLink: 'zásadách ochrany osobných údajov',
+  },
+  en: {
+    acceptAll: 'Accept all',
+    declineAll: 'Decline all',
+    ariaAccept: 'Accept all cookies',
+    ariaDecline: 'Decline optional cookies',
+    title: 'Cookie settings',
+    description:
+      'We use cookies to improve your shopping experience and analyze traffic. Some are necessary for the website to function, while others help us improve services and personalize content.',
+    necessaryTitle: 'Essential cookies',
+    necessaryDescription: 'Required for the basic functionality of the website',
+    alwaysActive: '✓ Always active',
+    analyticsTitle: 'Analytics cookies',
+    analyticsDescription: 'Google Analytics - helps us understand traffic',
+    marketingTitle: 'Marketing cookies',
+    marketingDescription: 'Facebook Pixel, Google Ads - for more relevant ads',
+    privacyPrefix: 'Details can be found in our',
+    privacyLink: 'privacy policy',
+  },
+  hu: {
+    acceptAll: 'Összes elfogadása',
+    declineAll: 'Összes elutasítása',
+    ariaAccept: 'Összes cookie elfogadása',
+    ariaDecline: 'Opcionális cookie-k elutasítása',
+    title: 'Cookie beállítások',
+    description:
+      'Cookie-kat használunk a vásárlási élmény javítására és a forgalom elemzésére. Néhány szükséges az oldal működéséhez, míg mások segítenek szolgáltatásaink fejlesztésében és a tartalom személyre szabásában.',
+    necessaryTitle: 'Szükséges cookie-k',
+    necessaryDescription: 'Az oldal alapvető működéséhez szükségesek',
+    alwaysActive: '✓ Mindig aktív',
+    analyticsTitle: 'Analitikai cookie-k',
+    analyticsDescription: 'Google Analytics - segít megérteni a forgalmat',
+    marketingTitle: 'Marketing cookie-k',
+    marketingDescription: 'Facebook Pixel, Google Ads - relevánsabb hirdetésekhez',
+    privacyPrefix: 'A részletek itt találhatók:',
+    privacyLink: 'adatvédelmi tájékoztató',
+  },
+} as const;
 
 const storeConsentDetails = (details: ConsentDetails) => {
   try {
@@ -33,6 +91,15 @@ const DECLINED_DETAILS: ConsentDetails = {
 
 export default function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
+  const locale = pathname?.split('/').filter(Boolean)[0] ?? 'sk';
+  const copy = cookieBannerCopy[locale as keyof typeof cookieBannerCopy] ?? cookieBannerCopy.sk;
+  const privacyHref =
+    locale === 'en'
+      ? '/en/privacy-policy'
+      : locale === 'hu'
+        ? '/hu/adatvedelem'
+        : '/sk/ochrana-osobnych-udajov';
 
   // Temporary guard for Seznam browser (Android) crash: "Cannot read properties of null (reading 'touches')"
   // Likely caused by a third-party listener inside react-cookie-consent or the browser itself.
@@ -70,8 +137,8 @@ export default function CookieConsentBanner() {
     return (
       <CookieConsent
         location="bottom"
-        buttonText="Prijať všetko"
-        declineButtonText="Odmietnuť všetko"
+        buttonText={copy.acceptAll}
+        declineButtonText={copy.declineAll}
         cookieName="cookieConsent"
         cookieValue="true"
         declineCookieValue="false"
@@ -107,45 +174,41 @@ export default function CookieConsentBanner() {
         }}
         buttonClasses="hover:bg-green-600 transition-colors duration-200"
         declineButtonClasses="hover:bg-gray-600 transition-colors duration-200"
-        ariaAcceptLabel="Prijať všetky cookies"
-        ariaDeclineLabel="Odmietnuť voliteľné cookies"
+        ariaAcceptLabel={copy.ariaAccept}
+        ariaDeclineLabel={copy.ariaDecline}
       >
         <div className="space-y-3">
-          <h3 className="text-lg font-semibold">Nastavenia cookies</h3>
-          <p className="text-sm leading-relaxed">
-            Používame cookies na zlepšenie vášho zážitku z nakupovania a na analýzu návštevnosti.
-            Niektoré sú nevyhnutné pre fungovanie stránky, zatiaľ čo iné nám pomáhajú
-            zlepšovať služby a personalizovať obsah.
-          </p>
+          <h3 className="text-lg font-semibold">{copy.title}</h3>
+          <p className="text-sm leading-relaxed">{copy.description}</p>
           
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
               <div>
-                <strong>Nevyhnutné cookies</strong>
-                <div className="text-xs text-gray-300">Potrebné pre základné fungovanie stránky</div>
+                <strong>{copy.necessaryTitle}</strong>
+                <div className="text-xs text-gray-300">{copy.necessaryDescription}</div>
               </div>
-              <span className="text-green-400">✓ Vždy aktívne</span>
+              <span className="text-green-400">{copy.alwaysActive}</span>
             </div>
             
             <div className="flex items-center justify-between">
               <div>
-                <strong>Analytické cookies</strong>
-                <div className="text-xs text-gray-300">Google Analytics - pomáhajú nám pochopiť návštevnosť</div>
+                <strong>{copy.analyticsTitle}</strong>
+                <div className="text-xs text-gray-300">{copy.analyticsDescription}</div>
               </div>
             </div>
             
             <div className="flex items-center justify-between">
               <div>
-                <strong>Marketingové cookies</strong>
-                <div className="text-xs text-gray-300">Facebook Pixel, Google Ads - pre relevantné reklamy</div>
+                <strong>{copy.marketingTitle}</strong>
+                <div className="text-xs text-gray-300">{copy.marketingDescription}</div>
               </div>
             </div>
           </div>
           
           <div className="text-xs text-gray-300">
-            Podrobnosti nájdete v našich{' '}
-            <Link href="/ochrana-osobnych-udajov" className="text-blue-400 hover:text-blue-300 underline">
-              zásadách ochrany osobných údajov
+            {copy.privacyPrefix}{' '}
+            <Link href={privacyHref} className="text-blue-400 hover:text-blue-300 underline">
+              {copy.privacyLink}
             </Link>
           </div>
         </div>

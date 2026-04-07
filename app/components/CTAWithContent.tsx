@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { ArrowRight, Percent, Truck, Star, Shield, Clock, Check } from 'lucide-react';
 import { trackServerSideEvent } from '../lib/server-side-tracking';
+import { Link } from '../../i18n/navigation';
 
 export default function CTAWithContent() {
   const benefits = [

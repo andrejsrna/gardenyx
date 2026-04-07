@@ -1,18 +1,22 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useCart } from '../context/CartContext'; // Adjust path if necessary
 import type { Product } from '../lib/content-types'; // Adjust path if necessary
 import { tracking } from '../lib/tracking';
 import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
+import { Link } from '../../i18n/navigation';
 
 interface ProductCardProps {
   product: Product;
+  locale: string;
   isPriority?: boolean;
   isHero?: boolean;
 }
 
-export default function ProductCard({ product, isPriority = false, isHero = false }: ProductCardProps) {
+export default function ProductCard({ product, locale: _locale, isPriority = false, isHero = false }: ProductCardProps) {
+  const t = useTranslations('productCard');
   const { addToCart, appliedCoupon, openCart } = useCart();
+  const productHref = { pathname: '/produkt/[slug]' as const, params: { slug: product.slug } };
 
   const handleAddToCart = (product: Product) => {
     // Check if sales are suspended
@@ -58,11 +62,11 @@ export default function ProductCard({ product, isPriority = false, isHero = fals
   const qualifiesFreeShippingBadge = effectivePrice > 29;
 
   return (
-    <article className={`bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300 flex flex-col ${isHero ? 'ring-2 ring-green-500 transform md:-translate-y-2' : ''}`}>
-      <div className="aspect-[4/3] relative overflow-hidden">
+    <article className={`group flex h-full flex-col overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg ${isHero ? 'ring-2 ring-emerald-500 ring-offset-2' : ''}`}>
+      <div className="relative aspect-[4/5] overflow-hidden bg-stone-100">
         {product.images[0] && (
           <Link
-            href={`/produkt/${product.slug}`}
+            href={productHref}
             onClick={handleViewDetail}
             className="block relative w-full h-full"
           >
@@ -71,45 +75,58 @@ export default function ProductCard({ product, isPriority = false, isHero = fals
               alt={product.images[0].alt || product.name}
               fill
               priority={isPriority}
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
+              className="object-cover transition duration-300 group-hover:scale-105"
             />
           </Link>
         )}
         {isHero && (
-          <div className="absolute top-0 left-0 bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-br-xl text-sm font-bold shadow-md z-10">
-            Najpredávanejšie
+          <div className="absolute left-4 top-4 z-10 rounded-full bg-yellow-300 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-yellow-950 shadow-sm">
+            {t('featured')}
           </div>
         )}
         {hasDiscount && (
-          <div className="absolute top-3 right-3 bg-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg z-10">
+          <div className="absolute right-4 top-4 z-10 rounded-full bg-emerald-600 px-3 py-1 text-sm font-semibold text-white shadow-lg">
             -{discount}%
           </div>
         )}
         {qualifiesFreeShippingBadge && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-max bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse z-10">
-            Doprava zadarmo
+          <div className="absolute bottom-4 left-4 z-10 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-emerald-700 shadow-sm backdrop-blur">
+            {t('freeShipping')}
           </div>
         )}
       </div>
-      <div className="p-6 flex flex-col flex-grow">
+
+      <div className="flex flex-1 flex-col p-5">
+        {product.categories[0] ? (
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700">
+            {product.categories[0].name}
+          </p>
+        ) : null}
+
         <Link
-          href={`/produkt/${product.slug}`}
-          className="block group mb-2"
+          href={productHref}
+          className="mt-2 block"
           onClick={handleViewDetail}
         >
-          <h3 className="font-bold text-lg group-hover:text-green-600 transition-colors line-clamp-2 min-h-[2.5em]">
+          <h3 className="line-clamp-2 min-h-[2.5em] text-xl font-semibold text-stone-900 transition-colors group-hover:text-emerald-700">
             {product.name}
           </h3>
         </Link>
 
-        <div className="mt-auto">
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-2xl font-bold text-gray-800">
+        {product.short_description ? (
+          <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">
+            {product.short_description}
+          </p>
+        ) : null}
+
+        <div className="mt-auto pt-5">
+          <div className="mb-4 flex items-baseline gap-2">
+            <span className="text-2xl font-bold text-stone-900">
               {price.toFixed(2)} €
             </span>
             {hasDiscount && (
-              <span className="text-base text-gray-500 line-through">
+              <span className="text-base text-stone-400 line-through">
                 {regularPrice.toFixed(2)} €
               </span>
             )}
@@ -117,26 +134,24 @@ export default function ProductCard({ product, isPriority = false, isHero = fals
 
           <div className="flex flex-col gap-3">
             <Link
-              href={`/produkt/${product.slug}`}
+              href={productHref}
               onClick={handleViewDetail}
-              className={`text-center w-full px-4 py-3 border font-medium rounded-lg transition-colors duration-200 text-sm ${isHero ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}`}
+              className="w-full rounded-full border border-stone-300 bg-white px-4 py-3 text-center text-sm font-semibold text-stone-900 transition hover:border-emerald-500 hover:text-emerald-700"
             >
-              Detail produktu
+              {t('detail')}
             </Link>
             <button
               onClick={() => handleAddToCart(product)}
               disabled={isSalesSuspended}
-              className={`text-center w-full px-4 py-3 font-semibold rounded-lg transition-colors duration-200 text-sm shadow-md ${isSalesSuspended
-                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                  : isHero
-                    ? 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg shadow-green-200'
-                    : 'bg-green-600 text-white hover:bg-green-700 hover:shadow-lg'
-                }`}
+              className={`w-full rounded-full px-4 py-3 text-center text-sm font-semibold transition ${isSalesSuspended
+                ? 'cursor-not-allowed bg-gray-400 text-gray-600'
+                : 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 hover:bg-emerald-600'
+              }`}
             >
-              {isSalesSuspended ? 'Predaje pozastavené' : 'Pridať do košíka'}
+              {isSalesSuspended ? t('salesSuspended') : t('addToCart')}
             </button>
             {appliedCoupon && (
-              <span className="text-xs text-green-700 text-center -mt-2">so zľavovým kupónom</span>
+              <span className="text-xs text-green-700 text-center -mt-2">{t('withCoupon')}</span>
             )}
           </div>
         </div>

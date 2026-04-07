@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { ChangeEvent } from 'react';
 import type { FormData } from '../../lib/checkout/types';
+import { Link } from '../../../i18n/navigation';
 
 interface ConsentsSectionProps {
   formData: FormData;

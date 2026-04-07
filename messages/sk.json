@@ -1,0 +1,155 @@
+{
+  "nav": {
+    "shop": "Obchod",
+    "contact": "Kontakt",
+    "myAccount": "Môj účet",
+    "hello": "Ahoj {name}"
+  },
+  "hero": {
+    "heading": "Prebuďte skutočný potenciál svojej záhrady.",
+    "subheading": "Prírodné hnojivá a stimulátory rastu pre bohatú úrodu a kvitnúcu záhradu.",
+    "cta": "Zobraziť produkty"
+  },
+  "homeLatestProducts": {
+    "eyebrow": "Novinky",
+    "title": "Najnovšie produkty",
+    "description": "Vybrali sme pre vás štyri najnovšie produkty z ponuky GardenYX. Objavte nové hnojivá a prípravky pre zdravú a silnú záhradu.",
+    "viewAll": "Zobraziť všetky produkty",
+    "detail": "Detail produktu"
+  },
+  "appDownload": {
+    "eyebrow": "Aplikácia GardenYX",
+    "title": "Stiahnite si aplikáciu a majte starostlivosť o záhradu stále po ruke.",
+    "description": "Získajte inteligentné pripomienky hnojenia, odporúčané dávkovanie a personalizované tipy pre vaše rastliny priamo v mobile.",
+    "badges": {
+      "appStoreAlt": "Stiahnuť na App Store",
+      "googlePlayAlt": "Stiahnuť na Google Play"
+    },
+    "mockupAlt": "Ukážka mobilnej aplikácie GardenYX"
+  },
+  "shop": {
+    "title": "Naše produkty",
+    "intro": "Listové hnojivá, stimulátory rastu a prípravky na ochranu rastlín GardenYX.",
+    "sections": {
+      "hnojiva-hakofyt-b": "Hakofyt B",
+      "hnojiva-hakofyt-plus": "Hakofyt Plus",
+      "hnojiva-hakofyt-max": "Hakofyt Max",
+      "herbicidy": "Ochrana rastlín",
+      "insekticidy": "Insekticídy"
+    }
+  },
+  "productCard": {
+    "featured": "Najnovšie",
+    "freeShipping": "Doprava zadarmo",
+    "detail": "Detail produktu",
+    "addToCart": "Pridať do košíka",
+    "salesSuspended": "Predaje pozastavené",
+    "withCoupon": "so zľavovým kupónom"
+  },
+  "productPage": {
+    "descriptionTitle": "Popis produktu",
+    "actions": {
+      "addToCart": "Pridať do košíka",
+      "buyNowCheckout": "Kúpiť teraz – prejsť do pokladne",
+      "salesSuspended": "Predaje pozastavené"
+    },
+    "breadcrumbs": {
+      "home": "Domov",
+      "shop": "Obchod"
+    },
+    "quantity": {
+      "decrease": "Znížiť množstvo",
+      "increase": "Zvýšiť množstvo"
+    },
+    "stock": {
+      "label": "Na sklade",
+      "available": "Dostupné",
+      "inStock": "Na sklade",
+      "outOfStock": "Momentálne nedostupné"
+    },
+    "highlights": {
+      "growing": {
+        "title": "Pre hobby aj profi pestovanie",
+        "description": "Výber hnojív a prípravkov pre záhradu, trávnik aj ovocné dreviny."
+      },
+      "delivery": {
+        "title": "Rýchle doručenie",
+        "description": "Produkty expedujeme zo Slovenska s dôrazom na rýchle vybavenie objednávky."
+      },
+      "checkout": {
+        "title": "Bezpečný nákup",
+        "description": "Platba kartou alebo na dobierku, prehľadný checkout a potvrdenie objednávky."
+      }
+    },
+    "relatedProducts": {
+      "eyebrow": "Odporúčame",
+      "title": "Súvisiace produkty",
+      "description": "Vybrali sme ďalšie produkty z podobnej kategórie, ktoré sa vám môžu hodiť k aktuálnemu výberu.",
+      "detail": "Detail produktu",
+      "viewAll": "Zobraziť všetky produkty"
+    }
+  },
+  "cart": {
+    "title": "Košík ({count})",
+    "actions": {
+      "decreaseQuantity": "Znížiť množstvo {name}",
+      "increaseQuantity": "Zvýšiť množstvo {name}",
+      "quantity": "Množstvo {name}",
+      "removeItem": "Odstrániť {name} z košíka"
+    },
+    "empty": {
+      "title": "Váš košík je prázdny",
+      "cta": "Prejsť do obchodu"
+    },
+    "summary": {
+      "subtotal": "Medzisúčet:",
+      "cureDiscount": "Zľava za kúru",
+      "coupon": "Kupón ({code}):",
+      "conditionsNotMet": "Podmienky nesplnené",
+      "total": "Spolu:",
+      "proceedToCheckout": "Pokračovať do pokladne",
+      "couponHint": "💰 Zľavové kupóny môžete použiť v pokladni"
+    }
+  },
+  "footer": {
+    "rights": "Všetky práva vyhradené.",
+    "newsletter": {
+      "eyebrow": "GardenYX newsletter",
+      "title": "Praktické tipy pre zdravšiu a silnejšiu záhradu",
+      "description": "V newsletteri zdieľam, čo sa osvedčilo mne aj zákazníkom GardenYX: krátke odporúčania k hnojeniu, sezónne tipy a občas aj výhodnejšiu ponuku.",
+      "bullets": {
+        "first": "Krátke a užitočné tipy bez zbytočného balastu",
+        "second": "Sezónne odporúčania k výžive a ochrane rastlín",
+        "third": "Odhlásiť sa môžete kedykoľvek jedným klikom"
+      },
+      "emailLabel": "Váš email",
+      "emailPlaceholder": "napr. jana@email.sk",
+      "submit": "Chcem odoberať",
+      "submitLoading": "Odosielam…",
+      "honeypotLabel": "Nechajte toto pole prázdne",
+      "consent": {
+        "prefix": "Súhlasím so spracovaním osobných údajov na účely zasielania newsletteru. Podrobnosti nájdete v",
+        "link": "ochrane osobných údajov"
+      },
+      "messages": {
+        "invalidEmail": "Zadajte prosím platný email.",
+        "missingConsent": "Pre odber je potrebný súhlas so spracovaním údajov.",
+        "genericError": "Nepodarilo sa uložiť odber. Skúste to znova neskôr.",
+        "success": "Ďakujeme, úspešne sme vás pridali do newslettera.",
+        "helper": "Môžete sa kedykoľvek odhlásiť priamo z emailu."
+      }
+    },
+    "payments": {
+      "title": "Platobné metódy"
+    },
+    "links": {
+      "terms": "Obchodné podmienky",
+      "privacy": "Ochrana osobných údajov",
+      "download": "Na stiahnutie",
+      "cookies": "Nastavenia cookies"
+    }
+  },
+  "common": {
+    "loading": "Načítava sa..."
+  }
+}

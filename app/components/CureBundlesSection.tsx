@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import CureBundles from '@/app/kupit/CureBundles';
+import CureBundles from '../[locale]/kupit/CureBundles';
+import { Link } from '../../i18n/navigation';
 
 type Props = {
   buttonText?: string;

@@ -2,29 +2,20 @@ import type { Metadata, Viewport } from "next";
 import './polyfills';
 import { Inter } from "next/font/google";
 import { Suspense } from 'react';
-import { headers } from 'next/headers';
 import { Toaster } from 'sonner';
 import CookieConsentBanner from './components/CookieConsentBanner';
-
-import Footer from './components/Footer';
 import GoogleAds from './components/GoogleAds';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import Posthog from './components/Posthog';
 import FacebookPixel from './components/FacebookPixel';
-import Header from './components/Header';
-import SalesSuspensionBanner from './components/SalesSuspensionBanner';
-import Loading from './loading';
-
 import OrganizationSchema from './components/seo/OrganizationSchema';
 import WebSiteSchema from './components/seo/WebSiteSchema';
-import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
-import { CookieConsentProvider } from './context/CookieConsentContext';
 import { isSalesSuspended, getSalesSuspensionMessage } from './lib/utils/sales-suspension';
 import { GoogleTagManagerHead, GoogleTagManagerBody } from "./components/GoogleTagManager";
+import Loading from './loading';
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://najsilnejsiaklbovavyziva.sk";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gardenyx.com";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -39,47 +30,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Najsilnejšia kĺbová výživa | Prírodné riešenie pre zdravé kĺby",
-  description: "Objavte našu prírodnú kĺbovú výživu s kurkumínom, boswelliou a ďalšími účinnými látkami. Pomáha pri bolestiach kĺbov a podporuje ich zdravie.",
-  keywords: "kĺbová výživa, kurkumín, boswellia, zdravé kĺby, prírodný doplnok",
-  openGraph: {
-    title: "Najsilnejšia kĺbová výživa | Prírodné riešenie pre zdravé kĺby",
-    description: "Objavte našu prírodnú kĺbovú výživu s kurkumínom, boswelliou a ďalšími účinnými látkami.",
-    type: "website",
-    locale: "sk_SK",
-  },
+  title: "Gardenyx",
+  description: "Gardenyx",
   robots: {
     index: true,
     follow: true,
   },
-  alternates: {
-    canonical: SITE_URL
-  },
   icons: {
-    apple: [
-      { url: '/logo.png' }
-    ],
-    icon: [
-      { url: '/favicon.ico' }
-    ]
+    apple: [{ url: '/favicon.ico' }],
+    icon: [{ url: '/favicon.ico' }]
   }
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headerList = await headers();
-  const isAdminRoute = headerList.get('x-admin-route') === '1';
-
   return (
-    <html lang="sk" className={`${inter.variable} antialiased`}>
+    <html suppressHydrationWarning className={`${inter.variable} antialiased`}>
       <head>
-        <link rel="preconnect" href={SITE_URL} />
-        <link rel="dns-prefetch" href={SITE_URL} />
-        <link rel="preconnect" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
-        <link rel="dns-prefetch" href="https://cdn.najsilnejsiaklbovavyziva.sk" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -95,32 +65,13 @@ export default async function RootLayout({
       <body className={`${inter.variable} antialiased`}>
         <GoogleTagManagerBody />
         <Suspense fallback={<Loading />}>
-          <AuthProvider>
-            <CartProvider>
-              <CookieConsentProvider>
-                {!isAdminRoute && process.env.NEXT_PUBLIC_FB_PIXEL_ID ? (
-                  <noscript
-                    dangerouslySetInnerHTML={{
-                      __html: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FB_PIXEL_ID}&ev=PageView&noscript=1" alt="" />`,
-                    }}
-                  />
-                ) : null}
-                {!isAdminRoute && <SalesSuspensionBanner />}
-                {!isAdminRoute && <Header />}
-                <main>
-                  {children}
-                </main>
-                {!isAdminRoute && <Footer />}
-                <Toaster/>
-
-                {!isAdminRoute && <GoogleAnalytics />}
-                {!isAdminRoute && <Posthog />}
-                {!isAdminRoute && <FacebookPixel />}
-                {!isAdminRoute && <GoogleAds />}
-                {!isAdminRoute && <CookieConsentBanner />}
-              </CookieConsentProvider>
-            </CartProvider>
-          </AuthProvider>
+          {children}
+          <Toaster />
+          <GoogleAnalytics />
+          <Posthog />
+          <FacebookPixel />
+          <GoogleAds />
+          <CookieConsentBanner />
         </Suspense>
       </body>
     </html>

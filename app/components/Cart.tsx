@@ -1,16 +1,18 @@
 "use client";
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { Link } from '../../i18n/navigation';
 
 interface CartProps {
     onCloseAction: () => void;
 }
 
 export default function Cart({onCloseAction}: CartProps) {
+    const t = useTranslations('cart');
     const {
         items,
         removeFromCart,
@@ -53,13 +55,13 @@ export default function Cart({onCloseAction}: CartProps) {
             </span>
                     </div>
                 )}
-                <p className="text-gray-500">Váš košík je prázdny</p>
+                <p className="text-gray-500">{t('empty.title')}</p>
                 <Link
                     href="/kupit"
                     onClick={onCloseAction}
                     className="text-green-600 hover:text-green-700 font-medium mt-2 inline-block"
                 >
-                    Prejsť do obchodu
+                    {t('empty.cta')}
                 </Link>
             </div>
         );
@@ -76,7 +78,7 @@ export default function Cart({onCloseAction}: CartProps) {
                                 Ahoj, {userName}!
                             </span>
                         )}
-                        <h2 className="text-lg font-semibold text-gray-900">Košík ({totalItems})</h2>
+                        <h2 className="text-lg font-semibold text-gray-900">{t('title', {count: totalItems})}</h2>
                     </div>
                     <button
                         onClick={onCloseAction}
@@ -143,15 +145,15 @@ export default function Cart({onCloseAction}: CartProps) {
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                 className="w-6 h-6 flex items-center justify-center bg-white rounded hover:bg-gray-100 transition-colors text-gray-600 shadow-sm"
-                                                aria-label={`Znížiť množstvo ${item.name}`}
+                                                aria-label={t('actions.decreaseQuantity', {name: item.name})}
                                             >
                                                 -
                                             </button>
-                                            <span className="w-8 text-center text-sm font-medium" aria-label={`Množstvo ${item.name}`}>{item.quantity}</span>
+                                            <span className="w-8 text-center text-sm font-medium" aria-label={t('actions.quantity', {name: item.name})}>{item.quantity}</span>
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                                 className="w-6 h-6 flex items-center justify-center bg-white rounded hover:bg-gray-100 transition-colors text-gray-600 shadow-sm"
-                                                aria-label={`Zvýšiť množstvo ${item.name}`}
+                                                aria-label={t('actions.increaseQuantity', {name: item.name})}
                                             >
                                                 +
                                             </button>
@@ -168,7 +170,7 @@ export default function Cart({onCloseAction}: CartProps) {
                                             <button
                                                 onClick={() => handleRemove(item.id)}
                                                 className="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors"
-                                                 aria-label={`Odstrániť ${item.name} z košíka`}
+                                                 aria-label={t('actions.removeItem', {name: item.name})}
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                      strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -189,27 +191,27 @@ export default function Cart({onCloseAction}: CartProps) {
             <div className="border-t border-gray-200 p-4 bg-white rounded-b-lg flex-shrink-0">
                 <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-600">Medzisúčet:</span>
+                        <span className="text-gray-600">{t('summary.subtotal')}</span>
                         <span className="font-medium">{subtotal.toFixed(2)} €</span>
                     </div>
                     {discountAmount > 0 && couponType === 'manual' && (
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-green-700">{manualDiscountLabel || 'Zľava za kúru'}:</span>
+                            <span className="text-green-700">{manualDiscountLabel || t('summary.cureDiscount')}</span>
                             <span className="text-green-700 font-medium">-{discountAmount.toFixed(2)} €</span>
                         </div>
                     )}
                     {appliedCoupon && couponType !== 'manual' && (
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-green-600">Kupón ({appliedCoupon}):</span>
+                            <span className="text-green-600">{t('summary.coupon', {code: appliedCoupon})}</span>
                             {discountAmount > 0 ? (
                                 <span className="text-green-600 font-medium">-{discountAmount.toFixed(2)} €</span>
                             ) : (
-                                <span className="text-gray-500 italic text-xs">Podmienky nesplnené</span>
+                                <span className="text-gray-500 italic text-xs">{t('summary.conditionsNotMet')}</span>
                             )}
                         </div>
                     )}
                     <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                        <span className="text-gray-900 font-semibold">Spolu:</span>
+                        <span className="text-gray-900 font-semibold">{t('summary.total')}</span>
                         <span className="text-lg font-bold text-green-600">{totalPrice.toFixed(2)} €</span>
                     </div>
                 </div>
@@ -230,11 +232,11 @@ export default function Cart({onCloseAction}: CartProps) {
                     }`}
                     aria-disabled={totalItems === 0}
                 >
-                    Pokračovať do pokladne
+                    {t('summary.proceedToCheckout')}
                 </Link>
                 
                 <p className="text-xs text-gray-500 text-center mt-2">
-                    💰 Zľavové kupóny môžete použiť v pokladni
+                    {t('summary.couponHint')}
                 </p>
             </div>
         </div>

@@ -1,6 +1,10 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { rateLimit } from './app/lib/utils/rateLimit';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
+
+const intlMiddleware = createMiddleware(routing);
 
 const PROTECTED_PATHS: string[] = [];
 const ADMIN_PATH_PREFIX = '/admin';
@@ -159,7 +163,21 @@ export async function proxy(request: NextRequest) {
       return new NextResponse(null, { status: 200, headers: corsHeaders });
     }
 
-    const isAdmin = isAdminPath(request.nextUrl.pathname);
+    const { pathname } = request.nextUrl;
+    const isAdmin = isAdminPath(pathname);
+    const isApi = pathname.startsWith('/api');
+    let intlRewriteTarget: string | null = null;
+
+    // Run intl locale routing for non-admin, non-API, non-static paths
+    const isStaticFile = /\.(?:webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|css|js|mp4|webm|pdf)$/i.test(pathname);
+    if (!isAdmin && !isApi && !isStaticFile) {
+      const intlResponse = intlMiddleware(request);
+      // If intl wants to redirect (e.g. / → /sk), return that redirect
+      if (intlResponse.status === 307 || intlResponse.status === 308 || intlResponse.headers.get('location')) {
+        return intlResponse;
+      }
+      intlRewriteTarget = intlResponse.headers.get('x-middleware-rewrite');
+    }
 
     if (shouldApplyRateLimit(request.nextUrl.pathname)) {
       const ip = request.headers.get('x-forwarded-for') || 'unknown';
@@ -210,12 +228,15 @@ export async function proxy(request: NextRequest) {
     } else {
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-nonce', nonce);
-      requestHeaders.set('Content-Security-Policy', generateCSPHeader());
       if (isAdmin) {
         requestHeaders.set('x-admin-route', '1');
       }
-      Object.entries(corsHeaders).forEach(([key, value]) => requestHeaders.set(key, value));
-      response = NextResponse.next({ headers: requestHeaders });
+      response = intlRewriteTarget
+        ? NextResponse.rewrite(intlRewriteTarget, { request: { headers: requestHeaders } })
+        : NextResponse.next({ request: { headers: requestHeaders } });
+
+      response.headers.set('Content-Security-Policy', generateCSPHeader());
+      Object.entries(corsHeaders).forEach(([key, value]) => response.headers.set(key, value));
     }
 
     const derivedFbc = deriveFbcValue(fbclidParam, fbcParam, existingFbc);

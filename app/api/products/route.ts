@@ -13,10 +13,11 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const include = searchParams.get('include');
   const slug = searchParams.get('slug');
+  const locale = searchParams.get('locale') || undefined;
 
   try {
     if (slug) {
-      const product = await getProductBySlug(slug);
+      const product = await getProductBySlug(slug, locale);
       if (!product) {
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
       }
@@ -25,11 +26,11 @@ export async function GET(request: Request) {
 
     if (include) {
       const ids = include.split(',').map(id => Number(id.trim())).filter(id => Number.isFinite(id));
-      const products = await getProductsByIds(ids);
+      const products = await getProductsByIds(ids, locale);
       return NextResponse.json(products);
     }
 
-    const products = await getAllProducts();
+    const products = await getAllProducts(locale);
     return NextResponse.json(products);
   } catch (error) {
     console.error('Error reading local products:', error);

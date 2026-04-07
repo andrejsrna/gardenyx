@@ -1,0 +1,155 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "contact": "Contact",
+    "myAccount": "My Account",
+    "hello": "Hello {name}"
+  },
+  "hero": {
+    "heading": "Unlock the true potential of your garden.",
+    "subheading": "Natural fertilizers and growth stimulators for a rich harvest and a blooming garden.",
+    "cta": "Browse products"
+  },
+  "homeLatestProducts": {
+    "eyebrow": "New",
+    "title": "Latest Products",
+    "description": "We selected the four newest GardenYX products for the homepage. Explore fresh fertilizers and crop protection products for a stronger garden.",
+    "viewAll": "View all products",
+    "detail": "Product detail"
+  },
+  "appDownload": {
+    "eyebrow": "GardenYX App",
+    "title": "Download the app and keep garden care always within reach.",
+    "description": "Get smart fertilizing reminders, recommended dosing, and personalized tips for your plants right on your phone.",
+    "badges": {
+      "appStoreAlt": "Download on the App Store",
+      "googlePlayAlt": "Get it on Google Play"
+    },
+    "mockupAlt": "GardenYX mobile app preview"
+  },
+  "shop": {
+    "title": "Our Products",
+    "intro": "Foliar fertilizers, growth stimulators and crop protection products from GardenYX.",
+    "sections": {
+      "hnojiva-hakofyt-b": "Hakofyt B",
+      "hnojiva-hakofyt-plus": "Hakofyt Plus",
+      "hnojiva-hakofyt-max": "Hakofyt Max",
+      "herbicidy": "Plant protection",
+      "insekticidy": "Insecticides"
+    }
+  },
+  "productCard": {
+    "featured": "Newest",
+    "freeShipping": "Free shipping",
+    "detail": "Product detail",
+    "addToCart": "Add to cart",
+    "salesSuspended": "Sales suspended",
+    "withCoupon": "with coupon applied"
+  },
+  "productPage": {
+    "descriptionTitle": "Product description",
+    "actions": {
+      "addToCart": "Add to cart",
+      "buyNowCheckout": "Buy now - proceed to checkout",
+      "salesSuspended": "Sales suspended"
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "shop": "Shop"
+    },
+    "quantity": {
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity"
+    },
+    "stock": {
+      "label": "In stock",
+      "available": "Available",
+      "inStock": "In stock",
+      "outOfStock": "Currently unavailable"
+    },
+    "highlights": {
+      "growing": {
+        "title": "For hobby and professional growers",
+        "description": "Selected fertilizers and crop care products for gardens, lawns and fruit trees."
+      },
+      "delivery": {
+        "title": "Fast delivery",
+        "description": "Products are dispatched from Slovakia with a focus on quick processing."
+      },
+      "checkout": {
+        "title": "Secure checkout",
+        "description": "Pay by card or cash on delivery with a clear and reliable checkout flow."
+      }
+    },
+    "relatedProducts": {
+      "eyebrow": "Recommended",
+      "title": "Related products",
+      "description": "We selected more products from a similar category that may fit well with your current choice.",
+      "detail": "Product detail",
+      "viewAll": "View all products"
+    }
+  },
+  "cart": {
+    "title": "Cart ({count})",
+    "actions": {
+      "decreaseQuantity": "Decrease quantity for {name}",
+      "increaseQuantity": "Increase quantity for {name}",
+      "quantity": "Quantity of {name}",
+      "removeItem": "Remove {name} from cart"
+    },
+    "empty": {
+      "title": "Your cart is empty",
+      "cta": "Go to shop"
+    },
+    "summary": {
+      "subtotal": "Subtotal:",
+      "cureDiscount": "Bundle discount",
+      "coupon": "Coupon ({code}):",
+      "conditionsNotMet": "Conditions not met",
+      "total": "Total:",
+      "proceedToCheckout": "Proceed to checkout",
+      "couponHint": "💰 Discount coupons can be used at checkout"
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "newsletter": {
+      "eyebrow": "GardenYX newsletter",
+      "title": "Practical tips for a healthier, stronger garden",
+      "description": "In the newsletter I share what has worked for me and for GardenYX customers: short fertilizing tips, seasonal guidance and occasional better offers.",
+      "bullets": {
+        "first": "Short, useful tips without the fluff",
+        "second": "Seasonal guidance for plant nutrition and protection",
+        "third": "You can unsubscribe anytime with one click"
+      },
+      "emailLabel": "Your email",
+      "emailPlaceholder": "e.g. jane@email.com",
+      "submit": "Subscribe",
+      "submitLoading": "Sending…",
+      "honeypotLabel": "Leave this field empty",
+      "consent": {
+        "prefix": "I agree to the processing of personal data for newsletter delivery. Details are available in the",
+        "link": "privacy policy"
+      },
+      "messages": {
+        "invalidEmail": "Please enter a valid email address.",
+        "missingConsent": "Consent is required to subscribe.",
+        "genericError": "We could not save your subscription. Please try again later.",
+        "success": "Thank you, you have been successfully subscribed.",
+        "helper": "You can unsubscribe anytime directly from the email."
+      }
+    },
+    "payments": {
+      "title": "Payment methods"
+    },
+    "links": {
+      "terms": "Terms and conditions",
+      "privacy": "Privacy policy",
+      "download": "Download",
+      "cookies": "Cookie settings"
+    }
+  },
+  "common": {
+    "loading": "Loading..."
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "nav": {
+    "shop": "Bolt",
+    "contact": "Kapcsolat",
+    "myAccount": "Fiókom",
+    "hello": "Szia {name}"
+  },
+  "hero": {
+    "heading": "Ébreszd fel kerted igazi potenciálját.",
+    "subheading": "Természetes műtrágyák és növekedési serkentők a bőséges termésért és virágzó kertért.",
+    "cta": "Termékek megtekintése"
+  },
+  "homeLatestProducts": {
+    "eyebrow": "Újdonságok",
+    "title": "Legújabb termékek",
+    "description": "A kezdőoldalra a GardenYX négy legújabb termékét válogattuk be. Fedezd fel az új műtrágyákat és növényvédő készítményeket az erősebb kertért.",
+    "viewAll": "Összes termék megtekintése",
+    "detail": "Termék részletei"
+  },
+  "appDownload": {
+    "eyebrow": "GardenYX alkalmazás",
+    "title": "Töltse le az alkalmazást, és tartsa mindig kéznél a kert gondozását.",
+    "description": "Kapjon intelligens tápanyag-utánpótlási emlékeztetőket, ajánlott adagolást és személyre szabott tippeket növényeihez közvetlenül a mobilján.",
+    "badges": {
+      "appStoreAlt": "Letöltés az App Store-ból",
+      "googlePlayAlt": "Letöltés a Google Playről"
+    },
+    "mockupAlt": "A GardenYX mobilalkalmazás előnézete"
+  },
+  "shop": {
+    "title": "Termékeink",
+    "intro": "GardenYX lombtrágyák, növekedési stimulátorok és növényvédő készítmények.",
+    "sections": {
+      "hnojiva-hakofyt-b": "Hakofyt B",
+      "hnojiva-hakofyt-plus": "Hakofyt Plus",
+      "hnojiva-hakofyt-max": "Hakofyt Max",
+      "herbicidy": "Növényvédelem",
+      "insekticidy": "Rovarölők"
+    }
+  },
+  "productCard": {
+    "featured": "Legújabb",
+    "freeShipping": "Ingyenes szállítás",
+    "detail": "Termék részletei",
+    "addToCart": "Kosárba",
+    "salesSuspended": "Értékesítés szünetel",
+    "withCoupon": "kedvezménykuponnal"
+  },
+  "productPage": {
+    "descriptionTitle": "Termékleírás",
+    "actions": {
+      "addToCart": "Kosárba",
+      "buyNowCheckout": "Vásárlás most - továbblépés a pénztárhoz",
+      "salesSuspended": "Az értékesítés szünetel"
+    },
+    "breadcrumbs": {
+      "home": "Főoldal",
+      "shop": "Bolt"
+    },
+    "quantity": {
+      "decrease": "Mennyiség csökkentése",
+      "increase": "Mennyiség növelése"
+    },
+    "stock": {
+      "label": "Készleten",
+      "available": "Elérhető",
+      "inStock": "Raktáron",
+      "outOfStock": "Jelenleg nem elérhető"
+    },
+    "highlights": {
+      "growing": {
+        "title": "Hobbi és profi termesztéshez",
+        "description": "Válogatott műtrágyák és növényápolási termékek kertekhez, gyephez és gyümölcsfákhoz."
+      },
+      "delivery": {
+        "title": "Gyors szállítás",
+        "description": "A termékeket Szlovákiából küldjük gyors feldolgozással."
+      },
+      "checkout": {
+        "title": "Biztonságos vásárlás",
+        "description": "Bankkártyás vagy utánvétes fizetés átlátható és megbízható pénztárral."
+      }
+    },
+    "relatedProducts": {
+      "eyebrow": "Ajánljuk",
+      "title": "Kapcsolódó termékek",
+      "description": "Olyan további, hasonló kategóriájú termékeket válogattunk össze, amelyek jól illeszkedhetnek a mostani választásához.",
+      "detail": "Termék részletei",
+      "viewAll": "Összes termék megtekintése"
+    }
+  },
+  "cart": {
+    "title": "Kosár ({count})",
+    "actions": {
+      "decreaseQuantity": "{name} mennyiségének csökkentése",
+      "increaseQuantity": "{name} mennyiségének növelése",
+      "quantity": "{name} mennyisége",
+      "removeItem": "{name} eltávolítása a kosárból"
+    },
+    "empty": {
+      "title": "A kosarad üres",
+      "cta": "Tovább a boltba"
+    },
+    "summary": {
+      "subtotal": "Részösszeg:",
+      "cureDiscount": "Csomagkedvezmény",
+      "coupon": "Kupon ({code}):",
+      "conditionsNotMet": "A feltételek nem teljesültek",
+      "total": "Összesen:",
+      "proceedToCheckout": "Tovább a pénztárhoz",
+      "couponHint": "💰 A kuponkedvezményeket a pénztárnál használhatja fel"
+    }
+  },
+  "footer": {
+    "rights": "Minden jog fenntartva.",
+    "newsletter": {
+      "eyebrow": "GardenYX hírlevél",
+      "title": "Gyakorlati tippek az egészségesebb és erősebb kertért",
+      "description": "A hírlevélben megosztom, mi vált be nekem és a GardenYX vásárlóinak: rövid tápanyag-utánpótlási tippeket, szezonális ajánlásokat és időnként kedvezőbb ajánlatokat.",
+      "bullets": {
+        "first": "Rövid és hasznos tippek felesleges sallang nélkül",
+        "second": "Szezonális ajánlások növénytápláláshoz és növényvédelemhez",
+        "third": "Egy kattintással bármikor leiratkozhatsz"
+      },
+      "emailLabel": "Email címed",
+      "emailPlaceholder": "pl. janos@email.hu",
+      "submit": "Feliratkozom",
+      "submitLoading": "Küldés…",
+      "honeypotLabel": "Hagyd üresen ezt a mezőt",
+      "consent": {
+        "prefix": "Hozzájárulok a személyes adatok kezeléséhez a hírlevél küldése céljából. A részletek itt találhatók:",
+        "link": "adatvédelmi tájékoztató"
+      },
+      "messages": {
+        "invalidEmail": "Adj meg érvényes email címet.",
+        "missingConsent": "A feliratkozáshoz hozzájárulás szükséges.",
+        "genericError": "Nem sikerült elmenteni a feliratkozást. Próbáld újra később.",
+        "success": "Köszönjük, sikeresen feliratkoztál a hírlevélre.",
+        "helper": "Bármikor leiratkozhatsz közvetlenül az emailből."
+      }
+    },
+    "payments": {
+      "title": "Fizetési módok"
+    },
+    "links": {
+      "terms": "Általános szerződési feltételek",
+      "privacy": "Adatvédelmi tájékoztató",
+      "download": "Letöltés",
+      "cookies": "Cookie beállítások"
+    }
+  },
+  "common": {
+    "loading": "Betöltés..."
+  }
+}
