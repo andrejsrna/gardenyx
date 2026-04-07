@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { getSiteUrl } from '@/app/lib/automation/config';
 import prisma from '@/app/lib/prisma';
 import { sendVerifyEmail } from '@/app/lib/email/verify-email';
 import { attachOrdersToUser } from '@/app/lib/auth/attach-orders';
@@ -11,7 +12,7 @@ export const runtime = 'nodejs';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, firstName, lastName, consent, newsletter } = body as {
+    const { email, password, firstName, lastName, consent } = body as {
       email?: string;
       password?: string;
       firstName?: string;
@@ -70,28 +71,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'}/overit-email?token=${rawToken}&email=${encodeURIComponent(normalizedEmail)}`;
+    const verifyUrl = `${getSiteUrl()}/overit-email?token=${rawToken}&email=${encodeURIComponent(normalizedEmail)}`;
     await sendVerifyEmail({
       to: normalizedEmail,
       firstName: user.firstName,
       verifyUrl
     });
-
-    if (newsletter && process.env.BREVO_API_KEY) {
-      try {
-        const listId = process.env.BREVO_LIST_ID ? Number(process.env.BREVO_LIST_ID) : undefined;
-        await prisma.newsletterSubscriber.upsert({
-          where: { email: normalizedEmail },
-          create: { email: normalizedEmail, firstName, lastName, source: 'registration', status: 'active' },
-          update: { firstName, lastName, source: 'registration', status: 'active', unsubscribedAt: null }
-        });
-        if (listId) {
-          // Reuse existing brevo helper in subscribe route if needed
-        }
-      } catch (err) {
-        console.warn('[auth/register] failed to subscribe newsletter', err);
-      }
-    }
 
     attachOrdersToUser(normalizedEmail, user.id).catch(() => {});
 

@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
 import { ensureOrderFromPaymentIntent, StripePI } from '@/app/api/stripe/webhook/route';
+import { getAutomationAdminToken } from '@/app/lib/automation/config';
 import prisma from '@/app/lib/prisma';
 
 function requireAdmin(request: NextRequest) {
   const token = request.headers.get('x-admin-token') || request.nextUrl.searchParams.get('token');
-  const expected = process.env.NEWSLETTER_ADMIN_TOKEN || process.env.ADMIN_DASHBOARD_PASSWORD;
+  const expected = getAutomationAdminToken();
   if (!expected) return false;
   if (!token) return false;
   return token === expected;

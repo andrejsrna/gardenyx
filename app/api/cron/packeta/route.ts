@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isAutomationAuthorized } from '@/app/lib/automation/config';
 import prisma from '@/app/lib/prisma';
 import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
 import { sendInvoiceLinkEmail, sendPacketaStatusEmail, sendReturnNoticeEmail } from '@/app/lib/email/order-confirmation';
@@ -6,12 +7,6 @@ import { fetchPacketaStatus, mapPacketaStatusToOrderStatus } from '@/app/lib/pac
 import { createInvoiceForOrder } from '@/app/lib/invoice/create-invoice';
 
 const RETURN_NOTIFY_AFTER = process.env.RETURN_NOTIFY_AFTER ? new Date(process.env.RETURN_NOTIFY_AFTER) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
-const isAuthorized = (request: Request) => {
-  const token = process.env.NEWSLETTER_ADMIN_TOKEN;
-  if (!token) return false;
-  return request.headers.get('x-admin-token') === token;
-};
 
 const emailStatusCodes = new Set([2, 4, 5]);
 
@@ -26,7 +21,7 @@ const resolvePaymentStatus = (newStatus: OrderStatus, paymentMethod: string, cur
 };
 
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAutomationAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

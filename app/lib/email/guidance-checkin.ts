@@ -1,9 +1,10 @@
 import { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } from '@getbrevo/brevo';
+import { getSiteUrl } from '../automation/config';
 import { renderEmail, emailButton } from './template';
 
-const SUBJECT = 'Robíš to správne 👍';
-const CTA_URL = 'https://najsilnejsiaklbovavyziva.sk/ako-podporit-zdravie-klbov-doma';
-const CTA_LABEL = '🟢 Pozrieť jednoduchý tip pre kĺby';
+const SUBJECT = 'Robíte to správne';
+const CTA_URL = `${getSiteUrl()}/stiahnut`;
+const CTA_LABEL = 'Pozrieť aplikáciu GardenYX';
 
 type GuidanceEmailParams = {
   to: string;
@@ -11,23 +12,23 @@ type GuidanceEmailParams = {
 };
 
 const buildChecklist = () => `
-  <p style="margin:16px 0 6px 0;color:#0f172a;font-weight:700;">Ak si môžeš odškrtnúť aspoň 2 z týchto bodov, si na dobrej ceste:</p>
+  <p style="margin:16px 0 6px 0;color:#0f172a;font-weight:700;">Ak si môžete odškrtnúť aspoň 2 z týchto bodov, ste na dobrej ceste:</p>
   <ul style="margin:0;padding-left:20px;color:#1f2937;line-height:1.7;">
-    <li>☑️ používaš gél lokálne podľa potreby</li>
-    <li>☑️ kapsule berieš pravidelne</li>
-    <li>☑️ dávaš telu pohyb, nie šok</li>
-    <li>☑️ piješ dostatok vody</li>
+    <li>☑️ máte prehľad, čo a kedy použiť</li>
+    <li>☑️ sledujete dávkovanie podľa rastliny</li>
+    <li>☑️ plánujete starostlivosť pravidelne</li>
+    <li>☑️ reagujete včas na potreby záhrady</li>
   </ul>
 `;
 
 const buildEducation = () => `
   <p style="margin:0 0 8px 0;color:#475569;">Vo všeobecnosti platí:</p>
   <ul style="margin:0;padding-left:20px;color:#0f172a;line-height:1.6;">
-    <li>Gél – úľava často už do niekoľkých minút</li>
-    <li>Kapsule – postupná podpora, zvyčajne 7–21 dní</li>
-    <li>Najlepší efekt má kombinácia zvonka + zvnútra</li>
+    <li>Pravidelnosť je dôležitejšia než improvizácia</li>
+    <li>Správne dávkovanie šetrí čas aj produkty</li>
+    <li>Najlepšie výsledky prináša starostlivosť podľa sezóny a typu rastliny</li>
   </ul>
-  <p style="margin:10px 0 0 0;color:#475569;">To, že ideš krok za krokom, je presne to, čo máš robiť.</p>
+  <p style="margin:10px 0 0 0;color:#475569;">Presne v tomto pomáha aplikácia GardenYX.</p>
 `;
 
 export async function sendGuidanceEmail(params: GuidanceEmailParams) {
@@ -37,51 +38,47 @@ export async function sendGuidanceEmail(params: GuidanceEmailParams) {
   }
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const greeting = params.firstName ? `Ahoj ${params.firstName},` : 'Ahoj,';
 
   const content = `
-    <p style="margin:0 0 12px 0;color:#475569;">ak používaš JointBoost už pár dní, chceme ťa len krátko uistiť o jednej veci:</p>
-    <p style="margin:0 0 12px 0;color:#475569;"><strong>👉 ak ešte necítiš veľké zmeny, je to úplne v poriadku.</strong></p>
-    <p style="margin:0 0 18px 0;color:#475569;">Každé telo reaguje inak a dôležitá je najmä pravidelnosť.</p>
+    <p style="margin:0 0 12px 0;color:#475569;">ďakujeme za vašu objednávku v GardenYX. Ak sa chcete rýchlo zorientovať v starostlivosti o záhradu, máme pre vás jednoduchý ďalší krok:</p>
+    <p style="margin:0 0 12px 0;color:#475569;"><strong>👉 stiahnite si aplikáciu GardenYX a majte odporúčania vždy po ruke.</strong></p>
+    <p style="margin:0 0 18px 0;color:#475569;">V aplikácii nájdete praktické pripomienky, dávkovanie a tipy pre rastliny.</p>
     ${buildEducation()}
     ${buildChecklist()}
-    <p style="margin:24px 0 8px 0;color:#475569;"><strong>👉 Pripravili sme krátky CARE tip, ktorý veľa zákazníkom pomohol cítiť sa lepšie už po pár dňoch.</strong></p>
+    <p style="margin:24px 0 8px 0;color:#475569;"><strong>👉 Všetko dôležité nájdete na jednom mieste aj v mobile.</strong></p>
     ${emailButton({ label: CTA_LABEL, url: CTA_URL })}
-    <p style="margin:18px 0 6px 0;color:#0f172a;font-weight:700;">Držím palce,</p>
-    <p style="margin:0 0 6px 0;color:#0f172a;font-weight:700;">Andrej<br />Zakladateľ JointBoost</p>
-    <img src="https://najsilnejsiaklbovavyziva.sk/podpis.png" alt="Andrej podpis" style="display:block;margin:0 0 8px 0;max-width:220px;height:auto;" />
-    <p style="margin:0;color:#475569;">Ak máš otázku, pokojne mi odpíš priamo na tento email.</p>
+    <p style="margin:18px 0 6px 0;color:#0f172a;font-weight:700;">Tím GardenYX</p>
+    <p style="margin:0;color:#475569;">Ak máte otázku, pokojne nám odpíšte priamo na tento email.</p>
   `;
 
   const textContent = `
     ${greeting}
 
-    ak používaš JointBoost už pár dní, chceme ťa len krátko uistiť o jednej veci:
-    👉 ak ešte necítiš veľké zmeny, je to úplne v poriadku.
-    Každé telo reaguje inak a dôležitá je najmä pravidelnosť.
+    ďakujeme za vašu objednávku v GardenYX.
+    👉 stiahnite si aplikáciu GardenYX a majte odporúčania vždy po ruke.
+    V aplikácii nájdete praktické pripomienky, dávkovanie a tipy pre rastliny.
 
     Vo všeobecnosti platí:
-    - Gél – úľava často už do niekoľkých minút
-    - Kapsule – postupná podpora, zvyčajne 7–21 dní
-    - Najlepší efekt má kombinácia zvonka + zvnútra
-    To, že ideš krok za krokom, je presne to, čo máš robiť.
+    - pravidelnosť je dôležitejšia než improvizácia
+    - správne dávkovanie šetrí čas aj produkty
+    - najlepšie výsledky prináša starostlivosť podľa sezóny a typu rastliny
+    Presne v tomto pomáha aplikácia GardenYX.
 
     Checklist:
-    ☑️ používaš gél lokálne podľa potreby
-    ☑️ kapsule berieš pravidelne
-    ☑️ dávaš telu pohyb, nie šok
-    ☑️ piješ dostatok vody
+    ☑️ máte prehľad, čo a kedy použiť
+    ☑️ sledujete dávkovanie podľa rastliny
+    ☑️ plánujete starostlivosť pravidelne
+    ☑️ reagujete včas na potreby záhrady
 
-    👉 Pripravili sme krátke tipy, ktoré veľa zákazníkom pomohli cítiť sa lepšie už po pár dňoch.
+    👉 Všetko dôležité nájdete na jednom mieste aj v mobile.
     Viac na: ${CTA_URL}
 
-    Držím palce,
-    Andrej
-    Zakladateľ JointBoost
+    Tím GardenYX
 
-    Ak máš otázku, pokojne mi odpíš priamo na tento email.
+    Ak máte otázku, pokojne nám odpíšte priamo na tento email.
   `;
 
   const api = new TransactionalEmailsApi();
@@ -91,11 +88,11 @@ export async function sendGuidanceEmail(params: GuidanceEmailParams) {
   email.subject = SUBJECT;
   email.htmlContent = renderEmail({
     title: SUBJECT,
-    preheader: 'Krátky check-in, či ideš v správnom smere',
+    preheader: 'Krátky GardenYX check-in po objednávke',
     greeting,
     content,
     cta: { label: CTA_LABEL, url: CTA_URL },
-    footerNote: 'Ak máš otázku, pokojne mi odpíš priamo na tento email.'
+    footerNote: 'Ak máte otázku, pokojne nám odpíšte priamo na tento email.'
   });
   email.textContent = textContent.trim();
   email.sender = { name: senderName, email: senderEmail };

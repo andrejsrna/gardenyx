@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { randomBytes } from 'crypto';
 import bcrypt from 'bcryptjs';
+import { getSiteUrl } from '@/app/lib/automation/config';
 import prisma from '@/app/lib/prisma';
 import { sendResetEmail } from '@/app/lib/auth/reset-email';
 
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
         await sendResetEmail({
           to: email,
           firstName: user.firstName,
-          resetUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk'}/reset-hesla?token=${rawToken}&email=${encodeURIComponent(email)}`
+          resetUrl: `${getSiteUrl()}/reset-hesla?token=${rawToken}&email=${encodeURIComponent(email)}`
         });
       } catch (err) {
         console.warn('[forgot-password] Failed to send email', err);

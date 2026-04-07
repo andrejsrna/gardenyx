@@ -1,16 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
+import { isAutomationAuthorized } from '../../../../lib/automation/config';
 
 const FLAG_KEY = 'reactivation_flow';
 
-const isAuthorized = (request: Request) => {
-  const token = process.env.NEWSLETTER_ADMIN_TOKEN;
-  if (!token) return false;
-  return request.headers.get('x-admin-token') === token;
-};
-
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAutomationAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -24,7 +19,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAutomationAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

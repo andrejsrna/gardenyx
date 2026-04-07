@@ -1,15 +1,10 @@
 import { NextResponse } from 'next/server';
+import { isAutomationAuthorized } from '@/app/lib/automation/config';
 import prisma from '@/app/lib/prisma';
 import { finalizeOrder } from '@/app/lib/checkout/finalize-order';
 
-const isAuthorized = (request: Request) => {
-  const token = process.env.NEWSLETTER_ADMIN_TOKEN;
-  if (!token) return false;
-  return request.headers.get('x-admin-token') === token;
-};
-
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAutomationAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

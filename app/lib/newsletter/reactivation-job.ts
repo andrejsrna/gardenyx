@@ -1,4 +1,5 @@
 import prisma from '../prisma';
+import { isMarketingAutomationEnabled } from '../automation/config';
 import { isReactivationFlowEnabled } from '../feature-flags';
 import { sendReactivationEmail } from './reactivation';
 
@@ -13,6 +14,10 @@ export type ReactivationJobResult = {
 };
 
 export async function runReactivationJob(limit: number = 200): Promise<ReactivationJobResult> {
+  if (!isMarketingAutomationEnabled()) {
+    return { status: 'disabled' };
+  }
+
   const enabled = await isReactivationFlowEnabled();
   if (!enabled) {
     return { status: 'disabled' };

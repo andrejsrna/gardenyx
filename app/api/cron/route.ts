@@ -2,22 +2,17 @@ import { NextResponse } from 'next/server';
 import { runReactivationJob } from '@/app/lib/newsletter/reactivation-job';
 import { runReviewRequestJob } from '@/app/lib/reviews/review-request-job';
 import { runGuidanceCheckinJob } from '@/app/lib/orders/guidance-checkin-job';
+import { isAutomationAuthorized, isMarketingAutomationEnabled } from '@/app/lib/automation/config';
 import * as packetaHandler from './packeta/route';
 import * as finalizeHandler from './finalize/route';
 
-const isAuthorized = (request: Request) => {
-  const token = process.env.NEWSLETTER_ADMIN_TOKEN;
-  if (!token) return false;
-  return request.headers.get('x-admin-token') === token;
-};
-
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAutomationAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const url = new URL(request.url);
-  const job = url.searchParams.get('job') || 'reactivation';
+  const job = url.searchParams.get('job') || 'packeta';
   const limit = Math.max(1, Math.min(500, Number(url.searchParams.get('limit')) || 200));
 
   const results: Array<{ job: string; status: number; data: unknown }> = [];
@@ -25,16 +20,28 @@ export async function POST(request: Request) {
   try {
     const runJob = async (key: string) => {
       if (key === 'reactivation') {
+        if (!isMarketingAutomationEnabled()) {
+          results.push({ job: key, status: 200, data: { status: 'disabled' } });
+          return;
+        }
         const data = await runReactivationJob(limit);
         results.push({ job: key, status: 200, data });
         return;
       }
       if (key === 'reviews') {
+        if (!isMarketingAutomationEnabled()) {
+          results.push({ job: key, status: 200, data: { status: 'disabled' } });
+          return;
+        }
         const data = await runReviewRequestJob(limit);
         results.push({ job: key, status: 200, data });
         return;
       }
       if (key === 'guidance') {
+        if (!isMarketingAutomationEnabled()) {
+          results.push({ job: key, status: 200, data: { status: 'disabled' } });
+          return;
+        }
         const data = await runGuidanceCheckinJob(limit);
         results.push({ job: key, status: 200, data });
         return;
@@ -53,11 +60,8 @@ export async function POST(request: Request) {
     };
 
     if (job === 'all') {
-      await runJob('reactivation');
       await runJob('finalize');
       await runJob('packeta');
-      await runJob('reviews');
-      await runJob('guidance');
     } else {
       await runJob(job);
     }

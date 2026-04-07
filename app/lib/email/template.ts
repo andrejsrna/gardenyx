@@ -23,8 +23,9 @@ const BRAND = {
   border: '#e2e8f0'
 };
 
-const LOGO_URL = 'https://najsilnejsiaklbovavyziva.sk/logo.png';
-const TAGLINE = 'Starostlivosť o tvoje kĺby';
+const SITE_URL = getSiteUrl();
+const LOGO_URL = `${SITE_URL}/logo.png`;
+const TAGLINE = 'Starostlivosť o vašu záhradu';
 
 export const emailButton = (cta: EmailCta) => `
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 18px 0;">
@@ -86,8 +87,8 @@ export function renderEmail(params: RenderEmailParams) {
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                   <tr>
                     <td style="padding:18px 22px;font-family:'Inter','Arial',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;">
-                      <a href="https://najsilnejsiaklbovavyziva.sk" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;color:#ecfdf3;">
-                        <img src="${LOGO_URL}" alt="Najsilnejšia kĺbová výživa" width="150" height="44" style="display:block;max-width:150px;height:auto;" />
+                      <a href="${SITE_URL}" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;color:#ecfdf3;">
+                        <img src="${LOGO_URL}" alt="GardenYX" width="150" height="44" style="display:block;max-width:150px;height:auto;" />
                       </a>
                     </td>
                     <td align="right" style="padding:18px 22px;font-family:'Inter','Arial',sans-serif;font-size:12px;font-weight:600;">${TAGLINE}</td>
@@ -111,3 +112,4 @@ export function renderEmail(params: RenderEmailParams) {
     </table>
   `;
 }
+import { getSiteUrl } from '../automation/config';

@@ -13,7 +13,7 @@ export async function sendReviewRequestEmail(params: ReviewEmailParams) {
   if (!apiKey) return;
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const api = new TransactionalEmailsApi();
   api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);

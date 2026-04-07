@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { getSiteUrl, isMarketingAutomationEnabled } from '../automation/config';
 import prisma from '../prisma';
 import { sendReviewRequestEmail } from '../email/review-request';
 
@@ -13,15 +14,23 @@ type JobResult = {
 
 const generateCouponCode = () => {
   const chunk = crypto.randomBytes(3).toString('hex').toUpperCase();
-  return `NKV-${chunk}`;
+  return `GYX-${chunk}`;
 };
 
 const buildReviewUrl = () => {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://najsilnejsiaklbovavyziva.sk';
-  return `${base.replace(/\/$/, '')}/recenzie`;
+  return `${getSiteUrl()}/recenzie`;
 };
 
 export async function runReviewRequestJob(limit: number = 200): Promise<JobResult> {
+  if (!isMarketingAutomationEnabled()) {
+    return {
+      status: 'ok',
+      targeted: 0,
+      sent: 0,
+      failures: [],
+    };
+  }
+
   const now = new Date();
   const cutoff = new Date(now);
   cutoff.setDate(cutoff.getDate() - DAYS_AFTER_ORDER);

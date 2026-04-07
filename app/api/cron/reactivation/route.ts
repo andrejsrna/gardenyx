@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server';
+import { isAutomationAuthorized, isMarketingAutomationEnabled } from '../../../lib/automation/config';
 import { runReactivationJob } from '../../../lib/newsletter/reactivation-job';
 
-const isAuthorized = (request: Request) => {
-  const token = process.env.NEWSLETTER_ADMIN_TOKEN;
-  if (!token) return false;
-  return request.headers.get('x-admin-token') === token;
-};
-
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAutomationAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!isMarketingAutomationEnabled()) {
+    return NextResponse.json({ status: 'disabled' });
   }
 
   const url = new URL(request.url);

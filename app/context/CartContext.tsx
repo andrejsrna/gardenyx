@@ -404,12 +404,6 @@ export function CartProvider({children}: { children: React.ReactNode }) {
             };
             try {
                 safeSetItem('abandonedCart', JSON.stringify(abandonedCart));
-                const response = await fetch('/api/cart/abandoned', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(abandonedCart),
-                });
-                if (!response.ok) throw new Error('Failed to save cart');
             } catch (error) {
                 console.error('Failed to save abandoned cart:', error);
             }

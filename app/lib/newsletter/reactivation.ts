@@ -1,8 +1,9 @@
 import { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } from '@getbrevo/brevo';
+import { getSiteUrl } from '../automation/config';
 import { renderEmail, emailButton, infoNote } from '../email/template';
 
-const subject = 'Ako sa dnes majú tvoje kĺby?';
-const CTA_URL = 'https://najsilnejsiaklbovavyziva.sk/ako-podporit-zdravie-klbov-doma';
+const subject = 'Majte GardenYX stále po ruke';
+const CTA_URL = `${getSiteUrl()}/stiahnut`;
 
 const greeting = (firstName?: string | null) => {
   const clean = firstName?.trim();
@@ -11,19 +12,19 @@ const greeting = (firstName?: string | null) => {
 
 const buildText = (firstName?: string | null) => `${greeting(firstName)}
 
-Len sme chceli skontrolovať, ako sa dnes majú tvoje kĺby. Žiadny predaj, žiadna povinnosť odpovedať — len úprimný záujem.
+Pripomíname len jednu praktickú vec: aplikáciu GardenYX môžete mať stále po ruke.
 
-Každé telo reaguje inak. Niekto cíti úľavu rýchlo, niekomu to trvá dlhšie — a je to úplne v poriadku. Ak cítiš pnutie alebo bolesť, stačí spomaliť, dopriať si regeneráciu a prispôsobiť pohyb.
+Nájdete v nej prehľad produktov, odporúčané dávkovanie a jednoduché tipy pre starostlivosť o záhradu.
 
-Pripravili sme krátky 2-minútový tip „Ako podporiť zdravie kĺbov doma“:
-- 10-min ranný warm-up, ktorý rozhýbe kĺby
-- 3 potraviny pre kĺby: omega-3, kolagén + vitamín C, zelená zelenina
-- jednoduchý mikronávyk na regeneráciu a sledovanie signálov tela
+Čo v aplikácii nájdete:
+- odporúčané dávkovanie podľa typu rastliny
+- pripomienky starostlivosti a použitia produktov
+- rýchly prehľad toho, čo a kedy použiť
 ${CTA_URL}
 
-Ak potrebuješ niečo prebrať, stačí odpísať na tento email.
+Ak potrebujete niečo prebrať, stačí odpísať na tento email.
 
-Tím NKV`;
+Tím GardenYX`;
 
 export async function sendReactivationEmail(to: string, firstName?: string | null, lastName?: string | null) {
   const apiKey = process.env.BREVO_API_KEY;
@@ -32,40 +33,40 @@ export async function sendReactivationEmail(to: string, firstName?: string | nul
   }
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const apiInstance = new TransactionalEmailsApi();
   apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
 
   const content = `
-    <p style="margin:0 0 12px 0;color:#475569;">Len sme chceli jemne skontrolovať, ako sa dnes majú tvoje kĺby. Žiadny predaj, žiadna povinnosť odpovedať — len úprimný záujem.</p>
-    <p style="margin:0 0 18px 0;color:#475569;">Každé telo reaguje inak. Niekto cíti úľavu rýchlo, niekomu to trvá dlhšie — a je to úplne v poriadku. Ak cítiš pnutie alebo bolesť, stačí spomaliť, dopriať si regeneráciu a prispôsobiť pohyb.</p>
+    <p style="margin:0 0 12px 0;color:#475569;">Pripomíname len jednu praktickú vec: aplikáciu GardenYX môžete mať stále po ruke.</p>
+    <p style="margin:0 0 18px 0;color:#475569;">Nájdete v nej prehľad produktov, odporúčané dávkovanie a jednoduché tipy pre starostlivosť o záhradu.</p>
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 18px 0;">
       <tr>
         <td style="padding:18px;border:1px solid #bbf7d0;border-radius:16px;background:#f0fdf4;">
-          <p style="margin:0 0 10px 0;font-size:14px;font-weight:700;color:#166534;">Čo nájdeš v 2-minútovom tipe „Ako podporiť zdravie kĺbov doma“:</p>
+          <p style="margin:0 0 10px 0;font-size:14px;font-weight:700;color:#166534;">Čo nájdete v aplikácii GardenYX:</p>
           <ul style="margin:0;padding-left:18px;color:#1f2937;">
-            <li style="margin:0 0 8px 0;">10-min ranný warm-up na rozhýbanie kĺbov</li>
-            <li style="margin:0 0 8px 0;">3 potraviny pre kĺby: omega-3, kolagén + vitamín C, zelená zelenina</li>
-            <li style="margin:0;">Mikronávyk na regeneráciu a sledovanie signálov tela</li>
+            <li style="margin:0 0 8px 0;">Odporúčané dávkovanie podľa typu rastliny</li>
+            <li style="margin:0 0 8px 0;">Praktické pripomienky starostlivosti</li>
+            <li style="margin:0;">Rýchly prehľad produktov a použitia</li>
           </ul>
         </td>
       </tr>
     </table>
-    ${emailButton({ label: '🟢 Pozrieť krátky tip pre kĺby', url: CTA_URL })}
-    ${infoNote('Ak potrebuješ niečo prebrať, stačí odpísať na tento email. Radi ti odporučíme, ako na starostlivosť o kĺby krok za krokom.')}
-    <p style="margin:10px 0 4px 0;color:#0f172a;font-weight:700;">Tím NKV</p>
-    <p style="margin:0 0 18px 0;color:#475569;font-size:13px;">Najsilnejšia kĺbová výživa | JointBoost</p>
+    ${emailButton({ label: 'Pozrieť aplikáciu GardenYX', url: CTA_URL })}
+    ${infoNote('Ak potrebujete niečo prebrať, stačí odpísať na tento email. Radi poradíme so starostlivosťou o záhradu krok za krokom.')}
+    <p style="margin:10px 0 4px 0;color:#0f172a;font-weight:700;">Tím GardenYX</p>
+    <p style="margin:0 0 18px 0;color:#475569;font-size:13px;">GardenYX</p>
   `;
 
   const sendSmtpEmail = new SendSmtpEmail();
   sendSmtpEmail.subject = subject;
   sendSmtpEmail.htmlContent = renderEmail({
     title: subject,
-    preheader: 'Krátky 2-minútový tip pre kĺby',
+    preheader: 'Praktický tip a aplikácia GardenYX',
     greeting: greeting(firstName),
     content,
-    footerNote: 'Ak si email neočakával, stačí ho ignorovať.'
+    footerNote: 'Ak ste email neočakávali, stačí ho ignorovať.'
   });
   sendSmtpEmail.textContent = buildText(firstName);
   sendSmtpEmail.sender = { name: senderName, email: senderEmail };

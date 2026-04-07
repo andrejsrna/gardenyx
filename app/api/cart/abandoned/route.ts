@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import * as SibApiV3Sdk from '@getbrevo/brevo';
+import { getSiteUrl, isMarketingAutomationEnabled } from '@/app/lib/automation/config';
 import { renderEmail, emailButton, infoNote } from '@/app/lib/email/template';
 
 function getBrevoClient() {
@@ -32,6 +33,10 @@ interface AbandonedCart {
 
 export async function POST(request: Request) {
   try {
+    if (!isMarketingAutomationEnabled()) {
+      return NextResponse.json({ status: 'disabled' });
+    }
+
     const cart: AbandonedCart = await request.json();
 
     if (!cart.email || !cart.items || cart.items.length === 0) {
@@ -52,6 +57,8 @@ export async function POST(request: Request) {
       `)
       .join('');
 
+    const siteUrl = getSiteUrl();
+
     const content = `
       <p style="margin:0 0 10px 0;color:#475569;">Váš košík stále čaká. Ak sa chcete vrátiť k objednávke, tu je rýchly prehľad:</p>
       <table role="presentation" style="width:100%;border-collapse:collapse;margin:16px 0;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
@@ -70,18 +77,21 @@ export async function POST(request: Request) {
           </tr>
         </tbody>
       </table>
-      ${emailButton({ label: 'Dokončiť objednávku', url: 'https://najsilnejsiaklbovavyziva.sk/pokladna' })}
+      ${emailButton({ label: 'Dokončiť objednávku', url: `${siteUrl}/pokladna` })}
       ${infoNote('Ak ste dostali tento email omylom alebo už máte objednané, stačí ho ignorovať.')}
     `;
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.subject = 'Dokončite svoj nákup na Najsilnejšia kĺbová výživa';
+    sendSmtpEmail.subject = 'Dokončite svoj nákup na GardenYX';
     sendSmtpEmail.htmlContent = renderEmail({
       title: 'Váš košík na vás čaká',
-      preheader: 'Dokončite svoj nákup na Najsilnejšia kĺbová výživa',
+      preheader: 'Dokončite svoj nákup na GardenYX',
       content
     });
-    sendSmtpEmail.sender = { name: 'Najsilnejšia kĺbová výživa', email: 'noreply@najsilnejsiaklbovavyziva.sk' };
+    sendSmtpEmail.sender = {
+      name: process.env.BREVO_SENDER_NAME || 'GardenYX',
+      email: process.env.BREVO_SENDER_EMAIL || 'noreply@gardenyx.eu',
+    };
     sendSmtpEmail.to = [{ email: cart.email }];
 
     // Send the email

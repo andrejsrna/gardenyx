@@ -1,3 +1,4 @@
+import { isMarketingAutomationEnabled } from '../automation/config';
 import prisma from '../prisma';
 import { sendGuidanceEmail } from '../email/guidance-checkin';
 
@@ -12,6 +13,15 @@ export type GuidanceCheckinJobResult = {
 };
 
 export async function runGuidanceCheckinJob(limit: number = 200): Promise<GuidanceCheckinJobResult> {
+  if (!isMarketingAutomationEnabled()) {
+    return {
+      status: 'ok',
+      targeted: 0,
+      sent: 0,
+      failures: [],
+    };
+  }
+
   const now = new Date();
   const cutoffStart = new Date(now);
   cutoffStart.setDate(cutoffStart.getDate() - DAYS_AFTER_ORDER);
