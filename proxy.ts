@@ -5,6 +5,7 @@ import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
+const LOCALES = new Set(['sk', 'en', 'hu']);
 
 const PROTECTED_PATHS: string[] = [];
 const ADMIN_PATH_PREFIX = '/admin';
@@ -149,10 +150,126 @@ function shouldApplyRateLimit(pathname: string): boolean {
   );
 }
 
+function getLocalizedPath(locale: string, route: 'shop' | 'contact' | 'hakofyt' | 'terms' | 'privacy' | 'download' | 'account' | 'register' | 'checkout' | 'blog' | 'product', slug?: string) {
+  const prefixes = {
+    sk: {
+      shop: '/sk/kupit',
+      contact: '/sk/kontakt',
+      hakofyt: '/sk/hnojiva-hakofyt',
+      terms: '/sk/obchodne-podmienky',
+      privacy: '/sk/ochrana-osobnych-udajov',
+      download: '/sk/stiahnut',
+      account: '/sk/moj-ucet',
+      register: '/sk/registracia',
+      checkout: '/sk/pokladna',
+      blog: '/sk/blog',
+      product: slug ? `/sk/produkt/${slug}` : '/sk/kupit',
+    },
+    en: {
+      shop: '/en/shop',
+      contact: '/en/contact',
+      hakofyt: '/en/hakofyt-fertilizers',
+      terms: '/en/terms-and-conditions',
+      privacy: '/en/privacy-policy',
+      download: '/en/download',
+      account: '/en/my-account',
+      register: '/en/registracia',
+      checkout: '/en/checkout',
+      blog: '/en/blog',
+      product: slug ? `/en/product/${slug}` : '/en/shop',
+    },
+    hu: {
+      shop: '/hu/vasarlas',
+      contact: '/hu/kapcsolat',
+      hakofyt: '/hu/hakofyt-mutragyak',
+      terms: '/hu/aszf',
+      privacy: '/hu/adatvedelem',
+      download: '/hu/letoltes',
+      account: '/hu/fiokom',
+      register: '/hu/registracia',
+      checkout: '/hu/penztar',
+      blog: '/hu/blog',
+      product: slug ? `/hu/termek/${slug}` : '/hu/vasarlas',
+    },
+  } as const;
+
+  return prefixes[locale as keyof typeof prefixes]?.[route] || prefixes.sk[route];
+}
+
+function buildRedirectResponse(request: NextRequest, pathname: string, searchParams?: URLSearchParams) {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname;
+  url.search = searchParams?.toString() || '';
+  return NextResponse.redirect(url, 308);
+}
+
+function getLegacyShopifyRedirect(request: NextRequest): NextResponse | null {
+  const { pathname, searchParams } = request.nextUrl;
+  const segments = pathname.split('/').filter(Boolean);
+
+  let locale = 'sk';
+  let pathSegments = segments;
+  if (segments[0] && LOCALES.has(segments[0])) {
+    locale = segments[0];
+    pathSegments = segments.slice(1);
+  }
+
+  const normalizedPath = `/${pathSegments.join('/')}`;
+  const first = pathSegments[0];
+  const second = pathSegments[1];
+
+  if (normalizedPath === '/pages/contact') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'contact'));
+  }
+  if (normalizedPath === '/pages/hakofyt-fertilizers') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'hakofyt'));
+  }
+  if (normalizedPath === '/pages/terms-privacy' || normalizedPath === '/pages/terms-and-conditions' || normalizedPath === '/policies/terms-of-service') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'terms'));
+  }
+  if (normalizedPath === '/pages/privacy-policy' || normalizedPath === '/policies/privacy-policy') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'privacy'));
+  }
+  if (normalizedPath === '/pages/download') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'download'));
+  }
+  if (first === 'products' && second) {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'product', second));
+  }
+  if (first === 'collections') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'shop'));
+  }
+  if (first === 'blogs') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'blog'));
+  }
+  if (first === 'account' && (pathSegments.length === 1 || second === 'login')) {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'account'));
+  }
+  if (first === 'account' && second === 'register') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'register'));
+  }
+  if (first === 'cart' || first === 'checkout') {
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'checkout'));
+  }
+  if (first === 'search') {
+    const nextSearchParams = new URLSearchParams();
+    const query = searchParams.get('q')?.trim();
+    if (query) nextSearchParams.set('search', query);
+    return buildRedirectResponse(request, getLocalizedPath(locale, 'shop'), nextSearchParams);
+  }
+
+  return null;
+}
+
 export async function proxy(request: NextRequest) {
   try {
     if (request.method === 'OPTIONS') {
       return new NextResponse(null, { status: 200, headers: corsHeaders });
+    }
+
+    const legacyRedirect = getLegacyShopifyRedirect(request);
+    if (legacyRedirect) {
+      return legacyRedirect;
     }
 
     const { pathname } = request.nextUrl;
