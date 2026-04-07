@@ -38,7 +38,7 @@ const corsHeaders = {
 };
 
 const ALLOWED_PARAMS = new Set([
-  'ad_id', 'pixel', 'key', 'page', 'search', 'tag', 'include',
+  'ad_id', 'pixel', 'key', 'page', 'search', 'tag', 'include', 'locale', 'slug',
   'fbclid', 'fbc', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign',
   'utm_term', 'utm_content',
   // Reviews token
@@ -149,13 +149,52 @@ function shouldApplyRateLimit(pathname: string): boolean {
   );
 }
 
+function getFirstHeaderValue(value: string | null): string | null {
+  return value?.split(',')[0]?.trim() || null;
+}
+
+function isLocalHost(host: string | null): boolean {
+  if (!host) return true;
+  return host === 'localhost' || host === '127.0.0.1' || host.startsWith('localhost:') || host.startsWith('127.0.0.1:');
+}
+
+function getHostFromEnv(value: string | undefined): string | null {
+  if (!value) return null;
+
+  try {
+    const parsed = new URL(value);
+    return parsed.host || null;
+  } catch {
+    return value.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || null;
+  }
+}
+
+function getPublicRequestHost(request: NextRequest): string | null {
+  const forwardedHost = getFirstHeaderValue(request.headers.get('x-forwarded-host'));
+  if (!isLocalHost(forwardedHost)) return forwardedHost;
+
+  const host = getFirstHeaderValue(request.headers.get('host'));
+  if (!isLocalHost(host)) return host;
+
+  const coolifyHost = getHostFromEnv(process.env.COOLIFY_FQDN);
+  if (!isLocalHost(coolifyHost)) return coolifyHost;
+
+  const siteUrlHost = getHostFromEnv(process.env.NEXT_PUBLIC_SITE_URL);
+  if (!isLocalHost(siteUrlHost)) return siteUrlHost;
+
+  return host || forwardedHost || coolifyHost || siteUrlHost;
+}
+
 export async function proxy(request: NextRequest) {
   try {
     if (process.env.NODE_ENV === 'production') {
-      const url = request.nextUrl.clone();
-      if (url.protocol === 'http:') {
-        url.protocol = 'https:';
-        return NextResponse.redirect(url);
+      const forwardedProto = getFirstHeaderValue(request.headers.get('x-forwarded-proto'));
+      const effectiveProtocol = forwardedProto || request.nextUrl.protocol.replace(':', '');
+
+      if (effectiveProtocol === 'http') {
+        const publicHost = getPublicRequestHost(request);
+        const redirectUrl = new URL(`${request.nextUrl.pathname}${request.nextUrl.search}`, `https://${publicHost || request.nextUrl.host}`);
+        return NextResponse.redirect(redirectUrl);
       }
     }
 

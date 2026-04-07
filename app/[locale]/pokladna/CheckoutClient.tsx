@@ -25,7 +25,6 @@ import type { Product } from '../../lib/content-types';
 import {
   BusinessPurchaseSection,
   RecommendedProducts,
-  FreeShippingProgress,
   BillingInformationSection,
   ShippingInformationSection,
   CreateAccountSection,
@@ -37,15 +36,15 @@ import {
 
 // Import types, constants and hooks
 import type { PacketaPoint, PaymentError, WooCommerceOrder } from '../../lib/checkout/types';
-import { FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
 import { SHIPPING_VAT_RATE } from '../../lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
 import { updateShippingFromBilling, translateFieldName } from '../../lib/checkout/utils';
 import { useCheckoutForm } from '../../hooks/checkout';
 
 export default function CheckoutClient() {
-  const t = useTranslations('cart');
-  const { items, totalPrice, subtotal, clearCart, addToCart, updateQuantity, discountAmount, removeFromCart, appliedCoupon, couponFreeShipping, couponType, manualDiscountKey, manualDiscountLabel } = useCart();
+  const tCart = useTranslations('cart');
+  const t = useTranslations('checkout');
+  const { items, totalPrice, clearCart, addToCart, updateQuantity, discountAmount, removeFromCart, appliedCoupon, couponFreeShipping, couponType, manualDiscountKey, manualDiscountLabel } = useCart();
   const { customerData } = useAuth();
   const { hasConsented, consentDetails } = useCookieConsent();
 
@@ -195,14 +194,12 @@ export default function CheckoutClient() {
 
   // Shipping cost calculation
   const getShippingCost = useCallback(() => {
-    if (couponFreeShipping) return 0;
-    if (totalPrice >= FREE_SHIPPING_THRESHOLD) return 0;
     switch (formData.shipping_method) {
       case 'packeta_pickup': return 2.9; // základ bez DPH
       case 'packeta_home': return 3.8;   // základ bez DPH
       default: return 0;
     }
-  }, [couponFreeShipping, totalPrice, formData.shipping_method]);
+  }, [formData.shipping_method]);
 
   const shippingCostBase = getShippingCost(); // základ bez DPH
   const shippingCostWithVat = grossFromNet(shippingCostBase, SHIPPING_VAT_RATE); // s DPH
@@ -217,8 +214,8 @@ export default function CheckoutClient() {
       quantity: 1,
       image: product.images?.[0]?.src || undefined,
     });
-    toast.success(`${product.name} bol pridaný do košíka.`);
-  }, [addToCart]);
+    toast.success(t('toasts.productAdded', { name: product.name }));
+  }, [addToCart, t]);
 
   // Packeta point selection
   const handlePacketaPointSelect = useCallback(() => {
@@ -278,31 +275,31 @@ export default function CheckoutClient() {
       };
 
       if (!sanitizedData.billing.phone || !/^\+\d{9,15}$/.test(sanitizedData.billing.phone)) {
-        setPhoneError('Zadajte telefónne číslo vo formáte +421XXXXXXXXX.');
+        setPhoneError(t('validation.phoneFormat'));
         return false;
       }
 
       if (formData.is_business) {
         if (!sanitizedData.billing.company?.trim()) {
-          throw new Error('Názov firmy je povinný pre firemné objednávky');
+          throw new Error(t('validation.companyRequired'));
         }
         if (!sanitizedData.billing.ic?.trim()) {
-          throw new Error('IČO je povinné pre firemné objednávky');
+          throw new Error(t('validation.icRequired'));
         }
         if (!sanitizedData.billing.dic?.trim()) {
-          throw new Error('DIČ je povinné pre firemné objednávky');
+          throw new Error(t('validation.dicRequired'));
         }
         if (!/^\d{8}$/.test(sanitizedData.billing.ic)) {
-          throw new Error('IČO musí obsahovať presne 8 číslic');
+          throw new Error(t('validation.icDigits'));
         }
         if (!/^\d{10}$/.test(sanitizedData.billing.dic)) {
-          throw new Error('DIČ musí obsahovať presne 10 číslic');
+          throw new Error(t('validation.dicDigits'));
         }
       }
 
       if (formData.create_account) {
         if (!formData.account_password?.trim()) {
-          throw new Error('Heslo je povinné pre vytvorenie účtu');
+          throw new Error(t('validation.passwordRequired'));
         }
         const passwordValidation = validatePassword(formData.account_password);
         if (!passwordValidation.isValid) {
@@ -313,12 +310,12 @@ export default function CheckoutClient() {
       if (formData.shipping_method === 'packeta_pickup') {
         const hasPacketaPoint = formData.meta_data.some(item => item.key === '_packeta_point_id');
         if (!hasPacketaPoint) {
-          throw new Error('Prosím, vyberte výdajné miesto Packeta.');
+          throw new Error(t('validation.packetaPointRequired'));
         }
       }
 
       if (!formData.consents.termsAndPrivacy) {
-        throw new Error('Je potrebné súhlasiť s obchodnými podmienkami a zásadami ochrany osobných údajov.');
+        throw new Error(t('validation.termsRequired'));
       }
 
       checkoutFormSchema.parse(sanitizedData);
@@ -340,11 +337,11 @@ export default function CheckoutClient() {
         const translatedField = translateFieldName(firstError.path.join('.'));
         toast.error(`${translatedField}: ${firstError.message}`);
       } else {
-        toast.error(error instanceof Error ? error.message : 'Chyba pri validácii formulára.');
+        toast.error(error instanceof Error ? error.message : t('validation.generic'));
       }
       return false;
     }
-  }, [formData, setFormErrors, setPhoneError]);
+  }, [formData, setFormErrors, setPhoneError, t]);
 
   const subscribeToNewsletter = useCallback(async () => {
     if (!formData.consents.marketing) return;
@@ -415,7 +412,7 @@ export default function CheckoutClient() {
         shipping: normalizedShipping,
         shipping_method: formData.shipping_method,
         payment_method: formData.payment_method,
-        payment_method_title: formData.payment_method === 'stripe' ? 'Platba kartou' : 'Dobierka',
+        payment_method_title: formData.payment_method === 'stripe' ? t('paymentMethods.card') : t('paymentMethods.cod'),
         meta_data: [
           ...formData.meta_data,
           ...(formData.customer_note ? [{ key: '_customer_note', value: formData.customer_note }] : []),
@@ -442,7 +439,7 @@ export default function CheckoutClient() {
         })),
         shipping_lines: shippingCostBase > 0 ? [{
           method_id: formData.shipping_method,
-          method_title: formData.shipping_method === 'packeta_pickup' ? 'Packeta - Výdajné miesto' : 'Packeta - Doručenie domov',
+          method_title: formData.shipping_method === 'packeta_pickup' ? t('shippingMethods.packetaPickup') : t('shippingMethods.packetaHome'),
           total: shippingCostBase.toFixed(2),
           total_tax: taxFromNet(shippingCostBase, SHIPPING_VAT_RATE).toFixed(2),
           taxes: []
@@ -476,14 +473,14 @@ export default function CheckoutClient() {
 
           if (!res.ok) {
             const data = await res.json().catch(() => ({}));
-            throw new Error(data?.error || 'Registrácia zlyhala');
+            throw new Error(data?.error || t('toasts.registrationFailed'));
           }
 
-          toast.success('Účet bol vytvorený. Skontrolujte email pre overenie.');
+          toast.success(t('toasts.accountCreated'));
         } catch (err) {
-          const msg = err instanceof Error ? err.message : 'Registrácia zlyhala';
+          const msg = err instanceof Error ? err.message : t('toasts.registrationFailed');
           // Do not block order success on account creation.
-          toast.error(`Objednávka je OK, ale účet sa nepodarilo vytvoriť: ${msg}`);
+          toast.error(t('toasts.accountCreationPartialFailure', { error: msg }));
         }
       }
 
@@ -510,16 +507,16 @@ export default function CheckoutClient() {
       if (error instanceof Error) {
         setPaymentError({
           type: 'order_creation_error',
-          message: error.message || 'Nastala chyba pri vytváraní objednávky',
+          message: error.message || t('errors.orderCreation'),
         });
-        toast.error(`Chyba pri vytváraní objednávky: ${error.message}`);
+        toast.error(t('toasts.orderCreationFailed', { error: error.message }));
       }
     } finally {
       setIsSubmitting(false);
     }
   // couponType, manualDiscountKey, manualDiscountLabel intentionally omitted to avoid submit loop
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData, subscribeToNewsletter, appliedCoupon, discountAmount, couponFreeShipping]);
+  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData, subscribeToNewsletter, appliedCoupon, discountAmount, couponFreeShipping, t]);
 
   // Check if form is valid for submit button
   const isFormValid = Boolean(formData.billing.first_name && 
@@ -547,15 +544,15 @@ export default function CheckoutClient() {
     return (
       <div className="min-h-[50vh] bg-gray-50 flex items-center justify-center">
         <div className="text-center p-8 bg-white rounded-lg shadow-sm">
-          <h2 className="text-2xl font-semibold mb-4">{t('empty.title')}</h2>
+          <h2 className="text-2xl font-semibold mb-4">{tCart('empty.title')}</h2>
           <p className="text-gray-600 mb-6">
-            Vyzerá to, že ste zatiaľ do košíka nič nepridali.
+            {t('empty.description')}
           </p>
           <Link
             href="/kupit"
             className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
           >
-            {t('empty.cta')}
+            {tCart('empty.cta')}
           </Link>
         </div>
       </div>
@@ -577,12 +574,12 @@ export default function CheckoutClient() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Platba bola úspešná</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">{t('paymentSuccess.title')}</h2>
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
-            <span className="text-gray-600">Prebieha presmerovanie...</span>
+            <span className="text-gray-600">{t('paymentSuccess.redirecting')}</span>
           </div>
-          <p className="text-sm text-gray-500">Vaša objednávka bola úspešne spracovaná.</p>
+          <p className="text-sm text-gray-500">{t('paymentSuccess.description')}</p>
         </div>
       </div>
     );
@@ -595,8 +592,6 @@ export default function CheckoutClient() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Forms */}
             <div className="lg:col-span-2 space-y-6">
-              <FreeShippingProgress subtotal={subtotal} couponFreeShipping={couponFreeShipping} />
-              
               <RecommendedProducts 
                 totalPrice={totalPrice}
                 recommendedProducts={[]}
@@ -632,9 +627,6 @@ export default function CheckoutClient() {
               <ShippingMethodsSection
                 formData={formData}
                 formErrors={formErrors}
-                cartTotal={totalPrice}
-                cartSubtotal={subtotal}
-                couponFreeShipping={couponFreeShipping}
                 selectedPacketaPoint={selectedPacketaPoint}
                 onInputChange={handleInputChange}
                 onPacketaPointSelect={handlePacketaPointSelect}
@@ -672,7 +664,6 @@ export default function CheckoutClient() {
                 onUpdateQuantity={updateQuantity}
                 discountAmount={Math.max(0, Number(discountAmount) || 0)}
                 appliedCoupon={appliedCoupon}
-                couponFreeShipping={couponFreeShipping}
               />
             </div>
           </div>
@@ -684,8 +675,8 @@ export default function CheckoutClient() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 shadow-xl max-w-md mx-4 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Objednávka sa spracúva</h3>
-            <p className="text-gray-600">Prosím, čakajte. Prebieha presmerovanie.</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('processingOverlay.title')}</h3>
+            <p className="text-gray-600">{t('processingOverlay.description')}</p>
           </div>
         </div>
       )}
@@ -765,7 +756,7 @@ export default function CheckoutClient() {
             } catch {
               setPaymentError({
                 type: 'stripe_error',
-                message: 'Nastala chyba pri spracovaní platby.',
+                message: t('errors.paymentProcessing'),
               });
               setShowStripePayment(false);
               setIsPaymentSuccessful(false);
@@ -778,13 +769,13 @@ export default function CheckoutClient() {
       {/* Payment error display */}
       {paymentError && (
         <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50">
-          <p className="font-medium">Chyba pri platbe</p>
+          <p className="font-medium">{t('paymentError.title')}</p>
           <p className="text-sm">{paymentError.message}</p>
           <button 
             onClick={() => setPaymentError(null)}
             className="mt-2 text-sm underline hover:no-underline"
           >
-            Zavrieť
+            {t('paymentError.close')}
           </button>
         </div>
       )}

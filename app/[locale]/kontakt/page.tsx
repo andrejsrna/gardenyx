@@ -1,133 +1,90 @@
 import { Metadata } from 'next';
-import { Mail, Phone, MapPin, Building2, Facebook, Instagram } from 'lucide-react';
-import Link from 'next/link';
-import { buildStaticMetadata } from '../../lib/seo';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-export const metadata: Metadata = buildStaticMetadata({
-  title: 'Kontakt | Najsilnejšia kĺbová výživa',
-  description: 'Kontaktujte nás s vašimi otázkami o kĺbovej výžive. Sme tu pre vás od pondelka do piatka, 9:00-18:00.',
-  path: '/kontakt',
-});
+type ContactPageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-export default function ContactPage() {
+export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'contactPage.meta' });
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
+export default async function ContactPage({ params }: ContactPageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: 'contactPage' });
+
   return (
-    <main className="py-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <header className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Kontakt</h1>
-            <p className="text-lg text-gray-600">
-              Radi by sme počuli od vás! Ak máte akékoľvek otázky, pripomienky alebo návrhy, 
-              neváhajte nás kontaktovať. Náš tím je vždy pripravený vám pomôcť.
-            </p>
-          </header>
-
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {/* Contact Methods */}
-            <div className="space-y-8">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-green-50 text-green-600 rounded-lg">
-                  <Mail className="w-6 h-6" />
+    <main className="bg-stone-50 py-12 sm:py-16">
+      <div className="container mx-auto px-6 sm:px-8">
+        <div className="mx-auto max-w-5xl space-y-8">
+          <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-sm">
+            <div className="grid gap-8 px-6 py-8 md:grid-cols-[1.2fr_0.8fr] md:px-8 md:py-10">
+              <div className="space-y-4">
+                <div className="flex w-fit rounded-full bg-green-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-green-800">
+                  {t('eyebrow')}
                 </div>
-                <div>
-                  <h2 className="font-semibold text-lg mb-2">E-mail</h2>
-                  <p className="text-gray-600 mb-1">Pre všeobecné otázky alebo pripomienky:</p>
-                  <Link 
-                    href="mailto:info@fitdoplnky.sk"
-                    className="text-green-600 hover:underline"
-                  >
-                    info@fitdoplnky.sk
-                  </Link>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-green-50 text-green-600 rounded-lg">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="font-semibold text-lg mb-2">Telefón</h2>
-                  <Link 
-                    href="tel:+421914230321"
-                    className="text-green-600 hover:underline block mb-1"
-                  >
-                    +421 914 230 321
-                  </Link>
-                  <p className="text-gray-600">
-                    Pondelok - Piatok, 9:00 - 18:00
+                <div className="space-y-3">
+                  <h1 className="font-serif text-4xl text-stone-900 sm:text-5xl">{t('title')}</h1>
+                  <p className="max-w-2xl text-base leading-7 text-stone-600 sm:text-lg">
+                    {t('description')}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-green-50 text-green-600 rounded-lg">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="font-semibold text-lg mb-2">Adresa</h2>
-                  <address className="text-gray-600 not-italic">
-                    Fitdoplnky.sk<br />
-                    1. mája 33<br />
-                    Báhoň 90084
-                  </address>
-                </div>
+              <div className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6">
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-stone-500">
+                  {t('primaryContact.label')}
+                </p>
+                <a
+                  href="mailto:support@gardenyx.eu"
+                  className="mt-4 block text-2xl font-semibold text-stone-900 transition hover:text-green-700"
+                >
+                  support@gardenyx.eu
+                </a>
+                <p className="mt-3 text-sm leading-6 text-stone-600">{t('primaryContact.description')}</p>
               </div>
             </div>
+          </section>
 
-            {/* Company Info & Social */}
-            <div className="space-y-8">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-green-50 text-green-600 rounded-lg">
-                  <Building2 className="w-6 h-6" />
+          <section className="grid gap-6 md:grid-cols-2">
+            <article className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm md:p-8">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-stone-500">
+                {t('company.label')}
+              </p>
+              <div className="mt-4 space-y-3 text-stone-700">
+                <p className="text-xl font-semibold text-stone-900">{t('company.name')}</p>
+                <div className="space-y-1 text-sm leading-6">
+                  <p>{t('company.addressLine1')}</p>
+                  <p>{t('company.addressLine2')}</p>
+                  <p>{t('company.country')}</p>
                 </div>
-                <div>
-                  <h2 className="font-semibold text-lg mb-2">Spoločnosť</h2>
-                  <p className="text-gray-600">
-                  Enhold s.r.o.<br />
-                    IČO: 55400817<br />
-                    DIČ: 2121985954<br />
-                    IČ DPH: SK2121985954<br />
-                    Sídlo: Drobného 1900/2 841 02 Bratislava - mestská časť Dúbravka
-                  </p>
-                </div>
+                <p className="text-sm leading-6">
+                  <span className="font-medium text-stone-900">{t('company.icoLabel')}:</span> 57 313 504
+                </p>
               </div>
+            </article>
 
-              <div>
-                <h2 className="font-semibold text-lg mb-4">Sociálne siete</h2>
-                <div className="flex gap-4">
-                  <Link
-                    href="https://facebook.com/fitdoplnky.sk"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
-                  >
-                    <Facebook className="w-6 h-6" />
-                  </Link>
-                  <Link
-                    href="https://instagram.com/fitdoplnkysk"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
-                  >
-                    <Instagram className="w-6 h-6" />
-                  </Link>
-                </div>
+            <article className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm md:p-8">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-stone-500">
+                {t('support.label')}
+              </p>
+              <div className="mt-4 space-y-4 text-sm leading-6 text-stone-600">
+                <p>{t('support.orders')}</p>
+                <p>{t('support.app')}</p>
+                <p>{t('support.legal')}</p>
               </div>
-            </div>
-          </div>
-
-          <div className="bg-green-50 p-8 rounded-2xl">
-            <p className="text-gray-600 mb-4">
-              Či už máte otázku o našom produkte, potrebujete poradiť s výberom, 
-              alebo chcete poskytnúť spätnú väzbu o našich službách, radi vás vypočujeme. 
-              Tešíme sa na to, ako vám môžeme pomôcť na vašej ceste k lepšiemu zdraviu a kondícii!
-            </p>
-            <p className="font-medium text-green-600">
-              Ďakujeme, že ste sa rozhodli pre fitdoplnky.sk!
-            </p>
-          </div>
+            </article>
+          </section>
         </div>
       </div>
     </main>
   );
-} 
+}

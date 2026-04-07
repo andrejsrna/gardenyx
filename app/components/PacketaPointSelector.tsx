@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Script from 'next/script';
+import { useLocale } from 'next-intl';
 
 interface PacketaWidgetPoint {
   id: string;
@@ -40,6 +41,7 @@ interface PacketaPointSelectorProps {
 }
 
 export default function PacketaPointSelector({ onSelectAction }: PacketaPointSelectorProps) {
+  const locale = useLocale();
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -61,10 +63,10 @@ export default function PacketaPointSelector({ onSelectAction }: PacketaPointSel
       },
       {
         country: 'sk',
-        language: 'sk',
+        language: locale === 'hu' ? 'hu' : locale === 'en' ? 'en' : 'sk',
       }
     );
-  }, [loaded, onSelectAction]);
+  }, [loaded, locale, onSelectAction]);
 
   return (
     <>

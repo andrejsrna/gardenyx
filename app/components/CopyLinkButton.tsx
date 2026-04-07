@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Check, Link2 } from 'lucide-react';
 
 interface CopyLinkButtonProps {
@@ -9,7 +10,8 @@ interface CopyLinkButtonProps {
   label?: string;
 }
 
-export default function CopyLinkButton({ url, className = '', label = 'Skopírovať odkaz' }: CopyLinkButtonProps) {
+export default function CopyLinkButton({ url, className = '', label }: CopyLinkButtonProps) {
+  const t = useTranslations('copyLinkButton');
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -32,12 +34,12 @@ export default function CopyLinkButton({ url, className = '', label = 'Skopírov
       {copied ? (
         <>
           <Check className="w-5 h-5" />
-          <span>Skopírované!</span>
+          <span>{t('copied')}</span>
         </>
       ) : (
         <>
           <Link2 className="w-5 h-5" />
-          <span>{label}</span>
+          <span>{label || t('defaultLabel')}</span>
         </>
       )}
     </button>

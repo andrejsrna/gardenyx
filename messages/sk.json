@@ -1,9 +1,81 @@
 {
   "nav": {
     "shop": "Obchod",
+    "hakofytFertilizers": "Hnojivá Hakofyt",
     "contact": "Kontakt",
     "myAccount": "Môj účet",
     "hello": "Ahoj {name}"
+  },
+  "contactPage": {
+    "eyebrow": "Kontakt",
+    "title": "Ozvite sa nám",
+    "description": "Ak máte otázky k objednávke, produktom alebo aplikácii GardenYX, napíšte nám. Kontaktné údaje uvádzame podľa obchodných podmienok.",
+    "meta": {
+      "title": "Kontakt | GardenYX",
+      "description": "Kontaktujte GardenYX pre otázky k objednávkam, produktom a aplikácii. Nájdete tu aktuálne firemné údaje a kontaktný e-mail."
+    },
+    "primaryContact": {
+      "label": "Hlavný kontakt",
+      "description": "Najrýchlejšie nás zastihnete e-mailom. Napíšte nám pri otázkach k objednávkam, produktom, reklamáciám aj aplikácii."
+    },
+    "company": {
+      "label": "Fakturačné údaje",
+      "name": "JOINA Garden, s. r. o.",
+      "addressLine1": "Karpatské námestie 7770/10A",
+      "addressLine2": "Bratislava – mestská časť Rača 831 06",
+      "country": "Slovenská republika",
+      "icoLabel": "IČO"
+    },
+    "support": {
+      "label": "S čím vám pomôžeme",
+      "orders": "Objednávky, doručenie, reklamácie a otázky k nákupu v e-shope vybavujeme cez support@gardenyx.eu.",
+      "app": "Ak sa váš dopyt týka mobilnej aplikácie GardenYX, účtu alebo predplatného, použite rovnaký kontaktný e-mail.",
+      "legal": "Pre právne informácie a úplné firemné údaje si môžete pozrieť obchodné podmienky a zásady ochrany osobných údajov."
+    }
+  },
+  "hakofytFertilizersPage": {
+    "eyebrow": "Hakofyt",
+    "title": "Precízne vyvážená výživa pre neobmedzený rast",
+    "description": "Rešpektujeme Liebigov zákon minima: dodávame nielen základné živiny, ale aj komplexný balík mikroprvkov, takže nič nezastaví vaše rastliny.",
+    "meta": {
+      "title": "Hnojivá Hakofyt | GardenYX",
+      "description": "Zistite, na akom princípe fungujú hnojivá Hakofyt, prečo ponúkajú komplexnú výživu rastlín a ktoré produkty odporúčame pre silnú a zdravú záhradu.",
+      "imageAlt": "Hnojivá Hakofyt"
+    },
+    "principle": {
+      "eyebrow": "Princíp fungovania",
+      "title": "Princíp fungovania hnojív Hakofyt",
+      "subtitle": "Presne vyvážený pomer živín",
+      "paragraph1": "Účinok hnojív Hakofyt je založený na využití jedného zo základných princípov výživy, známeho ako Liebigov zákon minima. Jeho podstatou je, že aj keď rastlina môže mať väčšinu živín v nadbytku, jej rast bude obmedzený konkrétnou zložkou, ktorej je nedostatok.",
+      "paragraph2": "Cieľom vývoja hnojív Hakofyt bolo preto zabezpečiť čo najkomplexnejšiu výživu rastlín. Z tohto dôvodu obsahujú hnojivá Hakofyt okrem základných makroprvkov v optimálnych pomeroch aj komplex dôležitých mikroprvkov – konkrétne železo, zinok, mangán, meď, bór a molybdén, ktoré sú pre zdravý a kvalitný život rastlín nenahraditeľné."
+    },
+    "featuredProducts": {
+      "eyebrow": "Odporúčané produkty",
+      "title": "Vybrané Hakofyt produkty",
+      "detail": "Detail produktu",
+      "cta": "Zobraziť všetky produkty"
+    },
+    "benefits": {
+      "vitality": {
+        "title": "Prírodné posilňovače vitality",
+        "description": "Obohatené o humínové látky, aminokyseliny a sacharidy, ktoré podporujú tvorbu koreňov, optimalizujú fotosyntézu a zlepšujú celkový metabolizmus rastlín."
+      },
+      "resistance": {
+        "title": "Vysoká odolnosť a úspory",
+        "description": "Posilňuje imunitu proti chladu, suchu a chorobám. Jeho prirodzené repelentné a fungicídne účinky znižujú potrebu drahých ochranných postrekov, čím sa znižujú vaše náklady."
+      },
+      "synergy": {
+        "title": "Synergický a ekologický",
+        "description": "Zložky spolupracujú pre maximálnu absorpciu a zabraňujú kontaminácii pôdy. Tento jedinečný komplex znižuje riziko predávkovania a zaisťuje vyššiu kvalitu úrody."
+      }
+    },
+    "roi": {
+      "eyebrow": "Návratnosť investície",
+      "title": "Preukázateľne vysoká návratnosť investícií",
+      "description": "Poľné pokusy potvrdzujú, že zvýšenie úrody výrazne prevyšuje náklady – napríklad 1 liter Hakofytu zvýšil úrodu zemiakov o 200 kg. Viac o riešení moderných nutričných výziev sa dozviete v odbornom článku Ing. Koziaka.",
+      "linkLabel": "Čítať ďalej",
+      "linkHref": "https://hakofyt.sk/"
+    }
   },
   "hero": {
     "heading": "Prebuďte skutočný potenciál svojej záhrady.",
@@ -30,6 +102,15 @@
   "shop": {
     "title": "Naše produkty",
     "intro": "Listové hnojivá, stimulátory rastu a prípravky na ochranu rastlín GardenYX.",
+    "error": {
+      "title": "Oops! Niečo sa pokazilo",
+      "retry": "Skúsiť znova",
+      "fallback": "Nepodarilo sa načítať produkty"
+    },
+    "meta": {
+      "title": "Obchod | GardenYX",
+      "description": "Vyberte si listové hnojivá Hakofyt a prípravky na ochranu rastlín pre záhradu, trávnik aj ovocné dreviny."
+    },
     "sections": {
       "hnojiva-hakofyt-b": "Hakofyt B",
       "hnojiva-hakofyt-plus": "Hakofyt Plus",
@@ -109,6 +190,362 @@
       "total": "Spolu:",
       "proceedToCheckout": "Pokračovať do pokladne",
       "couponHint": "💰 Zľavové kupóny môžete použiť v pokladni"
+    }
+  },
+  "cartButton": {
+    "ariaLabel": "Nákupný košík, {count, plural, one {# položka} few {# položky} other {# položiek}}"
+  },
+  "copyLinkButton": {
+    "defaultLabel": "Skopírovať odkaz",
+    "copied": "Skopírované!"
+  },
+  "couponSection": {
+    "appliedLabel": "Zľavový kupón:",
+    "youSave": "Ušetríte:",
+    "removeTitle": "Odstrániť kupón",
+    "title": "Máte zľavový kupón?",
+    "placeholder": "Zadajte váš zľavový kód",
+    "inputLabel": "Zľavový kód",
+    "verifying": "Overujem...",
+    "submit": "Použiť kupón",
+    "tip": "💡 Tip: Kupóny môžete získať pri odbere newsletteru alebo počas špeciálnych akcií"
+  },
+  "checkout": {
+    "meta": {
+      "title": "Pokladňa | GardenYX",
+      "description": "Dokončite svoju objednávku GardenYX."
+    },
+    "empty": {
+      "description": "Vyzerá to, že ste zatiaľ do košíka nič nepridali."
+    },
+    "billingInformation": {
+      "title": "Fakturačné údaje",
+      "phoneFullError": "Zadajte celé telefónne číslo vrátane predvoľby (napr. +421904123456).",
+      "postcodeTitle": "PSČ musí obsahovať 5 číslic",
+      "fields": {
+        "firstName": "Meno",
+        "lastName": "Priezvisko",
+        "email": "E-mail",
+        "phone": "Telefón",
+        "address": "Adresa",
+        "address2": "Doplnková adresa",
+        "city": "Mesto",
+        "postcode": "PSČ"
+      },
+      "placeholders": {
+        "firstName": "Ján",
+        "lastName": "Novák",
+        "email": "jan.novak@gmail.com",
+        "phone": "0904123456 alebo +421904123456",
+        "address": "Názov ulice a číslo domu",
+        "address2": "Názov ulice, číslo domu, číslo bytu",
+        "city": "Bratislava"
+      }
+    },
+    "shippingInformation": {
+      "title": "Adresa doručenia",
+      "packetaHomeHint": "Pri doručení domov (Packeta) zadajte do poľa Adresa ulicu a číslo domu (napr. Mládeže 559).",
+      "sameAsBilling": "Doručovacia adresa je rovnaká ako fakturačná",
+      "postcodeTitle": "PSČ musí obsahovať 5 číslic",
+      "fields": {
+        "firstName": "Meno",
+        "lastName": "Priezvisko",
+        "companyOptional": "Názov firmy (voliteľné)",
+        "address": "Adresa",
+        "address2": "Doplnková adresa",
+        "city": "Mesto",
+        "postcode": "PSČ"
+      },
+      "placeholders": {
+        "firstName": "Ján",
+        "lastName": "Novák",
+        "company": "Názov firmy",
+        "address": "Názov ulice a číslo domu",
+        "address2": "Byt / poschodie (voliteľné)",
+        "city": "Bratislava"
+      }
+    },
+    "businessPurchase": {
+      "toggle": "Nakupujem na firmu",
+      "fields": {
+        "company": "Názov firmy",
+        "ic": "IČO",
+        "dic": "DIČ",
+        "vatId": "IČ DPH"
+      },
+      "placeholders": {
+        "company": "Zadajte názov firmy",
+        "ic": "Zadajte IČO (8 číslic)",
+        "dic": "Zadajte DIČ (10 číslic)",
+        "vatId": "SKXXXXXXXXXX (voliteľné)"
+      }
+    },
+    "freeShippingProgress": {
+      "message": "Nakúpte ešte za <amount></amount> a získate dopravu zdarma."
+    },
+    "createAccount": {
+      "toggle": "Vytvoriť zákaznícky účet",
+      "passwordLabel": "Heslo",
+      "passwordPlaceholder": "Zadajte heslo k vášmu účtu",
+      "showPassword": "Zobraziť heslo",
+      "hidePassword": "Skryť heslo",
+      "passwordHint": "Heslo musí mať minimálne 8 znakov."
+    },
+    "validation": {
+      "phoneFormat": "Zadajte telefónne číslo vo formáte +421XXXXXXXXX.",
+      "companyRequired": "Názov firmy je povinný pre firemné objednávky",
+      "icRequired": "IČO je povinné pre firemné objednávky",
+      "dicRequired": "DIČ je povinné pre firemné objednávky",
+      "icDigits": "IČO musí obsahovať presne 8 číslic",
+      "dicDigits": "DIČ musí obsahovať presne 10 číslic",
+      "passwordRequired": "Heslo je povinné pre vytvorenie účtu",
+      "packetaPointRequired": "Prosím, vyberte výdajné miesto Packeta.",
+      "termsRequired": "Je potrebné súhlasiť s obchodnými podmienkami a zásadami ochrany osobných údajov.",
+      "generic": "Chyba pri validácii formulára."
+    },
+    "toasts": {
+      "productAdded": "{name} bol pridaný do košíka.",
+      "registrationFailed": "Registrácia zlyhala",
+      "accountCreated": "Účet bol vytvorený. Skontrolujte email pre overenie.",
+      "accountCreationPartialFailure": "Objednávka je OK, ale účet sa nepodarilo vytvoriť: {error}",
+      "orderCreationFailed": "Chyba pri vytváraní objednávky: {error}"
+    },
+    "paymentMethods": {
+      "card": "Platba kartou",
+      "cod": "Dobierka"
+    },
+    "shippingMethods": {
+      "packetaPickup": "Packeta - Výdajné miesto",
+      "packetaHome": "Packeta - Doručenie domov"
+    },
+    "paymentSuccess": {
+      "title": "Platba bola úspešná",
+      "redirecting": "Prebieha presmerovanie...",
+      "description": "Vaša objednávka bola úspešne spracovaná."
+    },
+    "processingOverlay": {
+      "title": "Objednávka sa spracúva",
+      "description": "Prosím, čakajte. Prebieha presmerovanie."
+    },
+    "paymentError": {
+      "title": "Chyba pri platbe",
+      "close": "Zavrieť"
+    },
+    "errors": {
+      "orderCreation": "Nastala chyba pri vytváraní objednávky",
+      "paymentProcessing": "Nastala chyba pri spracovaní platby."
+    },
+    "shipping": {
+      "title": "Spôsob dopravy",
+      "howPacketaWorks": "Ako funguje Packeta?",
+      "freeShippingEligible": "Máte nárok na dopravu zdarma.",
+      "free": "Zadarmo",
+      "change": "Zmeniť",
+      "selectPickupPoint": "Vybrať výdajné miesto",
+      "validation": {
+        "selectMethod": "Prosím, vyberte spôsob dopravy"
+      },
+      "methods": {
+        "packetaPickup": {
+          "title": "Packeta - Výdajné miesto",
+          "description": "Doručenie na výdajné miesto Packeta"
+        },
+        "packetaHome": {
+          "title": "Packeta - Doručenie domov",
+          "description": "Doručenie kuriérom priamo na adresu"
+        }
+      }
+    },
+    "payment": {
+      "title": "Spôsob platby",
+      "recommended": "Odporúčané",
+      "secureTitle": "Bezpečná platba",
+      "secureDescription": "Vaše platobné údaje sú šifrované a chránené SSL protokolom.",
+      "sslNotice": "Všetky platby sú zabezpečené 256-bit SSL šifrovaním",
+      "validation": {
+        "selectMethod": "Prosím, vyberte spôsob platby"
+      },
+      "methods": {
+        "card": {
+          "title": "Platobná karta",
+          "description": "Zaplatíte takmer všetkými kartami (Visa, Mastercard a ďalšie). Platbu bezpečne spracováva spoločnosť Stripe."
+        },
+        "cod": {
+          "title": "Dobierka",
+          "description": "Zaplatíte pri doručení (hotovosť alebo karta u kuriéra/výdajného miesta). Pri Z‑BOXe je potrebné uhradiť dobierku vopred online (aplikácia alebo platobný odkaz)."
+        }
+      }
+    },
+    "consents": {
+      "title": "Súhlasy",
+      "termsPrefix": "Súhlasím s",
+      "and": "a",
+      "termsLink": "obchodnými podmienkami",
+      "privacyLink": "zásadami ochrany osobných údajov",
+      "requiredError": "Tento súhlas je povinný pre dokončenie objednávky",
+      "marketing": "Súhlasím so zasielaním marketingových ponúk a noviniek e‑mailom (voliteľné)",
+      "requiredHint": "Povinné na dokončenie objednávky"
+    },
+    "summary": {
+      "title": "Súhrn objednávky",
+      "pricesIncludeVat": "Ceny sú uvedené vrátane DPH.",
+      "imageFallback": "IMG",
+      "actions": {
+        "decreaseQuantity": "Znížiť množstvo produktu {name}",
+        "increaseQuantity": "Zvýšiť množstvo produktu {name}",
+        "removeItem": "Odstrániť {name}"
+      },
+      "subtotalInclVat": "Medzisúčet (vrátane DPH)",
+      "baseWithoutVat": "Základ bez DPH",
+      "vat": "DPH ({percent}%)",
+      "discount": "Zľava",
+      "discountWithCode": "Zľava ({code})",
+      "newSubtotalAfterDiscount": "Nový medzisúčet po zľave (vrátane DPH)",
+      "baseAfterDiscount": "Základ po zľave bez DPH",
+      "vatAfterDiscount": "DPH po zľave ({percent}%)",
+      "shippingInclVat": "Doprava (vrátane DPH)",
+      "shippingMethodNotSelected": "Spôsob dopravy zatiaľ nebol vybraný",
+      "free": "Zadarmo",
+      "shippingVat": "DPH dopravy ({percent}%)",
+      "freeShippingHint": "Nakúpte ešte za {amount} € a získate dopravu zdarma",
+      "total": "Celkom",
+      "customerNote": "Poznámka k objednávke (nepovinné)",
+      "customerNotePlaceholder": "Akékoľvek špeciálne pokyny pre vašu objednávku...",
+      "processingOrder": "Objednávka sa spracúva...",
+      "salesSuspended": "Predaje pozastavené",
+      "completeOrder": "Dokončiť objednávku • {total} €",
+      "sslEncryption": "SSL šifrovanie",
+      "securePayment": "Bezpečná platba"
+    }
+  },
+  "stripePayment": {
+    "init": {
+      "emptyCart": "Košík je prázdny",
+      "missingBillingEmail": "Chýba fakturačná emailová adresa",
+      "missingShippingMethod": "Vyberte spôsob doručenia"
+    },
+    "loading": {
+      "title": "Načítavame platbu",
+      "description": "Prosím čakajte..."
+    },
+    "errorModal": {
+      "title": "Chyba pri platbe",
+      "fallback": "Nastala neočakávaná chyba",
+      "close": "Zavrieť",
+      "retry": "Skúsiť znova"
+    },
+    "progress": {
+      "processingPayment": "Spracovávam platbu...",
+      "finalizingOrder": "Dokončujem objednávku...",
+      "checkingOrderStatus": "Overujem stav objednávky..."
+    },
+    "errors": {
+      "initializationTitle": "Chyba pri inicializácii platby",
+      "createPayment": "Nastala chyba pri vytváraní platby",
+      "invalidServerResponse": "Neplatná odpoveď zo servera",
+      "loadingPayment": "Nastala chyba pri načítaní platby",
+      "paymentFailed": "Nastala chyba pri platbe.",
+      "unexpectedPaymentFailed": "Nastala neočakávaná chyba pri platbe.",
+      "orderProcessingEmail": "Objednávka sa spracováva. Skontrolujte prosím svoj email pre potvrdenie.",
+      "processingFailed": "Nastala chyba pri spracovaní platby."
+    },
+    "secureStripe": "Bezpečná platba cez Stripe",
+    "sslEncryption": "SSL šifrovanie",
+    "submitProcessing": "Spracovávam platbu...",
+    "submit": "Zaplatiť"
+  },
+  "verifyEmail": {
+    "title": "Overenie emailu",
+    "cta": "Prejsť na prihlásenie",
+    "messages": {
+      "pending": "Overujem email...",
+      "missingParams": "Chýba token alebo email.",
+      "success": "Email bol overený. Môžete sa prihlásiť.",
+      "failed": "Overenie zlyhalo"
+    },
+    "toast": {
+      "success": "Email overený",
+      "error": "Overenie zlyhalo"
+    }
+  },
+  "account": {
+    "title": "Môj účet",
+    "logout": "Odhlásiť sa",
+    "tabs": {
+      "orders": "Objednávky",
+      "account": "Údaje účtu"
+    },
+    "login": {
+      "title": "Prihlásenie",
+      "username": "Prihlasovacie meno",
+      "usernamePlaceholder": "Prihlasovacie meno",
+      "passwordPlaceholder": "Heslo",
+      "signingIn": "Prihlasujem...",
+      "submit": "Prihlásiť sa",
+      "forgotPassword": "Zabudli ste heslo?",
+      "noAccount": "Nemáte účet?",
+      "register": "Zaregistrujte sa"
+    },
+    "reset": {
+      "title": "Obnovenie hesla",
+      "emailPlaceholder": "Email",
+      "sending": "Odosielam...",
+      "submit": "Odoslať link na obnovenie hesla",
+      "backToLogin": "Späť na prihlásenie"
+    },
+    "orders": {
+      "title": "Moje objednávky",
+      "orderNumber": "Objednávka #{id}",
+      "trackShipment": "Sledovať zásielku",
+      "downloadInvoice": "Stiahnuť faktúru",
+      "empty": "Zatiaľ nemáte žiadne objednávky",
+      "status": {
+        "processing": "Spracováva sa",
+        "completed": "Dokončená"
+      }
+    },
+    "accountDetails": {
+      "title": "Údaje účtu"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Heslo",
+      "firstName": "Meno",
+      "lastName": "Priezvisko",
+      "phone": "Telefón",
+      "address": "Adresa",
+      "city": "Mesto",
+      "postcode": "PSČ",
+      "billingAddress": "Fakturačná adresa"
+    },
+    "placeholders": {
+      "firstName": "Vaše meno",
+      "lastName": "Vaše priezvisko",
+      "email": "Váš email",
+      "phone": "+421 XXX XXX XXX",
+      "address": "Ulica a číslo",
+      "city": "Mesto",
+      "postcode": "PSČ (5 číslic)"
+    },
+    "actions": {
+      "cancel": "Zrušiť",
+      "edit": "Upraviť",
+      "saveChanges": "Uložiť zmeny"
+    },
+    "errors": {
+      "fetchOrders": "Nepodarilo sa načítať objednávky",
+      "resetEmailSend": "Nepodarilo sa odoslať email na obnovenie hesla"
+    },
+    "toasts": {
+      "fetchOrdersError": "Chyba pri načítaní objednávok",
+      "loginSuccess": "Prihlásenie úspešné",
+      "loginErrorTitle": "Prihlásenie zlyhalo",
+      "loginErrorDescription": "Nesprávne prihlasovacie údaje alebo iná chyba",
+      "logoutSuccess": "Odhlásenie úspešné",
+      "logoutError": "Odhlásenie zlyhalo",
+      "billingSavedLocal": "Údaje boli uložené iba lokálne",
+      "billingSaveError": "Nepodarilo sa aktualizovať údaje",
+      "resetEmailSent": "Email na obnovenie hesla bol odoslaný"
     }
   },
   "footer": {

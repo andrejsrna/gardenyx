@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
 import { Link } from '../../../i18n/navigation';
 
@@ -18,9 +19,10 @@ export default function ConsentsSection({
   formErrors,
   onInputChange,
 }: ConsentsSectionProps) {
+  const t = useTranslations('checkout.consents');
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold mb-4">Súhlasy</h3>
+      <h3 className="text-lg font-semibold mb-4">{t('title')}</h3>
       
       <div className="space-y-4">
         {/* Combined Terms + Privacy */}
@@ -37,30 +39,30 @@ export default function ConsentsSection({
               required
             />
             <span className="text-sm text-gray-700">
-              Súhlasím s{' '}
+              {t('termsPrefix')}{' '}
               <Link 
                 href="/obchodne-podmienky" 
                 className="text-green-600 hover:text-green-700 underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                obchodnými podmienkami
+                {t('termsLink')}
               </Link>
-              {' '}a{' '}
+              {' '}{t('and')}{' '}
               <Link 
                 href="/ochrana-osobnych-udajov" 
                 className="text-green-600 hover:text-green-700 underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                zásadami ochrany osobných údajov
+                {t('privacyLink')}
               </Link>
               {' '}<span className="text-red-500">*</span>
             </span>
           </label>
           {formErrors?.['consents.termsAndPrivacy'] && (
             <p className="mt-1 text-xs text-red-600">
-              Tento súhlas je povinný pre dokončenie objednávky
+              {t('requiredError')}
             </p>
           )}
         </div>
@@ -76,14 +78,14 @@ export default function ConsentsSection({
               className="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500"
             />
             <span className="text-sm text-gray-700">
-              Súhlasím so zasielaním marketingových ponúk a noviniek e‑mailom (voliteľné)
+              {t('marketing')}
             </span>
           </label>
         </div>
       </div>
       
       <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-        <p className="text-xs text-gray-600"><span className="text-red-500">*</span> Povinné na dokončenie objednávky</p>
+        <p className="text-xs text-gray-600"><span className="text-red-500">*</span> {t('requiredHint')}</p>
       </div>
     </div>
   );

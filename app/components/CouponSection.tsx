@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useCart } from '../context/CartContext';
 import { tracking } from '../lib/tracking';
 
@@ -23,6 +24,7 @@ const RemoveIcon = () => (
 );
 
 export default function CouponSection() {
+  const t = useTranslations('couponSection');
   const { appliedCoupon, applyCoupon, removeCoupon, discountAmount } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -64,14 +66,14 @@ export default function CouponSection() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">Zľavový kupón:</span>
+                  <span className="text-sm font-medium text-gray-700">{t('appliedLabel')}</span>
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
                     {appliedCoupon}
                   </span>
                 </div>
                 {discountAmount > 0 && (
                   <p className="text-xs text-green-600 mt-1">
-                    Ušetríte: <span className="font-semibold">-{discountAmount.toFixed(2)} €</span>
+                    {t('youSave')} <span className="font-semibold">-{discountAmount.toFixed(2)} €</span>
                   </p>
                 )}
               </div>
@@ -79,7 +81,7 @@ export default function CouponSection() {
             <button
               onClick={handleRemoveCoupon}
               className="group flex items-center justify-center w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 transition-all duration-200 hover:scale-105"
-              title="Odstrániť kupón"
+              title={t('removeTitle')}
             >
               <RemoveIcon />
             </button>
@@ -91,7 +93,7 @@ export default function CouponSection() {
               <div className="flex items-center justify-center w-8 h-8 bg-green-100 rounded-full">
                 <CouponIcon />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800">Máte zľavový kupón?</h3>
+              <h3 className="text-lg font-semibold text-gray-800">{t('title')}</h3>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,9 +102,9 @@ export default function CouponSection() {
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Zadajte váš zľavový kód"
+                  placeholder={t('placeholder')}
                   className="w-full px-4 py-3 text-sm font-medium bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200 placeholder-gray-500"
-                  aria-label="Zľavový kód"
+                  aria-label={t('inputLabel')}
                   disabled={isLoading}
                 />
                 {inputValue && (
@@ -126,12 +128,12 @@ export default function CouponSection() {
                   {isLoading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>Overujem...</span>
+                      <span>{t('verifying')}</span>
                     </>
                   ) : (
                     <>
                       <CouponIcon />
-                      <span>Použiť kupón</span>
+                      <span>{t('submit')}</span>
                     </>
                   )}
                 </div>
@@ -139,7 +141,7 @@ export default function CouponSection() {
             </form>
             
             <p className="text-xs text-gray-500 mt-3 text-center">
-              💡 Tip: Kupóny môžete získať pri odbere newsletteru alebo počas špeciálnych akcií
+              {t('tip')}
             </p>
           </div>
         )}

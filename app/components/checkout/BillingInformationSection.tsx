@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
 import { sanitizePhone } from '../../lib/utils/sanitize';
 
@@ -28,6 +29,8 @@ export default function BillingInformationSection({
   onFormDataChange,
   setPhoneError,
 }: BillingInformationSectionProps) {
+  const t = useTranslations('checkout.billingInformation');
+
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     const rawPhone = e.target.value;
     const formattedPhone = sanitizePhone(rawPhone);
@@ -44,23 +47,23 @@ export default function BillingInformationSection({
     };
     
     onFormDataChange(newFormData);
-    setPhoneError(shouldShowError ? 'Zadajte celé telefónne číslo vrátane predvoľby (napr. +421904123456).' : null);
+    setPhoneError(shouldShowError ? t('phoneFullError') : null);
   };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Fakturačné údaje</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('title')}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* First Name */}
         <div>
           <label htmlFor="billing-first_name" className="block text-sm font-medium text-gray-700">
-            Meno <span className="text-red-500">*</span>
+            {t('fields.firstName')} <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-first_name"
             name="first_name"
             type="text"
-            placeholder="Jan"
+            placeholder={t('placeholders.firstName')}
             value={formData.billing.first_name}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -74,13 +77,13 @@ export default function BillingInformationSection({
         {/* Last Name */}
         <div>
           <label htmlFor="billing-last_name" className="block text-sm font-medium text-gray-700">
-            Priezvisko <span className="text-red-500">*</span>
+            {t('fields.lastName')} <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-last_name"
             name="last_name"
             type="text"
-            placeholder="Novák"
+            placeholder={t('placeholders.lastName')}
             value={formData.billing.last_name}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -94,13 +97,13 @@ export default function BillingInformationSection({
         {/* Email */}
         <div>
           <label htmlFor="billing-email" className="block text-sm font-medium text-gray-700">
-            E‑mail <span className="text-red-500">*</span>
+            {t('fields.email')} <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-email"
             name="email"
             type="email"
-            placeholder="jan.novak@gmail.com"
+            placeholder={t('placeholders.email')}
             value={formData.billing.email}
             onChange={(e) => onInputChange(e, 'billing')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -114,7 +117,7 @@ export default function BillingInformationSection({
         {/* Phone */}
         <div className="space-y-1">
           <label htmlFor="billing-phone" className="block text-sm font-medium text-gray-700">
-            Telefón <span className="text-red-500">*</span>
+            {t('fields.phone')} <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-phone"
@@ -122,7 +125,7 @@ export default function BillingInformationSection({
             type="tel"
             value={formData.billing.phone}
             onChange={handlePhoneChange}
-            placeholder="0904123456 alebo +421904123456"
+            placeholder={t('placeholders.phone')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               phoneError ? 'border-red-500' : ''
             } ${formErrors?.['billing.phone'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
@@ -135,7 +138,7 @@ export default function BillingInformationSection({
         {/* Address 1 (Street) */}
         <div className="md:col-span-2">
           <label htmlFor="billing-address_1" className="block text-sm font-medium text-gray-700">
-            Adresa <span className="text-red-500">*</span>
+            {t('fields.address')} <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-address_1"
@@ -143,7 +146,7 @@ export default function BillingInformationSection({
             type="text"
             value={formData.billing.address_1}
             onChange={onSyncedFieldChange}
-            placeholder="Názov ulice a číslo domu"
+            placeholder={t('placeholders.address')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               formErrors?.['billing.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
             }`}
@@ -154,7 +157,7 @@ export default function BillingInformationSection({
 
         {/* Address 2 (Apartment/Suite) */}
         <div className="md:col-span-2">
-          <label htmlFor="billing-address_2" className="block text-sm font-medium text-gray-700">Doplnková adresa</label>
+          <label htmlFor="billing-address_2" className="block text-sm font-medium text-gray-700">{t('fields.address2')}</label>
           <input
             id="billing-address_2"
             name="address_2"
@@ -164,21 +167,21 @@ export default function BillingInformationSection({
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               formErrors?.['billing.address_2'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
             }`}
-            placeholder="Názov ulice, číslo domu, číslo bytu"
-            aria-label="Doplnková adresa"
+            placeholder={t('placeholders.address2')}
+            aria-label={t('fields.address2')}
           />
         </div>
 
         {/* City */}
         <div>
           <label htmlFor="billing-city" className="block text-sm font-medium text-gray-700">
-            Mesto <span className="text-red-500">*</span>
+            {t('fields.city')} <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-city"
             name="city"
             type="text"
-            placeholder="Bratislava"
+            placeholder={t('placeholders.city')}
             value={formData.billing.city}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -192,7 +195,7 @@ export default function BillingInformationSection({
         {/* Postcode */}
         <div>
           <label htmlFor="billing-postcode" className="block text-sm font-medium text-gray-700">
-            PSČ <span className="text-red-500">*</span>
+            {t('fields.postcode')} <span className="text-red-500">*</span>
           </label>
           <input
             id="billing-postcode"
@@ -203,7 +206,7 @@ export default function BillingInformationSection({
             pattern="\d{5}"
             maxLength={5}
             placeholder="01000"
-            title="PSČ musí obsahovať 5 číslic"
+            title={t('postcodeTitle')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
               formErrors?.['billing.postcode'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
             }`}

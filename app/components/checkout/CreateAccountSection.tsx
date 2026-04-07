@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
 
 interface CreateAccountSectionProps {
@@ -17,6 +18,7 @@ export default function CreateAccountSection({
   formErrors,
   onInputChange,
 }: CreateAccountSectionProps) {
+  const t = useTranslations('checkout.createAccount');
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -29,13 +31,13 @@ export default function CreateAccountSection({
           onChange={(e) => onInputChange(e, 'root')}
           className="rounded border-gray-300 text-green-600 focus:ring-green-500"
         />
-        <span className="text-sm font-medium text-gray-700">Vytvoriť zákaznícky účet</span>
+        <span className="text-sm font-medium text-gray-700">{t('toggle')}</span>
       </label>
       
       {formData.create_account && (
         <div className="mt-4">
           <label htmlFor="account_password" className="block text-sm font-medium text-gray-700">
-            Heslo <span className="text-red-500">*</span>
+            {t('passwordLabel')} <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-1">
             <input
@@ -48,7 +50,7 @@ export default function CreateAccountSection({
                 formErrors?.['account_password'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               required={formData.create_account}
-              placeholder="Zadajte heslo k vášmu účtu"
+              placeholder={t('passwordPlaceholder')}
               minLength={8}
               autoComplete="new-password"
             />
@@ -56,7 +58,7 @@ export default function CreateAccountSection({
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-              aria-label={showPassword ? 'Skryť heslo' : 'Zobraziť heslo'}
+              aria-label={showPassword ? t('hidePassword') : t('showPassword')}
             >
               {showPassword ? (
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,7 +72,7 @@ export default function CreateAccountSection({
               )}
             </button>
           </div>
-          <p className="mt-1 text-xs text-gray-500">Heslo musí mať minimálne 8 znakov.</p>
+          <p className="mt-1 text-xs text-gray-500">{t('passwordHint')}</p>
         </div>
       )}
     </div>

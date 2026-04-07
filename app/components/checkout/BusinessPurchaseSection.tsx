@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
 
 interface BusinessPurchaseSectionProps {
@@ -17,6 +18,8 @@ export default function BusinessPurchaseSection({
   formErrors,
   onInputChange,
 }: BusinessPurchaseSectionProps) {
+  const t = useTranslations('checkout.businessPurchase');
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
       <label className="flex items-center gap-3 cursor-pointer">
@@ -27,7 +30,7 @@ export default function BusinessPurchaseSection({
           onChange={(e) => onInputChange(e, 'root')}
           className="rounded border-gray-300 text-green-600 focus:ring-green-500"
         />
-        <span className="text-sm font-medium text-gray-700">Nakupujem na firmu</span>
+        <span className="text-sm font-medium text-gray-700">{t('toggle')}</span>
       </label>
       
       {formData.is_business && (
@@ -35,7 +38,7 @@ export default function BusinessPurchaseSection({
           {/* Company Name Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="billing-company">
-              Názov firmy <span className="text-red-500">*</span>
+              {t('fields.company')} <span className="text-red-500">*</span>
             </label>
             <input
               id="billing-company"
@@ -47,15 +50,15 @@ export default function BusinessPurchaseSection({
                 formErrors?.['billing.company'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               required={formData.is_business}
-              placeholder="Zadajte názov firmy"
-              aria-label="Názov firmy"
+              placeholder={t('placeholders.company')}
+              aria-label={t('fields.company')}
             />
           </div>
           
           {/* IC Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="billing-ic">
-              IČO <span className="text-red-500">*</span>
+              {t('fields.ic')} <span className="text-red-500">*</span>
             </label>
             <input
               id="billing-ic"
@@ -67,7 +70,7 @@ export default function BusinessPurchaseSection({
                 formErrors?.['billing.ic'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               required={formData.is_business}
-              placeholder="Zadajte IČO (8 číslic)"
+              placeholder={t('placeholders.ic')}
               maxLength={8}
               pattern="\d{8}"
             />
@@ -76,7 +79,7 @@ export default function BusinessPurchaseSection({
           {/* DIC Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="billing-dic">
-              DIČ <span className="text-red-500">*</span>
+              {t('fields.dic')} <span className="text-red-500">*</span>
             </label>
             <input
               id="billing-dic"
@@ -88,7 +91,7 @@ export default function BusinessPurchaseSection({
                 formErrors?.['billing.dic'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               required={formData.is_business}
-              placeholder="Zadajte DIČ (10 číslic)"
+              placeholder={t('placeholders.dic')}
               maxLength={10}
               pattern="\d{10}"
             />
@@ -97,7 +100,7 @@ export default function BusinessPurchaseSection({
           {/* DIC DPH Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="billing-dic_dph">
-              IČ DPH
+              {t('fields.vatId')}
             </label>
             <input
               id="billing-dic_dph"
@@ -108,7 +111,7 @@ export default function BusinessPurchaseSection({
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
                 formErrors?.['billing.dic_dph'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
-              placeholder="SKXXXXXXXXXX (voliteľné)"
+              placeholder={t('placeholders.vatId')}
             />
           </div>
         </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -35,6 +36,8 @@ interface BillingFormData {
 }
 
 export default function AccountPage() {
+  const t = useTranslations('account');
+  const locale = useLocale();
   const router = useRouter();
   const { isAuthenticated, customerData, login: authLogin, logout: authLogout, isLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('orders');
@@ -62,29 +65,29 @@ export default function AccountPage() {
     try {
       const response = await fetch(`/api/orders?email=${encodeURIComponent(email)}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        throw new Error(t('errors.fetchOrders'));
       }
       const data = await response.json();
       setOrders(data.orders || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
-      toast.error('Chyba pri načítaní objednávok');
+      toast.error(t('toasts.fetchOrdersError'));
       setOrders([]);
     }
-  }, []);
+  }, [t]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       await authLogin(formData.email, formData.password);
-      toast.success('Prihlásenie úspešné');
+      toast.success(t('toasts.loginSuccess'));
       // Reload the page after successful login
       window.location.reload();
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Prihlásenie zlyhalo', {
-        description: 'Nesprávne prihlasovacie údaje alebo iná chyba',
+      toast.error(t('toasts.loginErrorTitle'), {
+        description: t('toasts.loginErrorDescription'),
       });
     }
   };
@@ -93,10 +96,10 @@ export default function AccountPage() {
     try {
       setOrders([]); // Clear orders immediately
       await authLogout();
-      toast.success('Odhlásenie úspešné');
+      toast.success(t('toasts.logoutSuccess'));
     } catch (error) {
       console.error('Error logging out:', error);
-      toast.error('Odhlásenie zlyhalo');
+      toast.error(t('toasts.logoutError'));
     }
   };
 
@@ -106,10 +109,10 @@ export default function AccountPage() {
     try {
       // TODO: Implement a dedicated profile update endpoint; for now just keep data locally
       setIsEditing(false);
-      toast.success('Údaje boli uložené iba lokálne');
+      toast.success(t('toasts.billingSavedLocal'));
     } catch (error) {
       console.error('Error updating billing information:', error);
-      toast.error(error instanceof Error ? error.message : 'Nepodarilo sa aktualizovať údaje');
+      toast.error(error instanceof Error ? error.message : t('toasts.billingSaveError'));
     }
   };
 
@@ -129,14 +132,14 @@ export default function AccountPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Nepodarilo sa odoslať email na obnovenie hesla');
+        throw new Error(data.message || t('errors.resetEmailSend'));
       }
 
-      toast.success('Email na obnovenie hesla bol odoslaný');
+      toast.success(t('toasts.resetEmailSent'));
       setIsForgotPassword(false);
     } catch (error) {
       console.error('Password reset error:', error);
-      toast.error(error instanceof Error ? error.message : 'Nepodarilo sa odoslať email na obnovenie hesla');
+      toast.error(error instanceof Error ? error.message : t('errors.resetEmailSend'));
     } finally {
       setIsResetting(false);
     }
@@ -182,7 +185,7 @@ export default function AccountPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Obnovenie hesla</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('reset.title')}</h1>
           </div>
 
           <form onSubmit={handleForgotPassword} className="space-y-6">
@@ -193,7 +196,7 @@ export default function AccountPage() {
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
                 className="peer w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent"
-                placeholder="Email"
+                placeholder={t('reset.emailPlaceholder')}
                 required
               />
               <label
@@ -202,7 +205,7 @@ export default function AccountPage() {
                          peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
                          peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
               >
-                Email
+                {t('fields.email')}
               </label>
               <span className="absolute inset-y-0 end-0 grid w-10 place-content-center text-gray-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -220,10 +223,10 @@ export default function AccountPage() {
               {isResetting ? (
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Odosielam...</span>
+                  <span>{t('reset.sending')}</span>
                 </div>
               ) : (
-                'Odoslať link na obnovenie hesla'
+                t('reset.submit')
               )}
             </button>
           </form>
@@ -233,7 +236,7 @@ export default function AccountPage() {
               onClick={() => setIsForgotPassword(false)}
               className="text-sm text-gray-600 hover:text-green-600 transition-colors"
             >
-              Späť na prihlásenie
+              {t('reset.backToLogin')}
             </button>
           </div>
         </div>
@@ -259,7 +262,7 @@ export default function AccountPage() {
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Prihlásenie</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('login.title')}</h1>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
@@ -270,7 +273,7 @@ export default function AccountPage() {
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               className="peer w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent"
-              placeholder="Prihlasovacie meno"
+              placeholder={t('login.usernamePlaceholder')}
               required
             />
             <label
@@ -279,7 +282,7 @@ export default function AccountPage() {
                        peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
                        peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
             >
-              Prihlasovacie meno
+              {t('login.username')}
             </label>
             <span className="absolute inset-y-0 end-0 grid w-10 place-content-center text-gray-500">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -295,7 +298,7 @@ export default function AccountPage() {
               value={formData.password}
               onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
               className="peer w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm focus:border-green-500 focus:ring-green-500 placeholder-transparent"
-              placeholder="Heslo"
+              placeholder={t('login.passwordPlaceholder')}
               required
             />
             <label
@@ -304,7 +307,7 @@ export default function AccountPage() {
                        peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-sm
                        peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs"
             >
-              Heslo
+              {t('fields.password')}
             </label>
             <span className="absolute inset-y-0 end-0 grid w-10 place-content-center text-gray-500">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -322,10 +325,10 @@ export default function AccountPage() {
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Prihlasujem...</span>
+                <span>{t('login.signingIn')}</span>
               </div>
             ) : (
-              'Prihlásiť sa'
+              t('login.submit')
             )}
           </button>
         </form>
@@ -335,14 +338,14 @@ export default function AccountPage() {
             onClick={() => setIsForgotPassword(true)}
             className="text-sm text-gray-600 hover:text-green-600 transition-colors"
           >
-            Zabudli ste heslo?
+            {t('login.forgotPassword')}
           </button>
           <div>
             <button
               onClick={() => router.push('/registracia')}
               className="text-sm text-gray-600 hover:text-green-600 transition-colors"
             >
-              Nemáte účet? <span className="text-green-600 font-medium">Zaregistrujte sa</span>
+              {t('login.noAccount')} <span className="text-green-600 font-medium">{t('login.register')}</span>
             </button>
           </div>
         </div>
@@ -353,12 +356,12 @@ export default function AccountPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Môj účet</h1>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
         <button
           onClick={handleLogout}
           className="text-sm text-gray-600 hover:text-gray-800"
         >
-          Odhlásiť sa
+          {t('logout')}
         </button>
       </div>
 
@@ -373,7 +376,7 @@ export default function AccountPage() {
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
           >
-            Objednávky
+            {t('tabs.orders')}
           </button>
           <button
             onClick={() => setActiveTab('account')}
@@ -383,7 +386,7 @@ export default function AccountPage() {
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
           >
-            Údaje účtu
+            {t('tabs.account')}
           </button>
         </div>
 
@@ -393,7 +396,7 @@ export default function AccountPage() {
             <div className="bg-white rounded-lg shadow-sm">
               <div className="px-4 py-5 sm:px-6">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Moje objednávky
+                  {t('orders.title')}
                 </h3>
               </div>
               <div className="border-t border-gray-200">
@@ -408,10 +411,10 @@ export default function AccountPage() {
                           <div className="flex justify-between items-start">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                Objednávka #{order.id}
+                                {t('orders.orderNumber', { id: order.id })}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {new Date(order.createdAt).toLocaleDateString('sk-SK')}
+                                {new Date(order.createdAt).toLocaleDateString(locale === 'hu' ? 'hu-HU' : locale === 'en' ? 'en-US' : 'sk-SK')}
                               </div>
                               <div className="mt-2">
                                 {order.items.map((item, index) => (
@@ -431,7 +434,7 @@ export default function AccountPage() {
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                                     </svg>
-                                    Sledovať zásielku
+                                    {t('orders.trackShipment')}
                                   </a>
                                 )}
                                 {invoiceUrl && (
@@ -441,7 +444,7 @@ export default function AccountPage() {
                                     rel="noopener noreferrer"
                                     className="text-sm text-green-600 hover:text-green-700 inline-flex items-center gap-1"
                                   >
-                                    <span>Stiahnuť faktúru</span>
+                                    <span>{t('orders.downloadInvoice')}</span>
                                     {invoiceNumber && (
                                       <span className="text-xs text-gray-500">({invoiceNumber})</span>
                                     )}
@@ -455,9 +458,9 @@ export default function AccountPage() {
                               </div>
                               <div className="text-sm text-gray-500">
                                 {order.status === 'processing'
-                                  ? 'Spracováva sa'
+                                  ? t('orders.status.processing')
                                   : order.status === 'completed'
-                                  ? 'Dokončená'
+                                  ? t('orders.status.completed')
                                   : order.status}
                               </div>
                             </div>
@@ -468,7 +471,7 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div className="p-4 text-center text-gray-500">
-                    Zatiaľ nemáte žiadne objednávky
+                    {t('orders.empty')}
                   </div>
                 )}
               </div>
@@ -479,13 +482,13 @@ export default function AccountPage() {
             <div className="bg-white rounded-lg shadow-sm">
               <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Údaje účtu
+                  {t('accountDetails.title')}
                 </h3>
                 <button
                   onClick={() => setIsEditing(!isEditing)}
                   className="text-sm text-green-600 hover:text-green-700"
                 >
-                  {isEditing ? 'Zrušiť' : 'Upraviť'}
+                  {isEditing ? t('actions.cancel') : t('actions.edit')}
                 </button>
               </div>
               <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
@@ -494,7 +497,7 @@ export default function AccountPage() {
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                       <div>
                         <label htmlFor="billing-first-name" className="block text-sm font-medium text-gray-700">
-                          Meno <span className="text-red-500">*</span>
+                          {t('fields.firstName')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -505,13 +508,13 @@ export default function AccountPage() {
                             ...prev,
                             first_name: e.target.value
                           }))}
-                          placeholder="Vaše meno"
+                          placeholder={t('placeholders.firstName')}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="billing-last-name" className="block text-sm font-medium text-gray-700">
-                          Priezvisko <span className="text-red-500">*</span>
+                          {t('fields.lastName')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -522,13 +525,13 @@ export default function AccountPage() {
                             ...prev,
                             last_name: e.target.value
                           }))}
-                          placeholder="Vaše priezvisko"
+                          placeholder={t('placeholders.lastName')}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="billing-email" className="block text-sm font-medium text-gray-700">
-                          Email <span className="text-red-500">*</span>
+                          {t('fields.email')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="email"
@@ -539,13 +542,13 @@ export default function AccountPage() {
                             ...prev,
                             email: e.target.value
                           }))}
-                          placeholder="Váš email"
+                          placeholder={t('placeholders.email')}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="billing-phone" className="block text-sm font-medium text-gray-700">
-                          Telefón <span className="text-red-500">*</span>
+                          {t('fields.phone')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="tel"
@@ -556,13 +559,13 @@ export default function AccountPage() {
                             ...prev,
                             phone: e.target.value
                           }))}
-                          placeholder="+421 XXX XXX XXX"
+                          placeholder={t('placeholders.phone')}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="billing-address" className="block text-sm font-medium text-gray-700">
-                          Adresa <span className="text-red-500">*</span>
+                          {t('fields.address')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -573,13 +576,13 @@ export default function AccountPage() {
                             ...prev,
                             address_1: e.target.value
                           }))}
-                          placeholder="Ulica a číslo"
+                          placeholder={t('placeholders.address')}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="billing-city" className="block text-sm font-medium text-gray-700">
-                          Mesto <span className="text-red-500">*</span>
+                          {t('fields.city')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -590,13 +593,13 @@ export default function AccountPage() {
                             ...prev,
                             city: e.target.value
                           }))}
-                          placeholder="Mesto"
+                          placeholder={t('placeholders.city')}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="billing-postcode" className="block text-sm font-medium text-gray-700">
-                          PSČ <span className="text-red-500">*</span>
+                          {t('fields.postcode')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -608,7 +611,7 @@ export default function AccountPage() {
                             ...prev,
                             postcode: e.target.value
                           }))}
-                          placeholder="PSČ (5 číslic)"
+                          placeholder={t('placeholders.postcode')}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                         />
                       </div>
@@ -619,45 +622,45 @@ export default function AccountPage() {
                         onClick={() => setIsEditing(false)}
                         className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                       >
-                        Zrušiť
+                        {t('actions.cancel')}
                       </button>
                       <button
                         type="submit"
                         className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
                       >
-                        Uložiť zmeny
+                        {t('actions.saveChanges')}
                       </button>
                     </div>
                   </form>
                 ) : (
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Meno</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('fields.firstName')}</dt>
                       <dd className="mt-1 text-sm text-gray-900">
                         {customerData.billing?.first_name || customerData.first_name || '-'}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Priezvisko</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('fields.lastName')}</dt>
                       <dd className="mt-1 text-sm text-gray-900">
                         {customerData.billing?.last_name || customerData.last_name || '-'}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Email</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('fields.email')}</dt>
                       <dd className="mt-1 text-sm text-gray-900">
                         {customerData.email || '-'}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Telefón</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('fields.phone')}</dt>
                       <dd className="mt-1 text-sm text-gray-900">
                         {customerData.billing?.phone || '-'}
                       </dd>
                     </div>
                     <div className="sm:col-span-2">
                       <dt className="text-sm font-medium text-gray-500">
-                        Fakturačná adresa
+                        {t('fields.billingAddress')}
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900">
                         {customerData.billing?.address_1 || '-'}

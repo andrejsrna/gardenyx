@@ -73,10 +73,10 @@ export default function Header({ locale }: { locale: string }) {
   const { customerData, isLoading } = useAuth();
   const { closeCart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [customerName, setCustomerName] = useState<string>('');
 
   const NAV_LINKS = [
     { title: t('shop'), href: '/kupit' },
+    { title: t('hakofytFertilizers'), href: '/hnojiva-hakofyt' },
     { title: t('contact'), href: '/kontakt' },
   ];
 
@@ -88,12 +88,7 @@ export default function Header({ locale }: { locale: string }) {
     }
   }, [isMobileMenuOpen]);
 
-  useEffect(() => {
-    if (customerData) {
-      const firstName = customerData.billing?.first_name || customerData.first_name || safeGetItem('customerName') || '';
-      setCustomerName(firstName);
-    }
-  }, [customerData]);
+  const customerName = customerData?.billing?.first_name || customerData?.first_name || safeGetItem('customerName') || '';
 
   return (
     <header className="sticky top-0 z-40 border-b border-emerald-100/70 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 relative">

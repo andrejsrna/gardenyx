@@ -1,17 +1,15 @@
 'use client';
 
 import { ChangeEvent } from 'react';
-import type { FormData, PacketaPoint } from '../../lib/checkout/types';
-import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME, FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
+import type { FormData, PacketaPoint } from '../../lib/checkout/types';
+import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
 import { Package, Truck } from 'lucide-react';
 
 interface ShippingMethodsSectionProps {
   formData: FormData;
   formErrors: Record<string, string[] | undefined> | null;
-  cartTotal: number;
-  cartSubtotal?: number;
-  couponFreeShipping?: boolean;
   selectedPacketaPoint: PacketaPoint | null;
   onInputChange: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -23,51 +21,42 @@ interface ShippingMethodsSectionProps {
 export default function ShippingMethodsSection({
   formData,
   formErrors,
-  cartTotal,
-  cartSubtotal,
-  couponFreeShipping = false,
   selectedPacketaPoint,
   onInputChange,
   onPacketaPointSelect,
 }: ShippingMethodsSectionProps) {
-  const effectiveSubtotal = typeof cartSubtotal === 'number' ? cartSubtotal : cartTotal;
-  const isFreeShipping = couponFreeShipping || effectiveSubtotal >= FREE_SHIPPING_THRESHOLD;
+  const t = useTranslations('checkout.shipping');
+  const locale = useLocale();
 
   const shippingMethods = [
     {
       id: 'packeta_pickup',
-      title: 'Packeta - Výdajné miesto',
-      price: isFreeShipping ? 0 : SHIPPING_COST_PACKETA_PICKUP,
-      description: 'Doručenie na výdajné miesto Packeta',
+      title: t('methods.packetaPickup.title'),
+      price: SHIPPING_COST_PACKETA_PICKUP,
+      description: t('methods.packetaPickup.description'),
       icon: <Package className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
     },
     {
       id: 'packeta_home',
-      title: 'Packeta - Doručenie domov',
-      price: isFreeShipping ? 0 : SHIPPING_COST_PACKETA_HOME,
-      description: 'Doručenie kuriérom priamo na adresu',
+      title: t('methods.packetaHome.title'),
+      price: SHIPPING_COST_PACKETA_HOME,
+      description: t('methods.packetaHome.description'),
       icon: <Truck className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
     },
   ];
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-xl font-semibold mb-2">Spôsob dopravy</h2>
+      <h2 className="text-xl font-semibold mb-2">{t('title')}</h2>
       <div className="mb-4">
-        <Link href="/doprava-a-platba#ako-funguje-packeta" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-800 underline">
+        <Link href={`/${locale}/doprava-a-platba#ako-funguje-packeta`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-800 underline">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
           </svg>
-          <span>Ako funguje Packeta?</span>
+          <span>{t('howPacketaWorks')}</span>
         </Link>
       </div>
-      
-      {isFreeShipping && (
-        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-green-700 font-medium">Máte nárok na dopravu zdarma.</p>
-        </div>
-      )}
-      
+
       <div className="space-y-3">
         {shippingMethods.map((method) => (
           <div key={method.id} className="relative">
@@ -95,7 +84,7 @@ export default function ShippingMethodsSection({
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{method.description}</p>
                 <p className="text-base font-bold text-green-600 mt-2">
-                  {method.price === 0 ? 'Zadarmo' : `${method.price.toFixed(2)} €`}
+                  {method.price === 0 ? t('free') : `${method.price.toFixed(2)} €`}
                 </p>
               </div>
             </label>
@@ -117,7 +106,7 @@ export default function ShippingMethodsSection({
                       onClick={onPacketaPointSelect}
                       className="text-green-600 hover:underline font-medium text-sm flex-shrink-0 self-start md:self-center"
                     >
-                      Zmeniť
+                      {t('change')}
                     </button>
                   </div>
                 ) : (
@@ -130,7 +119,7 @@ export default function ShippingMethodsSection({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    Vybrať výdajné miesto
+                    {t('selectPickupPoint')}
                   </button>
                 )}
               </div>
@@ -141,7 +130,7 @@ export default function ShippingMethodsSection({
       
       {formErrors?.['shipping_method'] && (
         <p className="mt-2 text-sm text-red-600">
-          Prosím, vyberte spôsob dopravy
+          {t('validation.selectMethod')}
         </p>
       )}
     </div>

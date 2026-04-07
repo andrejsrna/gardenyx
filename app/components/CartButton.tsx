@@ -2,10 +2,12 @@
 
 import { ShoppingCart } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { useCart } from '../context/CartContext';
 import Cart from './Cart';
 
 export default function CartButton() {
+  const t = useTranslations('cartButton');
   const { totalItems, isCartOpen, openCart, closeCart } = useCart();
   const cartContainerRef = useRef<HTMLDivElement>(null);
   const cartButtonRef = useRef<HTMLButtonElement>(null);
@@ -45,7 +47,7 @@ export default function CartButton() {
         data-cart-button
         onClick={toggleCart}
         className="relative p-2 text-gray-600 hover:text-green-600 transition-colors"
-        aria-label={`Nákupný košík, ${totalItems} ${totalItems === 1 ? 'položka' : totalItems >= 2 && totalItems <= 4 ? 'položky' : 'položiek'}`}
+        aria-label={t('ariaLabel', { count: totalItems })}
         aria-expanded={isCartOpen}
       >
         <ShoppingCart className="w-6 h-6" />

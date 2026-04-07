@@ -1,9 +1,81 @@
 {
   "nav": {
     "shop": "Shop",
+    "hakofytFertilizers": "Hakofyt Fertilizers",
     "contact": "Contact",
     "myAccount": "My Account",
     "hello": "Hello {name}"
+  },
+  "contactPage": {
+    "eyebrow": "Contact",
+    "title": "Get in touch",
+    "description": "If you have questions about an order, our products, or the GardenYX app, write to us. The company details below follow our Terms and Conditions.",
+    "meta": {
+      "title": "Contact | GardenYX",
+      "description": "Contact GardenYX for questions about orders, products and the app. Find the current company details and support email here."
+    },
+    "primaryContact": {
+      "label": "Primary contact",
+      "description": "Email is the fastest way to reach us for orders, products, complaints, and app-related questions."
+    },
+    "company": {
+      "label": "Billing details",
+      "name": "JOINA Garden, s. r. o.",
+      "addressLine1": "Karpatské námestie 7770/10A",
+      "addressLine2": "Bratislava – mestská časť Rača 831 06",
+      "country": "Slovak Republic",
+      "icoLabel": "Company ID"
+    },
+    "support": {
+      "label": "What we can help with",
+      "orders": "Questions about orders, delivery, complaints, and e-shop purchases are handled via support@gardenyx.eu.",
+      "app": "If your request concerns the GardenYX mobile app, your account, or subscription, use the same support email.",
+      "legal": "For legal information and full company details, please refer to the Terms and Conditions and the Privacy Policy."
+    }
+  },
+  "hakofytFertilizersPage": {
+    "eyebrow": "Hakofyt",
+    "title": "Precisely Balanced Nutrition for Limitless Growth",
+    "description": "We respect Liebig's Law of the Minimum: delivering not just basic nutrients, but a complex package of micro-elements so nothing holds your plants back.",
+    "meta": {
+      "title": "Hakofyt Fertilizers | GardenYX",
+      "description": "Learn how Hakofyt fertilizers work, why they provide comprehensive plant nutrition, and which products we recommend for a strong and healthy garden.",
+      "imageAlt": "Hakofyt Fertilizers"
+    },
+    "principle": {
+      "eyebrow": "Working Principle",
+      "title": "Working Principle of Hakofyt Fertilizers",
+      "subtitle": "Precisely Balanced Nutrient Ratio",
+      "paragraph1": "The effect of Hakofyt fertilizers is based on utilizing one of the fundamental principles of nutrition, known as Liebig's Law of the Minimum. Its essence is that even though a plant may have most nutrients in surplus, its growth will be limited by the specific component that is insufficient.",
+      "paragraph2": "Therefore, the goal in developing Hakofyt fertilizers was to ensure the most comprehensive plant nutrition possible. For this reason, in addition to basic macro-elements in optimal ratios, Hakofyt fertilizers contain a complex of important micro-elements, specifically iron, zinc, manganese, copper, boron and molybdenum, which are irreplaceable for healthy and high-quality plant life."
+    },
+    "featuredProducts": {
+      "eyebrow": "Featured products",
+      "title": "Selected Hakofyt products",
+      "detail": "Product detail",
+      "cta": "View all products"
+    },
+    "benefits": {
+      "vitality": {
+        "title": "Natural Vitality Boosters",
+        "description": "Enriched with humic substances, amino acids and carbohydrates that support root formation, optimize photosynthesis and improve the overall plant metabolism."
+      },
+      "resistance": {
+        "title": "High Resistance & Savings",
+        "description": "It boosts immunity against cold, drought and diseases. Its natural repellent and fungicidal effects reduce the need for expensive protective sprays, lowering your costs."
+      },
+      "synergy": {
+        "title": "Synergistic & Eco-Friendly",
+        "description": "The ingredients work together for maximum absorption and help prevent soil contamination. This unique complex lowers the risk of overdosing and ensures higher crop quality."
+      }
+    },
+    "roi": {
+      "eyebrow": "Return on investment",
+      "title": "Proven High Return on Investment",
+      "description": "Field trials confirm that the yield increase significantly outweighs the cost. For example, 1 liter of Hakofyt increased potato harvest by 200 kg. Learn more about solving modern nutrition challenges in the expert article by Ing. Koziak.",
+      "linkLabel": "Read more",
+      "linkHref": "https://hakofyt.sk/"
+    }
   },
   "hero": {
     "heading": "Unlock the true potential of your garden.",
@@ -30,6 +102,15 @@
   "shop": {
     "title": "Our Products",
     "intro": "Foliar fertilizers, growth stimulators and crop protection products from GardenYX.",
+    "error": {
+      "title": "Oops! Something went wrong",
+      "retry": "Try again",
+      "fallback": "Failed to load products"
+    },
+    "meta": {
+      "title": "Shop | GardenYX",
+      "description": "Choose Hakofyt foliar fertilizers and crop protection products for your garden, lawn and fruit trees."
+    },
     "sections": {
       "hnojiva-hakofyt-b": "Hakofyt B",
       "hnojiva-hakofyt-plus": "Hakofyt Plus",
@@ -109,6 +190,362 @@
       "total": "Total:",
       "proceedToCheckout": "Proceed to checkout",
       "couponHint": "💰 Discount coupons can be used at checkout"
+    }
+  },
+  "cartButton": {
+    "ariaLabel": "Shopping cart, {count, plural, one {# item} other {# items}}"
+  },
+  "copyLinkButton": {
+    "defaultLabel": "Copy link",
+    "copied": "Copied!"
+  },
+  "couponSection": {
+    "appliedLabel": "Discount coupon:",
+    "youSave": "You save:",
+    "removeTitle": "Remove coupon",
+    "title": "Do you have a discount coupon?",
+    "placeholder": "Enter your discount code",
+    "inputLabel": "Discount code",
+    "verifying": "Verifying...",
+    "submit": "Apply coupon",
+    "tip": "💡 Tip: You can get coupons by subscribing to the newsletter or during special promotions"
+  },
+  "checkout": {
+    "meta": {
+      "title": "Checkout | GardenYX",
+      "description": "Complete your GardenYX order."
+    },
+    "empty": {
+      "description": "It looks like you haven't added anything to your cart yet."
+    },
+    "billingInformation": {
+      "title": "Billing details",
+      "phoneFullError": "Enter the full phone number including the country code (for example +421904123456).",
+      "postcodeTitle": "Postal code must contain 5 digits",
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "address2": "Additional address",
+        "city": "City",
+        "postcode": "Postal code"
+      },
+      "placeholders": {
+        "firstName": "John",
+        "lastName": "Smith",
+        "email": "john.smith@gmail.com",
+        "phone": "0904123456 or +421904123456",
+        "address": "Street name and house number",
+        "address2": "Street name, house number, apartment number",
+        "city": "Bratislava"
+      }
+    },
+    "shippingInformation": {
+      "title": "Shipping address",
+      "packetaHomeHint": "For home delivery (Packeta), enter the street and house number in the Address field (for example Mladeze 559).",
+      "sameAsBilling": "Shipping address is the same as billing address",
+      "postcodeTitle": "Postal code must contain 5 digits",
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "companyOptional": "Company name (optional)",
+        "address": "Address",
+        "address2": "Additional address",
+        "city": "City",
+        "postcode": "Postal code"
+      },
+      "placeholders": {
+        "firstName": "John",
+        "lastName": "Smith",
+        "company": "Company name",
+        "address": "Street name and house number",
+        "address2": "Apartment / floor (optional)",
+        "city": "Bratislava"
+      }
+    },
+    "businessPurchase": {
+      "toggle": "I am buying as a business",
+      "fields": {
+        "company": "Company name",
+        "ic": "Company ID",
+        "dic": "Tax ID",
+        "vatId": "VAT ID"
+      },
+      "placeholders": {
+        "company": "Enter company name",
+        "ic": "Enter Company ID (8 digits)",
+        "dic": "Enter Tax ID (10 digits)",
+        "vatId": "SKXXXXXXXXXX (optional)"
+      }
+    },
+    "freeShippingProgress": {
+      "message": "Spend <amount></amount> more to get free shipping."
+    },
+    "createAccount": {
+      "toggle": "Create a customer account",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter a password for your account",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "passwordHint": "The password must contain at least 8 characters."
+    },
+    "validation": {
+      "phoneFormat": "Enter a phone number in the format +421XXXXXXXXX.",
+      "companyRequired": "Company name is required for business orders",
+      "icRequired": "Company ID is required for business orders",
+      "dicRequired": "Tax ID is required for business orders",
+      "icDigits": "Company ID must contain exactly 8 digits",
+      "dicDigits": "Tax ID must contain exactly 10 digits",
+      "passwordRequired": "Password is required to create an account",
+      "packetaPointRequired": "Please select a Packeta pickup point.",
+      "termsRequired": "You must agree to the terms and conditions and the privacy policy.",
+      "generic": "Form validation error."
+    },
+    "toasts": {
+      "productAdded": "{name} was added to the cart.",
+      "registrationFailed": "Registration failed",
+      "accountCreated": "Account created. Check your email for verification.",
+      "accountCreationPartialFailure": "The order is OK, but the account could not be created: {error}",
+      "orderCreationFailed": "Order creation error: {error}"
+    },
+    "paymentMethods": {
+      "card": "Card payment",
+      "cod": "Cash on delivery"
+    },
+    "shippingMethods": {
+      "packetaPickup": "Packeta - Pickup point",
+      "packetaHome": "Packeta - Home delivery"
+    },
+    "paymentSuccess": {
+      "title": "Payment was successful",
+      "redirecting": "Redirecting...",
+      "description": "Your order was processed successfully."
+    },
+    "processingOverlay": {
+      "title": "Order is being processed",
+      "description": "Please wait. Redirect in progress."
+    },
+    "paymentError": {
+      "title": "Payment error",
+      "close": "Close"
+    },
+    "errors": {
+      "orderCreation": "An error occurred while creating the order",
+      "paymentProcessing": "An error occurred while processing the payment."
+    },
+    "shipping": {
+      "title": "Shipping method",
+      "howPacketaWorks": "How does Packeta work?",
+      "freeShippingEligible": "You qualify for free shipping.",
+      "free": "Free",
+      "change": "Change",
+      "selectPickupPoint": "Select pickup point",
+      "validation": {
+        "selectMethod": "Please choose a shipping method"
+      },
+      "methods": {
+        "packetaPickup": {
+          "title": "Packeta - Pickup point",
+          "description": "Delivery to a Packeta pickup point"
+        },
+        "packetaHome": {
+          "title": "Packeta - Home delivery",
+          "description": "Courier delivery directly to your address"
+        }
+      }
+    },
+    "payment": {
+      "title": "Payment method",
+      "recommended": "Recommended",
+      "secureTitle": "Secure payment",
+      "secureDescription": "Your payment details are encrypted and protected by SSL.",
+      "sslNotice": "All payments are secured with 256-bit SSL encryption",
+      "validation": {
+        "selectMethod": "Please choose a payment method"
+      },
+      "methods": {
+        "card": {
+          "title": "Payment card",
+          "description": "You can pay with almost all cards (Visa, Mastercard and more). Payments are securely processed by Stripe."
+        },
+        "cod": {
+          "title": "Cash on delivery",
+          "description": "You pay on delivery (cash or card with the courier/pickup point). For Z-BOX, the COD payment must be paid online in advance (app or payment link)."
+        }
+      }
+    },
+    "consents": {
+      "title": "Consents",
+      "termsPrefix": "I agree with the",
+      "and": "and",
+      "termsLink": "terms and conditions",
+      "privacyLink": "privacy policy",
+      "requiredError": "This consent is required to complete the order",
+      "marketing": "I agree to receive marketing offers and updates by email (optional)",
+      "requiredHint": "Required to complete the order"
+    },
+    "summary": {
+      "title": "Order summary",
+      "pricesIncludeVat": "Prices include VAT.",
+      "imageFallback": "IMG",
+      "actions": {
+        "decreaseQuantity": "Decrease quantity of product {name}",
+        "increaseQuantity": "Increase quantity of product {name}",
+        "removeItem": "Remove {name}"
+      },
+      "subtotalInclVat": "Subtotal (incl. VAT)",
+      "baseWithoutVat": "Base excluding VAT",
+      "vat": "VAT ({percent}%)",
+      "discount": "Discount",
+      "discountWithCode": "Discount ({code})",
+      "newSubtotalAfterDiscount": "New subtotal after discount (incl. VAT)",
+      "baseAfterDiscount": "Base after discount excluding VAT",
+      "vatAfterDiscount": "VAT after discount ({percent}%)",
+      "shippingInclVat": "Shipping (incl. VAT)",
+      "shippingMethodNotSelected": "Shipping method has not been selected yet",
+      "free": "Free",
+      "shippingVat": "Shipping VAT ({percent}%)",
+      "freeShippingHint": "Spend {amount} € more to get free shipping",
+      "total": "Total",
+      "customerNote": "Order note (optional)",
+      "customerNotePlaceholder": "Any special instructions for your order...",
+      "processingOrder": "Processing order...",
+      "salesSuspended": "Sales suspended",
+      "completeOrder": "Complete order • {total} €",
+      "sslEncryption": "SSL encryption",
+      "securePayment": "Secure payment"
+    }
+  },
+  "stripePayment": {
+    "init": {
+      "emptyCart": "The cart is empty",
+      "missingBillingEmail": "Billing email address is missing",
+      "missingShippingMethod": "Select a delivery method"
+    },
+    "loading": {
+      "title": "Loading payment",
+      "description": "Please wait..."
+    },
+    "errorModal": {
+      "title": "Payment error",
+      "fallback": "An unexpected error occurred",
+      "close": "Close",
+      "retry": "Try again"
+    },
+    "progress": {
+      "processingPayment": "Processing payment...",
+      "finalizingOrder": "Finalizing order...",
+      "checkingOrderStatus": "Checking order status..."
+    },
+    "errors": {
+      "initializationTitle": "Payment initialization error",
+      "createPayment": "An error occurred while creating the payment",
+      "invalidServerResponse": "Invalid server response",
+      "loadingPayment": "An error occurred while loading the payment",
+      "paymentFailed": "A payment error occurred.",
+      "unexpectedPaymentFailed": "An unexpected payment error occurred.",
+      "orderProcessingEmail": "Your order is being processed. Please check your email for confirmation.",
+      "processingFailed": "An error occurred while processing the payment."
+    },
+    "secureStripe": "Secure payment via Stripe",
+    "sslEncryption": "SSL encryption",
+    "submitProcessing": "Processing payment...",
+    "submit": "Pay now"
+  },
+  "verifyEmail": {
+    "title": "Email verification",
+    "cta": "Go to login",
+    "messages": {
+      "pending": "Verifying email...",
+      "missingParams": "Token or email is missing.",
+      "success": "Email has been verified. You can sign in now.",
+      "failed": "Verification failed"
+    },
+    "toast": {
+      "success": "Email verified",
+      "error": "Verification failed"
+    }
+  },
+  "account": {
+    "title": "My Account",
+    "logout": "Log out",
+    "tabs": {
+      "orders": "Orders",
+      "account": "Account details"
+    },
+    "login": {
+      "title": "Sign in",
+      "username": "Username",
+      "usernamePlaceholder": "Username",
+      "passwordPlaceholder": "Password",
+      "signingIn": "Signing in...",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "Don't have an account?",
+      "register": "Register"
+    },
+    "reset": {
+      "title": "Reset password",
+      "emailPlaceholder": "Email",
+      "sending": "Sending...",
+      "submit": "Send password reset link",
+      "backToLogin": "Back to login"
+    },
+    "orders": {
+      "title": "My orders",
+      "orderNumber": "Order #{id}",
+      "trackShipment": "Track shipment",
+      "downloadInvoice": "Download invoice",
+      "empty": "You don't have any orders yet",
+      "status": {
+        "processing": "Processing",
+        "completed": "Completed"
+      }
+    },
+    "accountDetails": {
+      "title": "Account details"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Phone",
+      "address": "Address",
+      "city": "City",
+      "postcode": "Postal code",
+      "billingAddress": "Billing address"
+    },
+    "placeholders": {
+      "firstName": "Your first name",
+      "lastName": "Your last name",
+      "email": "Your email",
+      "phone": "+421 XXX XXX XXX",
+      "address": "Street and house number",
+      "city": "City",
+      "postcode": "Postal code (5 digits)"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "saveChanges": "Save changes"
+    },
+    "errors": {
+      "fetchOrders": "Failed to fetch orders",
+      "resetEmailSend": "Failed to send password reset email"
+    },
+    "toasts": {
+      "fetchOrdersError": "Error loading orders",
+      "loginSuccess": "Signed in successfully",
+      "loginErrorTitle": "Sign in failed",
+      "loginErrorDescription": "Incorrect credentials or another error occurred",
+      "logoutSuccess": "Signed out successfully",
+      "logoutError": "Sign out failed",
+      "billingSavedLocal": "Details were saved locally only",
+      "billingSaveError": "Failed to update details",
+      "resetEmailSent": "Password reset email has been sent"
     }
   },
   "footer": {

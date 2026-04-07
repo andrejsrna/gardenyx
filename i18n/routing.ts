@@ -15,6 +15,11 @@ export const routing = defineRouting({
       en: '/contact',
       hu: '/kapcsolat',
     },
+    '/hnojiva-hakofyt': {
+      sk: '/hnojiva-hakofyt',
+      en: '/hakofyt-fertilizers',
+      hu: '/hakofyt-mutragyak',
+    },
     '/moj-ucet': {
       sk: '/moj-ucet',
       en: '/my-account',

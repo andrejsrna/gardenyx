@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { toast } from 'sonner';
@@ -93,6 +94,7 @@ interface ShippingInfo {
 }
 
 function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }: StripePaymentFormProps) {
+  const t = useTranslations('stripePayment');
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -144,7 +146,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
 
     setIsProcessing(true);
     setError(null);
-    setPaymentProgress('Spracovávam platbu...');
+    setPaymentProgress(t('progress.processingPayment'));
     isProcessingRef.current = true;
 
     Sentry.setContext('payment', {
@@ -181,7 +183,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
             payment_intent_id: clientSecret.split('_secret_')[0]
           });
         } else if (confirmError.type === 'card_error' || confirmError.type === 'validation_error') {
-          const errorMessage = confirmError.message || 'Nastala chyba pri platbe.';
+          const errorMessage = confirmError.message || t('errors.paymentFailed');
           logPaymentEvent('error_payment_confirmation', {
             error: confirmError.message,
             payment_intent_id: clientSecret.split('_secret_')[0],
@@ -198,7 +200,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
           onError?.(errorMessage);
           return;
         } else {
-          const errorMessage = 'Nastala neočakávaná chyba pri platbe.';
+          const errorMessage = t('errors.unexpectedPaymentFailed');
           logPaymentEvent('error_unexpected_payment_confirmation', {
             error: confirmError.message,
             payment_intent_id: clientSecret.split('_secret_')[0],
@@ -216,7 +218,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
         }
       }
 
-      setPaymentProgress('Dokončujem objednávku...');
+      setPaymentProgress(t('progress.finalizingOrder'));
       
       try {
         const finalize = await fetch('/api/stripe/finalize', {
@@ -286,7 +288,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
       const pollInterval = 2000;
       const paymentIntentId = clientSecret.split('_secret_')[0];
 
-      setPaymentProgress('Overujem stav objednávky...');
+      setPaymentProgress(t('progress.checkingOrderStatus'));
       
       logPaymentEvent('info_starting_polling', {
         payment_intent_id: paymentIntentId,
@@ -375,10 +377,10 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
         extra: { payment_intent_id: paymentIntentId, attempts }
       });
 
-      setError('Objednávka sa spracováva. Skontrolujte prosím svoj email pre potvrdenie.');
-      onError?.('Objednávka sa spracováva. Skontrolujte prosím svoj email pre potvrdenie.');
+      setError(t('errors.orderProcessingEmail'));
+      onError?.(t('errors.orderProcessingEmail'));
     } catch (unexpectedError) {
-      const errorMessage = 'Nastala chyba pri spracovaní platby.';
+      const errorMessage = t('errors.processingFailed');
       logPaymentEvent('error_unexpected_payment_processing', {
         error: unexpectedError instanceof Error ? unexpectedError.message : String(unexpectedError),
         payment_intent_id: clientSecret.split('_secret_')[0]
@@ -395,7 +397,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
       
       Sentry.setContext('payment', null);
     }
-  }, [stripe, elements, clientSecret, onSuccess, onError, billingDetails]);
+  }, [stripe, elements, clientSecret, onSuccess, onError, billingDetails, t]);
 
   return (
     <form onSubmit={handleSubmitWithPolling} className="space-y-6">
@@ -426,14 +428,14 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 flex-shrink-0 mt-0.5">
             <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
           </svg>
-          <span>Bezpečná platba cez Stripe</span>
+          <span>{t('secureStripe')}</span>
         </div>
 
         <div className="flex items-center space-x-2">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M5.166 2.621v.858c-1.035.148-2.059.33-3.071.543a.75.75 0 00-.584.859 6.937 6.937 0 006.222 6.222.75.75 0 00.859-.584c.212-1.012.395-2.036.543-3.071h.858a.75.75 0 00.22-1.094l-.465-.464a.75.75 0 00-.707-.213 9.003 9.003 0 01-4.977 0 .75.75 0 00-.707.213l-.465.464a.75.75 0 00-.22 1.094zM13.5 18.621a.75.75 0 00.75.75h.858a.75.75 0 00.22-1.094l-.465-.464a.75.75 0 00-.707-.213 9.004 9.004 0 01-4.977 0 .75.75 0 00-.707.213l-.465.464a.75.75 0 00-.22 1.094v.858zM13.5 2.621a.75.75 0 00-.75.75v.858c1.035.148 2.059.33 3.071.543a.75.75 0 00.859.584 6.937 6.937 0 006.222-6.222.75.75 0 00-.584-.859c-.212-1.012-.395-2.036-.543-3.071h-.858a.75.75 0 00-1.094-.22l-.464.465a.75.75 0 00-.213.707 9.003 9.003 0 01-4.977 0 .75.75 0 00-.213-.707l-.464-.465a.75.75 0 00-1.094.22z" clipRule="evenodd" />
           </svg>
-          <span className="text-sm text-gray-600">SSL šifrovanie</span>
+          <span className="text-sm text-gray-600">{t('sslEncryption')}</span>
         </div>
       </div>
 
@@ -447,10 +449,10 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-2 animate-spin">
               <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clipRule="evenodd" />
             </svg>
-            Spracovávam platbu...
+            {t('submitProcessing')}
           </>
         ) : (
-          'Zaplatiť'
+          t('submit')
         )}
       </button>
     </form>
@@ -488,6 +490,7 @@ export default function StripePayment({
   onError,
   onClose 
 }: StripePaymentProps) {
+  const t = useTranslations('stripePayment');
   const [isLoading, setIsLoading] = useState(true);
   
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -570,13 +573,13 @@ export default function StripePayment({
         if (cancelled) return;
 
         if (!stableItems?.length) {
-          throw new Error('Košík je prázdny');
+          throw new Error(t('init.emptyCart'));
         }
         if (!billing?.email) {
-          throw new Error('Chýba fakturačná emailová adresa');
+          throw new Error(t('init.missingBillingEmail'));
         }
         if (!shippingMethod) {
-          throw new Error('Vyberte spôsob doručenia');
+          throw new Error(t('init.missingShippingMethod'));
         }
 
         logPaymentEvent('info_creating_payment_intent', {
@@ -608,7 +611,7 @@ export default function StripePayment({
             error: errorData
           });
           
-          throw new Error(errorData.message || 'Nastala chyba pri vytváraní platby');
+          throw new Error(errorData.message || t('errors.createPayment'));
         }
 
         const data = await response.json();
@@ -619,7 +622,7 @@ export default function StripePayment({
           logPaymentEvent('error_payment_intent_missing_client_secret', {
             response: data
           });
-          throw new Error('Neplatná odpoveď zo servera');
+          throw new Error(t('errors.invalidServerResponse'));
         }
 
         setClientSecret(data.clientSecret, data.paymentIntentId);
@@ -631,7 +634,7 @@ export default function StripePayment({
       } catch (err) {
         if (cancelled) return;
         
-        const errorMessage = err instanceof Error ? err.message : 'Nastala chyba pri načítaní platby';
+        const errorMessage = err instanceof Error ? err.message : t('errors.loadingPayment');
         
         if (err instanceof Error && err.name === 'AbortError') {
           return;
@@ -651,7 +654,7 @@ export default function StripePayment({
         
         setError(errorMessage);
         onError?.(errorMessage);
-        toast.error('Chyba pri inicializácii platby', {
+        toast.error(t('errors.initializationTitle'), {
           description: errorMessage
         });
       } finally {
@@ -667,15 +670,15 @@ export default function StripePayment({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stableRequestData, billing?.email, shippingMethod, stableItems.length, discountAmount, isBusiness, onError]);
+  }, [stableRequestData, billing?.email, shippingMethod, stableItems.length, discountAmount, isBusiness, onError, t]);
 
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-8 shadow-xl max-w-md mx-4 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Načítavame platbu</h3>
-          <p className="text-gray-600">Prosím čakajte...</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('loading.title')}</h3>
+          <p className="text-gray-600">{t('loading.description')}</p>
         </div>
       </div>
     );
@@ -691,21 +694,21 @@ export default function StripePayment({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Chyba pri platbe</h3>
-            <p className="text-gray-600">{error || 'Nastala neočakávaná chyba'}</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('errorModal.title')}</h3>
+            <p className="text-gray-600">{error || t('errorModal.fallback')}</p>
           </div>
           <div className="flex space-x-3">
             <button
               onClick={onClose}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
             >
-              Zavrieť
+              {t('errorModal.close')}
             </button>
             <button
               onClick={() => window.location.reload()}
               className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
-              Skúsiť znova
+              {t('errorModal.retry')}
             </button>
           </div>
         </div>

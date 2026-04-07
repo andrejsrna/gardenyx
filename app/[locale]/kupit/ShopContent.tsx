@@ -43,20 +43,24 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-const ErrorDisplay = ({ error, onRetry }: { error: string; onRetry: () => void }) => (
-  <div className="container mx-auto px-4 py-8">
-    <div className="text-center">
-      <h2 className="text-2xl font-bold text-red-600 mb-4">Oops! Niečo sa pokazilo</h2>
-      <p className="text-gray-600 mb-4">{error}</p>
-      <button
-        onClick={onRetry}
-        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-      >
-        Skúsiť znova
-      </button>
+function ErrorDisplay({ error, onRetry }: { error: string; onRetry: () => void }) {
+  const t = useTranslations('shop');
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="text-center">
+        <h2 className="mb-4 text-2xl font-bold text-red-600">{t('error.title')}</h2>
+        <p className="mb-4 text-gray-600">{error}</p>
+        <button
+          onClick={onRetry}
+          className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+        >
+          {t('error.retry')}
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+}
 
 export default function ShopContent({ locale }: { locale: string }) {
   const t = useTranslations('shop');
@@ -97,7 +101,7 @@ export default function ShopContent({ locale }: { locale: string }) {
       setProductSections(updatedSections);
 
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to load products');
+      setError(error instanceof Error ? error.message : t('error.fallback'));
     } finally {
       setIsLoading(false);
     }

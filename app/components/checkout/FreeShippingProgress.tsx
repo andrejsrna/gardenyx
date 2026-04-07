@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { FREE_SHIPPING_THRESHOLD } from '../../lib/checkout/constants';
 import { tracking } from '../../lib/tracking';
 
@@ -11,6 +12,7 @@ interface FreeShippingProgressProps {
 }
 
 export default function FreeShippingProgress({ totalPrice = 0, subtotal, couponFreeShipping = false }: FreeShippingProgressProps) {
+  const t = useTranslations('checkout.freeShippingProgress');
   const hasTrackedFreeShipping = useRef(false);
 
   const effectiveSubtotal = typeof subtotal === 'number' ? subtotal : totalPrice;
@@ -41,7 +43,9 @@ export default function FreeShippingProgress({ totalPrice = 0, subtotal, couponF
   return (
     <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
       <p className="text-green-700 mb-3">
-        Nakúpte ešte za <span className="font-bold">{remaining.toFixed(2)} €</span> a získate dopravu zdarma.
+        {t.rich('message', {
+          amount: () => <span className="font-bold">{remaining.toFixed(2)} €</span>,
+        })}
       </p>
       
       {/* Progress bar */}

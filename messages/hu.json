@@ -1,9 +1,81 @@
 {
   "nav": {
     "shop": "Bolt",
+    "hakofytFertilizers": "Hakofyt műtrágyák",
     "contact": "Kapcsolat",
     "myAccount": "Fiókom",
     "hello": "Szia {name}"
+  },
+  "contactPage": {
+    "eyebrow": "Kapcsolat",
+    "title": "Lépjen kapcsolatba velünk",
+    "description": "Ha kérdése van rendelésével, termékeinkkel vagy a GardenYX alkalmazással kapcsolatban, írjon nekünk. Az alábbi cégadatok az ÁSZF szerint vannak feltüntetve.",
+    "meta": {
+      "title": "Kapcsolat | GardenYX",
+      "description": "Lépjen kapcsolatba a GardenYX csapatával rendelésekkel, termékekkel és az alkalmazással kapcsolatban. Itt találja az aktuális cégadatokat és az ügyfélszolgálati e-mail címet."
+    },
+    "primaryContact": {
+      "label": "Elsődleges kapcsolat",
+      "description": "E-mailben ér el minket a leggyorsabban rendelésekkel, termékekkel, reklamációkkal és az alkalmazással kapcsolatos kérdésekkel."
+    },
+    "company": {
+      "label": "Számlázási adatok",
+      "name": "JOINA Garden, s. r. o.",
+      "addressLine1": "Karpatské námestie 7770/10A",
+      "addressLine2": "Bratislava – mestská časť Rača 831 06",
+      "country": "Szlovák Köztársaság",
+      "icoLabel": "Cégjegyzékszám"
+    },
+    "support": {
+      "label": "Miben tudunk segíteni",
+      "orders": "A rendelésekkel, szállítással, reklamációkkal és webshopos vásárlásokkal kapcsolatos kérdéseket a support@gardenyx.eu címen kezeljük.",
+      "app": "Ha megkeresése a GardenYX mobilalkalmazással, fiókjával vagy előfizetésével kapcsolatos, ugyanazt az e-mail címet használja.",
+      "legal": "Jogi információkért és a teljes cégadatokért tekintse meg az ÁSZF-et és az adatvédelmi irányelveket."
+    }
+  },
+  "hakofytFertilizersPage": {
+    "eyebrow": "Hakofyt",
+    "title": "Precízen kiegyensúlyozott tápanyagellátás a korlátlan növekedésért",
+    "description": "Tiszteletben tartjuk Liebig minimumtörvényét: nemcsak az alapvető tápanyagokat adjuk, hanem mikroelemek komplex csomagját is, hogy semmi ne fogja vissza növényeit.",
+    "meta": {
+      "title": "Hakofyt műtrágyák | GardenYX",
+      "description": "Ismerje meg, hogyan működnek a Hakofyt műtrágyák, miért biztosítanak komplex növénytáplálást, és mely termékeket ajánljuk az erős és egészséges kerthez.",
+      "imageAlt": "Hakofyt műtrágyák"
+    },
+    "principle": {
+      "eyebrow": "Működési elv",
+      "title": "A Hakofyt műtrágyák működési elve",
+      "subtitle": "Pontosan kiegyensúlyozott tápanyagarány",
+      "paragraph1": "A Hakofyt műtrágyák hatása a táplálkozás egyik alapelvén, az úgynevezett Liebig-féle minimumtörvényen alapul. Lényege, hogy hiába van a növényben sok más tápanyag bőségben, növekedését az az összetevő korlátozza, amelyből hiány van.",
+      "paragraph2": "Ezért a Hakofyt műtrágyák fejlesztésének célja a lehető legkomplexebb növénytáplálás biztosítása volt. Ennek megfelelően az optimális arányú makroelemek mellett a Hakofyt fontos mikroelemek komplexét is tartalmazza, konkrétan vasat, cinket, mangánt, rezet, bórt és molibdént, amelyek nélkülözhetetlenek az egészséges és minőségi növényi élethez."
+    },
+    "featuredProducts": {
+      "eyebrow": "Kiemelt termékek",
+      "title": "Válogatott Hakofyt termékek",
+      "detail": "Termék részletei",
+      "cta": "Összes termék megtekintése"
+    },
+    "benefits": {
+      "vitality": {
+        "title": "Természetes vitalitásfokozók",
+        "description": "Huminsavakkal, aminosavakkal és szénhidrátokkal dúsítva, amelyek támogatják a gyökérképződést, optimalizálják a fotoszintézist és javítják a növények általános anyagcseréjét."
+      },
+      "resistance": {
+        "title": "Magas ellenálló képesség és megtakarítás",
+        "description": "Erősíti az immunitást a hideggel, szárazsággal és betegségekkel szemben. Természetes repellens és fungicid hatása csökkenti a drága növényvédő permetek szükségességét, ezáltal alacsonyabb költségeket eredményez."
+      },
+      "synergy": {
+        "title": "Szinergikus és környezetbarát",
+        "description": "Az összetevők együttműködnek a maximális felszívódásért és segítenek megelőzni a talaj szennyeződését. Ez az egyedülálló komplex csökkenti a túladagolás kockázatát és magasabb termésminőséget biztosít."
+      }
+    },
+    "roi": {
+      "eyebrow": "Megtérülés",
+      "title": "Bizonyítottan magas megtérülés",
+      "description": "A szántóföldi kísérletek igazolják, hogy a terméshozam növekedése jelentősen meghaladja a költségeket. Például 1 liter Hakofyt 200 kg-mal növelte a burgonyatermést. Tudjon meg többet a modern tápanyagellátási kihívások megoldásáról Ing. Koziak szakmai cikkében.",
+      "linkLabel": "Tovább olvasom",
+      "linkHref": "https://hakofyt.sk/"
+    }
   },
   "hero": {
     "heading": "Ébreszd fel kerted igazi potenciálját.",
@@ -30,6 +102,15 @@
   "shop": {
     "title": "Termékeink",
     "intro": "GardenYX lombtrágyák, növekedési stimulátorok és növényvédő készítmények.",
+    "error": {
+      "title": "Hoppá! Valami hiba történt",
+      "retry": "Próbálja újra",
+      "fallback": "Nem sikerült betölteni a termékeket"
+    },
+    "meta": {
+      "title": "Bolt | GardenYX",
+      "description": "Válasszon Hakofyt lombtrágyákat és növényvédő készítményeket kertjéhez, gyepéhez és gyümölcsfáihoz."
+    },
     "sections": {
       "hnojiva-hakofyt-b": "Hakofyt B",
       "hnojiva-hakofyt-plus": "Hakofyt Plus",
@@ -109,6 +190,362 @@
       "total": "Összesen:",
       "proceedToCheckout": "Tovább a pénztárhoz",
       "couponHint": "💰 A kuponkedvezményeket a pénztárnál használhatja fel"
+    }
+  },
+  "cartButton": {
+    "ariaLabel": "Bevásárlókosár, {count, plural, one {# tétel} other {# tétel}}"
+  },
+  "copyLinkButton": {
+    "defaultLabel": "Hivatkozás másolása",
+    "copied": "Kimásolva!"
+  },
+  "couponSection": {
+    "appliedLabel": "Kedvezménykupon:",
+    "youSave": "Megtakarítás:",
+    "removeTitle": "Kupon eltávolítása",
+    "title": "Van kedvezménykuponja?",
+    "placeholder": "Írja be a kedvezménykódot",
+    "inputLabel": "Kedvezménykód",
+    "verifying": "Ellenőrzés...",
+    "submit": "Kupon alkalmazása",
+    "tip": "💡 Tipp: Kuponokat a hírlevélre feliratkozva vagy speciális akciók során szerezhet"
+  },
+  "checkout": {
+    "meta": {
+      "title": "Pénztár | GardenYX",
+      "description": "Fejezze be GardenYX rendelését."
+    },
+    "empty": {
+      "description": "Úgy tűnik, még nem tett semmit a kosárba."
+    },
+    "billingInformation": {
+      "title": "Számlázási adatok",
+      "phoneFullError": "Adja meg a teljes telefonszámot az országkóddal együtt (például +421904123456).",
+      "postcodeTitle": "Az irányítószámnak 5 számjegyből kell állnia",
+      "fields": {
+        "firstName": "Keresztnév",
+        "lastName": "Vezetéknév",
+        "email": "E-mail",
+        "phone": "Telefonszám",
+        "address": "Cím",
+        "address2": "Kiegészítő cím",
+        "city": "Város",
+        "postcode": "Irányítószám"
+      },
+      "placeholders": {
+        "firstName": "János",
+        "lastName": "Kovács",
+        "email": "janos.kovacs@gmail.com",
+        "phone": "0904123456 vagy +421904123456",
+        "address": "Utcanév és házszám",
+        "address2": "Utcanév, házszám, lakásszám",
+        "city": "Pozsony"
+      }
+    },
+    "shippingInformation": {
+      "title": "Szállítási cím",
+      "packetaHomeHint": "Házhoz szállítás esetén (Packeta) az Address mezőbe írja be az utcát és a házszámot (például Mládeže 559).",
+      "sameAsBilling": "A szállítási cím megegyezik a számlázási címmel",
+      "postcodeTitle": "Az irányítószámnak 5 számjegyből kell állnia",
+      "fields": {
+        "firstName": "Keresztnév",
+        "lastName": "Vezetéknév",
+        "companyOptional": "Cégnév (opcionális)",
+        "address": "Cím",
+        "address2": "Kiegészítő cím",
+        "city": "Város",
+        "postcode": "Irányítószám"
+      },
+      "placeholders": {
+        "firstName": "János",
+        "lastName": "Kovács",
+        "company": "Cégnév",
+        "address": "Utcanév és házszám",
+        "address2": "Lakás / emelet (opcionális)",
+        "city": "Pozsony"
+      }
+    },
+    "businessPurchase": {
+      "toggle": "Cégként vásárolok",
+      "fields": {
+        "company": "Cégnév",
+        "ic": "Cégjegyzékszám",
+        "dic": "Adószám",
+        "vatId": "Közösségi adószám"
+      },
+      "placeholders": {
+        "company": "Adja meg a cég nevét",
+        "ic": "Adja meg a cégjegyzékszámot (8 számjegy)",
+        "dic": "Adja meg az adószámot (10 számjegy)",
+        "vatId": "SKXXXXXXXXXX (opcionális)"
+      }
+    },
+    "freeShippingProgress": {
+      "message": "Vásároljon még <amount></amount> értékben, és ingyenes szállítást kap."
+    },
+    "createAccount": {
+      "toggle": "Vásárlói fiók létrehozása",
+      "passwordLabel": "Jelszó",
+      "passwordPlaceholder": "Adjon meg egy jelszót a fiókjához",
+      "showPassword": "Jelszó megjelenítése",
+      "hidePassword": "Jelszó elrejtése",
+      "passwordHint": "A jelszónak legalább 8 karakterből kell állnia."
+    },
+    "validation": {
+      "phoneFormat": "Adja meg a telefonszámot +421XXXXXXXXX formátumban.",
+      "companyRequired": "Céges rendeléshez kötelező a cégnév",
+      "icRequired": "Céges rendeléshez kötelező a cégjegyzékszám",
+      "dicRequired": "Céges rendeléshez kötelező az adószám",
+      "icDigits": "A cégjegyzékszámnak pontosan 8 számjegyből kell állnia",
+      "dicDigits": "Az adószámnak pontosan 10 számjegyből kell állnia",
+      "passwordRequired": "A fiók létrehozásához jelszó szükséges",
+      "packetaPointRequired": "Kérjük, válasszon Packeta átvételi pontot.",
+      "termsRequired": "El kell fogadnia az általános szerződési feltételeket és az adatvédelmi tájékoztatót.",
+      "generic": "Űrlapellenőrzési hiba."
+    },
+    "toasts": {
+      "productAdded": "{name} hozzáadva a kosárhoz.",
+      "registrationFailed": "A regisztráció sikertelen volt",
+      "accountCreated": "A fiók létrejött. Ellenőrizze az emailt a megerősítéshez.",
+      "accountCreationPartialFailure": "A rendelés rendben van, de a fiókot nem sikerült létrehozni: {error}",
+      "orderCreationFailed": "Hiba a rendelés létrehozásakor: {error}"
+    },
+    "paymentMethods": {
+      "card": "Bankkártyás fizetés",
+      "cod": "Utánvét"
+    },
+    "shippingMethods": {
+      "packetaPickup": "Packeta - Átvételi pont",
+      "packetaHome": "Packeta - Házhozszállítás"
+    },
+    "paymentSuccess": {
+      "title": "A fizetés sikeres volt",
+      "redirecting": "Átirányítás...",
+      "description": "Rendelését sikeresen feldolgoztuk."
+    },
+    "processingOverlay": {
+      "title": "A rendelés feldolgozás alatt áll",
+      "description": "Kérjük, várjon. Az átirányítás folyamatban van."
+    },
+    "paymentError": {
+      "title": "Fizetési hiba",
+      "close": "Bezárás"
+    },
+    "errors": {
+      "orderCreation": "Hiba történt a rendelés létrehozása közben",
+      "paymentProcessing": "Hiba történt a fizetés feldolgozása közben."
+    },
+    "shipping": {
+      "title": "Szállítási mód",
+      "howPacketaWorks": "Hogyan működik a Packeta?",
+      "freeShippingEligible": "Ön jogosult az ingyenes szállításra.",
+      "free": "Ingyenes",
+      "change": "Módosítás",
+      "selectPickupPoint": "Átvételi pont kiválasztása",
+      "validation": {
+        "selectMethod": "Kérjük, válasszon szállítási módot"
+      },
+      "methods": {
+        "packetaPickup": {
+          "title": "Packeta - Átvételi pont",
+          "description": "Szállítás Packeta átvételi pontra"
+        },
+        "packetaHome": {
+          "title": "Packeta - Házhozszállítás",
+          "description": "Futárszolgálatos kézbesítés közvetlenül a címre"
+        }
+      }
+    },
+    "payment": {
+      "title": "Fizetési mód",
+      "recommended": "Ajánlott",
+      "secureTitle": "Biztonságos fizetés",
+      "secureDescription": "A fizetési adatok titkosítva vannak és SSL védelem alatt állnak.",
+      "sslNotice": "Minden fizetés 256 bites SSL titkosítással védett",
+      "validation": {
+        "selectMethod": "Kérjük, válasszon fizetési módot"
+      },
+      "methods": {
+        "card": {
+          "title": "Bankkártya",
+          "description": "Szinte bármilyen kártyával fizethet (Visa, Mastercard és mások). A fizetést a Stripe biztonságosan dolgozza fel."
+        },
+        "cod": {
+          "title": "Utánvét",
+          "description": "A fizetés kézbesítéskor történik (készpénz vagy kártya a futárnál/átvételi ponton). Z-BOX esetén az utánvétet előre online kell kifizetni (alkalmazás vagy fizetési link)."
+        }
+      }
+    },
+    "consents": {
+      "title": "Hozzájárulások",
+      "termsPrefix": "Elfogadom a",
+      "and": "és",
+      "termsLink": "felhasználási feltételeket",
+      "privacyLink": "adatvédelmi tájékoztatót",
+      "requiredError": "Ez a hozzájárulás kötelező a rendelés befejezéséhez",
+      "marketing": "Hozzájárulok marketingajánlatok és újdonságok emailben történő küldéséhez (opcionális)",
+      "requiredHint": "A rendelés befejezéséhez kötelező"
+    },
+    "summary": {
+      "title": "Rendelési összesítő",
+      "pricesIncludeVat": "Az árak az áfát tartalmazzák.",
+      "imageFallback": "IMG",
+      "actions": {
+        "decreaseQuantity": "{name} termék mennyiségének csökkentése",
+        "increaseQuantity": "{name} termék mennyiségének növelése",
+        "removeItem": "{name} eltávolítása"
+      },
+      "subtotalInclVat": "Részösszeg (áfával)",
+      "baseWithoutVat": "Áfa nélküli alap",
+      "vat": "ÁFA ({percent}%)",
+      "discount": "Kedvezmény",
+      "discountWithCode": "Kedvezmény ({code})",
+      "newSubtotalAfterDiscount": "Új részösszeg kedvezmény után (áfával)",
+      "baseAfterDiscount": "Kedvezmény utáni áfa nélküli alap",
+      "vatAfterDiscount": "ÁFA kedvezmény után ({percent}%)",
+      "shippingInclVat": "Szállítás (áfával)",
+      "shippingMethodNotSelected": "Szállítási mód még nincs kiválasztva",
+      "free": "Ingyenes",
+      "shippingVat": "Szállítás áfája ({percent}%)",
+      "freeShippingHint": "Vásároljon még {amount} € értékben, és ingyenes szállítást kap",
+      "total": "Összesen",
+      "customerNote": "Megjegyzés a rendeléshez (nem kötelező)",
+      "customerNotePlaceholder": "Bármilyen különleges utasítás a rendeléséhez...",
+      "processingOrder": "A rendelés feldolgozása...",
+      "salesSuspended": "Az értékesítés szünetel",
+      "completeOrder": "Rendelés befejezése • {total} €",
+      "sslEncryption": "SSL titkosítás",
+      "securePayment": "Biztonságos fizetés"
+    }
+  },
+  "stripePayment": {
+    "init": {
+      "emptyCart": "A kosár üres",
+      "missingBillingEmail": "Hiányzik a számlázási email cím",
+      "missingShippingMethod": "Válasszon szállítási módot"
+    },
+    "loading": {
+      "title": "Fizetés betöltése",
+      "description": "Kérjük, várjon..."
+    },
+    "errorModal": {
+      "title": "Fizetési hiba",
+      "fallback": "Váratlan hiba történt",
+      "close": "Bezárás",
+      "retry": "Próbálja újra"
+    },
+    "progress": {
+      "processingPayment": "Fizetés feldolgozása...",
+      "finalizingOrder": "Rendelés véglegesítése...",
+      "checkingOrderStatus": "Rendelés állapotának ellenőrzése..."
+    },
+    "errors": {
+      "initializationTitle": "Hiba a fizetés inicializálásakor",
+      "createPayment": "Hiba történt a fizetés létrehozása során",
+      "invalidServerResponse": "Érvénytelen válasz a szervertől",
+      "loadingPayment": "Hiba történt a fizetés betöltése során",
+      "paymentFailed": "Fizetési hiba történt.",
+      "unexpectedPaymentFailed": "Váratlan fizetési hiba történt.",
+      "orderProcessingEmail": "Rendelése feldolgozás alatt áll. Kérjük, ellenőrizze emailjét a visszaigazolásért.",
+      "processingFailed": "Hiba történt a fizetés feldolgozása során."
+    },
+    "secureStripe": "Biztonságos fizetés Stripe-on keresztül",
+    "sslEncryption": "SSL titkosítás",
+    "submitProcessing": "Fizetés feldolgozása...",
+    "submit": "Fizetés"
+  },
+  "verifyEmail": {
+    "title": "Email ellenőrzése",
+    "cta": "Tovább a bejelentkezéshez",
+    "messages": {
+      "pending": "Email ellenőrzése folyamatban...",
+      "missingParams": "Hiányzik a token vagy az email cím.",
+      "success": "Az email cím ellenőrzése sikeres volt. Most már bejelentkezhet.",
+      "failed": "Az ellenőrzés sikertelen volt"
+    },
+    "toast": {
+      "success": "Email ellenőrizve",
+      "error": "Az ellenőrzés sikertelen volt"
+    }
+  },
+  "account": {
+    "title": "Fiókom",
+    "logout": "Kijelentkezés",
+    "tabs": {
+      "orders": "Rendelések",
+      "account": "Fiókadatok"
+    },
+    "login": {
+      "title": "Bejelentkezés",
+      "username": "Felhasználónév",
+      "usernamePlaceholder": "Felhasználónév",
+      "passwordPlaceholder": "Jelszó",
+      "signingIn": "Bejelentkezés...",
+      "submit": "Bejelentkezés",
+      "forgotPassword": "Elfelejtette a jelszavát?",
+      "noAccount": "Nincs még fiókja?",
+      "register": "Regisztráljon"
+    },
+    "reset": {
+      "title": "Jelszó visszaállítása",
+      "emailPlaceholder": "Email",
+      "sending": "Küldés...",
+      "submit": "Jelszó-visszaállító link küldése",
+      "backToLogin": "Vissza a bejelentkezéshez"
+    },
+    "orders": {
+      "title": "Rendeléseim",
+      "orderNumber": "Rendelés #{id}",
+      "trackShipment": "Küldemény követése",
+      "downloadInvoice": "Számla letöltése",
+      "empty": "Még nincsenek rendelései",
+      "status": {
+        "processing": "Feldolgozás alatt",
+        "completed": "Teljesítve"
+      }
+    },
+    "accountDetails": {
+      "title": "Fiókadatok"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Jelszó",
+      "firstName": "Keresztnév",
+      "lastName": "Vezetéknév",
+      "phone": "Telefon",
+      "address": "Cím",
+      "city": "Város",
+      "postcode": "Irányítószám",
+      "billingAddress": "Számlázási cím"
+    },
+    "placeholders": {
+      "firstName": "Keresztnév",
+      "lastName": "Vezetéknév",
+      "email": "Email címe",
+      "phone": "+421 XXX XXX XXX",
+      "address": "Utca és házszám",
+      "city": "Város",
+      "postcode": "Irányítószám (5 számjegy)"
+    },
+    "actions": {
+      "cancel": "Mégse",
+      "edit": "Szerkesztés",
+      "saveChanges": "Módosítások mentése"
+    },
+    "errors": {
+      "fetchOrders": "Nem sikerült lekérni a rendeléseket",
+      "resetEmailSend": "Nem sikerült elküldeni a jelszó-visszaállító emailt"
+    },
+    "toasts": {
+      "fetchOrdersError": "Hiba történt a rendelések betöltésekor",
+      "loginSuccess": "Sikeres bejelentkezés",
+      "loginErrorTitle": "A bejelentkezés sikertelen",
+      "loginErrorDescription": "Hibás bejelentkezési adatok vagy egyéb hiba történt",
+      "logoutSuccess": "Sikeres kijelentkezés",
+      "logoutError": "A kijelentkezés sikertelen",
+      "billingSavedLocal": "Az adatok csak helyben lettek elmentve",
+      "billingSaveError": "Nem sikerült frissíteni az adatokat",
+      "resetEmailSent": "A jelszó-visszaállító email elküldve"
     }
   },
   "footer": {

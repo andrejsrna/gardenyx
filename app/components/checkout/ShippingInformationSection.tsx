@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
 
 interface ShippingInformationSectionProps {
@@ -22,12 +23,14 @@ export default function ShippingInformationSection({
   onInputChange,
   onSameAsShippingChange,
 }: ShippingInformationSectionProps) {
+  const t = useTranslations('checkout.shippingInformation');
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Adresa doručenia</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('title')}</h2>
       {formData.shipping_method === 'packeta_home' && (
         <p className="mb-4 text-sm text-gray-600">
-          Pri doručení domov (Packeta) zadajte do poľa „Adresa“ ulicu a číslo domu (napr. Mládeže 559).
+          {t('packetaHomeHint')}
         </p>
       )}
       
@@ -40,7 +43,7 @@ export default function ShippingInformationSection({
             onChange={onSameAsShippingChange}
             className="rounded border-gray-300 text-green-600 focus:ring-green-500"
           />
-          <span className="text-sm font-medium text-gray-700">Doručovacia adresa je rovnaká ako fakturačná</span>
+          <span className="text-sm font-medium text-gray-700">{t('sameAsBilling')}</span>
         </label>
       </div>
       
@@ -49,13 +52,13 @@ export default function ShippingInformationSection({
           {/* First Name */}
           <div>
             <label htmlFor="shipping-first_name" className="block text-sm font-medium text-gray-700">
-              Meno <span className="text-red-500">*</span>
+              {t('fields.firstName')} <span className="text-red-500">*</span>
             </label>
             <input
               id="shipping-first_name"
               name="first_name"
               type="text"
-              placeholder="Jan"
+              placeholder={t('placeholders.firstName')}
               value={formData.shipping.first_name}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -69,13 +72,13 @@ export default function ShippingInformationSection({
           {/* Last Name */}
           <div>
             <label htmlFor="shipping-last_name" className="block text-sm font-medium text-gray-700">
-              Priezvisko <span className="text-red-500">*</span>
+              {t('fields.lastName')} <span className="text-red-500">*</span>
             </label>
             <input
               id="shipping-last_name"
               name="last_name"
               type="text"
-              placeholder="Novák"
+              placeholder={t('placeholders.lastName')}
               value={formData.shipping.last_name}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -88,12 +91,12 @@ export default function ShippingInformationSection({
 
           {/* Company (optional) */}
           <div className="md:col-span-2">
-            <label htmlFor="shipping-company" className="block text-sm font-medium text-gray-700">Názov firmy (voliteľné)</label>
+            <label htmlFor="shipping-company" className="block text-sm font-medium text-gray-700">{t('fields.companyOptional')}</label>
             <input
               id="shipping-company"
               name="company"
               type="text"
-              placeholder="Názov firmy"
+              placeholder={t('placeholders.company')}
               value={formData.shipping.company}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -106,13 +109,13 @@ export default function ShippingInformationSection({
           {/* Address 1 (Street) */}
           <div className="md:col-span-2">
             <label htmlFor="shipping-address_1" className="block text-sm font-medium text-gray-700">
-              Adresa <span className="text-red-500">*</span>
+              {t('fields.address')} <span className="text-red-500">*</span>
             </label>
             <input
               id="shipping-address_1"
               name="address_1"
               type="text"
-              placeholder="Názov ulice a číslo domu"
+              placeholder={t('placeholders.address')}
               value={formData.shipping.address_1}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -125,12 +128,12 @@ export default function ShippingInformationSection({
 
           {/* Address 2 (Apartment/Suite) */}
           <div className="md:col-span-2">
-            <label htmlFor="shipping-address_2" className="block text-sm font-medium text-gray-700">Doplnková adresa</label>
+            <label htmlFor="shipping-address_2" className="block text-sm font-medium text-gray-700">{t('fields.address2')}</label>
             <input
               id="shipping-address_2"
               name="address_2"
               type="text"
-              placeholder="Byt / poschodie (voliteľné)"
+              placeholder={t('placeholders.address2')}
               value={formData.shipping.address_2 || ''}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -143,13 +146,13 @@ export default function ShippingInformationSection({
           {/* City */}
           <div>
             <label htmlFor="shipping-city" className="block text-sm font-medium text-gray-700">
-              Mesto <span className="text-red-500">*</span>
+              {t('fields.city')} <span className="text-red-500">*</span>
             </label>
             <input
               id="shipping-city"
               name="city"
               type="text"
-              placeholder="Bratislava"
+              placeholder={t('placeholders.city')}
               value={formData.shipping.city}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
@@ -163,7 +166,7 @@ export default function ShippingInformationSection({
           {/* Postcode */}
           <div>
             <label htmlFor="shipping-postcode" className="block text-sm font-medium text-gray-700">
-              PSČ <span className="text-red-500">*</span>
+              {t('fields.postcode')} <span className="text-red-500">*</span>
             </label>
             <input
               id="shipping-postcode"
@@ -174,7 +177,7 @@ export default function ShippingInformationSection({
               pattern="\d{5}"
               maxLength={5}
               placeholder="01000"
-              title="PSČ musí obsahovať 5 číslic"
+              title={t('postcodeTitle')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
                 formErrors?.['shipping.postcode'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}

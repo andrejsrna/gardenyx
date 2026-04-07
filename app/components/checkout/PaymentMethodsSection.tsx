@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
 import { HandCoins } from 'lucide-react';
 
@@ -18,12 +19,12 @@ export default function PaymentMethodsSection({
   formErrors,
   onInputChange,
 }: PaymentMethodsSectionProps) {
+  const t = useTranslations('checkout.payment');
   const paymentMethods = [
     {
       id: 'stripe',
-      title: 'Platobná karta',
-      description:
-        'Zaplatíte takmer všetkými kartami (Visa, Mastercard a ďalšie). Platbu bezpečne spracováva spoločnosť Stripe.',
+      title: t('methods.card.title'),
+      description: t('methods.card.description'),
       icon: (
         <svg className="w-6 h-6 shrink-0 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
           <rect x="3" y="5" width="18" height="14" rx="2" ry="2" />
@@ -35,8 +36,8 @@ export default function PaymentMethodsSection({
     },
     {
       id: 'cod',
-      title: 'Dobierka',
-      description: 'Zaplatíte pri doručení (hotovosť alebo karta u kuriéra/výdajného miesta). Pri Z‑BOXe je potrebné uhradiť dobierku vopred online (aplikácia alebo platobný odkaz).',
+      title: t('methods.cod.title'),
+      description: t('methods.cod.description'),
       icon: <HandCoins className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
       recommended: false,
     },
@@ -44,7 +45,7 @@ export default function PaymentMethodsSection({
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Spôsob platby</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('title')}</h2>
       
       <div className="space-y-3">
         {paymentMethods.map((method) => (
@@ -72,7 +73,7 @@ export default function PaymentMethodsSection({
                         <span className="font-medium text-gray-900">{method.title}</span>
                         {method.recommended && (
                           <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
-                            Odporúčané
+                            {t('recommended')}
                           </span>
                         )}
                       </div>
@@ -91,8 +92,8 @@ export default function PaymentMethodsSection({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div className="text-sm">
-                    <p className="font-medium text-green-800">Bezpečná platba</p>
-                    <p className="text-green-700">Vaše platobné údaje sú šifrované a chránené SSL protokolom.</p>
+                    <p className="font-medium text-green-800">{t('secureTitle')}</p>
+                    <p className="text-green-700">{t('secureDescription')}</p>
                   </div>
                 </div>
               </div>
@@ -105,7 +106,7 @@ export default function PaymentMethodsSection({
       
       {formErrors?.['payment_method'] && (
         <p className="mt-2 text-sm text-red-600">
-          Prosím, vyberte spôsob platby
+          {t('validation.selectMethod')}
         </p>
       )}
       
@@ -114,7 +115,7 @@ export default function PaymentMethodsSection({
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
-          <span>Všetky platby sú zabezpečené 256-bit SSL šifrovaním</span>
+          <span>{t('sslNotice')}</span>
         </div>
       </div>
     </div>
