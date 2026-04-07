@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { tracking } from '../../lib/tracking';
-import { reportPurchaseConversion } from '../../components/GoogleAds';
+import { tracking } from '../../../lib/tracking';
+import { reportPurchaseConversion } from '../../../components/GoogleAds';
 
 type SuccessTrackingProps = {
   orderId: string;
@@ -34,4 +34,3 @@ export default function SuccessTracking({ orderId, total, tax, shipping, items }
 
   return null;
 }
-

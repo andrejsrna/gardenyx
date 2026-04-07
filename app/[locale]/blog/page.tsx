@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
-import { parseHTML } from '../lib/html-parser';
-import { getPaginatedPosts, getRankMathSEO, getAllTags, getTagBySlug, getCategories } from '../lib/content';
-import BlogSchema from '../components/seo/BlogSchema';
-import BreadcrumbSchema from '../components/seo/BreadcrumbSchema';
-import BlogHeader from '../components/blog/BlogHeader';
-import FilterPanel from '../components/blog/FilterPanel';
-import PostList from '../components/blog/PostList';
-import Pagination from '../components/blog/Pagination';
+import { parseHTML } from '../../lib/html-parser';
+import { getPaginatedPosts, getRankMathSEO, getAllTags, getTagBySlug, getCategories } from '../../lib/content';
+import BlogSchema from '../../components/seo/BlogSchema';
+import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema';
+import BlogHeader from '../../components/blog/BlogHeader';
+import FilterPanel from '../../components/blog/FilterPanel';
+import PostList from '../../components/blog/PostList';
+import Pagination from '../../components/blog/Pagination';
 
 const DEFAULT_TITLE = 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa';
 const DEFAULT_DESCRIPTION = 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.';

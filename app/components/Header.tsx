@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 import CartButton from './CartButton';
 import { safeGetItem } from '../lib/utils/safe-local-storage';
 import { useTranslations } from 'next-intl';
-import { Link, useRouter, usePathname } from '../../i18n/navigation';
+import { Link } from '../../i18n/navigation';
 
 const LOCALES = [
   { code: 'sk', label: 'SK', name: 'Slovenčina' },
@@ -18,8 +18,6 @@ const LOCALES = [
 function LanguageSwitcher({ locale }: { locale: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -32,7 +30,17 @@ function LanguageSwitcher({ locale }: { locale: string }) {
   }, []);
 
   function switchLocale(newLocale: string) {
-    router.push(pathname, { locale: newLocale });
+    if (typeof window === 'undefined') return;
+
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    if (segments.length > 0 && LOCALES.some(({ code }) => code === segments[0])) {
+      segments[0] = newLocale;
+    } else {
+      segments.unshift(newLocale);
+    }
+
+    const nextPath = `/${segments.join('/')}`;
+    window.location.assign(`${nextPath}${window.location.search}`);
     setOpen(false);
   }
 
@@ -78,7 +86,7 @@ export default function Header({ locale }: { locale: string }) {
     { title: t('shop'), href: '/kupit' },
     { title: t('hakofytFertilizers'), href: '/hnojiva-hakofyt' },
     { title: t('contact'), href: '/kontakt' },
-  ];
+  ] as const;
 
   useEffect(() => {
     if (isMobileMenuOpen) {

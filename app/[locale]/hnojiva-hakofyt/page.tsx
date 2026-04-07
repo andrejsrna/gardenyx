@@ -3,7 +3,7 @@ import NextLink from 'next/link';
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import ProductShowcaseSection from '../../components/ProductShowcaseSection';
-import { getAllProducts } from '../../lib/products';
+import { getAllProducts, type LocalProduct } from '../../lib/products';
 
 const FEATURED_PRODUCT_SLUGS = [
   'hakofyt-b-okrasne-dreviny',
@@ -68,7 +68,9 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
 
   const allProducts = await getAllProducts(locale);
   const productsBySlug = new Map(allProducts.map((product) => [product.slug, product] as const));
-  const featuredProducts = FEATURED_PRODUCT_SLUGS.map((slug) => productsBySlug.get(slug)).filter(Boolean);
+  const featuredProducts = FEATURED_PRODUCT_SLUGS
+    .map((slug) => productsBySlug.get(slug))
+    .filter((product): product is LocalProduct => Boolean(product));
 
   const benefits = [
     {

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Accordion from '../../casto-kladene-otazky/Accordion';
+import Accordion from '../Accordion';
 
 // Define the FAQ data directly in this component
 const faqs = [
@@ -43,8 +43,8 @@ export default function FAQ() {
             {faqs.map((faq, index) => (
               <Accordion
                 key={index}
-                question={faq.question}
-                answer={faq.answer}
+                title={faq.question}
+                content={faq.answer}
               />
             ))}
           </div>

@@ -1,5 +1,6 @@
 import { Award, Check, Clock, Pill, Sparkles } from 'lucide-react';
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { Link } from '../../i18n/navigation';
 
 const STATS = [
@@ -79,14 +80,14 @@ export default function Hero() {
                     Pozrieť produkty
                   </span>
                 </Link>
-                <Link
+                <NextLink
                   href="https://www.youtube.com/watch?v=wgRs0hHTfDo"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-full border border-emerald-200/80 bg-white/70 px-7 py-3 text-sm font-semibold text-emerald-700 transition-all hover:border-emerald-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                 >
                   Ako to funguje
-                </Link>
+                </NextLink>
               </div>
 
               <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-slate-500">

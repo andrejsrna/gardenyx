@@ -174,8 +174,6 @@ export default function OrderSummarySection({
           <span className="font-medium">
             {shippingCostBase === null 
               ? <span className="text-xs text-gray-500">{t('shippingMethodNotSelected')}</span> 
-              : shippingCostBase === 0 
-              ? t('free') 
               : `${shippingCostWithVat.toFixed(2)} €`}
           </span>
         </div>

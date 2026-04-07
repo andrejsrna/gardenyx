@@ -8,7 +8,7 @@ import { Link } from '../../i18n/navigation';
 
 interface ProductCardProps {
   product: Product;
-  locale: string;
+  locale?: string;
   isPriority?: boolean;
   isHero?: boolean;
 }
