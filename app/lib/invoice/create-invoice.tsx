@@ -176,13 +176,12 @@ const styles = StyleSheet.create({
 export type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
 
 const COMPANY_INFO = [
-  'Najsilnejšia kĺbová výživa',
-  'Enhold s.r.o.',
-  'Drobného 1900/2',
-  '84102 Bratislava – Dúbravka',
-  'IČO: 55400817',
-  'DIČ: 2121985954',
-  'IČDPH: SK2121985954'
+  'GardenYX',
+  'JOINA Garden, s. r. o.',
+  'Karpatské námestie 7770/10A',
+  '831 06 Bratislava – mestská časť Rača',
+  'IČO: 57 313 504',
+  'E-mail: support@gardenyx.eu'
 ];
 
 const toNumber = (value: string | number | Prisma.Decimal | undefined | null) => {
@@ -283,7 +282,7 @@ const InvoiceDocument = ({
               <Text style={styles.badge}>FAKTÚRA</Text>
               <Text style={styles.title}>Daňový doklad</Text>
             </View>
-            <Text style={styles.subtitle}>Najsilnejšia kĺbová výživa / Enhold s.r.o.</Text>
+            <Text style={styles.subtitle}>GardenYX / JOINA Garden, s. r. o.</Text>
           </View>
         </View>
 
@@ -375,7 +374,7 @@ const InvoiceDocument = ({
           </View>
         </View>
 
-        <Text style={styles.footer}>Ďakujeme za váš nákup. V prípade otázok kontaktujte info@fitdoplnky.sk.</Text>
+        <Text style={styles.footer}>Ďakujeme za váš nákup. V prípade otázok kontaktujte support@gardenyx.eu.</Text>
       </Page>
     </Document>
   );
@@ -457,7 +456,7 @@ export async function createInvoiceForOrder(
     return null;
   }
 
-  const invoiceNumber = `NKV${order.orderNumber || order.id}`;
+  const invoiceNumber = `GYX${order.orderNumber || order.id}`;
   const issueDate = new Date();
   const orderDate = new Date(order.createdAt);
   const buffer = await renderInvoicePdf(order, invoiceNumber, issueDate, orderDate);

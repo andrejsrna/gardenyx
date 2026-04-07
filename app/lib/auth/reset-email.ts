@@ -32,7 +32,7 @@ export async function sendResetEmail(params: ResetEmailParams) {
   }
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const apiInstance = new TransactionalEmailsApi();
   apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);

@@ -8,6 +8,29 @@ type OrderWithRelations = Order & {
 };
 
 const getBrevoApiKey = () => process.env.BREVO_API_KEY?.trim().replace(/^['"]|['"]$/g, '');
+const getOrderNumberLabel = (order: OrderWithRelations) => `#${order.orderNumber || order.id}`;
+
+const SHIPPING_LABELS: Record<string, string> = {
+  packeta_pickup: 'Packeta - Výdajné miesto',
+  packeta_home: 'Packeta - Doručenie na adresu',
+};
+
+const PAYMENT_LABELS: Record<string, string> = {
+  cod: 'Dobierka',
+  stripe: 'Platba kartou',
+  bank_transfer: 'Bankový prevod',
+  other: 'Iná platobná metóda',
+};
+
+const getShippingLabel = (shippingMethod?: string | null) => {
+  if (!shippingMethod) return '—';
+  return SHIPPING_LABELS[shippingMethod] || shippingMethod;
+};
+
+const getPaymentLabel = (paymentMethod?: string | null) => {
+  if (!paymentMethod) return '—';
+  return PAYMENT_LABELS[paymentMethod] || paymentMethod;
+};
 
 const formatCurrency = (value: unknown) => {
   const num = typeof value === 'string' || typeof value === 'number'
@@ -30,8 +53,8 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
   `).join('');
 
   const summary = keyValueTable([
-    { label: 'Spôsob platby', value: order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou' },
-    { label: 'Doprava', value: order.shippingMethod || '—' },
+    { label: 'Spôsob platby', value: getPaymentLabel(order.paymentMethod) },
+    { label: 'Doprava', value: getShippingLabel(order.shippingMethod) },
     { label: 'Suma', value: formatCurrency(order.total) }
   ]);
 
@@ -82,7 +105,7 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
   `;
 
   const content = `
-    ${infoNote('Ďakujeme, že ste si vybrali naše produkty. Tu je prehľad vašej objednávky – nech máte všetko po ruke.')}
+    ${infoNote('Ďakujeme za objednávku v GardenYX. Tu je prehľad vašej objednávky, aby ste mali všetko dôležité po ruke.')}
     ${summary}
     ${itemsTable}
     <h3 style="margin:18px 0 8px 0;color:#0f172a;">Adresy</h3>
@@ -92,11 +115,11 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
   const greeting = billing?.firstName ? `Ahoj ${billing.firstName},` : 'Ahoj,';
 
   return renderEmail({
-    title: `Potvrdenie objednávky #${order.id}`,
-    preheader: `Objednávka #${order.id} bola potvrdená.`,
+    title: `Potvrdenie objednávky ${getOrderNumberLabel(order)}`,
+    preheader: `Objednávka ${getOrderNumberLabel(order)} bola prijatá.`,
     greeting,
     content,
-    footerNote: 'Ak máte otázky alebo chcete niečo zmeniť, stačí odpovedať na tento email.'
+    footerNote: 'Ak máte otázky k objednávke, odpovedzte na tento email alebo nás kontaktujte na support@gardenyx.eu.'
   });
 };
 
@@ -108,10 +131,10 @@ export async function sendOrderConfirmationEmail(order: OrderWithRelations, to: 
   api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const email = new SendSmtpEmail();
-  email.subject = `Potvrdenie objednávky #${order.id}`;
+  email.subject = `GardenYX: potvrdenie objednávky ${getOrderNumberLabel(order)}`;
   email.htmlContent = buildHtml(order, to);
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: to }];
@@ -120,7 +143,7 @@ export async function sendOrderConfirmationEmail(order: OrderWithRelations, to: 
 }
 
 export async function sendOrderNotificationToAdmin(order: OrderWithRelations, customerEmail?: string) {
-  const adminEmail = process.env.ORDER_NOTIFY_EMAIL || 'info@fitdoplnky.sk';
+  const adminEmail = process.env.ORDER_NOTIFY_EMAIL || 'support@gardenyx.eu';
   const apiKey = getBrevoApiKey();
   if (!apiKey || !adminEmail) return;
 
@@ -128,12 +151,12 @@ export async function sendOrderNotificationToAdmin(order: OrderWithRelations, cu
   api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const summary = keyValueTable([
     { label: 'Suma', value: formatCurrency(order.total) },
-    { label: 'Spôsob platby', value: order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou' },
-    { label: 'Doprava', value: order.shippingMethod || '—' }
+    { label: 'Spôsob platby', value: getPaymentLabel(order.paymentMethod) },
+    { label: 'Doprava', value: getShippingLabel(order.shippingMethod) }
   ]);
 
   const itemsHtml = order.items.map(item => `
@@ -166,10 +189,10 @@ export async function sendOrderNotificationToAdmin(order: OrderWithRelations, cu
   `;
 
   const email = new SendSmtpEmail();
-  email.subject = `Nová objednávka #${order.id}`;
+  email.subject = `GardenYX admin: nová objednávka ${getOrderNumberLabel(order)}`;
   email.htmlContent = renderEmail({
-    title: `Nová objednávka #${order.id}`,
-    preheader: `Nová objednávka v hodnote ${formatCurrency(order.total)}`,
+    title: `Nová objednávka ${getOrderNumberLabel(order)}`,
+    preheader: `Nová objednávka v GardenYX v hodnote ${formatCurrency(order.total)}`,
     content,
     highlight: `Suma ${formatCurrency(order.total)}`,
     footerNote: 'Pozrite admin DB na detaily.'
@@ -220,7 +243,7 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
   api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
   const status = statusTexts[code] || `Status ${code}`;
   const trackingUrl = barcode ? `https://tracking.packeta.com/sk/?id=${barcode}` : null;
 
@@ -231,9 +254,9 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
   `;
 
   const email = new SendSmtpEmail();
-  email.subject = `Aktualizácia zásielky: ${status}`;
+  email.subject = `GardenYX: aktualizácia zásielky ${getOrderNumberLabel(order)}`;
   email.htmlContent = renderEmail({
-    title: `Stav zásielky k objednávke #${order.id}`,
+    title: `Stav zásielky k objednávke ${getOrderNumberLabel(order)}`,
     preheader: `Aktuálny stav: ${status}`,
     content,
     footerNote: 'Sme tu pre vás – odpovedzte, ak potrebujete upresniť doručenie.'
@@ -252,7 +275,7 @@ export async function sendReturnNoticeEmail(order: OrderWithRelations, to: strin
   api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const rows = [
     { label: 'Objednávka', value: `#${order.orderNumber}` },
@@ -270,7 +293,7 @@ export async function sendReturnNoticeEmail(order: OrderWithRelations, to: strin
   const greeting = billing?.firstName ? `Ahoj ${billing.firstName},` : 'Ahoj,';
 
   const email = new SendSmtpEmail();
-  email.subject = `Zásielka k objednávke #${order.orderNumber} sa vrátila`;
+  email.subject = `GardenYX: zásielka k objednávke ${getOrderNumberLabel(order)} sa vrátila`;
   email.htmlContent = renderEmail({
     title: 'Zásielka sa vrátila',
     preheader: 'Neprevzatá zásielka – daj nám vedieť, ako pokračovať',
@@ -293,12 +316,12 @@ export async function sendInvoiceLinkEmail(order: OrderWithRelations, to: string
   api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
 
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
-  const senderName = process.env.BREVO_SENDER_NAME || 'NKV';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
 
   const rows = [
-    { label: 'Objednávka', value: `#${order.orderNumber}` },
-    { label: 'Spôsob platby', value: order.paymentMethod === 'cod' ? 'Dobierka' : 'Platba kartou' },
-    { label: 'Doprava', value: order.shippingMethod || '—' },
+    { label: 'Objednávka', value: getOrderNumberLabel(order) },
+    { label: 'Spôsob platby', value: getPaymentLabel(order.paymentMethod) },
+    { label: 'Doprava', value: getShippingLabel(order.shippingMethod) },
     { label: 'Suma', value: `${order.total.toString()} ${order.currency}` }
   ];
 
@@ -312,7 +335,7 @@ export async function sendInvoiceLinkEmail(order: OrderWithRelations, to: string
   const footerNote = 'Faktúru nájdete aj vo svojom účte pod objednávkami.';
 
   const email = new SendSmtpEmail();
-  email.subject = `Faktúra ${invoiceNumber} k objednávke #${order.orderNumber}`;
+  email.subject = `GardenYX: faktúra ${invoiceNumber} k objednávke ${getOrderNumberLabel(order)}`;
   email.htmlContent = renderEmail({
     title: 'Faktúra je pripravená',
     preheader: `Stiahni faktúru ${invoiceNumber}`,
