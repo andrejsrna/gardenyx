@@ -33,20 +33,31 @@ const logPaymentEvent = (type: string, data: Record<string, unknown>) => {
 
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
-if (!stripePublishableKey) {
-  throw new Error('Missing Stripe publishable key');
+function getStripeConfigError(key?: string): string | null {
+  if (!key) {
+    return 'Missing Stripe publishable key';
+  }
+
+  if (!key.startsWith('pk_')) {
+    return 'Invalid Stripe publishable key format';
+  }
+
+  if (process.env.NODE_ENV === 'production' && key.startsWith('pk_test_')) {
+    return 'Stripe publishable key is a test key (pk_test_) but NODE_ENV=production. Set a live key (pk_live_).';
+  }
+
+  return null;
 }
 
-if (!stripePublishableKey.startsWith('pk_')) {
-  throw new Error('Invalid Stripe publishable key format');
+const stripeConfigError = getStripeConfigError(stripePublishableKey);
+
+if (stripeConfigError) {
+  console.error(stripeConfigError);
 }
 
-// Guardrail: prevent accidentally running production with test keys.
-if (process.env.NODE_ENV === 'production' && stripePublishableKey.startsWith('pk_test_')) {
-  throw new Error('Stripe publishable key is a test key (pk_test_) but NODE_ENV=production. Set a live key (pk_live_).');
-}
-
-const stripePromise = loadStripe(stripePublishableKey);
+const stripePromise = stripeConfigError || !stripePublishableKey
+  ? null
+  : loadStripe(stripePublishableKey);
 
 interface StripePaymentFormProps {
   clientSecret: string;
@@ -491,7 +502,7 @@ export default function StripePayment({
   onClose 
 }: StripePaymentProps) {
   const t = useTranslations('stripePayment');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!stripeConfigError);
   
   const abortControllerRef = useRef<AbortController | null>(null);
   
@@ -560,6 +571,10 @@ export default function StripePayment({
 
   useEffect(() => {
     if (isCreatingPaymentIntent || clientSecret) {
+      return;
+    }
+
+    if (stripeConfigError) {
       return;
     }
 
@@ -672,6 +687,8 @@ export default function StripePayment({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stableRequestData, billing?.email, shippingMethod, stableItems.length, discountAmount, isBusiness, onError, t]);
 
+  const effectiveError = stripeConfigError ? t('errors.loadingPayment') : error;
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -684,7 +701,7 @@ export default function StripePayment({
     );
   }
 
-  if (error || !clientSecret) {
+  if (effectiveError || !clientSecret) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-8 shadow-xl max-w-md mx-4">
@@ -695,7 +712,7 @@ export default function StripePayment({
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('errorModal.title')}</h3>
-            <p className="text-gray-600">{error || t('errorModal.fallback')}</p>
+            <p className="text-gray-600">{effectiveError || t('errorModal.fallback')}</p>
           </div>
           <div className="flex space-x-3">
             <button

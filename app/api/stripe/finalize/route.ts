@@ -12,8 +12,8 @@ import { netFromGross, taxFromGross } from '@/app/lib/pricing/math';
 const creatingByPi = new Set<string>();
 
 export async function POST(request: Request) {
-  const stripe = getStripe();
   try {
+    const stripe = getStripe();
     // Check if sales are suspended
     if (isSalesSuspended()) {
       return NextResponse.json(

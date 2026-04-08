@@ -33,8 +33,8 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request) {
-    const stripe = getStripe();
     try {
+        const stripe = getStripe();
         // Check if sales are suspended
         if (isSalesSuspended()) {
             return NextResponse.json(
