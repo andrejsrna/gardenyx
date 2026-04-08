@@ -248,7 +248,11 @@ function getLegacyShopifyRedirect(request: NextRequest): NextResponse | null {
   if (first === 'account' && second === 'register') {
     return buildRedirectResponse(request, getLocalizedPath(locale, 'register'));
   }
-  if (first === 'cart' || first === 'checkout') {
+  // Skip legacy redirect if this is already the correct localized checkout path
+  // e.g. /en/checkout is valid — redirecting it to /en/checkout would loop
+  const localizedCheckoutSlugs: Record<string, string> = { sk: 'pokladna', en: 'checkout', hu: 'penztar' };
+  const isAlreadyLocalizedCheckout = first === localizedCheckoutSlugs[locale];
+  if (!isAlreadyLocalizedCheckout && (first === 'cart' || first === 'checkout')) {
     return buildRedirectResponse(request, getLocalizedPath(locale, 'checkout'));
   }
   if (first === 'search') {
