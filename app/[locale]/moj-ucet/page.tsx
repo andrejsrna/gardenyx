@@ -367,7 +367,7 @@ export default function AccountPage() {
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Navigation */}
-        <div className="w-full md:w-64 space-y-2">
+        <div className="w-full md:w-64 flex flex-col gap-2">
           <button
             onClick={() => setActiveTab('orders')}
             className={`w-full text-left px-4 py-2 rounded-lg ${
@@ -388,6 +388,17 @@ export default function AccountPage() {
           >
             {t('tabs.account')}
           </button>
+          <div className="mt-auto pt-4 border-t border-gray-200">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-left text-red-600 hover:bg-red-50 transition-colors text-sm font-medium"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 shrink-0">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+              </svg>
+              {t('logout')}
+            </button>
+          </div>
         </div>
 
         {/* Content */}
