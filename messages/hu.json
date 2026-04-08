@@ -608,5 +608,35 @@
   },
   "common": {
     "loading": "Betöltés..."
+  },
+  "registration": {
+    "title": "Fiók létrehozása",
+    "subtitle": "Regisztráljon és erősítse meg email-címét.",
+    "fields": {
+      "firstName": "Keresztnév",
+      "lastName": "Vezetéknév",
+      "email": "Email",
+      "password": "Jelszó"
+    },
+    "hints": {
+      "email": "Használja a rendelésekhez megadott email-címét.",
+      "password": "Min. 8 karakter, javasoljuk betűk és számok kombinációját."
+    },
+    "consent": "Hozzájárulok a személyes adatok kezeléséhez és az általános szerződési feltételekhez.",
+    "newsletter": "Szeretnék hírlevelet kapni az újdonságokról és kedvezményekről.",
+    "submit": "Regisztráció",
+    "submitting": "Regisztrálás...",
+    "success": {
+      "title": "Sikeres regisztráció",
+      "message": "Elküldtük az ellenőrző emailt a(z) {email} címre. A regisztráció befejezéséhez kattintson a linkre."
+    },
+    "errors": {
+      "invalidEmail": "Kérjük, adjon meg érvényes email-címet",
+      "passwordTooShort": "A jelszónak legalább 8 karakterből kell állnia",
+      "failed": "A regisztráció sikertelen"
+    },
+    "toasts": {
+      "success": "Sikeres regisztráció. Ellenőrizze email-fiókját a megerősítéshez."
+    }
   }
 }

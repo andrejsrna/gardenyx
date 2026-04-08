@@ -608,5 +608,35 @@
   },
   "common": {
     "loading": "Loading..."
+  },
+  "registration": {
+    "title": "Create account",
+    "subtitle": "Register and verify your email.",
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "password": "Password"
+    },
+    "hints": {
+      "email": "Use the email you used when placing orders.",
+      "password": "Min. 8 characters, we recommend a mix of letters and numbers."
+    },
+    "consent": "I agree to the processing of personal data and terms of service.",
+    "newsletter": "I want to receive the newsletter with news and discounts.",
+    "submit": "Register",
+    "submitting": "Registering...",
+    "success": {
+      "title": "Registration successful",
+      "message": "We have sent a verification email to {email}. Complete your registration by clicking the link."
+    },
+    "errors": {
+      "invalidEmail": "Please enter a valid email address",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "failed": "Registration failed"
+    },
+    "toasts": {
+      "success": "Registration successful. Check your email for verification."
+    }
   }
 }

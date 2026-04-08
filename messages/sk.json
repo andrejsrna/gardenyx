@@ -608,5 +608,35 @@
   },
   "common": {
     "loading": "Načítava sa..."
+  },
+  "registration": {
+    "title": "Vytvoriť účet",
+    "subtitle": "Zaregistrujte sa a overte svoj email.",
+    "fields": {
+      "firstName": "Meno",
+      "lastName": "Priezvisko",
+      "email": "Email",
+      "password": "Heslo"
+    },
+    "hints": {
+      "email": "Použite email, ktorý ste použili pri objednávkach.",
+      "password": "Min. 8 znakov, odporúčame kombináciu písmen a číslic."
+    },
+    "consent": "Súhlasím so spracovaním osobných údajov a obchodnými podmienkami.",
+    "newsletter": "Chcem dostávať newsletter s novinkami a zľavami.",
+    "submit": "Registrovať",
+    "submitting": "Registrujem...",
+    "success": {
+      "title": "Registrácia úspešná",
+      "message": "Na {email} sme poslali overovací email. Dokončite registráciu kliknutím na link."
+    },
+    "errors": {
+      "invalidEmail": "Zadajte platný email",
+      "passwordTooShort": "Heslo musí mať aspoň 8 znakov",
+      "failed": "Registrácia zlyhala"
+    },
+    "toasts": {
+      "success": "Registrácia úspešná. Skontrolujte email pre overenie."
+    }
   }
 }
