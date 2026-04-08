@@ -21,11 +21,15 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: 'najsilnejsiaklbovavyziva.sk',
+        hostname: 'www.gardenyx.eu',
         protocol: 'https' as const,
       },
       {
-        hostname: 'cdn.najsilnejsiaklbovavyziva.sk',
+        hostname: 'cdn.gardenyx.eu',
+        protocol: 'https' as const,
+      },
+      {
+        hostname: '*.r2.cloudflarestorage.com',
         protocol: 'https' as const,
       },
       {

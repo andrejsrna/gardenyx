@@ -20,6 +20,6 @@ export default function robots(): MetadataRoute.Robots {
         '/sentry-example*',
       ],
     },
-    sitemap: 'https://najsilnejsiaklbovavyziva.sk/sitemap.xml',
+    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu'}/sitemap.xml`,
   };
 } 
