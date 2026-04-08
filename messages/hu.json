@@ -50,8 +50,9 @@
       "paragraph2": "Ezért a Hakofyt műtrágyák fejlesztésének célja a lehető legkomplexebb növénytáplálás biztosítása volt. Ennek megfelelően az optimális arányú makroelemek mellett a Hakofyt fontos mikroelemek komplexét is tartalmazza, konkrétan vasat, cinket, mangánt, rezet, bórt és molibdént, amelyek nélkülözhetetlenek az egészséges és minőségi növényi élethez."
     },
     "featuredProducts": {
-      "eyebrow": "Kiemelt termékek",
-      "title": "Válogatott Hakofyt termékek",
+      "eyebrow": "Teljes kínálat",
+      "title": "Az összes Hakofyt műtrágya",
+      "description": "Nézze meg a Hakofyt lombtrágyák teljes választékát virágokhoz, díszfákhoz, gyümölcshöz, zöldségekhez és gyephez.",
       "detail": "Termék részletei",
       "cta": "Összes termék megtekintése"
     },
@@ -102,6 +103,13 @@
   "shop": {
     "title": "Termékeink",
     "intro": "GardenYX lombtrágyák, növekedési stimulátorok és növényvédő készítmények.",
+    "filters": {
+      "title": "Szűrés kategória szerint",
+      "all": "Összes termék",
+      "allTracking": "Összes termék",
+      "results": "{count, plural, one {# termék} other {# termék}}",
+      "empty": "A kiválasztott kategóriában nem találhatók termékek."
+    },
     "error": {
       "title": "Hoppá! Valami hiba történt",
       "retry": "Próbálja újra",

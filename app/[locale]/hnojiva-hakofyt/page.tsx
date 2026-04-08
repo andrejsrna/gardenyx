@@ -3,12 +3,12 @@ import NextLink from 'next/link';
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import ProductShowcaseSection from '../../components/ProductShowcaseSection';
-import { getAllProducts, type LocalProduct } from '../../lib/products';
+import { getAllProducts } from '../../lib/products';
 
-const FEATURED_PRODUCT_SLUGS = [
-  'hakofyt-b-okrasne-dreviny',
-  'hakofyt-b-kvety',
-  'hakofyt-max-trava',
+const HAKOFYT_CATEGORY_ORDER = [
+  'hnojiva-hakofyt-b',
+  'hnojiva-hakofyt-plus',
+  'hnojiva-hakofyt-max',
 ] as const;
 
 const localeToPath: Record<string, string> = {
@@ -67,10 +67,26 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
   const t = await getTranslations({ locale, namespace: 'hakofytFertilizersPage' });
 
   const allProducts = await getAllProducts(locale);
-  const productsBySlug = new Map(allProducts.map((product) => [product.slug, product] as const));
-  const featuredProducts = FEATURED_PRODUCT_SLUGS
-    .map((slug) => productsBySlug.get(slug))
-    .filter((product): product is LocalProduct => Boolean(product));
+  const hakofytProducts = allProducts
+    .filter((product) =>
+      product.categories.some((category) =>
+        HAKOFYT_CATEGORY_ORDER.includes(category.slug as typeof HAKOFYT_CATEGORY_ORDER[number]),
+      ),
+    )
+    .sort((a, b) => {
+      const aCategoryIndex = HAKOFYT_CATEGORY_ORDER.findIndex((slug) =>
+        a.categories.some((category) => category.slug === slug),
+      );
+      const bCategoryIndex = HAKOFYT_CATEGORY_ORDER.findIndex((slug) =>
+        b.categories.some((category) => category.slug === slug),
+      );
+
+      if (aCategoryIndex !== bCategoryIndex) {
+        return aCategoryIndex - bCategoryIndex;
+      }
+
+      return a.wcId - b.wcId;
+    });
 
   const benefits = [
     {
@@ -141,9 +157,9 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
       <ProductShowcaseSection
         eyebrow={t('featuredProducts.eyebrow')}
         title={t('featuredProducts.title')}
+        description={t('featuredProducts.description')}
         detailLabel={t('featuredProducts.detail')}
-        products={featuredProducts}
-        cta={{ href: '/kupit', label: t('featuredProducts.cta') }}
+        products={hakofytProducts}
         className="bg-stone-50 py-16 sm:py-20"
       />
 

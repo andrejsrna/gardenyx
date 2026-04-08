@@ -50,8 +50,9 @@
       "paragraph2": "Cieľom vývoja hnojív Hakofyt bolo preto zabezpečiť čo najkomplexnejšiu výživu rastlín. Z tohto dôvodu obsahujú hnojivá Hakofyt okrem základných makroprvkov v optimálnych pomeroch aj komplex dôležitých mikroprvkov – konkrétne železo, zinok, mangán, meď, bór a molybdén, ktoré sú pre zdravý a kvalitný život rastlín nenahraditeľné."
     },
     "featuredProducts": {
-      "eyebrow": "Odporúčané produkty",
-      "title": "Vybrané Hakofyt produkty",
+      "eyebrow": "Kompletná ponuka",
+      "title": "Všetky Hakofyt hnojivá",
+      "description": "Prejdite si kompletný výber listových hnojív Hakofyt pre kvety, dreviny, ovocie, zeleninu aj trávnik.",
       "detail": "Detail produktu",
       "cta": "Zobraziť všetky produkty"
     },
@@ -102,6 +103,13 @@
   "shop": {
     "title": "Naše produkty",
     "intro": "Listové hnojivá, stimulátory rastu a prípravky na ochranu rastlín GardenYX.",
+    "filters": {
+      "title": "Filtrovať podľa kategórie",
+      "all": "Všetky produkty",
+      "allTracking": "Všetky produkty",
+      "results": "{count, plural, one {# produkt} few {# produkty} other {# produktov}}",
+      "empty": "Pre vybranú kategóriu sa nenašli žiadne produkty."
+    },
     "error": {
       "title": "Oops! Niečo sa pokazilo",
       "retry": "Skúsiť znova",

@@ -50,8 +50,9 @@
       "paragraph2": "Therefore, the goal in developing Hakofyt fertilizers was to ensure the most comprehensive plant nutrition possible. For this reason, in addition to basic macro-elements in optimal ratios, Hakofyt fertilizers contain a complex of important micro-elements, specifically iron, zinc, manganese, copper, boron and molybdenum, which are irreplaceable for healthy and high-quality plant life."
     },
     "featuredProducts": {
-      "eyebrow": "Featured products",
-      "title": "Selected Hakofyt products",
+      "eyebrow": "Complete range",
+      "title": "All Hakofyt fertilizers",
+      "description": "Browse the full selection of Hakofyt foliar fertilizers for flowers, trees, fruit, vegetables, and lawns.",
       "detail": "Product detail",
       "cta": "View all products"
     },
@@ -102,6 +103,13 @@
   "shop": {
     "title": "Our Products",
     "intro": "Foliar fertilizers, growth stimulators and crop protection products from GardenYX.",
+    "filters": {
+      "title": "Filter by category",
+      "all": "All products",
+      "allTracking": "All products",
+      "results": "{count, plural, one {# product} other {# products}}",
+      "empty": "No products found for the selected category."
+    },
     "error": {
       "title": "Oops! Something went wrong",
       "retry": "Try again",
