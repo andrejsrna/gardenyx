@@ -209,6 +209,53 @@ export async function importProductsFromMarkdownAction() {
   redirect(`/admin/products?imported=${markdownProducts.length}`);
 }
 
+export async function createProductAction(formData: FormData) {
+  const name = getString(formData, 'name');
+  const slug = getString(formData, 'slug');
+
+  if (!name) throw new Error('Názov produktu je povinný');
+  if (!slug) throw new Error('Slug je povinný');
+  if (!/^[a-z0-9-]+$/.test(slug)) throw new Error('Slug môže obsahovať len malé písmená, číslice a pomlčky');
+
+  const existing = await prisma.product.findUnique({ where: { slug } });
+  if (existing) throw new Error(`Produkt so slugom "${slug}" už existuje`);
+
+  // Auto-generate wcId from current timestamp to avoid conflicts with WC IDs
+  const wcIdRaw = getString(formData, 'wcId');
+  const wcId = wcIdRaw ? BigInt(wcIdRaw) : BigInt(Date.now());
+
+  const status = getString(formData, 'status');
+  const stockStatus = getString(formData, 'stockStatus');
+
+  await prisma.product.create({
+    data: {
+      wcId,
+      name,
+      slug,
+      type: getString(formData, 'type') || 'simple',
+      status: PRODUCT_STATUSES.has(status) ? (status as ProductStatus) : ProductStatus.draft,
+      sku: getOptionalString(formData, 'sku'),
+      price: getOptionalNumber(formData, 'price') ?? 0,
+      regularPrice: getOptionalNumber(formData, 'regularPrice') ?? 0,
+      salePrice: getOptionalNumber(formData, 'salePrice'),
+      currency: 'EUR',
+      stockStatus: STOCK_STATUSES.has(stockStatus) ? stockStatus : 'instock',
+      stockQuantity: getOptionalNumber(formData, 'stockQuantity'),
+      weight: getOptionalNumber(formData, 'weight'),
+      shortDescription: getOptionalString(formData, 'shortDescription'),
+      description: getOptionalString(formData, 'description'),
+      categories: getCategoriesInput(formData),
+      images: getImagesInput(formData),
+      translations: getTranslationsInput(formData),
+      variants: getVariantsInput(formData),
+      documents: getDocumentsInput(formData),
+    },
+  });
+
+  revalidateProductPaths(slug);
+  redirect(`/admin/products/${slug}?saved=1`);
+}
+
 export async function updateProductAction(formData: FormData) {
   const slug = getString(formData, 'slug');
   if (!slug) {

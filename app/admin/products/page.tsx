@@ -48,13 +48,21 @@ export default async function AdminProductsPage({
             </p>
           </div>
 
-          <form action={importProductsFromMarkdownAction}>
-            <SubmitButton
-              idleLabel="Migrovat z markdownu"
-              pendingLabel="Migrujem..."
-              className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
-            />
-          </form>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/products/new"
+              className="rounded-xl border border-emerald-500/50 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/20"
+            >
+              + Nový produkt
+            </Link>
+            <form action={importProductsFromMarkdownAction}>
+              <SubmitButton
+                idleLabel="Migrovat z markdownu"
+                pendingLabel="Migrujem..."
+                className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+              />
+            </form>
+          </div>
         </div>
 
         {params.imported ? (
