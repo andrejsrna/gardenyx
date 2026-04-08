@@ -102,6 +102,15 @@ type ConsentSnapshot = {
   isSeznamBrowser: boolean;
 };
 
+const EMPTY_CONSENT_SNAPSHOT: ConsentSnapshot = {
+  consent: null,
+  details: null,
+  isSeznamBrowser: false,
+};
+
+let cachedConsentSnapshot: ConsentSnapshot = EMPTY_CONSENT_SNAPSHOT;
+let cachedConsentDetailsRaw: string | null = null;
+
 export const getCookieConsentDetails = (): ConsentDetails | null => {
   if (typeof window === 'undefined') return null;
 
@@ -115,16 +124,38 @@ export const getCookieConsentDetails = (): ConsentDetails | null => {
 
 export const getCookieConsentSnapshot = (): ConsentSnapshot => {
   if (typeof window === 'undefined') {
-    return { consent: null, details: null, isSeznamBrowser: false };
+    return EMPTY_CONSENT_SNAPSHOT;
   }
 
   const isSeznamBrowser = /SeznamBrowser|Seznam|Szn/i.test(window.navigator.userAgent || '');
+  const consent = isSeznamBrowser ? null : getCookieConsentValue('cookieConsent') || null;
+  const detailsRaw = safeGetItem('cookieConsentDetails');
+  let details: ConsentDetails | null = null;
 
-  return {
-    consent: isSeznamBrowser ? null : getCookieConsentValue('cookieConsent') || null,
-    details: getCookieConsentDetails(),
+  if (detailsRaw) {
+    try {
+      details = JSON.parse(detailsRaw) as ConsentDetails;
+    } catch {
+      details = null;
+    }
+  }
+
+  if (
+    cachedConsentSnapshot.consent === consent &&
+    cachedConsentSnapshot.isSeznamBrowser === isSeznamBrowser &&
+    cachedConsentDetailsRaw === detailsRaw
+  ) {
+    return cachedConsentSnapshot;
+  }
+
+  cachedConsentDetailsRaw = detailsRaw;
+  cachedConsentSnapshot = {
+    consent,
+    details,
     isSeznamBrowser,
   };
+
+  return cachedConsentSnapshot;
 };
 
 export const subscribeToCookieConsentChanges = (onStoreChange: () => void) => {
