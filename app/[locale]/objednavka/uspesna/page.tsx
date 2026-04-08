@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 export default function SuccessLanding() {
   const router = useRouter();
   const params = useSearchParams();
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'sk';
+
   const id = useMemo(() => {
     const pi = params.get('payment_intent');
     const cs = params.get('payment_intent_client_secret');
@@ -14,7 +17,7 @@ export default function SuccessLanding() {
 
   useEffect(() => {
     if (!id) {
-      router.replace('/');
+      router.replace(`/${locale}`);
       return;
     }
     let attempts = 0;
@@ -27,17 +30,17 @@ export default function SuccessLanding() {
           if (data?.order?.id || data?.orderId) {
             clearInterval(timer);
             const oid = data.order?.id || data.orderId;
-            router.replace(`/objednavka/uspesna/${oid}`);
+            router.replace(`/${locale}/objednavka/uspesna/${oid}`);
           }
         }
       } catch {}
       if (attempts >= 15) {
         clearInterval(timer);
-        router.replace('/');
+        router.replace(`/${locale}/objednavka/spracovava-sa?pi=${id}`);
       }
     }, 600);
     return () => clearInterval(timer);
-  }, [id, router]);
+  }, [id, router, locale]);
 
   return (
     <div className="min-h-[50vh] flex items-center justify-center">

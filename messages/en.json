@@ -146,6 +146,9 @@
       "home": "Home",
       "shop": "Shop"
     },
+    "variant": {
+      "label": "Package size"
+    },
     "quantity": {
       "decrease": "Decrease quantity",
       "increase": "Increase quantity"

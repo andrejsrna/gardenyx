@@ -1,4 +1,4 @@
-export const PRODUCT_VAT_RATE = 0.19;
+export const PRODUCT_VAT_RATE = 0.23;
 export const SHIPPING_VAT_RATE = 0.23;
 
 export const PRODUCT_VAT_PERCENT = Math.round(PRODUCT_VAT_RATE * 100);

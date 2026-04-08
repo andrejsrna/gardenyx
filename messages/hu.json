@@ -146,6 +146,9 @@
       "home": "Főoldal",
       "shop": "Bolt"
     },
+    "variant": {
+      "label": "Csomagméret"
+    },
     "quantity": {
       "decrease": "Mennyiség csökkentése",
       "increase": "Mennyiség növelése"

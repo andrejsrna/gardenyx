@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCart } from '../../../context/CartContext';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -25,6 +25,8 @@ export default function OrderStatusPage(props: OrderSuccessProps) {
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const { clearCart } = useCart();
   const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'sk';
 
   useEffect(() => {
     const fetchOrderData = async () => {
@@ -39,14 +41,14 @@ export default function OrderStatusPage(props: OrderSuccessProps) {
           clearCart();
         }
       } catch {
-        router.push('/objednavka/neuspesna');
+        router.push(`/${locale}/objednavka/neuspesna`);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchOrderData();
-  }, [params.status, clearCart, router]);
+  }, [params.status, clearCart, router, locale]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -70,7 +72,7 @@ export default function OrderStatusPage(props: OrderSuccessProps) {
               {isSuccess ? 'Objednávka bola úspešne vytvorená!' : 'Objednávka nebola dokončená'}
             </h1>
             <p className="text-gray-600">
-              {isSuccess 
+              {isSuccess
                 ? 'Ďakujeme za Váš nákup. O stave objednávky Vás budeme informovať emailom.'
                 : 'Pri spracovaní objednávky nastala chyba. Prosím, skúste to znova alebo nás kontaktujte.'}
             </p>
@@ -81,7 +83,7 @@ export default function OrderStatusPage(props: OrderSuccessProps) {
             )}
             <div className="pt-4">
               <Link
-                href={isSuccess ? '/' : '/pokladna'}
+                href={isSuccess ? `/${locale}` : `/${locale}/pokladna`}
                 className={`inline-flex items-center px-6 py-3 text-base font-medium text-white rounded-lg ${
                   isSuccess ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
@@ -94,4 +96,4 @@ export default function OrderStatusPage(props: OrderSuccessProps) {
       </div>
     </main>
   );
-} 
+}

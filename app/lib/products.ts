@@ -27,6 +27,7 @@ type ProductTranslations = Partial<Record<'en' | 'hu', ProductTranslation>>;
 
 export type ProductCategory = { id: number; name: string; slug: string };
 export type ProductImage = { src: string; alt?: string | null };
+export type ProductVariant = { id: number; name: string; sku?: string | null; price: number; stockStatus?: string | null };
 
 export type StoredProductRecord = {
   wcId: number;
@@ -44,6 +45,7 @@ export type StoredProductRecord = {
   weight?: number | null;
   categories: ProductCategory[];
   images: ProductImage[];
+  variants?: ProductVariant[];
   attributes?: unknown;
   meta?: unknown;
   shortDescription?: string;
@@ -69,6 +71,7 @@ export type LocalProduct = {
   weight?: number | null;
   categories: ProductCategory[];
   images: ProductImage[];
+  variants?: ProductVariant[];
   attributes?: unknown;
   meta?: unknown;
   short_description?: string;
@@ -220,6 +223,25 @@ function localizeProduct(product: LocalProduct, locale?: string): LocalProduct {
   };
 }
 
+function normalizeVariants(value: unknown): ProductVariant[] | undefined {
+  if (!Array.isArray(value) || !value.length) {
+    return undefined;
+  }
+
+  const variants = value
+    .filter(isRecord)
+    .map((v) => ({
+      id: normalizeNumber(v.id) || 0,
+      name: typeof v.name === 'string' ? v.name : '',
+      sku: typeof v.sku === 'string' ? v.sku : null,
+      price: normalizeNumber(v.price) || 0,
+      stockStatus: typeof v.stockStatus === 'string' ? v.stockStatus : null,
+    }))
+    .filter((v) => v.name);
+
+  return variants.length ? variants : undefined;
+}
+
 function normalizeCategories(value: unknown): ProductCategory[] {
   if (!Array.isArray(value)) {
     return [];
@@ -270,6 +292,7 @@ async function mapStoredRecordToLocalProduct(record: StoredProductRecord): Promi
     weight: typeof record.weight === 'number' ? record.weight : null,
     categories: record.categories,
     images: record.images,
+    variants: record.variants,
     attributes: record.attributes,
     meta: record.meta,
     short_description: record.shortDescription,
@@ -331,6 +354,7 @@ async function readMarkdownProductFile(filePath: string): Promise<StoredProductR
     weight: normalizeNumber(data.weight),
     categories: normalizeCategories(data.categories),
     images: normalizeImages(data.images),
+    variants: normalizeVariants(data.variants),
     attributes: data.attributes,
     meta: data.meta,
     shortDescription: typeof data.shortDescription === 'string' ? data.shortDescription : undefined,

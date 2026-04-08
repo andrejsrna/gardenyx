@@ -146,6 +146,9 @@
       "home": "Domov",
       "shop": "Obchod"
     },
+    "variant": {
+      "label": "Veľkosť balenia"
+    },
     "quantity": {
       "decrease": "Znížiť množstvo",
       "increase": "Zvýšiť množstvo"

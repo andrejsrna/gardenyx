@@ -61,6 +61,11 @@ export default function ProductCard({ product, locale: _locale, isPriority = fal
   const effectivePrice = Number.isFinite(salePrice) ? salePrice : price;
   const qualifiesFreeShippingBadge = effectivePrice > 29;
 
+  const isVariable = product.type === 'variable' && product.variants && product.variants.length > 0;
+  const minVariantPrice = isVariable
+    ? Math.min(...(product.variants ?? []).map((v) => v.price))
+    : null;
+
   return (
     <article className={`group flex h-full flex-col overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg ${isHero ? 'ring-2 ring-emerald-500 ring-offset-2' : ''}`}>
       <div className="relative aspect-[4/5] overflow-hidden bg-stone-100">
@@ -121,14 +126,39 @@ export default function ProductCard({ product, locale: _locale, isPriority = fal
         ) : null}
 
         <div className="mt-auto pt-5">
+          {isVariable && product.variants && product.variants.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-1.5">
+              {product.variants.map((v) => (
+                <span
+                  key={v.id}
+                  className={`rounded-md border px-2 py-0.5 text-xs font-semibold ${
+                    v.stockStatus === 'outofstock'
+                      ? 'border-stone-200 bg-stone-50 text-stone-400 line-through'
+                      : 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                  }`}
+                >
+                  {v.name}
+                </span>
+              ))}
+            </div>
+          )}
+
           <div className="mb-4 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-stone-900">
-              {price.toFixed(2)} €
-            </span>
-            {hasDiscount && (
-              <span className="text-base text-stone-400 line-through">
-                {regularPrice.toFixed(2)} €
+            {isVariable && minVariantPrice !== null ? (
+              <span className="text-2xl font-bold text-stone-900">
+                od {minVariantPrice.toFixed(2)} €
               </span>
+            ) : (
+              <>
+                <span className="text-2xl font-bold text-stone-900">
+                  {price.toFixed(2)} €
+                </span>
+                {hasDiscount && (
+                  <span className="text-base text-stone-400 line-through">
+                    {regularPrice.toFixed(2)} €
+                  </span>
+                )}
+              </>
             )}
           </div>
 

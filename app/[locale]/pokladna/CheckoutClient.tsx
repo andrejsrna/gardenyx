@@ -696,6 +696,22 @@ export default function CheckoutClient() {
                 level: 'info',
               });
 
+              // Create account if requested (Stripe flow bypasses the COD account creation)
+              if (formData.create_account && customerData === null && formData.account_password) {
+                fetch('/api/auth/register', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    email: formData.billing.email,
+                    password: formData.account_password,
+                    firstName: formData.billing.first_name,
+                    lastName: formData.billing.last_name,
+                    consent: Boolean(formData.consents?.termsAndPrivacy),
+                    newsletter: false,
+                  }),
+                }).catch(() => {});
+              }
+
               setTimeout(() => {
                 try {
                   clearCart();

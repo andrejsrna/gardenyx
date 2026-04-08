@@ -5,12 +5,13 @@ import prisma from '@/app/lib/prisma';
 
 interface PageProps {
   params: Promise<{
+    locale: string;
     orderId: string;
   }>;
 }
 
 export default async function OrderSuccessPage({ params }: PageProps) {
-  const { orderId } = await params;
+  const { orderId, locale } = await params;
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: { items: true, meta: true }
@@ -89,7 +90,7 @@ export default async function OrderSuccessPage({ params }: PageProps) {
                 </div>
               )}
               <Link
-                href="/"
+                href={`/${locale}/kupit`}
                 className="flex items-center justify-center gap-3 bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

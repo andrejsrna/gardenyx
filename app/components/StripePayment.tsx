@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { toast } from 'sonner';
@@ -106,6 +107,8 @@ interface ShippingInfo {
 
 function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }: StripePaymentFormProps) {
   const t = useTranslations('stripePayment');
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'sk';
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -264,7 +267,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
               });
             }
             
-            window.location.href = `/objednavka/uspesna/${result.orderId}`;
+            window.location.href = `/${locale}/objednavka/uspesna/${result.orderId}`;
             onSuccess?.();
             return;
           } else {
@@ -352,7 +355,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
                 });
               }
 
-              window.location.href = `/objednavka/uspesna/${orderId}`;
+              window.location.href = `/${locale}/objednavka/uspesna/${orderId}`;
               onSuccess?.();
               return;
             } else {
@@ -388,8 +391,9 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
         extra: { payment_intent_id: paymentIntentId, attempts }
       });
 
-      setError(t('errors.orderProcessingEmail'));
-      onError?.(t('errors.orderProcessingEmail'));
+      // Payment was charged successfully — redirect to pending page so customer isn't confused
+      window.location.href = `/${locale}/objednavka/spracovava-sa?pi=${paymentIntentId}`;
+      return;
     } catch (unexpectedError) {
       const errorMessage = t('errors.processingFailed');
       logPaymentEvent('error_unexpected_payment_processing', {

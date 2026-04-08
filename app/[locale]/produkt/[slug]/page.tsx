@@ -92,6 +92,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const regularPrice = parseFloat(product.regular_price);
   const hasDiscount = product.sale_price !== '' && price < regularPrice;
   const discount = hasDiscount ? Math.round((1 - price / regularPrice) * 100) : 0;
+  const isVariable = product.type === 'variable' && product.variants && product.variants.length > 0;
+  const minVariantPrice = isVariable
+    ? Math.min(...(product.variants ?? []).map((v) => v.price))
+    : null;
   const stockLabel = product.stock_status === 'instock' ? t('stock.inStock') : t('stock.outOfStock');
   const stockClass = product.stock_status === 'instock' ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50';
   const localePrefix = getLocalePrefix(locale);
@@ -169,8 +173,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <h1 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">{product.name}</h1>
 
               <div className="mt-5 flex flex-wrap items-center gap-3">
-                <span className="text-4xl font-bold text-stone-900">{price.toFixed(2)} €</span>
-                {hasDiscount ? <span className="text-xl text-stone-400 line-through">{regularPrice.toFixed(2)} €</span> : null}
+                {isVariable && minVariantPrice !== null ? (
+                  <span className="text-4xl font-bold text-stone-900">od {minVariantPrice.toFixed(2)} €</span>
+                ) : (
+                  <>
+                    <span className="text-4xl font-bold text-stone-900">{price.toFixed(2)} €</span>
+                    {hasDiscount ? <span className="text-xl text-stone-400 line-through">{regularPrice.toFixed(2)} €</span> : null}
+                  </>
+                )}
                 <span className={`rounded-full px-3 py-1 text-sm font-medium ${stockClass}`}>{stockLabel}</span>
               </div>
 
