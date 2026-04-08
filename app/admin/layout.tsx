@@ -20,6 +20,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Dashboard
             </Link>
             <Link
+              href="/admin/products"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800"
+            >
+              Produkty
+            </Link>
+            <Link
               href="/admin/newsletter"
               className="rounded-lg px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800"
             >

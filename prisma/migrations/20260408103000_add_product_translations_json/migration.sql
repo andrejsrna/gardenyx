@@ -1,0 +1,3 @@
+ALTER TABLE "Product"
+ALTER COLUMN "wcId" TYPE BIGINT,
+ADD COLUMN "translations" JSONB;

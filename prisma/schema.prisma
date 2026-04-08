@@ -252,7 +252,7 @@ model EmailVerificationToken {
 
 model Product {
   id               String        @id @default(cuid())
-  wcId             Int           @unique
+  wcId             BigInt        @unique
   name             String
   slug             String        @unique
   type             String        @default("simple")
@@ -271,6 +271,7 @@ model Product {
   meta             Json?
   shortDescription String?
   description      String?
+  translations     Json?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
