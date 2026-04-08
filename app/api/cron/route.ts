@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { runReactivationJob } from '@/app/lib/newsletter/reactivation-job';
-import { runReviewRequestJob } from '@/app/lib/reviews/review-request-job';
 import { runGuidanceCheckinJob } from '@/app/lib/orders/guidance-checkin-job';
 import { isAutomationAuthorized, isMarketingAutomationEnabled } from '@/app/lib/automation/config';
 import * as packetaHandler from './packeta/route';
@@ -29,12 +28,7 @@ export async function POST(request: Request) {
         return;
       }
       if (key === 'reviews') {
-        if (!isMarketingAutomationEnabled()) {
-          results.push({ job: key, status: 200, data: { status: 'disabled' } });
-          return;
-        }
-        const data = await runReviewRequestJob(limit);
-        results.push({ job: key, status: 200, data });
+        results.push({ job: key, status: 410, data: { status: 'disabled', reason: 'reviews_deactivated' } });
         return;
       }
       if (key === 'guidance') {

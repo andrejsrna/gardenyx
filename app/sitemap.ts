@@ -22,7 +22,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: '/protizapalova-mast-na-klby', changeFrequency: 'weekly', priority: 0.8 },
     { url: '/mast-na-bolest-kolena', changeFrequency: 'weekly', priority: 0.7 },
     { url: '/zlozenie', changeFrequency: 'monthly', priority: 0.7 },
-    { url: '/recenzie', changeFrequency: 'weekly', priority: 0.7 },
     { url: '/casto-kladene-otazky', changeFrequency: 'monthly', priority: 0.7 },
     { url: '/obchodne-podmienky', changeFrequency: 'monthly', priority: 0.6 },
     { url: '/ochrana-osobnych-udajov', changeFrequency: 'monthly', priority: 0.6 },
