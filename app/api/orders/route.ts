@@ -95,6 +95,7 @@ type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addre
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
 const PACKETA_CARRIER_ID = '131';
+const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
 
 function normalizePacketaHomeAddress(shipping: OrderData['shipping']) {
   const address1 = (shipping.address_1 || '').trim();
@@ -173,7 +174,7 @@ async function createPacketaPacket(orderData: OrderData, order: OrderWithRelatio
     value: order.total.toString(),
     currency: order.currency,
     weight: calculateTotalWeight(orderData.line_items).toString(),
-    eshop: 'FITDOPLNKY',
+    eshop_id: PACKETA_ESHOP_ID,
     cod: orderData.payment_method === 'cod' ? order.total.toString() : undefined
   };
 

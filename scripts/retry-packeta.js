@@ -8,6 +8,7 @@ const { Pool } = require('pg');
 
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_CARRIER_ID = '131';
+const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
 
 function parseEnvLine(line) {
   const trimmed = String(line || '').trim();
@@ -119,7 +120,7 @@ async function retryPacketa(prisma, orderId) {
     value: order.total.toString(),
     currency: order.currency,
     weight: String(calculateTotalWeight(lineItems)),
-    eshop: 'FITDOPLNKY',
+    eshop_id: PACKETA_ESHOP_ID,
     cod: order.paymentMethod === 'cod' ? order.total.toString() : undefined,
   };
 

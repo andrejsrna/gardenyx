@@ -58,6 +58,7 @@ const formatDate = (value?: Date | string) => {
 
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_CARRIER_ID = '131';
+const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
 
 function parseAddress(addressLine: string): { street: string; houseNumber: string } {
   if (!addressLine) return { street: '', houseNumber: '' };
@@ -139,7 +140,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
       value: String(fresh.total),
       currency: String(fresh.currency || 'EUR'),
       weight: String(calculateTotalWeight(fresh.items)),
-      eshop: 'FITDOPLNKY',
+      eshop_id: PACKETA_ESHOP_ID,
       cod: fresh.paymentMethod === 'cod' ? String(fresh.total) : undefined,
     };
 

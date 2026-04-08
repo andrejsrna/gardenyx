@@ -3,6 +3,7 @@ import { Builder, Parser } from 'xml2js';
 
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
+const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
 
 interface PacketaAddress {
   street: string;
@@ -81,7 +82,7 @@ export async function POST(request: Request) {
           value: data.value,
           currency: 'EUR',
           weight: data.weight,
-          eshop: 'FITDOPLNKY'
+          eshop_id: PACKETA_ESHOP_ID
         }
       }
     };

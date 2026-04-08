@@ -3,6 +3,7 @@ import prisma from '@/app/lib/prisma';
 
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_CARRIER_ID = '131';
+const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
 
 function parseAddress(addressLine: string): { street: string; houseNumber: string } {
   if (!addressLine) return { street: '', houseNumber: '' };
@@ -24,6 +25,17 @@ type PacketaCreatePacketResponse = {
     status?: string;
     string?: string;
     message?: string;
+    detail?: {
+      attributes?: {
+        fault?: {
+          name?: string;
+          fault?: string;
+        } | Array<{
+          name?: string;
+          fault?: string;
+        }>;
+      };
+    };
     result?: {
       id?: string;
       barcode?: string;
@@ -31,6 +43,29 @@ type PacketaCreatePacketResponse = {
     };
   };
 };
+
+function formatPacketaFault(result: PacketaCreatePacketResponse) {
+  const response = result?.response;
+  const attributeFaultsRaw = response?.detail?.attributes?.fault;
+  const attributeFaults = Array.isArray(attributeFaultsRaw)
+    ? attributeFaultsRaw
+    : attributeFaultsRaw
+      ? [attributeFaultsRaw]
+      : [];
+
+  const attributeMessage = attributeFaults
+    .map((fault) => {
+      const name = fault?.name ? String(fault.name) : 'unknown';
+      const detail = fault?.fault ? String(fault.fault) : '';
+      return detail ? `${name}: ${detail}` : name;
+    })
+    .filter(Boolean)
+    .join(' | ');
+
+  return [response?.string, response?.message, attributeMessage]
+    .filter(Boolean)
+    .join(' | ') || `Packeta status: ${response?.status}`;
+}
 
 export async function createPacketaPacketForOrder(orderId: string, opts?: { force?: boolean }): Promise<PacketaResult> {
   const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
@@ -63,7 +98,7 @@ export async function createPacketaPacketForOrder(orderId: string, opts?: { forc
     value: String(order.total),
     currency: String(order.currency || 'EUR'),
     weight: String(calculateTotalWeight(order.items)),
-    eshop: 'FITDOPLNKY',
+    eshop_id: PACKETA_ESHOP_ID,
     cod: order.paymentMethod === 'cod' ? String(order.total) : undefined,
   };
 
@@ -109,7 +144,7 @@ export async function createPacketaPacketForOrder(orderId: string, opts?: { forc
   const parser = new Parser({ explicitArray: false });
   const result = await parser.parseStringPromise(respText) as PacketaCreatePacketResponse;
   if (result?.response?.status !== 'ok') {
-    throw new Error(result?.response?.string || result?.response?.message || `Packeta status: ${result?.response?.status}`);
+    throw new Error(formatPacketaFault(result));
   }
   const r = result.response.result;
   if (!r?.id || !r?.barcode || !r?.barcodeText) throw new Error('Packeta response missing result fields');

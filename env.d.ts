@@ -17,6 +17,7 @@ declare global {
       NEWSLETTER_ADMIN_TOKEN: string;
       POSTGRES_URL_PRISMA?: string;
       PRISMA_DB_SCHEMA?: string;
+      PACKETA_ESHOP_ID?: string;
       ADMIN_DASHBOARD_USER: string;
       ADMIN_DASHBOARD_PASSWORD: string;
       INVOICE_SERVICE_URL?: string;
