@@ -348,6 +348,11 @@
       "orderCreation": "Hiba történt a rendelés létrehozása közben",
       "paymentProcessing": "Hiba történt a fizetés feldolgozása közben."
     },
+    "runtimeError": {
+      "title": "A pénztár ideiglenesen nem érhető el",
+      "description": "A kivételt naplóztuk, és megpróbálhatja újra betölteni a pénztárat.",
+      "retry": "Újrapróbálás"
+    },
     "shipping": {
       "title": "Szállítási mód",
       "howPacketaWorks": "Hogyan működik a Packeta?",

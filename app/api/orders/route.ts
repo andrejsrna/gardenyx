@@ -3,9 +3,10 @@ import { cookies } from 'next/headers';
 import { createHash } from 'crypto';
 import { Builder, Parser } from 'xml2js';
 import prisma from '@/app/lib/prisma';
+import { getStoredOrderItemIds, isPrismaIntegerOverflowError, withSourceOrderItemIdsInMeta } from '@/app/lib/orders/item-id-storage';
 import { logError } from '@/app/lib/utils/logger';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
-import { Prisma, OrderStatus, PaymentMethod as PaymentMethodEnum, PaymentStatus as PaymentStatusEnum } from '@prisma/client';
+import { Prisma, OrderAddressType, OrderStatus, PaymentMethod as PaymentMethodEnum, PaymentStatus as PaymentStatusEnum } from '@prisma/client';
 import { recordCouponRedemption } from '@/app/lib/coupons';
 import { PRODUCT_VAT_RATE, SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { taxFromGross, taxFromNet } from '@/app/lib/pricing/math';
@@ -274,6 +275,36 @@ function calculateVatFromGross(grossValue: number, vatRate: number) {
   return taxFromGross(grossValue, vatRate);
 }
 
+function buildOrderItemCreateInput(li: OrderLineItemInput, useLegacyIntegerFallback = false) {
+  const storedIds = getStoredOrderItemIds(li.product_id, li.variation_id, useLegacyIntegerFallback);
+  const price = Number(li.price);
+  const totalLine = Number(li.total);
+  const safePrice = Number.isFinite(price) ? price : 0;
+  const safeTotal = Number.isFinite(totalLine) ? totalLine : safePrice * li.quantity;
+  const itemMeta = li.meta as Prisma.InputJsonValue | undefined;
+
+  return {
+    productId: storedIds.productId,
+    productName: li.name || `Product ${li.product_id}`,
+    sku: li.sku,
+    variationId: storedIds.variationId,
+    imageUrl: li.image,
+    price: toDecimal(safePrice),
+    quantity: li.quantity,
+    total: toDecimal(safeTotal),
+    ...(itemMeta || useLegacyIntegerFallback
+      ? {
+          meta: useLegacyIntegerFallback
+            ? withSourceOrderItemIdsInMeta(itemMeta, {
+                productId: storedIds.sourceProductId,
+                variationId: storedIds.sourceVariationId,
+              })
+            : itemMeta,
+        }
+      : {}),
+  };
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
@@ -383,10 +414,11 @@ export async function POST(request: Request) {
     if (!orderData.meta_data) {
       orderData.meta_data = [];
     }
+    const orderMetaData = orderData.meta_data;
     
     // Deduplicate meta_data by key (last one wins) to prevent Prisma Unique constraint failed
     const metaMap = new Map<string, string>();
-    for (const m of orderData.meta_data) {
+    for (const m of orderMetaData) {
       if (m.key && typeof m.value !== 'undefined') {
         metaMap.set(m.key, String(m.value));
       }
@@ -421,11 +453,11 @@ export async function POST(request: Request) {
     }, 0) || 0;
 
     const metaPacketa = {
-      id: orderData.meta_data.find(m => m.key === '_packeta_point_id')?.value || null,
-      name: orderData.meta_data.find(m => m.key === '_packeta_point_name')?.value || null,
-      city: orderData.meta_data.find(m => m.key === '_packeta_point_city')?.value || null,
-      street: orderData.meta_data.find(m => m.key === '_packeta_point_street')?.value || null,
-      zip: orderData.meta_data.find(m => m.key === '_packeta_point_zip')?.value || null
+      id: orderMetaData.find(m => m.key === '_packeta_point_id')?.value || null,
+      name: orderMetaData.find(m => m.key === '_packeta_point_name')?.value || null,
+      city: orderMetaData.find(m => m.key === '_packeta_point_city')?.value || null,
+      street: orderMetaData.find(m => m.key === '_packeta_point_street')?.value || null,
+      zip: orderMetaData.find(m => m.key === '_packeta_point_zip')?.value || null
     };
 
     const subtotal = orderData.line_items.reduce((sum, li) => {
@@ -437,9 +469,9 @@ export async function POST(request: Request) {
       return sum;
     }, 0);
 
-    const discountMeta = orderData.meta_data.find(m => m.key === '_discount_total')?.value;
+    const discountMeta = orderMetaData.find(m => m.key === '_discount_total')?.value;
     const discountTotal = Number(discountMeta) || 0;
-    const couponCode = orderData.meta_data.find(m => m.key === '_coupon_code')?.value;
+    const couponCode = orderMetaData.find(m => m.key === '_coupon_code')?.value;
 
     const itemsGross = Math.max(0, subtotal - discountTotal);
     const itemsTaxTotal = calculateVatFromGross(itemsGross, PRODUCT_VAT_RATE);
@@ -459,88 +491,95 @@ export async function POST(request: Request) {
     }
     const billingEmail = orderData.billing?.email?.toLowerCase() || '';
 
-    const createdOrder = await prisma.order.create({
-      data: {
-        userId,
-        status: desiredStatus as OrderStatus,
-        paymentStatus: desiredStatus === 'processing' ? PaymentStatusEnum.paid : PaymentStatusEnum.pending,
-        paymentMethod: orderData.payment_method as PaymentMethodEnum,
-        transactionId: undefined,
-        currency: 'EUR',
-        subtotal: toDecimal(subtotal),
-        shippingTotal: toDecimal(shippingTotal),
-        taxTotal: toDecimal(taxTotal),
-        discountTotal: toDecimal(discountTotal),
-        total: toDecimal(total),
-        shippingMethod: orderData.shipping_method,
-        customerNote: orderData.customer_note,
-        marketingConsent: orderData.meta_data.some(m => m.key === '_marketing_consent'),
-        sessionId,
-        packetaPointId: metaPacketa.id,
-        packetaPointName: metaPacketa.name,
-        packetaPointCity: metaPacketa.city,
-        packetaPointStreet: metaPacketa.street,
-        packetaPointZip: metaPacketa.zip,
-        meta: {
-          create: uniqueMetaData
-        },
-        items: {
-          create: orderData.line_items.map(li => {
-            const price = Number(li.price);
-            const totalLine = Number(li.total);
-            const safePrice = Number.isFinite(price) ? price : 0;
-            const safeTotal = Number.isFinite(totalLine) ? totalLine : safePrice * li.quantity;
-            return {
-              productId: BigInt(li.product_id),
-              productName: li.name || `Product ${li.product_id}`,
-              sku: li.sku,
-              variationId: li.variation_id ? BigInt(li.variation_id) : undefined,
-              imageUrl: li.image,
-              price: toDecimal(safePrice),
-              quantity: li.quantity,
-              total: toDecimal(safeTotal),
-              ...(li.meta ? { meta: li.meta as Prisma.InputJsonValue } : {})
-            };
-          })
-        },
-        addresses: {
-          create: [
-            {
-              type: 'BILLING',
-              firstName: orderData.billing.first_name,
-              lastName: orderData.billing.last_name,
-              company: orderData.billing.company,
-              address1: orderData.billing.address_1,
-              address2: orderData.billing.address_2,
-              city: orderData.billing.city,
-              state: orderData.billing.state,
-              postcode: orderData.billing.postcode,
-              country: orderData.billing.country || 'SK',
-              phone: orderData.billing.phone,
-              email: billingEmail || orderData.billing.email,
-              ic: orderData.billing.ic,
-              dic: orderData.billing.dic,
-              dicDph: orderData.billing.dic_dph
-            },
-            {
-              type: 'SHIPPING',
-              firstName: orderData.shipping.first_name,
-              lastName: orderData.shipping.last_name,
-              company: orderData.shipping.company,
-              address1: orderData.shipping.address_1,
-              address2: orderData.shipping.address_2,
-              city: orderData.shipping.city,
-              state: orderData.shipping.state,
-              postcode: orderData.shipping.postcode,
-              country: orderData.shipping.country || 'SK',
-              phone: orderData.billing.phone,
-              email: billingEmail || orderData.billing.email
-            }
-          ]
-        }
+    const buildOrderCreateData = (useLegacyIntegerFallback = false) => ({
+      ...(userId ? { user: { connect: { id: userId } } } : {}),
+      status: desiredStatus as OrderStatus,
+      paymentStatus: desiredStatus === 'processing' ? PaymentStatusEnum.paid : PaymentStatusEnum.pending,
+      paymentMethod: orderData.payment_method as PaymentMethodEnum,
+      transactionId: undefined,
+      currency: 'EUR',
+      subtotal: toDecimal(subtotal),
+      shippingTotal: toDecimal(shippingTotal),
+      taxTotal: toDecimal(taxTotal),
+      discountTotal: toDecimal(discountTotal),
+      total: toDecimal(total),
+      shippingMethod: orderData.shipping_method,
+      customerNote: orderData.customer_note,
+      marketingConsent: orderMetaData.some(m => m.key === '_marketing_consent'),
+      sessionId,
+      packetaPointId: metaPacketa.id,
+      packetaPointName: metaPacketa.name,
+      packetaPointCity: metaPacketa.city,
+      packetaPointStreet: metaPacketa.street,
+      packetaPointZip: metaPacketa.zip,
+      meta: {
+        create: uniqueMetaData
       },
-      include: { items: true, addresses: true, meta: true }
+      items: {
+        create: orderData.line_items.map(li => buildOrderItemCreateInput(li, useLegacyIntegerFallback))
+      },
+      addresses: {
+        create: [
+          {
+            type: OrderAddressType.BILLING,
+            firstName: orderData.billing.first_name,
+            lastName: orderData.billing.last_name,
+            company: orderData.billing.company,
+            address1: orderData.billing.address_1,
+            address2: orderData.billing.address_2,
+            city: orderData.billing.city,
+            state: orderData.billing.state,
+            postcode: orderData.billing.postcode,
+            country: orderData.billing.country || 'SK',
+            phone: orderData.billing.phone,
+            email: billingEmail || orderData.billing.email,
+            ic: orderData.billing.ic,
+            dic: orderData.billing.dic,
+            dicDph: orderData.billing.dic_dph
+          },
+          {
+            type: OrderAddressType.SHIPPING,
+            firstName: orderData.shipping.first_name,
+            lastName: orderData.shipping.last_name,
+            company: orderData.shipping.company,
+            address1: orderData.shipping.address_1,
+            address2: orderData.shipping.address_2,
+            city: orderData.shipping.city,
+            state: orderData.shipping.state,
+            postcode: orderData.shipping.postcode,
+            country: orderData.shipping.country || 'SK',
+            phone: orderData.billing.phone,
+            email: billingEmail || orderData.billing.email
+          }
+        ]
+      }
     });
+
+    let createdOrder;
+    try {
+      createdOrder = await prisma.order.create({
+        data: buildOrderCreateData(false),
+        include: { items: true, addresses: true, meta: true }
+      });
+    } catch (error) {
+      if (!isPrismaIntegerOverflowError(error)) {
+        throw error;
+      }
+
+      console.error('[orders] Retrying order create with legacy integer item IDs', {
+        billingEmail,
+        itemCount: orderData.line_items.length,
+        originalIds: orderData.line_items.map((item) => ({
+          product_id: String(item.product_id),
+          variation_id: item.variation_id ? String(item.variation_id) : null,
+        })),
+      });
+
+      createdOrder = await prisma.order.create({
+        data: buildOrderCreateData(true),
+        include: { items: true, addresses: true, meta: true }
+      });
+    }
 
     if (couponCode) {
       recordCouponRedemption({ couponCode, orderId: createdOrder.id, email: billingEmail })

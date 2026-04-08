@@ -9,6 +9,10 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
+const keepProductionConsole =
+  process.env.NODE_ENV === 'production' &&
+  process.env.ENABLE_RUNTIME_DEBUG_LOGS === 'true';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
@@ -81,8 +85,8 @@ const nextConfig = {
   },
   reactStrictMode: true,
   compiler: {
-    // Strip all console.* calls in production builds
-    removeConsole: process.env.NODE_ENV === 'production',
+    // Keep runtime logs available when production debugging is explicitly enabled.
+    removeConsole: process.env.NODE_ENV === 'production' && !keepProductionConsole,
   },
   webpack: (config: Configuration) => {
     config.infrastructureLogging = {

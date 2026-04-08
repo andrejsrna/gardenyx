@@ -348,6 +348,11 @@
       "orderCreation": "An error occurred while creating the order",
       "paymentProcessing": "An error occurred while processing the payment."
     },
+    "runtimeError": {
+      "title": "Checkout is temporarily unavailable",
+      "description": "We logged the exception and you can try loading the checkout again.",
+      "retry": "Retry checkout"
+    },
     "shipping": {
       "title": "Shipping method",
       "howPacketaWorks": "How does Packeta work?",

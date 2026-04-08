@@ -348,6 +348,11 @@
       "orderCreation": "Nastala chyba pri vytváraní objednávky",
       "paymentProcessing": "Nastala chyba pri spracovaní platby."
     },
+    "runtimeError": {
+      "title": "Pokladňa je dočasne nedostupná",
+      "description": "Výnimku sme zalogovali a checkout môžete skúsiť načítať znova.",
+      "retry": "Skúsiť znova"
+    },
     "shipping": {
       "title": "Spôsob dopravy",
       "howPacketaWorks": "Ako funguje Packeta?",

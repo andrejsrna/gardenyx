@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Prisma, OrderStatus, PaymentMethod, PaymentStatus } from '@prisma/client';
 import { getStripe } from '@/app/lib/stripe';
 import prisma from '@/app/lib/prisma';
+import { getStoredOrderItemIds, isPrismaIntegerOverflowError, withSourceOrderItemIdsInMeta } from '@/app/lib/orders/item-id-storage';
 import { getProductsByIds } from '@/app/lib/products';
 import { recordCouponRedemption } from '@/app/lib/coupons';
 import { finalizeOrder } from '@/app/lib/checkout/finalize-order';
@@ -32,6 +33,31 @@ const parseBase64Json = <T>(value?: string): T | undefined => {
     return undefined;
   }
 };
+
+function buildStripeOrderItemCreateInput(
+  item: { product_id: number; quantity: number },
+  product: { price: number; name: string; sku?: string | null } | undefined,
+  useLegacyIntegerFallback = false
+) {
+  const storedIds = getStoredOrderItemIds(item.product_id, undefined, useLegacyIntegerFallback);
+  const price = product ? product.price : 0;
+
+  return {
+    productId: storedIds.productId,
+    productName: product?.name || `Product ${item.product_id}`,
+    sku: product?.sku || undefined,
+    price: toDec(price),
+    quantity: item.quantity,
+    total: toDec(price * item.quantity),
+    ...(useLegacyIntegerFallback
+      ? {
+          meta: withSourceOrderItemIdsInMeta(undefined, {
+            productId: storedIds.sourceProductId,
+          }),
+        }
+      : {}),
+  };
+}
 
 export async function ensureOrderFromPaymentIntent(pi: StripePI) {
   const existing = await prisma.order.findFirst({
@@ -73,20 +99,10 @@ export async function ensureOrderFromPaymentIntent(pi: StripePI) {
     priceMap.set(p.id, { price: Number(p.price || 0), name: p.name, sku: p.sku || null });
   }
 
-  const lineItems = cart.li.map(i => {
-    const data = priceMap.get(i.product_id);
-    const price = data ? data.price : 0;
-    return {
-      productId: BigInt(i.product_id),
-      productName: data?.name || `Product ${i.product_id}`,
-      sku: data?.sku || undefined,
-      price: toDec(price),
-      quantity: i.quantity,
-      total: toDec(price * i.quantity),
-    };
-  });
-
-  const subtotalNum = lineItems.reduce((sum, li) => sum + Number(li.total), 0);
+  const subtotalNum = cart.li.reduce((sum, item) => {
+    const product = priceMap.get(item.product_id);
+    return sum + (product ? product.price : 0) * item.quantity;
+  }, 0);
   const shippingGross = Number(md.sc || 0);
   const shippingTax = Number(md.sctx ?? taxFromGross(shippingGross, SHIPPING_VAT_RATE).toFixed(2));
   const discountTotal = Number(md.da || 0);
@@ -119,67 +135,91 @@ export async function ensureOrderFromPaymentIntent(pi: StripePI) {
   }
   const uniqueMetaData = Array.from(metaMap.entries()).map(([key, value]) => ({ key, value }));
 
-  const created = await prisma.order.create({
-    data: {
-      status: OrderStatus.processing,
-      paymentStatus: PaymentStatus.paid,
-      paymentMethod: PaymentMethod.stripe,
-      transactionId: pi.id,
-      currency: 'EUR',
-      subtotal: toDec(subtotalNum),
-      shippingTotal: toDec(shippingGross),
-      taxTotal: toDec(taxFromGross(subtotalNum, PRODUCT_VAT_RATE) + shippingTax),
-      discountTotal: toDec(discountTotal),
-      total: toDec(totalFromStripe),
-      shippingMethod: cart.sm,
-      customerNote: md.cn || undefined,
-      marketingConsent: md.mc === 'true',
-      packetaPointId: packeta.id,
-      packetaPointName: packeta.name,
-      packetaPointCity: packeta.city,
-      packetaPointStreet: packeta.street,
-      packetaPointZip: packeta.zip,
-      meta: {
-        create: uniqueMetaData
-      },
-      items: { create: lineItems },
-      addresses: {
-        create: [
-          {
-            type: 'BILLING',
-            firstName: String(billing.first_name || ''),
-            lastName: String(billing.last_name || ''),
-            company: typeof billing.company === 'string' ? billing.company : undefined,
-            address1: String(billing.address_1 || ''),
-            address2: typeof billing.address_2 === 'string' ? billing.address_2 : undefined,
-            city: String(billing.city || ''),
-            state: typeof billing.state === 'string' ? billing.state : undefined,
-            postcode: String(billing.postcode || ''),
-            country: String(billing.country || 'SK'),
-            phone: typeof billing.phone === 'string' ? billing.phone : undefined,
-            email: billingEmail,
-            ic: typeof billing.ic === 'string' ? billing.ic : undefined,
-            dic: typeof billing.dic === 'string' ? billing.dic : undefined,
-            dicDph: typeof billing.dic_dph === 'string' ? billing.dic_dph : undefined,
-          },
-          {
-            type: 'SHIPPING',
-            firstName: String(shipping.first_name || billing.first_name || ''),
-            lastName: String(shipping.last_name || billing.last_name || ''),
-            company: typeof shipping.company === 'string' ? shipping.company : undefined,
-            address1: String(shipping.address_1 || billing.address_1 || ''),
-            address2: typeof shipping.address_2 === 'string' ? shipping.address_2 : undefined,
-            city: String(shipping.city || billing.city || ''),
-            state: typeof shipping.state === 'string' ? shipping.state : undefined,
-            postcode: String(shipping.postcode || billing.postcode || ''),
-            country: String(shipping.country || billing.country || 'SK'),
-            phone: typeof billing.phone === 'string' ? billing.phone : undefined,
-            email: billingEmail,
-          }
-        ]
-      }
+  const buildOrderCreateData = (useLegacyIntegerFallback = false): Prisma.OrderCreateInput => ({
+    status: OrderStatus.processing,
+    paymentStatus: PaymentStatus.paid,
+    paymentMethod: PaymentMethod.stripe,
+    transactionId: pi.id,
+    currency: 'EUR',
+    subtotal: toDec(subtotalNum),
+    shippingTotal: toDec(shippingGross),
+    taxTotal: toDec(taxFromGross(subtotalNum, PRODUCT_VAT_RATE) + shippingTax),
+    discountTotal: toDec(discountTotal),
+    total: toDec(totalFromStripe),
+    shippingMethod: cart.sm,
+    customerNote: md.cn || undefined,
+    marketingConsent: md.mc === 'true',
+    packetaPointId: packeta.id,
+    packetaPointName: packeta.name,
+    packetaPointCity: packeta.city,
+    packetaPointStreet: packeta.street,
+    packetaPointZip: packeta.zip,
+    meta: {
+      create: uniqueMetaData
+    },
+    items: {
+      create: cart.li.map(item =>
+        buildStripeOrderItemCreateInput(item, priceMap.get(item.product_id), useLegacyIntegerFallback)
+      ),
+    },
+    addresses: {
+      create: [
+        {
+          type: 'BILLING',
+          firstName: String(billing.first_name || ''),
+          lastName: String(billing.last_name || ''),
+          company: typeof billing.company === 'string' ? billing.company : undefined,
+          address1: String(billing.address_1 || ''),
+          address2: typeof billing.address_2 === 'string' ? billing.address_2 : undefined,
+          city: String(billing.city || ''),
+          state: typeof billing.state === 'string' ? billing.state : undefined,
+          postcode: String(billing.postcode || ''),
+          country: String(billing.country || 'SK'),
+          phone: typeof billing.phone === 'string' ? billing.phone : undefined,
+          email: billingEmail,
+          ic: typeof billing.ic === 'string' ? billing.ic : undefined,
+          dic: typeof billing.dic === 'string' ? billing.dic : undefined,
+          dicDph: typeof billing.dic_dph === 'string' ? billing.dic_dph : undefined,
+        },
+        {
+          type: 'SHIPPING',
+          firstName: String(shipping.first_name || billing.first_name || ''),
+          lastName: String(shipping.last_name || billing.last_name || ''),
+          company: typeof shipping.company === 'string' ? shipping.company : undefined,
+          address1: String(shipping.address_1 || billing.address_1 || ''),
+          address2: typeof shipping.address_2 === 'string' ? shipping.address_2 : undefined,
+          city: String(shipping.city || billing.city || ''),
+          state: typeof shipping.state === 'string' ? shipping.state : undefined,
+          postcode: String(shipping.postcode || billing.postcode || ''),
+          country: String(shipping.country || billing.country || 'SK'),
+          phone: typeof billing.phone === 'string' ? billing.phone : undefined,
+          email: billingEmail,
+        }
+      ]
     }
   });
+
+  let created;
+  try {
+    created = await prisma.order.create({
+      data: buildOrderCreateData(false)
+    });
+  } catch (error) {
+    if (!isPrismaIntegerOverflowError(error)) {
+      throw error;
+    }
+
+    console.error('[stripe webhook] Retrying order create with legacy integer item IDs', {
+      paymentIntentId: pi.id,
+      billingEmail,
+      itemCount: cart.li.length,
+      originalIds: cart.li.map((item) => String(item.product_id)),
+    });
+
+    created = await prisma.order.create({
+      data: buildOrderCreateData(true)
+    });
+  }
 
   if (md.cp) {
     recordCouponRedemption({ couponCode: md.cp, orderId: created.id, email: billingEmail }).catch(() => null);

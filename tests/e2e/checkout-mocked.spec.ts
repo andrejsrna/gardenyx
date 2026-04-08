@@ -92,11 +92,12 @@ test.describe('Checkout mocked E2E', () => {
 
     const capturedOrderPayload = getCapturedOrderPayload();
     expect(capturedOrderPayload).toBeTruthy();
-    expect(capturedOrderPayload.payment_method).toBe('cod');
-    expect(capturedOrderPayload.shipping_method).toBe('packeta_home');
-    expect(Array.isArray(capturedOrderPayload.shipping_lines)).toBe(true);
-    expect(capturedOrderPayload.shipping_lines[0].total).toBe('3.80');
-    expect(capturedOrderPayload.shipping_lines[0].total_tax).toBe('0.87');
+    const orderPayload = capturedOrderPayload!;
+    expect(orderPayload.payment_method).toBe('cod');
+    expect(orderPayload.shipping_method).toBe('packeta_home');
+    expect(Array.isArray(orderPayload.shipping_lines)).toBe(true);
+    expect(orderPayload.shipping_lines?.[0]?.total).toBe('3.80');
+    expect(orderPayload.shipping_lines?.[0]?.total_tax).toBe('0.87');
   });
 
   test('completes checkout from shop through product detail and cart (mocked API)', async ({ page }) => {
@@ -130,8 +131,10 @@ test.describe('Checkout mocked E2E', () => {
     await expect(page).toHaveURL(/\/objednavka\/uspesna\/e2e-mock-order-1/, { timeout: 15_000 });
 
     const capturedOrderPayload = getCapturedOrderPayload();
-    expect(capturedOrderPayload.line_items).toHaveLength(1);
-    expect(capturedOrderPayload.payment_method).toBe('cod');
-    expect(capturedOrderPayload.shipping_method).toBe('packeta_home');
+    expect(capturedOrderPayload).toBeTruthy();
+    const orderPayload = capturedOrderPayload!;
+    expect(orderPayload.line_items).toHaveLength(1);
+    expect(orderPayload.payment_method).toBe('cod');
+    expect(orderPayload.shipping_method).toBe('packeta_home');
   });
 });
