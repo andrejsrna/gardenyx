@@ -4,6 +4,7 @@ import { createHash } from 'crypto';
 import { Builder, Parser } from 'xml2js';
 import prisma from '@/app/lib/prisma';
 import { getStoredOrderItemIds, isPrismaIntegerOverflowError, withSourceOrderItemIdsInMeta } from '@/app/lib/orders/item-id-storage';
+import { toJsonSafe } from '@/app/lib/utils/json';
 import { logError } from '@/app/lib/utils/logger';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { Prisma, OrderAddressType, OrderStatus, PaymentMethod as PaymentMethodEnum, PaymentStatus as PaymentStatusEnum } from '@prisma/client';
@@ -323,7 +324,7 @@ export async function GET(request: Request) {
       if (!order) {
         return NextResponse.json({ error: 'Order not found' }, { status: 404 });
       }
-      return NextResponse.json({ order });
+      return NextResponse.json({ order: toJsonSafe(order) });
     }
 
     if (paymentIntentId) {
@@ -346,7 +347,7 @@ export async function GET(request: Request) {
       if (!order) {
         return NextResponse.json({ error: 'Order not found' }, { status: 404 });
       }
-      return NextResponse.json({ order });
+      return NextResponse.json({ order: toJsonSafe(order) });
     }
 
     const where: Prisma.OrderWhereInput = {};
@@ -378,7 +379,7 @@ export async function GET(request: Request) {
       prisma.order.count({ where })
     ]);
 
-    return NextResponse.json({ orders, total, page, limit });
+    return NextResponse.json({ orders: toJsonSafe(orders), total, page, limit });
   } catch (error) {
     logError('Order fetch failed', {
       error: error instanceof Error ? error.message : String(error),
@@ -406,7 +407,7 @@ export async function POST(request: Request) {
     const existingOrder = await findExistingOrder(idempotencyKey);
     if (existingOrder) {
       return NextResponse.json({
-        order: existingOrder,
+        order: toJsonSafe(existingOrder),
         isExisting: true
       });
     }
@@ -605,7 +606,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      order: fullOrder || createdOrder,
+      order: toJsonSafe(fullOrder || createdOrder),
       isExisting: false
     });
   } catch (error) {
