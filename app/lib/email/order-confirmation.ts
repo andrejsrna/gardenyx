@@ -119,7 +119,8 @@ const buildHtml = (order: OrderWithRelations, email: string) => {
     preheader: `Objednávka ${getOrderNumberLabel(order)} bola prijatá.`,
     greeting,
     content,
-    footerNote: 'Ak máte otázky k objednávke, odpovedzte na tento email alebo nás kontaktujte na support@gardenyx.eu.'
+    footerNote: 'Ak máte otázky k objednávke, odpovedzte na tento email alebo nás kontaktujte na support@gardenyx.eu.',
+    headerVariant: 'text'
   });
 };
 
@@ -195,7 +196,8 @@ export async function sendOrderNotificationToAdmin(order: OrderWithRelations, cu
     preheader: `Nová objednávka v GardenYX v hodnote ${formatCurrency(order.total)}`,
     content,
     highlight: `Suma ${formatCurrency(order.total)}`,
-    footerNote: 'Pozrite admin DB na detaily.'
+    footerNote: 'Pozrite admin DB na detaily.',
+    headerVariant: 'text'
   });
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: adminEmail }];
@@ -259,7 +261,8 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
     title: `Stav zásielky k objednávke ${getOrderNumberLabel(order)}`,
     preheader: `Aktuálny stav: ${status}`,
     content,
-    footerNote: 'Sme tu pre vás – odpovedzte, ak potrebujete upresniť doručenie.'
+    footerNote: 'Sme tu pre vás – odpovedzte, ak potrebujete upresniť doručenie.',
+    headerVariant: 'text'
   });
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: to }];
@@ -299,7 +302,8 @@ export async function sendReturnNoticeEmail(order: OrderWithRelations, to: strin
     preheader: 'Neprevzatá zásielka – daj nám vedieť, ako pokračovať',
     greeting,
     content,
-    footerNote: 'Stačí odpovedať na tento email a dohodneme opätovné odoslanie alebo refund.'
+    footerNote: 'Stačí odpovedať na tento email a dohodneme opätovné odoslanie alebo refund.',
+    headerVariant: 'text'
   });
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: to }];
@@ -343,7 +347,8 @@ export async function sendInvoiceLinkEmail(order: OrderWithRelations, to: string
     content,
     highlight: `Faktúra ${invoiceNumber}`,
     cta: { label: 'Stiahnuť faktúru', url: invoiceUrl },
-    footerNote
+    footerNote,
+    headerVariant: 'text'
   });
   email.sender = { name: senderName, email: senderEmail };
   email.to = [{ email: to }];

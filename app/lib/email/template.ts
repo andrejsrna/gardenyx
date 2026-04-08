@@ -11,6 +11,7 @@ type RenderEmailParams = {
   cta?: EmailCta;
   footerNote?: string;
   highlight?: string;
+  headerVariant?: 'image' | 'text';
 };
 
 const BRAND = {
@@ -24,7 +25,6 @@ const BRAND = {
 };
 
 const SITE_URL = getSiteUrl();
-const LOGO_URL = `${SITE_URL}/logo.png`;
 const TAGLINE = 'Starostlivosť o vašu záhradu';
 
 export const emailButton = (cta: EmailCta) => `
@@ -75,6 +75,16 @@ export function renderEmail(params: RenderEmailParams) {
   const footer = params.footerNote
     ? `<p style="margin:14px 0 0 0;color:#94a3b8;font-size:12px;line-height:18px;">${params.footerNote}</p>`
     : `<p style="margin:14px 0 0 0;color:#94a3b8;font-size:12px;line-height:18px;">Ak ste tento email neočakávali, môžete ho ignorovať.</p>`;
+  const headerVariant = params.headerVariant || 'image';
+  const brandMarkup = headerVariant === 'text'
+    ? `
+      <span style="display:inline-block;font-size:30px;line-height:1;font-weight:900;letter-spacing:0.08em;color:#ecfdf3;text-transform:uppercase;">
+        Garden<span style="color:#dcfce7;">YX</span>
+      </span>
+    `
+    : `
+      <img src="${SITE_URL}/logo.png" alt="GardenYX" width="150" height="44" style="display:block;max-width:150px;height:auto;" />
+    `;
 
   return `
     ${preheader}
@@ -88,7 +98,7 @@ export function renderEmail(params: RenderEmailParams) {
                   <tr>
                     <td style="padding:18px 22px;font-family:'Inter','Arial',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;">
                       <a href="${SITE_URL}" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;color:#ecfdf3;">
-                        <img src="${LOGO_URL}" alt="GardenYX" width="150" height="44" style="display:block;max-width:150px;height:auto;" />
+                        ${brandMarkup}
                       </a>
                     </td>
                     <td align="right" style="padding:18px 22px;font-family:'Inter','Arial',sans-serif;font-size:12px;font-weight:600;">${TAGLINE}</td>
