@@ -15,7 +15,6 @@ type LocaleContent = {
   pageSubtitle: string;
   shipping: {
     sectionTitle: string;
-    freeThreshold: string;
     methods: Array<{ title: string; price: string; description: string; icon: 'pickup' | 'home' }>;
   };
   packeta: {
@@ -43,7 +42,6 @@ const content: Record<string, LocaleContent> = {
     pageSubtitle: 'Všetko, čo potrebujete vedieť o doručení a platbe za vašu objednávku.',
     shipping: {
       sectionTitle: 'Spôsoby doručenia',
-      freeThreshold: 'Pri objednávke nad 29 € máte dopravu zdarma.',
       methods: [
         {
           title: 'Packeta – Výdajné miesto',
@@ -119,7 +117,6 @@ const content: Record<string, LocaleContent> = {
     pageSubtitle: 'Everything you need to know about delivery and payment for your order.',
     shipping: {
       sectionTitle: 'Delivery methods',
-      freeThreshold: 'Free shipping on orders over €29.',
       methods: [
         {
           title: 'Packeta – Pick-up point',
@@ -195,7 +192,6 @@ const content: Record<string, LocaleContent> = {
     pageSubtitle: 'Minden, amit a rendelése kézbesítéséről és fizetéséről tudnia kell.',
     shipping: {
       sectionTitle: 'Kézbesítési módok',
-      freeThreshold: '29 € feletti rendelésnél ingyenes a szállítás.',
       methods: [
         {
           title: 'Packeta – Átvevőpont',
@@ -340,12 +336,6 @@ export default async function ShippingPaymentPage({ params }: PageProps) {
           <h2 id="shipping-title" className="text-xl font-semibold text-gray-900 mb-4">
             {c.shipping.sectionTitle}
           </h2>
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-green-50 border border-green-200 px-4 py-1.5 text-sm font-medium text-green-800">
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            {c.shipping.freeThreshold}
-          </p>
           <div className="grid sm:grid-cols-2 gap-4">
             {c.shipping.methods.map((method) => (
               <div

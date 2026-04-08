@@ -129,7 +129,6 @@
   },
   "productCard": {
     "featured": "Najnovšie",
-    "freeShipping": "Doprava zadarmo",
     "detail": "Detail produktu",
     "addToCart": "Pridať do košíka",
     "salesSuspended": "Predaje pozastavené",
@@ -358,7 +357,6 @@
     "shipping": {
       "title": "Spôsob dopravy",
       "howPacketaWorks": "Ako funguje Packeta?",
-      "freeShippingEligible": "Máte nárok na dopravu zdarma.",
       "free": "Zadarmo",
       "change": "Zmeniť",
       "selectPickupPoint": "Vybrať výdajné miesto",

@@ -129,7 +129,6 @@
   },
   "productCard": {
     "featured": "Legújabb",
-    "freeShipping": "Ingyenes szállítás",
     "detail": "Termék részletei",
     "addToCart": "Kosárba",
     "salesSuspended": "Értékesítés szünetel",
@@ -358,7 +357,6 @@
     "shipping": {
       "title": "Szállítási mód",
       "howPacketaWorks": "Hogyan működik a Packeta?",
-      "freeShippingEligible": "Ön jogosult az ingyenes szállításra.",
       "free": "Ingyenes",
       "change": "Módosítás",
       "selectPickupPoint": "Átvételi pont kiválasztása",

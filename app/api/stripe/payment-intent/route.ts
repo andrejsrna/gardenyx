@@ -6,7 +6,7 @@ import { rateLimit } from '@/app/lib/utils/rateLimit';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { getProductsByIds } from '@/app/lib/products';
 import { validateCoupon } from '@/app/lib/coupons';
-import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST_PACKETA_HOME, SHIPPING_COST_PACKETA_PICKUP } from '@/app/lib/checkout/constants';
+import { SHIPPING_COST_PACKETA_HOME, SHIPPING_COST_PACKETA_PICKUP } from '@/app/lib/checkout/constants';
 import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '@/app/lib/pricing/math';
 
@@ -96,20 +96,13 @@ export async function POST(request: Request) {
             couponRawAmount = discountAmount;
         }
 
-        // Recalculate shipping based on actual productsTotal minus discount
+        // Recalculate shipping based on selected method
         let computedShippingCostBase = 0; // základ bez DPH
-        const subtotalAfterDiscount = Math.max(0, productsTotal - discountAmount);
         if (!freeShipping) {
-            if (subtotalAfterDiscount < FREE_SHIPPING_THRESHOLD) {
-                if (validatedData.cart.shipping_method === 'packeta_home') {
-                    computedShippingCostBase = SHIPPING_COST_PACKETA_HOME;
-                } else if (validatedData.cart.shipping_method === 'packeta_pickup') {
-                    computedShippingCostBase = SHIPPING_COST_PACKETA_PICKUP;
-                } else {
-                    computedShippingCostBase = 0; // Unknown or free shipping methods
-                }
-            } else {
-                computedShippingCostBase = 0; // Free shipping applies
+            if (validatedData.cart.shipping_method === 'packeta_home') {
+                computedShippingCostBase = SHIPPING_COST_PACKETA_HOME;
+            } else if (validatedData.cart.shipping_method === 'packeta_pickup') {
+                computedShippingCostBase = SHIPPING_COST_PACKETA_PICKUP;
             }
         }
         

@@ -59,8 +59,6 @@ export default function ProductCard({ product, locale: _locale, isPriority = fal
   const isSalesSuspended = isSalesSuspendedClient();
   const salePrice = parseFloat(product.sale_price || 'NaN');
   const effectivePrice = Number.isFinite(salePrice) ? salePrice : price;
-  const qualifiesFreeShippingBadge = effectivePrice > 29;
-
   const isVariable = product.type === 'variable' && product.variants && product.variants.length > 0;
   const minVariantPrice = isVariable
     ? Math.min(...(product.variants ?? []).map((v) => v.price))
@@ -93,11 +91,6 @@ export default function ProductCard({ product, locale: _locale, isPriority = fal
         {hasDiscount && (
           <div className="absolute right-4 top-4 z-10 rounded-full bg-emerald-600 px-3 py-1 text-sm font-semibold text-white shadow-lg">
             -{discount}%
-          </div>
-        )}
-        {qualifiesFreeShippingBadge && (
-          <div className="absolute bottom-4 left-4 z-10 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-emerald-700 shadow-sm backdrop-blur">
-            {t('freeShipping')}
           </div>
         )}
       </div>

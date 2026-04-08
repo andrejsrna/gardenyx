@@ -129,7 +129,6 @@
   },
   "productCard": {
     "featured": "Newest",
-    "freeShipping": "Free shipping",
     "detail": "Product detail",
     "addToCart": "Add to cart",
     "salesSuspended": "Sales suspended",
@@ -358,7 +357,6 @@
     "shipping": {
       "title": "Shipping method",
       "howPacketaWorks": "How does Packeta work?",
-      "freeShippingEligible": "You qualify for free shipping.",
       "free": "Free",
       "change": "Change",
       "selectPickupPoint": "Select pickup point",
