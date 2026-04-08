@@ -133,10 +133,12 @@
     "detail": "Detail produktu",
     "addToCart": "Pridať do košíka",
     "salesSuspended": "Predaje pozastavené",
-    "withCoupon": "so zľavovým kupónom"
+    "withCoupon": "so zľavovým kupónom",
+    "priceFrom": "od"
   },
   "productPage": {
     "descriptionTitle": "Popis produktu",
+    "priceFrom": "od",
     "actions": {
       "addToCart": "Pridať do košíka",
       "buyNowCheckout": "Kúpiť teraz – prejsť do pokladne",

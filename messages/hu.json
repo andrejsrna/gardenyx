@@ -133,10 +133,12 @@
     "detail": "Termék részletei",
     "addToCart": "Kosárba",
     "salesSuspended": "Értékesítés szünetel",
-    "withCoupon": "kedvezménykuponnal"
+    "withCoupon": "kedvezménykuponnal",
+    "priceFrom": "tól"
   },
   "productPage": {
     "descriptionTitle": "Termékleírás",
+    "priceFrom": "tól",
     "actions": {
       "addToCart": "Kosárba",
       "buyNowCheckout": "Vásárlás most - továbblépés a pénztárhoz",

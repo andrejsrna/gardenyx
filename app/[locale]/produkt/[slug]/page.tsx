@@ -174,7 +174,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 {isVariable && minVariantPrice !== null ? (
-                  <span className="text-4xl font-bold text-stone-900">od {minVariantPrice.toFixed(2)} €</span>
+                  <span className="text-4xl font-bold text-stone-900">{t('priceFrom')} {minVariantPrice.toFixed(2)} €</span>
                 ) : (
                   <>
                     <span className="text-4xl font-bold text-stone-900">{price.toFixed(2)} €</span>

@@ -146,7 +146,7 @@ export default function ProductCard({ product, locale: _locale, isPriority = fal
           <div className="mb-4 flex items-baseline gap-2">
             {isVariable && minVariantPrice !== null ? (
               <span className="text-2xl font-bold text-stone-900">
-                od {minVariantPrice.toFixed(2)} €
+                {t('priceFrom')} {minVariantPrice.toFixed(2)} €
               </span>
             ) : (
               <>

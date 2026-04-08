@@ -133,10 +133,12 @@
     "detail": "Product detail",
     "addToCart": "Add to cart",
     "salesSuspended": "Sales suspended",
-    "withCoupon": "with coupon applied"
+    "withCoupon": "with coupon applied",
+    "priceFrom": "from"
   },
   "productPage": {
     "descriptionTitle": "Product description",
+    "priceFrom": "from",
     "actions": {
       "addToCart": "Add to cart",
       "buyNowCheckout": "Buy now - proceed to checkout",
