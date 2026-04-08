@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Elements, PaymentElement, ExpressCheckoutElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import type { StripeExpressCheckoutElementConfirmEvent } from '@stripe/stripe-js';
 import { toast } from 'sonner';
 import * as Sentry from '@sentry/nextjs';
 import { usePaymentStore } from '../stores/paymentStore';
@@ -131,6 +132,46 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
   }, []);
 
 
+
+  const handleExpressCheckoutConfirm = useCallback(async (event: StripeExpressCheckoutElementConfirmEvent) => {
+    if (!stripe || !elements) return;
+    if (isSalesSuspendedClient()) {
+      toast.error(getSalesSuspensionMessageClient());
+      return;
+    }
+    setIsProcessing(true);
+    isProcessingRef.current = true;
+    setError(null);
+    setPaymentProgress(t('progress.processing'));
+
+    const { error: confirmError } = await stripe.confirmPayment({
+      elements,
+      redirect: 'if_required',
+      confirmParams: {
+        return_url: `${window.location.origin}${window.location.pathname}`,
+        payment_method_data: {
+          billing_details: {
+            name: billingDetails?.name,
+            email: billingDetails?.email,
+            phone: billingDetails?.phone,
+          },
+        },
+      },
+    });
+
+    if (confirmError) {
+      setError(confirmError.message || t('errors.paymentFailed'));
+      setIsProcessing(false);
+      isProcessingRef.current = false;
+      setPaymentProgress('');
+      event.paymentFailed?.({ reason: 'fail' });
+      return;
+    }
+
+    // Reuse finalize + polling logic by dispatching a synthetic submit
+    const form = document.getElementById('stripe-payment-form') as HTMLFormElement | null;
+    form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }, [stripe, elements, billingDetails, t]);
 
   const handleSubmitWithPolling = useCallback(async (event: React.FormEvent) => {
     event.preventDefault();
@@ -415,7 +456,25 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
   }, [stripe, elements, clientSecret, onSuccess, onError, billingDetails, t]);
 
   return (
-    <form onSubmit={handleSubmitWithPolling} className="space-y-6">
+    <form id="stripe-payment-form" onSubmit={handleSubmitWithPolling} className="space-y-6">
+      {/* Apple Pay / Google Pay express buttons */}
+      <div className="rounded-lg border border-gray-200 bg-white px-6 pt-6 pb-4">
+        <ExpressCheckoutElement
+          onConfirm={handleExpressCheckoutConfirm}
+          options={{
+            buttonTheme: { applePay: 'black', googlePay: 'black' },
+            buttonType: { applePay: 'buy', googlePay: 'buy' },
+            layout: { maxColumns: 1, maxRows: 2 },
+          }}
+        />
+      </div>
+
+      <div className="flex items-center gap-3 text-xs text-gray-400">
+        <div className="h-px flex-1 bg-gray-200" />
+        <span>alebo zaplať kartou</span>
+        <div className="h-px flex-1 bg-gray-200" />
+      </div>
+
       <div className="rounded-lg border border-gray-200 bg-white">
         <div className="pt-6 px-6 pb-6">
           <PaymentElement />

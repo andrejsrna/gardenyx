@@ -150,7 +150,7 @@ export async function POST(request: Request) {
                     cpt: couponType || '',
                     cpa: couponRawAmount !== undefined ? String(couponRawAmount) : ''
                 },
-                statement_descriptor_suffix: 'NKV SHOP',
+                statement_descriptor_suffix: 'GARDENYX',
                 receipt_email: receiptEmail
             }, { idempotencyKey });
 
