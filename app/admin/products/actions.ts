@@ -72,6 +72,43 @@ function getCategoriesInput(formData: FormData) {
   return categories as Prisma.InputJsonValue;
 }
 
+function getVariantsInput(formData: FormData): Prisma.InputJsonValue | typeof Prisma.JsonNull {
+  const raw = formData.get('variantsJson');
+  if (typeof raw !== 'string' || !raw) return Prisma.JsonNull;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) return Prisma.JsonNull;
+    return parsed.map((v: Record<string, unknown>) => ({
+      id: typeof v.id === 'number' ? v.id : 0,
+      name: String(v.name || ''),
+      sku: v.sku ? String(v.sku) : null,
+      price: Number(v.price) || 0,
+      stockStatus: String(v.stockStatus || 'instock'),
+    })) as Prisma.InputJsonValue;
+  } catch {
+    return Prisma.JsonNull;
+  }
+}
+
+function getDocumentsInput(formData: FormData): Prisma.InputJsonValue | typeof Prisma.JsonNull {
+  const raw = formData.get('documentsJson');
+  if (typeof raw !== 'string' || !raw) return Prisma.JsonNull;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) return Prisma.JsonNull;
+    return parsed
+      .filter((d: Record<string, unknown>) => d.url)
+      .map((d: Record<string, unknown>) => ({
+        id: typeof d.id === 'number' ? d.id : 0,
+        label: String(d.label || 'Dokument'),
+        url: String(d.url),
+        lang: String(d.lang || 'sk'),
+      })) as Prisma.InputJsonValue;
+  } catch {
+    return Prisma.JsonNull;
+  }
+}
+
 function getImagesInput(formData: FormData) {
   const primaryImageSrc = getOptionalString(formData, 'primaryImageSrc');
   const primaryImageAlt = getOptionalString(formData, 'primaryImageAlt');
@@ -139,6 +176,7 @@ export async function importProductsFromMarkdownAction() {
         shortDescription: product.shortDescription || null,
         description: product.description || null,
         translations: product.translations ? (product.translations as Prisma.InputJsonValue) : Prisma.JsonNull,
+        variants: product.variants ? (product.variants as Prisma.InputJsonValue) : Prisma.JsonNull,
       },
       create: {
         wcId: BigInt(product.wcId),
@@ -161,6 +199,7 @@ export async function importProductsFromMarkdownAction() {
         shortDescription: product.shortDescription || null,
         description: product.description || null,
         translations: product.translations ? (product.translations as Prisma.InputJsonValue) : Prisma.JsonNull,
+        variants: product.variants ? (product.variants as Prisma.InputJsonValue) : Prisma.JsonNull,
       },
     });
   }
@@ -203,6 +242,8 @@ export async function updateProductAction(formData: FormData) {
       categories: getCategoriesInput(formData),
       images: getImagesInput(formData),
       translations: getTranslationsInput(formData),
+      variants: getVariantsInput(formData),
+      documents: getDocumentsInput(formData),
     },
   });
 

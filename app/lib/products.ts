@@ -28,6 +28,7 @@ type ProductTranslations = Partial<Record<'en' | 'hu', ProductTranslation>>;
 export type ProductCategory = { id: number; name: string; slug: string };
 export type ProductImage = { src: string; alt?: string | null };
 export type ProductVariant = { id: number; name: string; sku?: string | null; price: number; stockStatus?: string | null };
+export type ProductDocument = { id?: number; label: string; url: string; lang: string };
 
 export type StoredProductRecord = {
   wcId: number;
@@ -46,6 +47,7 @@ export type StoredProductRecord = {
   categories: ProductCategory[];
   images: ProductImage[];
   variants?: ProductVariant[];
+  documents?: ProductDocument[];
   attributes?: unknown;
   meta?: unknown;
   shortDescription?: string;
@@ -72,6 +74,7 @@ export type LocalProduct = {
   categories: ProductCategory[];
   images: ProductImage[];
   variants?: ProductVariant[];
+  documents?: ProductDocument[];
   attributes?: unknown;
   meta?: unknown;
   short_description?: string;
@@ -223,6 +226,20 @@ function localizeProduct(product: LocalProduct, locale?: string): LocalProduct {
   };
 }
 
+function normalizeDocuments(value: unknown): ProductDocument[] | undefined {
+  if (!Array.isArray(value) || !value.length) return undefined;
+  const docs = value
+    .filter(isRecord)
+    .map((d) => ({
+      id: normalizeNumber(d.id) ?? undefined,
+      label: typeof d.label === 'string' ? d.label : 'Dokument',
+      url: typeof d.url === 'string' ? d.url : '',
+      lang: typeof d.lang === 'string' ? d.lang : 'sk',
+    }))
+    .filter((d) => d.url);
+  return docs.length ? docs : undefined;
+}
+
 function normalizeVariants(value: unknown): ProductVariant[] | undefined {
   if (!Array.isArray(value) || !value.length) {
     return undefined;
@@ -293,6 +310,7 @@ async function mapStoredRecordToLocalProduct(record: StoredProductRecord): Promi
     categories: record.categories,
     images: record.images,
     variants: record.variants,
+    documents: record.documents,
     attributes: record.attributes,
     meta: record.meta,
     short_description: record.shortDescription,
@@ -321,6 +339,8 @@ function mapPrismaProductToStoredRecord(product: PrismaProduct): StoredProductRe
     weight: decimalToNumber(product.weight),
     categories: normalizeCategories(product.categories),
     images: normalizeImages(product.images),
+    variants: normalizeVariants(product.variants),
+    documents: normalizeDocuments(product.documents),
     attributes: product.attributes,
     meta: product.meta,
     shortDescription: product.shortDescription || undefined,
@@ -355,6 +375,7 @@ async function readMarkdownProductFile(filePath: string): Promise<StoredProductR
     categories: normalizeCategories(data.categories),
     images: normalizeImages(data.images),
     variants: normalizeVariants(data.variants),
+    documents: normalizeDocuments(data.documents),
     attributes: data.attributes,
     meta: data.meta,
     shortDescription: typeof data.shortDescription === 'string' ? data.shortDescription : undefined,

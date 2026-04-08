@@ -217,6 +217,36 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </section>
           ) : null}
 
+          {product.documents && product.documents.length > 0 && (
+            <section className="mt-8 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm md:p-8">
+              <div className="flex items-center gap-2 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h2 className="text-xl font-bold text-stone-900">Dokumenty na stiahnutie</h2>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {product.documents
+                  .filter((doc) => doc.lang === 'all' || doc.lang === locale || doc.lang === 'sk')
+                  .map((doc, i) => (
+                    <a
+                      key={i}
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-green-400 hover:bg-green-50 hover:text-green-800 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 3a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5H7zm5 0v4a1 1 0 001 1h4M9 13h6M9 17h4" />
+                      </svg>
+                      {doc.label}
+                      {doc.lang !== 'all' && <span className="text-xs text-stone-400 uppercase">{doc.lang}</span>}
+                    </a>
+                  ))}
+              </div>
+            </section>
+          )}
+
           <BuyNowCTA product={product} />
 
           <ProductShowcaseSection
