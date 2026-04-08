@@ -8,7 +8,6 @@ import SalesSuspensionBanner from '../components/SalesSuspensionBanner';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
 import { CookieConsentProvider } from '../context/CookieConsentContext';
-import { isSalesSuspended, getSalesSuspensionMessage } from '../lib/utils/sales-suspension';
 import { headers } from 'next/headers';
 
 export default async function LocaleLayout({

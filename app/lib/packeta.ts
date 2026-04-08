@@ -19,6 +19,19 @@ function calculateTotalWeight(items: Array<{ quantity: number }>): number {
 
 export type PacketaResult = { id: string; barcode: string; barcodeText: string };
 
+type PacketaCreatePacketResponse = {
+  response?: {
+    status?: string;
+    string?: string;
+    message?: string;
+    result?: {
+      id?: string;
+      barcode?: string;
+      barcodeText?: string;
+    };
+  };
+};
+
 export async function createPacketaPacketForOrder(orderId: string, opts?: { force?: boolean }): Promise<PacketaResult> {
   const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
   if (!PACKETA_API_PASSWORD) throw new Error('Missing PACKETA_API_SECRET');
@@ -94,7 +107,7 @@ export async function createPacketaPacketForOrder(orderId: string, opts?: { forc
   if (!resp.ok) throw new Error(`Packeta HTTP ${resp.status}: ${resp.statusText} :: ${respText}`);
 
   const parser = new Parser({ explicitArray: false });
-  const result = await parser.parseStringPromise(respText) as any;
+  const result = await parser.parseStringPromise(respText) as PacketaCreatePacketResponse;
   if (result?.response?.status !== 'ok') {
     throw new Error(result?.response?.string || result?.response?.message || `Packeta status: ${result?.response?.status}`);
   }

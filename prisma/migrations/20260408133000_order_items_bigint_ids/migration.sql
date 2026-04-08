@@ -1,0 +1,3 @@
+ALTER TABLE "OrderItem"
+ALTER COLUMN "productId" TYPE BIGINT USING "productId"::BIGINT,
+ALTER COLUMN "variationId" TYPE BIGINT USING "variationId"::BIGINT;

@@ -9,7 +9,7 @@ type SuccessTrackingProps = {
   total: number;
   tax?: number;
   shipping?: number;
-  items: Array<{ id: number; name: string; price: number; quantity: number; category?: string }>
+  items: Array<{ id: string | number; name: string; price: number; quantity: number; category?: string }>
 };
 
 export default function SuccessTracking({ orderId, total, tax, shipping, items }: SuccessTrackingProps) {

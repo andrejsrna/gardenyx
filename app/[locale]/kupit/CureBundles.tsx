@@ -130,7 +130,7 @@ export default function CureBundles() {
       name: bundle.title,
       price: desired,
       quantity: 1,
-    } as any);
+    });
 
     openCart();
   };

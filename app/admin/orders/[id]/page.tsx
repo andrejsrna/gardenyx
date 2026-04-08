@@ -10,6 +10,21 @@ type PageProps = {
   params?: Promise<{ id: string }>;
 };
 
+type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
+
+type PacketaCreatePacketResponse = {
+  response?: {
+    status?: string;
+    string?: string;
+    message?: string;
+    result?: {
+      id?: string;
+      barcode?: string;
+      barcodeText?: string;
+    };
+  };
+};
+
 export const dynamic = 'force-dynamic';
 
 const paymentMethodLabels: Record<string, string> = {
@@ -99,7 +114,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
     const fresh = await prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true, addresses: true, meta: true }
-    });
+    }) as OrderWithRelations | null;
     if (!fresh) throw new Error('Order not found');
 
     const billing = fresh.addresses.find(a => a.type === 'BILLING');
@@ -111,8 +126,8 @@ export default async function OrderDetailPage({ params }: PageProps) {
     await prisma.order.update({ where: { id: orderId }, data: { status: 'processing' } });
 
     // Resend emails (best-effort)
-    await sendOrderConfirmationEmail(fresh as any, billing.email);
-    await sendOrderNotificationToAdmin(fresh as any, billing.email);
+    await sendOrderConfirmationEmail(fresh, billing.email);
+    await sendOrderNotificationToAdmin(fresh, billing.email);
 
     // Recreate Packeta packet
     const packetAttributes: Record<string, string | undefined> = {
@@ -168,7 +183,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
     if (!resp.ok) throw new Error(`Packeta HTTP ${resp.status}: ${resp.statusText} :: ${respText}`);
 
     const parser = new Parser({ explicitArray: false });
-    const result = await parser.parseStringPromise(respText) as any;
+    const result = await parser.parseStringPromise(respText) as PacketaCreatePacketResponse;
     if (result?.response?.status !== 'ok') {
       throw new Error(result?.response?.string || result?.response?.message || `Packeta status: ${result?.response?.status}`);
     }

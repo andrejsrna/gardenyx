@@ -491,10 +491,10 @@ export async function POST(request: Request) {
             const safePrice = Number.isFinite(price) ? price : 0;
             const safeTotal = Number.isFinite(totalLine) ? totalLine : safePrice * li.quantity;
             return {
-              productId: li.product_id,
+              productId: BigInt(li.product_id),
               productName: li.name || `Product ${li.product_id}`,
               sku: li.sku,
-              variationId: li.variation_id,
+              variationId: li.variation_id ? BigInt(li.variation_id) : undefined,
               imageUrl: li.image,
               price: toDecimal(safePrice),
               quantity: li.quantity,

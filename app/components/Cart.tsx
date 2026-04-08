@@ -1,7 +1,6 @@
 "use client";
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -27,15 +26,7 @@ export default function Cart({onCloseAction}: CartProps) {
         manualDiscountLabel,
     } = useCart();
     const {customerData, isAuthenticated, isLoading} = useAuth();
-    const [userName, setUserName] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (isAuthenticated && customerData?.billing?.first_name) {
-            setUserName(customerData.billing.first_name);
-        } else {
-            setUserName(null);
-        }
-    }, [isAuthenticated, customerData]);
+    const userName = isAuthenticated ? customerData?.billing?.first_name ?? null : null;
 
     const handleRemove = (itemId: number) => {
         removeFromCart(itemId);

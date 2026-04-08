@@ -47,7 +47,7 @@ export default function DocumentsEditor({ initial }: { initial: DocumentRow[] })
       <input type="hidden" name="documentsJson" value={JSON.stringify(rows)} />
 
       {rows.length === 0 && (
-        <p className="text-sm text-slate-400">Žiadne dokumenty. Klikni "Pridať dokument".</p>
+        <p className="text-sm text-slate-400">Žiadne dokumenty. Klikni &quot;Pridať dokument&quot;.</p>
       )}
 
       {rows.map((row, idx) => (

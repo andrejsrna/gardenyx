@@ -58,7 +58,7 @@ const trackFbEventWithConversionAPI = async (
 };
 
 interface Product {
-  id: number;
+  id: string | number;
   name: string;
   price: number;
   quantity?: number;

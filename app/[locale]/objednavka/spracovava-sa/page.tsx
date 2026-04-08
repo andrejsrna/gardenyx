@@ -36,13 +36,12 @@ export default function ProcessingPage() {
   const pi = params.get('pi');
   const m = MESSAGES[locale] || MESSAGES.sk;
 
-  const [checking, setChecking] = useState(true);
+  const [checking, setChecking] = useState(Boolean(pi));
   const [attempts, setAttempts] = useState(0);
 
   // Continue polling — webhook may still be processing
   useEffect(() => {
     if (!pi) {
-      setChecking(false);
       return;
     }
     let count = 0;

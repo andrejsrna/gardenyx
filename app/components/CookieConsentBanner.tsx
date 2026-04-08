@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import CookieConsent, { getCookieConsentValue } from 'react-cookie-consent';
@@ -10,6 +10,7 @@ type ConsentDetails = {
   necessary: boolean;
   analytics: boolean;
   marketing: boolean;
+  timestamp?: string;
 };
 
 const cookieBannerCopy = {
@@ -71,7 +72,13 @@ const cookieBannerCopy = {
 
 const storeConsentDetails = (details: ConsentDetails) => {
   try {
-    localStorage.setItem('cookieConsentDetails', JSON.stringify(details));
+    localStorage.setItem(
+      'cookieConsentDetails',
+      JSON.stringify({
+        ...details,
+        timestamp: details.timestamp || new Date().toISOString(),
+      }),
+    );
   } catch {
     // ignore storage errors
   }
@@ -89,11 +96,62 @@ const DECLINED_DETAILS: ConsentDetails = {
   marketing: false,
 };
 
+type ConsentSnapshot = {
+  consent: string | null;
+  details: ConsentDetails | null;
+  isSeznamBrowser: boolean;
+};
+
+export const getCookieConsentDetails = (): ConsentDetails | null => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const details = localStorage.getItem('cookieConsentDetails');
+    return details ? JSON.parse(details) as ConsentDetails : null;
+  } catch {
+    return null;
+  }
+};
+
+export const getCookieConsentSnapshot = (): ConsentSnapshot => {
+  if (typeof window === 'undefined') {
+    return { consent: null, details: null, isSeznamBrowser: false };
+  }
+
+  const isSeznamBrowser = /SeznamBrowser|Seznam|Szn/i.test(window.navigator.userAgent || '');
+
+  return {
+    consent: isSeznamBrowser ? null : getCookieConsentValue('cookieConsent') || null,
+    details: getCookieConsentDetails(),
+    isSeznamBrowser,
+  };
+};
+
+export const subscribeToCookieConsentChanges = (onStoreChange: () => void) => {
+  if (typeof window === 'undefined') {
+    return () => undefined;
+  }
+
+  const handler = () => onStoreChange();
+  window.addEventListener('storage', handler);
+  window.addEventListener('cookie-consent-updated', handler);
+
+  return () => {
+    window.removeEventListener('storage', handler);
+    window.removeEventListener('cookie-consent-updated', handler);
+  };
+};
+
 export default function CookieConsentBanner() {
-  const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
   const locale = pathname?.split('/').filter(Boolean)[0] ?? 'sk';
   const copy = cookieBannerCopy[locale as keyof typeof cookieBannerCopy] ?? cookieBannerCopy.sk;
+  const { consent, details, isSeznamBrowser } = useSyncExternalStore(
+    subscribeToCookieConsentChanges,
+    getCookieConsentSnapshot,
+    getCookieConsentSnapshot,
+  );
+
   const privacyHref =
     locale === 'en'
       ? '/en/privacy-policy'
@@ -101,39 +159,29 @@ export default function CookieConsentBanner() {
         ? '/hu/adatvedelem'
         : '/sk/ochrana-osobnych-udajov';
 
-  // Temporary guard for Seznam browser (Android) crash: "Cannot read properties of null (reading 'touches')"
-  // Likely caused by a third-party listener inside react-cookie-consent or the browser itself.
-  // Skip rendering the banner on Seznam to avoid the crash; this defaults to no optional cookies loaded.
-  const isSeznamBrowser = typeof navigator !== 'undefined' && /SeznamBrowser|Seznam|Szn/i.test(navigator.userAgent || '');
-
   useEffect(() => {
     if (isSeznamBrowser) {
-      // Debug log; remove after verifying fix
       console.warn('[CookieConsentBanner] Skipping banner on Seznam browser to avoid touch event crash');
-      setIsVisible(false);
       return;
     }
-    const existingConsent = getCookieConsentValue('cookieConsent');
-    
-    if (!existingConsent) {
-      setIsVisible(true);
-    } else if (typeof window !== 'undefined' && !safeGetItem('cookieConsentDetails')) {
-      storeConsentDetails(existingConsent === 'true' ? ACCEPTED_DETAILS : DECLINED_DETAILS);
+
+    if (consent && !details && !safeGetItem('cookieConsentDetails')) {
+      storeConsentDetails(consent === 'true' ? ACCEPTED_DETAILS : DECLINED_DETAILS);
     }
-  }, [isSeznamBrowser]);
+  }, [consent, details, isSeznamBrowser]);
 
   const handleAcceptAll = () => {
-    setIsVisible(false);
     storeConsentDetails(ACCEPTED_DETAILS);
+    window.dispatchEvent(new Event('cookie-consent-updated'));
     window.location.reload();
   };
 
   const handleDeclineAll = () => {
-    setIsVisible(false);
     storeConsentDetails(DECLINED_DETAILS);
+    window.dispatchEvent(new Event('cookie-consent-updated'));
   };
 
-  if (!isSeznamBrowser && isVisible) {
+  if (!isSeznamBrowser && !consent) {
     return (
       <CookieConsent
         location="bottom"
@@ -148,29 +196,29 @@ export default function CookieConsentBanner() {
         onAccept={handleAcceptAll}
         onDecline={handleDeclineAll}
         style={{
-          background: "#2d3748",
-          color: "#fff",
-          fontSize: "14px",
-          padding: "20px",
+          background: '#2d3748',
+          color: '#fff',
+          fontSize: '14px',
+          padding: '20px',
         }}
         buttonStyle={{
-          backgroundColor: "#10b981",
-          color: "#fff",
-          fontSize: "14px",
-          borderRadius: "6px",
-          padding: "10px 20px",
-          border: "none",
-          cursor: "pointer",
+          backgroundColor: '#10b981',
+          color: '#fff',
+          fontSize: '14px',
+          borderRadius: '6px',
+          padding: '10px 20px',
+          border: 'none',
+          cursor: 'pointer',
         }}
         declineButtonStyle={{
-          backgroundColor: "#6b7280",
-          color: "#fff",
-          fontSize: "14px",
-          borderRadius: "6px",
-          padding: "10px 20px",
-          border: "none",
-          cursor: "pointer",
-          marginRight: "10px",
+          backgroundColor: '#6b7280',
+          color: '#fff',
+          fontSize: '14px',
+          borderRadius: '6px',
+          padding: '10px 20px',
+          border: 'none',
+          cursor: 'pointer',
+          marginRight: '10px',
         }}
         buttonClasses="hover:bg-green-600 transition-colors duration-200"
         declineButtonClasses="hover:bg-gray-600 transition-colors duration-200"
@@ -180,7 +228,7 @@ export default function CookieConsentBanner() {
         <div className="space-y-3">
           <h3 className="text-lg font-semibold">{copy.title}</h3>
           <p className="text-sm leading-relaxed">{copy.description}</p>
-          
+
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
               <div>
@@ -189,14 +237,14 @@ export default function CookieConsentBanner() {
               </div>
               <span className="text-green-400">{copy.alwaysActive}</span>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <strong>{copy.analyticsTitle}</strong>
                 <div className="text-xs text-gray-300">{copy.analyticsDescription}</div>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <strong>{copy.marketingTitle}</strong>
@@ -204,7 +252,7 @@ export default function CookieConsentBanner() {
               </div>
             </div>
           </div>
-          
+
           <div className="text-xs text-gray-300">
             {copy.privacyPrefix}{' '}
             <Link href={privacyHref} className="text-blue-400 hover:text-blue-300 underline">
@@ -218,17 +266,6 @@ export default function CookieConsentBanner() {
 
   return null;
 }
-
-export const getCookieConsentDetails = () => {
-  if (typeof window === 'undefined') return null;
-  
-  try {
-    const details = localStorage.getItem('cookieConsentDetails');
-    return details ? JSON.parse(details) : null;
-  } catch {
-    return null;
-  }
-};
 
 export const hasConsentFor = (type: 'necessary' | 'analytics' | 'marketing'): boolean => {
   const details = getCookieConsentDetails();

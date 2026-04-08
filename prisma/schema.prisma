@@ -124,10 +124,10 @@ model OrderItem {
   id          String  @id @default(cuid())
   orderId     String
   order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId   Int
+  productId   BigInt
   productName String
   sku         String?
-  variationId Int?
+  variationId BigInt?
   imageUrl    String?
   price       Decimal @db.Decimal(10, 2)
   quantity    Int

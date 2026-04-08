@@ -51,7 +51,7 @@ export default async function AdminProductDetailPage({
   // Variants
   const rawVariants = readArray<Record<string, unknown>>(product.variants);
   const initialVariants: VariantRow[] = rawVariants.map((v, i) => ({
-    id: typeof v.id === 'number' ? v.id : Date.now() + i,
+    id: typeof v.id === 'number' ? v.id : -(i + 1),
     name: typeof v.name === 'string' ? v.name : '',
     sku: typeof v.sku === 'string' ? v.sku : '',
     price: typeof v.price === 'number' ? String(v.price) : typeof v.price === 'string' ? v.price : '',
@@ -61,7 +61,7 @@ export default async function AdminProductDetailPage({
   // Documents
   const rawDocs = readArray<Record<string, unknown>>(product.documents);
   const initialDocs: DocumentRow[] = rawDocs.map((d, i) => ({
-    id: typeof d.id === 'number' ? d.id : Date.now() + i,
+    id: typeof d.id === 'number' ? d.id : -(i + 1),
     label: typeof d.label === 'string' ? d.label : 'Bezpečnostný list',
     url: typeof d.url === 'string' ? d.url : '',
     lang: typeof d.lang === 'string' ? d.lang : 'sk',

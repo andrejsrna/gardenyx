@@ -23,7 +23,7 @@ export default async function OrderSuccessPage({ params }: PageProps) {
   const shippingTotal = Number(order?.shippingTotal || 0);
   const taxTotal = Number(order?.taxTotal || 0);
   const items = (order?.items as OrderItem[] | undefined)?.map((i) => ({
-    id: i.productId,
+    id: i.productId.toString(),
     name: i.productName,
     price: Number(i.price),
     quantity: Number(i.quantity)

@@ -1,8 +1,11 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { getCookieConsentValue } from 'react-cookie-consent';
-import { getCookieConsentDetails, hasConsentFor } from '../components/CookieConsentBanner';
+import { createContext, useContext, useSyncExternalStore } from 'react';
+import {
+  getCookieConsentSnapshot,
+  hasConsentFor,
+  subscribeToCookieConsentChanges,
+} from '../components/CookieConsentBanner';
 
 interface CookieConsentContextType {
   consent: string | null;
@@ -11,7 +14,7 @@ interface CookieConsentContextType {
     necessary: boolean;
     analytics: boolean;
     marketing: boolean;
-    timestamp: string;
+    timestamp?: string;
   } | null;
   hasConsentFor: (type: 'necessary' | 'analytics' | 'marketing') => boolean;
 }
@@ -19,36 +22,17 @@ interface CookieConsentContextType {
 const CookieConsentContext = createContext<CookieConsentContextType | undefined>(undefined);
 
 export function CookieConsentProvider({ children }: { children: React.ReactNode }) {
-  const [consent, setConsent] = useState<string | null>(null);
-  const [consentDetails, setConsentDetails] = useState<CookieConsentContextType['consentDetails']>(null);
-
-  useEffect(() => {
-    const cookieConsent = getCookieConsentValue('cookieConsent') || null;
-    const details = getCookieConsentDetails();
-    
-    setConsent(cookieConsent);
-    setConsentDetails(details);
-
-    const checkConsent = () => {
-      const currentConsent = getCookieConsentValue('cookieConsent') || null;
-      const currentDetails = getCookieConsentDetails();
-      
-      setConsent(currentConsent);
-      setConsentDetails(currentDetails);
-    };
-
-    window.addEventListener('storage', checkConsent);
-    return () => window.removeEventListener('storage', checkConsent);
-  }, []);
-
-  const hasConsented = consent === 'true';
-  const hasConsentForType = (type: 'necessary' | 'analytics' | 'marketing') => hasConsentFor(type);
+  const { consent, details: consentDetails } = useSyncExternalStore(
+    subscribeToCookieConsentChanges,
+    getCookieConsentSnapshot,
+    getCookieConsentSnapshot,
+  );
 
   const value: CookieConsentContextType = {
     consent,
-    hasConsented,
+    hasConsented: consent === 'true',
     consentDetails,
-    hasConsentFor: hasConsentForType,
+    hasConsentFor: (type) => hasConsentFor(type),
   };
 
   return (
@@ -64,4 +48,4 @@ export function useCookieConsent() {
     throw new Error('useCookieConsent must be used within a CookieConsentProvider');
   }
   return context;
-} 
+}

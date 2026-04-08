@@ -1,5 +1,15 @@
 import { test, expect, type Page } from '@playwright/test';
 
+type CapturedOrderPayload = {
+  payment_method?: string;
+  shipping_method?: string;
+  shipping_lines?: Array<{
+    total?: string;
+    total_tax?: string;
+  }>;
+  line_items?: unknown[];
+};
+
 test.describe('Checkout mocked E2E', () => {
   const fillCheckoutForm = async (page: Page) => {
     await page.fill('#billing-first_name', 'E2E');
@@ -12,7 +22,7 @@ test.describe('Checkout mocked E2E', () => {
   };
 
   const mockOrderCreate = async (page: Page) => {
-    let capturedOrderPayload: any = null;
+    let capturedOrderPayload: CapturedOrderPayload | null = null;
 
     await page.route('**/api/orders', async (route) => {
       const req = route.request();

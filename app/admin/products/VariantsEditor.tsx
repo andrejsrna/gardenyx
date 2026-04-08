@@ -33,7 +33,7 @@ export default function VariantsEditor({ initial }: { initial: VariantRow[] }) {
       <input type="hidden" name="variantsJson" value={JSON.stringify(rows)} />
 
       {rows.length === 0 && (
-        <p className="text-sm text-slate-400">Zatiaľ žiadne varianty. Klikni "Pridať variant".</p>
+        <p className="text-sm text-slate-400">Zatiaľ žiadne varianty. Klikni &quot;Pridať variant&quot;.</p>
       )}
 
       {rows.map((row, idx) => (

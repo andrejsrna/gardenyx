@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { sendOrderConfirmationEmail, sendOrderNotificationToAdmin } from '@/app/lib/email/order-confirmation';
 import { createPacketaPacketForOrder } from '@/app/lib/packeta';
@@ -13,6 +14,19 @@ export type FinalizeOrderOptions = {
 
 const nowIso = () => new Date().toISOString();
 const nowMs = () => Date.now();
+
+type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
+
+type ErrorWithContext = Error & {
+  response?: {
+    status?: number;
+    data?: unknown;
+  };
+  cause?: {
+    code?: string;
+    message?: string;
+  };
+};
 
 async function setMeta(orderId: string, key: string, value: string) {
   await prisma.orderMeta.upsert({
@@ -71,7 +85,7 @@ export async function finalizeOrder(orderId: string, opts?: FinalizeOrderOptions
   const lockVal = order.meta.find(m => m.key === lockUntilKey)?.value || null;
   const lockUntilMs = lockVal ? Number(lockVal) : 0;
   if (Number.isFinite(lockUntilMs) && lockUntilMs > nowMs()) {
-    return { ok: true, skipped: true, reason: 'locked', lockUntilMs } as any;
+    return { ok: true, skipped: true, reason: 'locked' as const, lockUntilMs };
   }
   // lock for 2 minutes
   await setMeta(orderId, lockUntilKey, String(nowMs() + 2 * 60 * 1000));
@@ -90,15 +104,15 @@ export async function finalizeOrder(orderId: string, opts?: FinalizeOrderOptions
     }
   } else if ((opts?.forceEmail || !emailSentAt) && billingEmail) {
     try {
-      await sendOrderConfirmationEmail(order as any, billingEmail);
-      await sendOrderNotificationToAdmin(order as any, billingEmail);
+      await sendOrderConfirmationEmail(order as OrderWithRelations, billingEmail);
+      await sendOrderNotificationToAdmin(order as OrderWithRelations, billingEmail);
       await setMeta(orderId, '_email_sent_at', nowIso());
       await deleteMeta(orderId, ['_email_error', '_email_error_at', '_email_skipped_reason', '_email_skipped_at']);
     } catch (err) {
-      const anyErr = err as any;
+      const errorWithContext = err as ErrorWithContext;
       const msg = err instanceof Error ? (err.message || '') : String(err);
-      const status = anyErr?.response?.status;
-      const data = anyErr?.response?.data;
+      const status = errorWithContext.response?.status;
+      const data = errorWithContext.response?.data;
       const detail = [
         msg,
         status ? `status=${status}` : null,
@@ -126,10 +140,10 @@ export async function finalizeOrder(orderId: string, opts?: FinalizeOrderOptions
       await deleteMeta(orderId, [lockUntilKey]);
       return { ok: true, email: billingEmail, packeta: res };
     } catch (err) {
-      const anyErr = err as any;
+      const errorWithContext = err as ErrorWithContext;
       const msg = err instanceof Error ? (err.message || '') : String(err);
-      const causeCode = anyErr?.cause?.code;
-      const causeMsg = anyErr?.cause?.message;
+      const causeCode = errorWithContext.cause?.code;
+      const causeMsg = errorWithContext.cause?.message;
       const detail = [
         msg,
         causeCode ? `cause=${causeCode}` : null,

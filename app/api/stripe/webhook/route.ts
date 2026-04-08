@@ -77,7 +77,7 @@ export async function ensureOrderFromPaymentIntent(pi: StripePI) {
     const data = priceMap.get(i.product_id);
     const price = data ? data.price : 0;
     return {
-      productId: i.product_id,
+      productId: BigInt(i.product_id),
       productName: data?.name || `Product ${i.product_id}`,
       sku: data?.sku || undefined,
       price: toDec(price),

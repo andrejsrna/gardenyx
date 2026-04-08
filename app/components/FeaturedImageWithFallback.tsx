@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface FeaturedImageWithFallbackProps {
   src?: string | null;
@@ -20,13 +20,10 @@ export default function FeaturedImageWithFallback({
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw',
   blurDataURL
 }: FeaturedImageWithFallbackProps) {
-  const [hasError, setHasError] = useState(!src);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const hasError = !src || failedSrc === src;
 
-  useEffect(() => {
-    setHasError(!src);
-  }, [src]);
-
-  if (!src || hasError) {
+  if (hasError) {
     const placeholderClasses = [
       'absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-emerald-600 via-green-700 to-emerald-800',
       className
@@ -48,7 +45,7 @@ export default function FeaturedImageWithFallback({
     );
   }
 
-  const handleError = () => setHasError(true);
+  const handleError = () => setFailedSrc(src);
 
   return (
     <Image
