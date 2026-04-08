@@ -234,7 +234,7 @@
     "billingInformation": {
       "title": "Fakturačné údaje",
       "phoneFullError": "Zadajte celé telefónne číslo vrátane predvoľby (napr. +421904123456).",
-      "postcodeTitle": "PSČ musí obsahovať 5 číslic",
+      "postcodeTitle": "PSČ musí obsahovať 4 alebo 5 číslic",
       "fields": {
         "firstName": "Meno",
         "lastName": "Priezvisko",
@@ -243,7 +243,8 @@
         "address": "Adresa",
         "address2": "Doplnková adresa",
         "city": "Mesto",
-        "postcode": "PSČ"
+        "postcode": "PSČ",
+        "country": "Krajina"
       },
       "placeholders": {
         "firstName": "Ján",
@@ -259,7 +260,7 @@
       "title": "Adresa doručenia",
       "packetaHomeHint": "Pri doručení domov (Packeta) zadajte do poľa Adresa ulicu a číslo domu (napr. Mládeže 559).",
       "sameAsBilling": "Doručovacia adresa je rovnaká ako fakturačná",
-      "postcodeTitle": "PSČ musí obsahovať 5 číslic",
+      "postcodeTitle": "PSČ musí obsahovať 4 alebo 5 číslic",
       "fields": {
         "firstName": "Meno",
         "lastName": "Priezvisko",
@@ -267,7 +268,8 @@
         "address": "Adresa",
         "address2": "Doplnková adresa",
         "city": "Mesto",
-        "postcode": "PSČ"
+        "postcode": "PSČ",
+        "country": "Krajina"
       },
       "placeholders": {
         "firstName": "Ján",

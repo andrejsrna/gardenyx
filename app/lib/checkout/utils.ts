@@ -9,9 +9,9 @@ export function updateShippingFromBilling(billingData: BillingInfo, currentShipp
     address_1: billingData.address_1,
     address_2: billingData.address_2 || '',
     city: billingData.city,
-    state: 'Slovenská republika',
+    state: billingData.state || '',
     postcode: billingData.postcode,
-    country: 'SK',
+    country: billingData.country || 'SK',
   };
 }
 

@@ -234,7 +234,7 @@
     "billingInformation": {
       "title": "Billing details",
       "phoneFullError": "Enter the full phone number including the country code (for example +421904123456).",
-      "postcodeTitle": "Postal code must contain 5 digits",
+      "postcodeTitle": "Postcode must be 4 or 5 digits",
       "fields": {
         "firstName": "First name",
         "lastName": "Last name",
@@ -243,7 +243,8 @@
         "address": "Address",
         "address2": "Additional address",
         "city": "City",
-        "postcode": "Postal code"
+        "postcode": "Postal code",
+        "country": "Country"
       },
       "placeholders": {
         "firstName": "John",
@@ -259,7 +260,7 @@
       "title": "Shipping address",
       "packetaHomeHint": "For home delivery (Packeta), enter the street and house number in the Address field (for example Mladeze 559).",
       "sameAsBilling": "Shipping address is the same as billing address",
-      "postcodeTitle": "Postal code must contain 5 digits",
+      "postcodeTitle": "Postcode must be 4 or 5 digits",
       "fields": {
         "firstName": "First name",
         "lastName": "Last name",
@@ -267,7 +268,8 @@
         "address": "Address",
         "address2": "Additional address",
         "city": "City",
-        "postcode": "Postal code"
+        "postcode": "Postal code",
+        "country": "Country"
       },
       "placeholders": {
         "firstName": "John",

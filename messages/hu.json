@@ -234,7 +234,7 @@
     "billingInformation": {
       "title": "Számlázási adatok",
       "phoneFullError": "Adja meg a teljes telefonszámot az országkóddal együtt (például +421904123456).",
-      "postcodeTitle": "Az irányítószámnak 5 számjegyből kell állnia",
+      "postcodeTitle": "Az irányítószámnak 4 vagy 5 számjegyből kell állnia",
       "fields": {
         "firstName": "Keresztnév",
         "lastName": "Vezetéknév",
@@ -243,7 +243,8 @@
         "address": "Cím",
         "address2": "Kiegészítő cím",
         "city": "Város",
-        "postcode": "Irányítószám"
+        "postcode": "Irányítószám",
+        "country": "Ország"
       },
       "placeholders": {
         "firstName": "János",
@@ -259,7 +260,7 @@
       "title": "Szállítási cím",
       "packetaHomeHint": "Házhoz szállítás esetén (Packeta) az Address mezőbe írja be az utcát és a házszámot (például Mládeže 559).",
       "sameAsBilling": "A szállítási cím megegyezik a számlázási címmel",
-      "postcodeTitle": "Az irányítószámnak 5 számjegyből kell állnia",
+      "postcodeTitle": "Az irányítószámnak 4 vagy 5 számjegyből kell állnia",
       "fields": {
         "firstName": "Keresztnév",
         "lastName": "Vezetéknév",
@@ -267,7 +268,8 @@
         "address": "Cím",
         "address2": "Kiegészítő cím",
         "city": "Város",
-        "postcode": "Irányítószám"
+        "postcode": "Irányítószám",
+        "country": "Ország"
       },
       "placeholders": {
         "firstName": "János",

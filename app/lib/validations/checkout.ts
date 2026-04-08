@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 // Regex patterns
-// Akceptuje formáty: +421XXXXXXXXX, +421 XXX XXX XXX, 09XXXXXXXX, 0914 000 000
-const PSC_REGEX = /^\d{5}$/;
+// PSČ: 4 číslice (HU) alebo 5 číslic (SK, CZ)
+const PSC_REGEX = /^\d{4,5}$/;
 const IC_REGEX = /^\d{8}$/;
 const DIC_REGEX = /^\d{10}$/;
 const IC_DPH_REGEX = /^SK\d{10}$/;
 
-// Regex pre čisté telefónne číslo (bez medzier)
-const CLEAN_PHONE_REGEX = /^(\+421|0)[1-9]\d{8}$/;
+// Telefón: medzinárodný formát (+421/+420/+36 + 8-9 číslic) alebo lokálny SK/CZ (0 + 9 číslic)
+const CLEAN_PHONE_REGEX = /^(\+421|\+420|\+36)[1-9]\d{7,8}$|^0[1-9]\d{8}$/;
 
 export const billingSchema = z.object({
   first_name: z.string().min(2, 'Meno musí mať aspoň 2 znaky'),
@@ -18,7 +18,7 @@ export const billingSchema = z.object({
   address_2: z.string().optional(),
   city: z.string().min(2, 'Mesto musí mať aspoň 2 znaky'),
   state: z.string().optional(),
-  postcode: z.string().regex(PSC_REGEX, 'PSČ musí obsahovať 5 číslic'),
+  postcode: z.string().regex(PSC_REGEX, 'PSČ musí obsahovať 4 alebo 5 číslic'),
   country: z.string(),
   email: z.string().email('Neplatný email'),
   phone: z.preprocess(

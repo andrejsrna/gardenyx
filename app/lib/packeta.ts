@@ -1,8 +1,8 @@
 import { Builder, Parser } from 'xml2js';
 import prisma from '@/app/lib/prisma';
+import { PACKETA_HOME_CARRIER_IDS } from '@/app/lib/checkout/constants';
 
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
-const PACKETA_CARRIER_ID = '131';
 const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
 
 function parseAddress(addressLine: string): { street: string; houseNumber: string } {
@@ -112,13 +112,16 @@ export async function createPacketaPacketForOrder(orderId: string, opts?: { forc
     }
     if (!parsed.street) throw new Error(`Invalid address for home delivery: ${addressLine}`);
 
+    const countryCode = String(shipping.country || 'SK').toUpperCase();
+    const carrierId = PACKETA_HOME_CARRIER_IDS[countryCode] || PACKETA_HOME_CARRIER_IDS['SK'];
+
     Object.assign(packetAttributes, {
-      addressId: PACKETA_CARRIER_ID,
+      addressId: carrierId,
       street: parsed.street,
       houseNumber: parsed.houseNumber,
       city: shipping.city,
       zip: String(shipping.postcode || '').replace(/\s/g, ''),
-      country: String(shipping.country || 'SK'),
+      country: countryCode.toLowerCase(),
     });
   } else {
     const pointId = order.packetaPointId || order.meta.find(m => m.key === '_packeta_point_id')?.value;

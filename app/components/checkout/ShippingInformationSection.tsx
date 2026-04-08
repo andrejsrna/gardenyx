@@ -3,6 +3,12 @@
 import { ChangeEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
+import { SUPPORTED_COUNTRIES } from '../../lib/checkout/constants';
+
+function getPostcodeProps(country: string) {
+  if (country === 'HU') return { pattern: '\\d{4}', maxLength: 4, placeholder: '1011' };
+  return { pattern: '\\d{5}', maxLength: 5, placeholder: '01000' };
+}
 
 interface ShippingInformationSectionProps {
   formData: FormData;
@@ -24,6 +30,7 @@ export default function ShippingInformationSection({
   onSameAsShippingChange,
 }: ShippingInformationSectionProps) {
   const t = useTranslations('checkout.shippingInformation');
+  const postcodeProps = getPostcodeProps(formData.shipping.country);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -174,9 +181,9 @@ export default function ShippingInformationSection({
               type="text"
               value={formData.shipping.postcode}
               onChange={(e) => onInputChange(e, 'shipping')}
-              pattern="\d{5}"
-              maxLength={5}
-              placeholder="01000"
+              pattern={postcodeProps.pattern}
+              maxLength={postcodeProps.maxLength}
+              placeholder={postcodeProps.placeholder}
               title={t('postcodeTitle')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
                 formErrors?.['shipping.postcode'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
@@ -184,6 +191,28 @@ export default function ShippingInformationSection({
               required
               autoComplete="shipping postal-code"
             />
+          </div>
+
+          {/* Country */}
+          <div>
+            <label htmlFor="shipping-country" className="block text-sm font-medium text-gray-700">
+              {t('fields.country')} <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="shipping-country"
+              name="country"
+              value={formData.shipping.country}
+              onChange={(e) => onInputChange(e, 'shipping')}
+              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
+                formErrors?.['shipping.country'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              }`}
+              required
+              autoComplete="shipping country"
+            >
+              {SUPPORTED_COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
           </div>
         </div>
       )}

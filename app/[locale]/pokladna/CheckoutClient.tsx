@@ -217,6 +217,20 @@ export default function CheckoutClient() {
     toast.success(t('toasts.productAdded', { name: product.name }));
   }, [addToCart, t]);
 
+  // Reset Packeta pickup point when billing country changes
+  const prevBillingCountry = useRef(formData.billing.country);
+  useEffect(() => {
+    const newCountry = formData.billing.country;
+    if (prevBillingCountry.current !== newCountry) {
+      prevBillingCountry.current = newCountry;
+      setFormData(prev => ({
+        ...prev,
+        meta_data: prev.meta_data.filter(item => !item.key.startsWith('_packeta_point_')),
+        ...(prev.shipping_method === 'packeta_pickup' ? { shipping_method: '' } : {}),
+      }));
+    }
+  }, [formData.billing.country, setFormData]);
+
   // Packeta point selection
   const handlePacketaPointSelect = useCallback(() => {
     setShowPacketaSelector(true);
@@ -658,6 +672,7 @@ export default function CheckoutClient() {
       {/* Modals and overlays */}
       {showPacketaSelector && (
         <PacketaPointSelector
+          country={formData.billing.country}
           onSelectAction={handlePacketaPointConfirm}
         />
       )}

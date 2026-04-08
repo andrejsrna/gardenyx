@@ -16,7 +16,9 @@ interface PacketaApiResponse {
   data: PacketaApiPoint[];
 }
 
-export async function GET() {
+const SUPPORTED_COUNTRIES = ['sk', 'cz', 'hu'];
+
+export async function GET(request: Request) {
   try {
     if (!PACKETA_API_KEY) {
       console.error('Missing Packeta API key');
@@ -26,14 +28,16 @@ export async function GET() {
       );
     }
 
+    const { searchParams } = new URL(request.url);
+    const countryParam = searchParams.get('country')?.toLowerCase();
+    const filterCountry = countryParam && SUPPORTED_COUNTRIES.includes(countryParam) ? countryParam : null;
 
-    const apiUrl = `https://pickup-point.api.packeta.com/v5/${PACKETA_API_KEY}/branch/json?lang=sk`;
+    const lang = countryParam === 'hu' ? 'hu' : countryParam === 'cz' ? 'cs' : 'sk';
+    const apiUrl = `https://pickup-point.api.packeta.com/v5/${PACKETA_API_KEY}/branch/json?lang=${lang}`;
 
     const response = await fetch(apiUrl, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: { 'Accept': 'application/json' },
     });
 
     if (!response.ok) {
@@ -72,10 +76,11 @@ export async function GET() {
       );
     }
 
-    // Filter points for Slovakia
-    const slovakPoints = data.data.filter((point) => point.country === 'sk');
+    const points = filterCountry
+      ? data.data.filter((point) => point.country === filterCountry)
+      : data.data.filter((point) => SUPPORTED_COUNTRIES.includes(point.country));
 
-    return NextResponse.json(slovakPoints);
+    return NextResponse.json(points);
   } catch (error) {
     console.error('Error fetching Packeta points:', error);
     return NextResponse.json(

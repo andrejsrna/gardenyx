@@ -31,6 +31,7 @@ declare global {
 }
 
 interface PacketaPointSelectorProps {
+  country?: string;
   onSelectAction: (point: {
     id: string;
     name: string;
@@ -40,13 +41,16 @@ interface PacketaPointSelectorProps {
   }) => void;
 }
 
-export default function PacketaPointSelector({ onSelectAction }: PacketaPointSelectorProps) {
+export default function PacketaPointSelector({ country = 'SK', onSelectAction }: PacketaPointSelectorProps) {
   const locale = useLocale();
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!loaded) return;
     if (!window.Packeta?.Widget?.pick) return;
+
+    const widgetCountry = country.toLowerCase();
+    const widgetLanguage = locale === 'hu' ? 'hu' : locale === 'en' ? 'en' : widgetCountry === 'cz' ? 'cs' : 'sk';
 
     window.Packeta.Widget.pick(
       process.env.NEXT_PUBLIC_PACKETA_API_KEY!,
@@ -62,11 +66,11 @@ export default function PacketaPointSelector({ onSelectAction }: PacketaPointSel
         }
       },
       {
-        country: 'sk',
-        language: locale === 'hu' ? 'hu' : locale === 'en' ? 'en' : 'sk',
+        country: widgetCountry,
+        language: widgetLanguage,
       }
     );
-  }, [loaded, locale, onSelectAction]);
+  }, [loaded, locale, country, onSelectAction]);
 
   return (
     <>
