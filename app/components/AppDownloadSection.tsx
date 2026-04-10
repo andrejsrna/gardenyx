@@ -21,7 +21,12 @@ export default async function AppDownloadSection({ locale }: { locale: string })
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white p-1 shadow-sm">
+                <a
+                  href="https://apps.apple.com/sk/app/gardenyx-tvoje-rastliny/id6761061722"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="overflow-hidden rounded-2xl border border-stone-200 bg-white p-1 shadow-sm transition-shadow hover:shadow-md"
+                >
                   <Image
                     src="/images/app-download/app-store-badge.svg"
                     alt={t('badges.appStoreAlt')}
@@ -29,8 +34,13 @@ export default async function AppDownloadSection({ locale }: { locale: string })
                     height={54}
                     className="h-auto w-[160px] sm:w-[182px]"
                   />
-                </div>
-                <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white p-1 shadow-sm">
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.plants.app.plants"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="overflow-hidden rounded-2xl border border-stone-200 bg-white p-1 shadow-sm transition-shadow hover:shadow-md"
+                >
                   <Image
                     src="/images/app-download/google-play-badge.svg"
                     alt={t('badges.googlePlayAlt')}
@@ -38,7 +48,7 @@ export default async function AppDownloadSection({ locale }: { locale: string })
                     height={54}
                     className="h-auto w-[160px] sm:w-[182px]"
                   />
-                </div>
+                </a>
               </div>
             </div>
 
