@@ -45,6 +45,13 @@ export default function PacketaPointSelector({ country = 'SK', onSelectAction }:
   const locale = useLocale();
   const [loaded, setLoaded] = useState(false);
 
+  // Ak je skript už načítaný z predchádzajúceho mountu, nastavíme loaded hneď
+  useEffect(() => {
+    if (window.Packeta?.Widget?.pick) {
+      setLoaded(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (!loaded) return;
     if (!window.Packeta?.Widget?.pick) return;
