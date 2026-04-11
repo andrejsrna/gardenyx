@@ -77,7 +77,7 @@ export default function PacketaPointSelector({ country = 'SK', onSelectAction }:
 
   // Ak je skript už načítaný (druhý mount), otvoríme widget hneď
   useEffect(() => {
-    if (window.Packeta?.Widget?.pick) {
+    if (typeof window.Packeta !== 'undefined') {
       openWidget();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
