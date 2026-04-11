@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Script from 'next/script';
 import { useLocale } from 'next-intl';
 
@@ -43,18 +43,14 @@ interface PacketaPointSelectorProps {
 
 export default function PacketaPointSelector({ country = 'SK', onSelectAction }: PacketaPointSelectorProps) {
   const locale = useLocale();
-  const [loaded, setLoaded] = useState(false);
+  const openedRef = useRef(false);
+  const onSelectRef = useRef(onSelectAction);
+  onSelectRef.current = onSelectAction;
 
-  // Ak je skript už načítaný z predchádzajúceho mountu, nastavíme loaded hneď
-  useEffect(() => {
-    if (window.Packeta?.Widget?.pick) {
-      setLoaded(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!loaded) return;
+  const openWidget = () => {
+    if (openedRef.current) return;
     if (!window.Packeta?.Widget?.pick) return;
+    openedRef.current = true;
 
     const widgetCountry = country.toLowerCase();
     const widgetLanguage = locale === 'hu' ? 'hu' : locale === 'en' ? 'en' : widgetCountry === 'cz' ? 'cs' : 'sk';
@@ -63,7 +59,7 @@ export default function PacketaPointSelector({ country = 'SK', onSelectAction }:
       process.env.NEXT_PUBLIC_PACKETA_API_KEY!,
       (point: PacketaWidgetPoint | null) => {
         if (point) {
-          onSelectAction({
+          onSelectRef.current({
             id: point.id,
             name: point.name,
             street: point.street,
@@ -77,14 +73,22 @@ export default function PacketaPointSelector({ country = 'SK', onSelectAction }:
         language: widgetLanguage,
       }
     );
-  }, [loaded, locale, country, onSelectAction]);
+  };
+
+  // Ak je skript už načítaný (druhý mount), otvoríme widget hneď
+  useEffect(() => {
+    if (window.Packeta?.Widget?.pick) {
+      openWidget();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       <Script
         src="https://widget.packeta.com/v6/www/js/library.js"
         strategy="afterInteractive"
-        onLoad={() => setLoaded(true)}
+        onLoad={openWidget}
       />
       <div className="w-full h-32 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
