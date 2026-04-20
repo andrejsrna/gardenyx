@@ -1,221 +1,93 @@
-import { Metadata } from 'next';
-import { parseHTML } from '../../lib/html-parser';
-import { getPaginatedPosts, getRankMathSEO, getAllTags, getTagBySlug, getCategories } from '../../lib/content';
-import BlogSchema from '../../components/seo/BlogSchema';
-import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema';
-import BlogHeader from '../../components/blog/BlogHeader';
-import FilterPanel from '../../components/blog/FilterPanel';
-import PostList from '../../components/blog/PostList';
-import Pagination from '../../components/blog/Pagination';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import Image from 'next/image';
+import { getLocale } from 'next-intl/server';
 
-const DEFAULT_TITLE = 'Blog o kĺbovej výžive | Najsilnejšia kĺbová výživa';
-const DEFAULT_DESCRIPTION = 'Prečítajte si najnovšie články o kĺbovej výžive, zdraví kĺbov a pohybového aparátu. Odborné informácie a praktické rady.';
-const SITE_NAME = 'Najsilnejšia kĺbová výživa';
+import prisma from '@/app/lib/prisma';
+import { getArticleTranslation, localeBcp47 } from '@/app/lib/article';
 
-type tSearchParams = Promise<{
-    page?: string;
-    search?: string;
-    tag?: string;
-}>;
+export const dynamic = 'force-dynamic';
 
-interface PageProps {
-    searchParams: tSearchParams;
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: 'Blog | Gardenyx' };
 }
 
-const generateDefaultImage = (siteUrl: string) => ({
-    url: `${siteUrl}/logo.png`,
-    width: 1200,
-    height: 630,
-});
+export default async function BlogPage() {
+  const locale = await getLocale();
 
-const createBaseMetadata = (siteUrl: string, title: string, description: string) => ({
-    title,
-    description,
-    openGraph: {
-        title,
-        description,
-        url: `${siteUrl}/blog`,
-        siteName: SITE_NAME,
-        images: [generateDefaultImage(siteUrl)],
-        locale: 'sk_SK',
-        type: 'website' as const,
+  const articles = await prisma.article.findMany({
+    where: { status: 'published' },
+    orderBy: { publishedAt: 'desc' },
+    select: {
+      id: true,
+      slug: true,
+      coverImage: true,
+      publishedAt: true,
+      translations: true,
     },
-    twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        images: [`${siteUrl}/logo.png`],
-    },
-    alternates: {
-        canonical: `${siteUrl}/blog`,
-    },
-    robots: {
-        index: true,
-        follow: true,
-    },
-});
+  });
 
-const createMetadataFromSEO = (parser: ReturnType<typeof parseHTML>, siteUrl: string): Metadata => {
-    const title = parser.getTitle() || DEFAULT_TITLE;
-    const description = parser.getMetaTag('description') || DEFAULT_DESCRIPTION;
-    const ogImage = parser.getMetaTag('og:image');
-    const twitterImage = parser.getMetaTag('twitter:image');
-    const robots = parser.getRobots();
-    
-    const baseMetadata = createBaseMetadata(siteUrl, title, description);
-    
-    return {
-        ...baseMetadata,
-        openGraph: {
-            ...baseMetadata.openGraph,
-            title: parser.getMetaTag('og:title') || title,
-            description: parser.getMetaTag('og:description') || description,
-            url: parser.getMetaTag('og:url') || `${siteUrl}/blog`,
-            siteName: parser.getMetaTag('og:site_name') || SITE_NAME,
-            images: ogImage
-                ? [{
-                    url: ogImage,
-                    width: parseInt(parser.getMetaTag('og:image:width') || '1200'),
-                    height: parseInt(parser.getMetaTag('og:image:height') || '630'),
-                }]
-                : baseMetadata.openGraph.images,
-        },
-        twitter: {
-            ...baseMetadata.twitter,
-            title: parser.getMetaTag('twitter:title') || title,
-            description: parser.getMetaTag('twitter:description') || description,
-            images: twitterImage ? [{ url: twitterImage }] : baseMetadata.twitter.images,
-        },
-        alternates: {
-            canonical: parser.getCanonical() || `${siteUrl}/blog`,
-        },
-        robots: {
-            index: !robots?.includes('noindex'),
-            follow: !robots?.includes('nofollow'),
-        },
-    };
-};
+  return (
+    <main className="min-h-screen bg-white">
+      <div className="container mx-auto px-4 py-12 max-w-5xl">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Blog</h1>
+        <p className="text-gray-500 mb-10">
+          {locale === 'sk' && 'Články o záhradníčení a pestovaní'}
+          {locale === 'en' && 'Articles about gardening and cultivation'}
+          {locale === 'hu' && 'Cikkek a kertészetről és a termesztésről'}
+        </p>
 
-const createDefaultMetadata = (siteUrl: string): Metadata => 
-    createBaseMetadata(siteUrl, DEFAULT_TITLE, DEFAULT_DESCRIPTION);
+        {articles.length === 0 ? (
+          <p className="text-gray-500 text-center py-16">
+            {locale === 'sk' && 'Zatiaľ žiadne články.'}
+            {locale === 'en' && 'No articles yet.'}
+            {locale === 'hu' && 'Még nincsenek cikkek.'}
+          </p>
+        ) : (
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article) => {
+              const t = getArticleTranslation(article.translations, locale);
+              const title = t.title || article.slug;
 
-export async function generateMetadata({ searchParams }: { searchParams: tSearchParams }): Promise<Metadata> {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    const { page, search, tag } = await searchParams;
-
-    if (!siteUrl) return createDefaultMetadata('');
-
-    let base: Metadata;
-    try {
-        const seoData = await getRankMathSEO();
-        if (seoData) {
-            const parser = parseHTML(seoData.head);
-            base = createMetadataFromSEO(parser, siteUrl);
-        } else {
-            base = createDefaultMetadata(siteUrl);
-        }
-    } catch {
-        base = createDefaultMetadata(siteUrl);
-    }
-
-    const pageParam = page && parseInt(page, 10) > 1 ? `page=${page}` : '';
-    const tagParam = tag ? `tag=${tag}` : '';
-    const query = [tagParam, pageParam].filter(Boolean).join('&');
-    const canonical = query ? `${siteUrl}/blog?${query}` : `${siteUrl}/blog`;
-    const robots = search ? { index: false, follow: true } : { index: true, follow: true };
-
-    return {
-        ...base,
-        alternates: { canonical },
-        robots,
-    };
-}
-
-const getDescriptionText = (tagName?: string, searchQuery?: string, totalPosts?: number) => {
-    if (tagName && searchQuery) {
-        return `Výsledky vyhľadávania pre "${searchQuery}" v téme "${tagName}" (${totalPosts})`;
-    }
-    if (tagName) {
-        return `Články o téme "${tagName}" (${totalPosts})`;
-    }
-    if (searchQuery) {
-        return `Výsledky vyhľadávania pre "${searchQuery}" (${totalPosts})`;
-    }
-    return `Všetky články o zdraví kĺbov (${totalPosts})`;
-};
-
-const getBlogTitle = (tagName?: string, searchQuery?: string) => {
-    if (tagName) return `Blog - ${tagName}`;
-    if (searchQuery) return 'Blog - Výsledky vyhľadávania';
-    return 'Blog o kĺbovej výžive';
-};
-
-export default async function BlogPage({ searchParams }: PageProps) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
-    const { page, search, tag } = await searchParams;
-    const currentPage = parseInt(page || '1', 10);
-    const searchQuery = search || '';
-    const tagSlug = tag || '';
-    
-    const tagInfo = tagSlug ? await getTagBySlug(tagSlug) : null;
-    const tagId = tagInfo?.id;
-    
-    const [
-        { posts, totalPages, totalPosts },
-        allTags,
-        categories
-    ] = await Promise.all([
-        getPaginatedPosts({ page: currentPage, search: searchQuery, tags: tagId }),
-        getAllTags(),
-        getCategories(),
-    ]);
-
-    const pageDescription = getDescriptionText(tagInfo?.name, searchQuery, totalPosts);
-    const blogTitle = getBlogTitle(tagInfo?.name, searchQuery);
-
-    return (
-        <main>
-            <div className="bg-gray-50">
-                <div className="container mx-auto px-4 py-8">
-                    <BlogHeader />
-                    <FilterPanel 
-                        categories={categories} 
-                        tags={allTags} 
-                        activeTagSlug={tagSlug} 
-                        searchQuery={searchQuery} 
-                    />
-
-                    {posts.length > 0 ? (
-                        <PostList posts={posts} />
-                    ) : (
-                        <p className="text-center text-gray-600 py-12">
-                            Nenašli sa žiadne články zodpovedajúce vášmu výberu.
-                        </p>
+              return (
+                <Link
+                  key={article.id}
+                  href={`/blog/${article.slug}`}
+                  className="group flex flex-col rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                >
+                  {article.coverImage ? (
+                    <div className="relative aspect-[16/9] w-full overflow-hidden">
+                      <Image
+                        src={article.coverImage}
+                        alt={title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-[16/9] w-full bg-emerald-50 flex items-center justify-center">
+                      <span className="text-4xl">🌱</span>
+                    </div>
+                  )}
+                  <div className="flex flex-col flex-1 p-5">
+                    <h2 className="font-semibold text-gray-900 text-lg leading-snug group-hover:text-emerald-700 transition-colors">
+                      {title}
+                    </h2>
+                    {t.excerpt && (
+                      <p className="mt-2 text-sm text-gray-500 line-clamp-3">{t.excerpt}</p>
                     )}
-
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        searchQuery={searchQuery}
-                        tagSlug={tagSlug}
-                    />
-                </div>
-            </div>
-            
-            <BlogSchema
-                posts={posts}
-                totalPosts={totalPosts}
-                currentPage={currentPage}
-                pageTitle={blogTitle}
-                pageDescription={pageDescription}
-            />
-            
-            <BreadcrumbSchema
-                items={[
-                    { name: 'Domov', url: siteUrl },
-                    { name: 'Blog', url: `${siteUrl}/blog` },
-                ]}
-            />
-        </main>
-    );
+                    {article.publishedAt && (
+                      <time className="mt-auto pt-4 text-xs text-gray-400">
+                        {new Date(article.publishedAt).toLocaleDateString(localeBcp47(locale))}
+                      </time>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </main>
+  );
 }

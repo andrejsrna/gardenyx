@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Admin Dashboard | NKV',
+  title: 'Admin Dashboard | Gardenyx',
   description: 'Interné náhľady na obsah a objednávky.',
 };
 
@@ -11,7 +11,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="bg-slate-950 text-slate-100 min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <header className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/70 px-4 py-3">
-          <div className="text-sm font-semibold text-white">NKV Admin</div>
+          <div className="flex items-center gap-3">
+            <div className="text-sm font-semibold text-white">Gardenyx Admin</div>
+            <a
+              href="https://gardenyx.eu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg px-2 py-1 text-xs font-medium text-emerald-300 hover:bg-slate-800 flex items-center gap-1"
+            >
+              gardenyx.eu ↗
+            </a>
+          </div>
           <nav className="flex flex-wrap gap-2">
             <Link
               href="/admin"
@@ -24,6 +34,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               className="rounded-lg px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800"
             >
               Produkty
+            </Link>
+            <Link
+              href="/admin/articles"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800"
+            >
+              Články
             </Link>
             <Link
               href="/admin/newsletter"

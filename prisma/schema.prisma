@@ -280,3 +280,23 @@ model Product {
   @@index([wcId])
   @@index([slug])
 }
+
+enum ArticleStatus {
+  draft
+  published
+}
+
+model Article {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  status       ArticleStatus @default(draft)
+  coverImage   String?
+  publishedAt  DateTime?
+  translations Json?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+}

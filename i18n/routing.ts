@@ -65,5 +65,15 @@ export const routing = defineRouting({
       en: '/product/[slug]',
       hu: '/termek/[slug]',
     },
+    '/blog': {
+      sk: '/blog',
+      en: '/blog',
+      hu: '/blog',
+    },
+    '/blog/[slug]': {
+      sk: '/blog/[slug]',
+      en: '/blog/[slug]',
+      hu: '/blog/[slug]',
+    },
   },
 });
