@@ -1,25 +1,25 @@
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gardenyx.eu';
+
 export default function OrganizationSchema() {
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Najsilnejšia kĺbová výživa",
-    "url": "https://najsilnejsiaklbovavyziva.sk",
-    "logo": "https://najsilnejsiaklbovavyziva.sk/logo.png",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+421-914-230-321",
-      "contactType": "Customer Service",
-      "availableLanguage": ["Slovak"]
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'GardenYX',
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Service',
+      availableLanguage: ['Slovak', 'Czech', 'Hungarian'],
     },
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "SK",
-      "addressLocality": "Slovensko"
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'SK',
     },
-    "sameAs": [
-      "https://www.facebook.com/profile.php?id=61575962272009"
+    sameAs: [
+      'https://www.facebook.com/profile.php?id=61575962272009',
     ],
-    "description": "Najsilnejšia prírodná kĺbová výživa na Slovensku. Špecializujeme sa na prírodné doplnky stravy pre zdravé kĺby s kurkumínom, boswelliou a ďalšími účinnými látkami."
+    description: 'GardenYX — záhradnícke produkty a hnojivá pre zdravé rastliny. Predaj na Slovensku, v Česku a Maďarsku.',
   };
 
   return (
@@ -28,4 +28,4 @@ export default function OrganizationSchema() {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
     />
   );
-} 
+}

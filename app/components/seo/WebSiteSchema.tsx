@@ -1,23 +1,25 @@
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gardenyx.eu';
+
 export default function WebSiteSchema() {
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Najsilnejšia kĺbová výživa",
-    "url": "https://najsilnejsiaklbovavyziva.sk",
-    "description": "Najsilnejšia prírodná kĺbová výživa na Slovensku. Špecializujeme sa na prírodné doplnky stravy pre zdravé kĺby s kurkumínom, boswelliou a ďalšími účinnými látkami.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://najsilnejsiaklbovavyziva.sk/blog?search={search_term_string}"
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'GardenYX',
+    url: SITE_URL,
+    description: 'GardenYX — záhradnícke produkty a hnojivá pre zdravé rastliny. Predaj na Slovensku, v Česku a Maďarsku.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/kupit?search={search_term_string}`,
       },
-      "query-input": "required name=search_term_string"
+      'query-input': 'required name=search_term_string',
     },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Najsilnejšia kĺbová výživa",
-      "url": "https://najsilnejsiaklbovavyziva.sk"
-    }
+    publisher: {
+      '@type': 'Organization',
+      name: 'GardenYX',
+      url: SITE_URL,
+    },
   };
 
   return (
@@ -26,4 +28,4 @@ export default function WebSiteSchema() {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
     />
   );
-} 
+}

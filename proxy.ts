@@ -68,11 +68,10 @@ const CSP_DIRECTIVES = {
   imgSrc: [
     "'self'", 'blob:', 'data:', 'https://*.stripe.com',
     'https://*.facebook.com', 'https://www.facebook.com',
-    'https://facebook.com', 'https://najsilnejsiaklbovavyziva.sk',
+    'https://facebook.com',
     'https://*.googletagmanager.com', 'https://www.googletagmanager.com',
     'https://www.google-analytics.com', 'https://googleads.g.doubleclick.net',
     'https://stats.g.doubleclick.net', 'https://www.google.com',
-    'https://cdn.najsilnejsiaklbovavyziva.sk',
     'https://*.gstatic.com', 'https://maps.gstatic.com', 'https://upload.wikimedia.org'
   ],
   frameSrc: [
@@ -83,8 +82,6 @@ const CSP_DIRECTIVES = {
   connectSrc: [
     "'self'",
     'https://api.stripe.com', 'https://js.stripe.com', 'https://maps.googleapis.com',
-    'https://najsilnejsiaklbovavyziva.sk/wp-json/wc/v3/*',
-    'https://admin.najsilnejsiaklbovavyziva.sk',
     'https://*.facebook.net', 'https://*.facebook.com',
     'https://connect.facebook.net', 'https://*.sentry.io',
     'https://*.ingest.sentry.io', 'https://eu.i.posthog.com',
