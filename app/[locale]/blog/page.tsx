@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { Link } from '@/i18n/navigation';
 import prisma from '@/app/lib/prisma';
 import { getArticleTranslation, localeBcp47 } from '@/app/lib/article';
 
@@ -54,7 +54,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
               return (
                 <Link
                   key={article.id}
-                  href={`/blog/${article.slug}`}
+                  href={{ pathname: '/blog/[slug]', params: { slug: article.slug } }}
                   className="group flex flex-col rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                 >
                   {article.coverImage ? (

@@ -1,10 +1,10 @@
 import { cache } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 
+import { Link } from '@/i18n/navigation';
 import prisma from '@/app/lib/prisma';
 import { getArticleTranslation, localeBcp47, markdownToHtml } from '@/app/lib/article';
 
