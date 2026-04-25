@@ -29,6 +29,10 @@ const nextConfig = {
         protocol: 'https' as const,
       },
       {
+        hostname: 'cdn.najsilnejsiaklbovavyziva.sk',
+        protocol: 'https' as const,
+      },
+      {
         hostname: '*.r2.cloudflarestorage.com',
         protocol: 'https' as const,
       },
