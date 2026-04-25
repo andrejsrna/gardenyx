@@ -2,9 +2,19 @@
   "nav": {
     "shop": "Bolt",
     "hakofytFertilizers": "Hakofyt műtrágyák",
+    "news": "Hírek",
     "contact": "Kapcsolat",
     "myAccount": "Fiókom",
     "hello": "Szia {name}"
+  },
+  "blogIndex": {
+    "title": "Hírek",
+    "description": "Cikkek, útmutatók és szezonális tanácsok trágyázásról, növénytáplálásról és kertgondozásról.",
+    "empty": "Még nincsenek cikkek.",
+    "meta": {
+      "title": "Hírek | GardenYX",
+      "description": "Olvassa el a GardenYX cikkeit a trágyázásról, növénytáplálásról és szezonális kertgondozásról."
+    }
   },
   "contactPage": {
     "eyebrow": "Kapcsolat",

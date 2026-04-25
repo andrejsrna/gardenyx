@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import prisma from '@/app/lib/prisma';
 import { getArticleTranslation, localeBcp47 } from '@/app/lib/article';
@@ -9,11 +9,17 @@ import { getArticleTranslation, localeBcp47 } from '@/app/lib/article';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: 'Blog | Gardenyx' };
+  const t = await getTranslations('blogIndex.meta');
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
 }
 
 export default async function BlogPage() {
   const locale = await getLocale();
+  const t = await getTranslations('blogIndex');
 
   const articles = await prisma.article.findMany({
     where: { status: 'published' },
@@ -30,19 +36,11 @@ export default async function BlogPage() {
   return (
     <main className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-12 max-w-5xl">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Blog</h1>
-        <p className="text-gray-500 mb-10">
-          {locale === 'sk' && 'Články o záhradníčení a pestovaní'}
-          {locale === 'en' && 'Articles about gardening and cultivation'}
-          {locale === 'hu' && 'Cikkek a kertészetről és a termesztésről'}
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h1>
+        <p className="text-gray-500 mb-10">{t('description')}</p>
 
         {articles.length === 0 ? (
-          <p className="text-gray-500 text-center py-16">
-            {locale === 'sk' && 'Zatiaľ žiadne články.'}
-            {locale === 'en' && 'No articles yet.'}
-            {locale === 'hu' && 'Még nincsenek cikkek.'}
-          </p>
+          <p className="text-gray-500 text-center py-16">{t('empty')}</p>
         ) : (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {articles.map((article) => {

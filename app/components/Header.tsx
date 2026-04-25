@@ -85,6 +85,7 @@ export default function Header({ locale }: { locale: string }) {
   const NAV_LINKS = [
     { title: t('shop'), href: '/kupit' },
     { title: t('hakofytFertilizers'), href: '/hnojiva-hakofyt' },
+    { title: t('news'), href: '/blog' },
     { title: t('contact'), href: '/kontakt' },
   ] as const;
 

@@ -2,9 +2,19 @@
   "nav": {
     "shop": "Obchod",
     "hakofytFertilizers": "Hnojivá Hakofyt",
+    "news": "Aktuality",
     "contact": "Kontakt",
     "myAccount": "Môj účet",
     "hello": "Ahoj {name}"
+  },
+  "blogIndex": {
+    "title": "Aktuality",
+    "description": "Články, návody a sezónne odporúčania k hnojeniu, výžive rastlín a starostlivosti o záhradu.",
+    "empty": "Zatiaľ žiadne články.",
+    "meta": {
+      "title": "Aktuality | GardenYX",
+      "description": "Prečítajte si články GardenYX o hnojení, výžive rastlín a sezónnej starostlivosti o záhradu."
+    }
   },
   "contactPage": {
     "eyebrow": "Kontakt",

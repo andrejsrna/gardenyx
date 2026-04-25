@@ -2,9 +2,19 @@
   "nav": {
     "shop": "Shop",
     "hakofytFertilizers": "Hakofyt Fertilizers",
+    "news": "News",
     "contact": "Contact",
     "myAccount": "My Account",
     "hello": "Hello {name}"
+  },
+  "blogIndex": {
+    "title": "News",
+    "description": "Articles, guides and seasonal advice about fertilizing, plant nutrition and garden care.",
+    "empty": "No articles yet.",
+    "meta": {
+      "title": "News | GardenYX",
+      "description": "Read GardenYX articles about fertilizing, plant nutrition and seasonal garden care."
+    }
   },
   "contactPage": {
     "eyebrow": "Contact",
