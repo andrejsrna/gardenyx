@@ -21,12 +21,20 @@ export default async function HomeHero({ locale }: { locale: string }) {
         <p className="text-lg sm:text-xl text-white/85 mb-10 max-w-xl">
           {t('subheading')}
         </p>
-        <Link
-          href="/kupit"
-          className="inline-flex items-center gap-2 rounded-full bg-emerald-500 hover:bg-emerald-400 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-900/30 transition-all duration-200 hover:-translate-y-0.5"
-        >
-          {t('cta')}
-        </Link>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/kupit"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-900/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-400"
+          >
+            {t('cta')}
+          </Link>
+          <Link
+            href="/hnojiva-hakofyt"
+            className="inline-flex items-center justify-center rounded-full border border-white/70 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:text-emerald-900"
+          >
+            {t('hakofytCta')}
+          </Link>
+        </div>
       </div>
     </section>
   );

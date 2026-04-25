@@ -35,19 +35,19 @@
   },
   "hakofytFertilizersPage": {
     "eyebrow": "Hakofyt",
-    "title": "Precisely Balanced Nutrition for Limitless Growth",
-    "description": "We respect Liebig's Law of the Minimum: delivering not just basic nutrients, but a complex package of micro-elements so nothing holds your plants back.",
+    "title": "Hakofyt fertilizers for strong plants and richer harvests",
+    "description": "Hakofyt is a range of foliar fertilizers with macro-elements, micro-elements and natural growth stimulators for vegetables, fruit, flowers, trees and lawns.",
     "meta": {
-      "title": "Hakofyt Fertilizers | GardenYX",
-      "description": "Learn how Hakofyt fertilizers work, why they provide comprehensive plant nutrition, and which products we recommend for a strong and healthy garden.",
+      "title": "Hakofyt fertilizers for plants | GardenYX",
+      "description": "Hakofyt fertilizers for vegetables, fruit trees, flowers, blueberries, strawberries and lawns. See the composition, benefits and recommended GardenYX products.",
       "imageAlt": "Hakofyt Fertilizers"
     },
     "principle": {
-      "eyebrow": "Working Principle",
-      "title": "Working Principle of Hakofyt Fertilizers",
+      "eyebrow": "What is Hakofyt",
+      "title": "How Hakofyt fertilizers work",
       "subtitle": "Precisely Balanced Nutrient Ratio",
-      "paragraph1": "The effect of Hakofyt fertilizers is based on utilizing one of the fundamental principles of nutrition, known as Liebig's Law of the Minimum. Its essence is that even though a plant may have most nutrients in surplus, its growth will be limited by the specific component that is insufficient.",
-      "paragraph2": "Therefore, the goal in developing Hakofyt fertilizers was to ensure the most comprehensive plant nutrition possible. For this reason, in addition to basic macro-elements in optimal ratios, Hakofyt fertilizers contain a complex of important micro-elements, specifically iron, zinc, manganese, copper, boron and molybdenum, which are irreplaceable for healthy and high-quality plant life."
+      "paragraph1": "The effect of Hakofyt fertilizers is based on one of the fundamental principles of nutrition, known as Liebig's Law of the Minimum. Even when a plant has most nutrients in surplus, its growth is limited by the component that is currently missing.",
+      "paragraph2": "The Hakofyt range was developed to provide comprehensive plant nutrition. In addition to basic macro-elements in optimal ratios, Hakofyt fertilizers include micro-elements such as iron, zinc, manganese, copper, boron and molybdenum, supporting healthy growth and high-quality harvests."
     },
     "featuredProducts": {
       "eyebrow": "Complete range",
@@ -76,12 +76,34 @@
       "description": "Field trials confirm that the yield increase significantly outweighs the cost. For example, 1 liter of Hakofyt increased potato harvest by 200 kg. Learn more about solving modern nutrition challenges in the expert article by Ing. Koziak.",
       "linkLabel": "Read more",
       "linkHref": "https://hakofyt.sk/"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Hakofyt: frequently asked questions",
+      "items": {
+        "what": {
+          "question": "What is Hakofyt?",
+          "answer": "Hakofyt is a range of foliar fertilizers and growth stimulators that combines essential nutrients, trace elements and natural support substances for healthier plant growth."
+        },
+        "types": {
+          "question": "Which Hakofyt fertilizer should I choose?",
+          "answer": "Hakofyt B is suited for specialized growing of flowers, strawberries, blueberries or citrus plants, Hakofyt Plus targets vegetables, fruit trees and seedling starts, and Hakofyt Max is designed for lawns and plants with higher nitrogen demand."
+        },
+        "use": {
+          "question": "What are Hakofyt fertilizers used for?",
+          "answer": "Hakofyt fertilizers are used to support root systems, photosynthesis, stress resistance and crop quality in vegetables, fruit, ornamental plants, trees and lawns."
+        }
+      }
+    },
+    "schema": {
+      "about": "Hakofyt foliar fertilizers and growth stimulators for comprehensive plant nutrition."
     }
   },
   "hero": {
     "heading": "Unlock the true potential of your garden.",
     "subheading": "Natural fertilizers and growth stimulators for a rich harvest and a blooming garden.",
-    "cta": "Browse products"
+    "cta": "Browse products",
+    "hakofytCta": "How Hakofyt works"
   },
   "homeLatestProducts": {
     "eyebrow": "New",

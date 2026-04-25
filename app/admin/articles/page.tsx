@@ -113,7 +113,7 @@ export default async function AdminArticlesPage({
               {articles.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-slate-300">
-                    Zatiaľ žiadne články. Klikni na „+ Nový článok".
+                    Zatiaľ žiadne články. Klikni na „+ Nový článok&quot;.
                   </td>
                 </tr>
               ) : null}

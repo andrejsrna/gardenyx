@@ -35,19 +35,19 @@
   },
   "hakofytFertilizersPage": {
     "eyebrow": "Hakofyt",
-    "title": "Precízne vyvážená výživa pre neobmedzený rast",
-    "description": "Rešpektujeme Liebigov zákon minima: dodávame nielen základné živiny, ale aj komplexný balík mikroprvkov, takže nič nezastaví vaše rastliny.",
+    "title": "Hakofyt hnojivá pre silné rastliny a bohatú úrodu",
+    "description": "Hakofyt je rada listových hnojív s makroprvkami, mikroprvkami a prírodnými stimulátormi rastu pre zeleninu, ovocie, kvety, dreviny aj trávnik.",
     "meta": {
-      "title": "Hnojivá Hakofyt | GardenYX",
-      "description": "Zistite, na akom princípe fungujú hnojivá Hakofyt, prečo ponúkajú komplexnú výživu rastlín a ktoré produkty odporúčame pre silnú a zdravú záhradu.",
+      "title": "Hakofyt hnojivá na rastliny | GardenYX",
+      "description": "Hakofyt hnojivá pre zeleninu, ovocné dreviny, kvety, čučoriedky, jahody aj trávnik. Pozrite si zloženie, výhody a odporúčané produkty GardenYX.",
       "imageAlt": "Hnojivá Hakofyt"
     },
     "principle": {
-      "eyebrow": "Princíp fungovania",
-      "title": "Princíp fungovania hnojív Hakofyt",
+      "eyebrow": "Čo je Hakofyt",
+      "title": "Ako fungujú hnojivá Hakofyt",
       "subtitle": "Presne vyvážený pomer živín",
-      "paragraph1": "Účinok hnojív Hakofyt je založený na využití jedného zo základných princípov výživy, známeho ako Liebigov zákon minima. Jeho podstatou je, že aj keď rastlina môže mať väčšinu živín v nadbytku, jej rast bude obmedzený konkrétnou zložkou, ktorej je nedostatok.",
-      "paragraph2": "Cieľom vývoja hnojív Hakofyt bolo preto zabezpečiť čo najkomplexnejšiu výživu rastlín. Z tohto dôvodu obsahujú hnojivá Hakofyt okrem základných makroprvkov v optimálnych pomeroch aj komplex dôležitých mikroprvkov – konkrétne železo, zinok, mangán, meď, bór a molybdén, ktoré sú pre zdravý a kvalitný život rastlín nenahraditeľné."
+      "paragraph1": "Účinok hnojív Hakofyt je založený na využití jedného zo základných princípov výživy, známeho ako Liebigov zákon minima. Aj keď má rastlina väčšinu živín v nadbytku, jej rast bude obmedzený tou zložkou, ktorej je práve nedostatok.",
+      "paragraph2": "Cieľom vývoja radu Hakofyt bolo zabezpečiť komplexnú výživu rastlín. Preto hnojivá Hakofyt obsahujú okrem základných makroprvkov v optimálnych pomeroch aj mikroprvky ako železo, zinok, mangán, meď, bór a molybdén, ktoré podporujú zdravý rast a kvalitnú úrodu."
     },
     "featuredProducts": {
       "eyebrow": "Kompletná ponuka",
@@ -76,12 +76,34 @@
       "description": "Poľné pokusy potvrdzujú, že zvýšenie úrody výrazne prevyšuje náklady – napríklad 1 liter Hakofytu zvýšil úrodu zemiakov o 200 kg. Viac o riešení moderných nutričných výziev sa dozviete v odbornom článku Ing. Koziaka.",
       "linkLabel": "Čítať ďalej",
       "linkHref": "https://hakofyt.sk/"
+    },
+    "faq": {
+      "eyebrow": "Časté otázky",
+      "title": "Hakofyt: najčastejšie otázky",
+      "items": {
+        "what": {
+          "question": "Čo je Hakofyt?",
+          "answer": "Hakofyt je rada listových hnojív a rastových stimulátorov, ktorá kombinuje základné živiny, stopové prvky a prírodné podporné látky pre zdravší rast rastlín."
+        },
+        "types": {
+          "question": "Ktorý Hakofyt si vybrať?",
+          "answer": "Hakofyt B je vhodný pre špecializované pestovanie kvetov, jahôd, čučoriedok alebo citrusov, Hakofyt Plus cieli na zeleninu, ovocné dreviny a štart sadeníc a Hakofyt Max je určený pre trávnik a rastliny s vyššou spotrebou dusíka."
+        },
+        "use": {
+          "question": "Na čo sa používajú hnojivá Hakofyt?",
+          "answer": "Hnojivá Hakofyt sa používajú na podporu koreňového systému, fotosyntézy, odolnosti voči stresu a kvality úrody pri zelenine, ovocí, okrasných rastlinách, drevinách a trávniku."
+        }
+      }
+    },
+    "schema": {
+      "about": "Hakofyt listové hnojivá a rastové stimulátory pre komplexnú výživu rastlín."
     }
   },
   "hero": {
     "heading": "Prebuďte skutočný potenciál svojej záhrady.",
     "subheading": "Prírodné hnojivá a stimulátory rastu pre bohatú úrodu a kvitnúcu záhradu.",
-    "cta": "Zobraziť produkty"
+    "cta": "Zobraziť produkty",
+    "hakofytCta": "Ako funguje Hakofyt"
   },
   "homeLatestProducts": {
     "eyebrow": "Novinky",

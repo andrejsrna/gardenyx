@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import SubmitButton from '@/app/admin/products/SubmitButton';
@@ -181,11 +182,15 @@ export default function ArticleForm({ initial, action, title }: Props) {
                   />
                 </label>
                 {initial.coverImage && (
-                  <img
-                    src={initial.coverImage}
-                    alt="Cover preview"
-                    className="mt-3 rounded-2xl w-full object-cover max-h-48"
-                  />
+                  <div className="relative mt-3 h-48 w-full overflow-hidden rounded-2xl">
+                    <Image
+                      src={initial.coverImage}
+                      alt="Cover preview"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
                 )}
               </div>
             </section>

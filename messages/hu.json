@@ -35,19 +35,19 @@
   },
   "hakofytFertilizersPage": {
     "eyebrow": "Hakofyt",
-    "title": "Precízen kiegyensúlyozott tápanyagellátás a korlátlan növekedésért",
-    "description": "Tiszteletben tartjuk Liebig minimumtörvényét: nemcsak az alapvető tápanyagokat adjuk, hanem mikroelemek komplex csomagját is, hogy semmi ne fogja vissza növényeit.",
+    "title": "Hakofyt műtrágyák erős növényekhez és gazdagabb terméshez",
+    "description": "A Hakofyt lombtrágyák makroelemeket, mikroelemeket és természetes növekedésserkentőket biztosítanak zöldségekhez, gyümölcsökhöz, virágokhoz, fákhoz és gyephez.",
     "meta": {
-      "title": "Hakofyt műtrágyák | GardenYX",
-      "description": "Ismerje meg, hogyan működnek a Hakofyt műtrágyák, miért biztosítanak komplex növénytáplálást, és mely termékeket ajánljuk az erős és egészséges kerthez.",
+      "title": "Hakofyt műtrágyák növényekhez | GardenYX",
+      "description": "Hakofyt műtrágyák zöldségekhez, gyümölcsfákhoz, virágokhoz, áfonyához, eperhez és gyephez. Ismerje meg az összetételt, előnyöket és ajánlott GardenYX termékeket.",
       "imageAlt": "Hakofyt műtrágyák"
     },
     "principle": {
-      "eyebrow": "Működési elv",
-      "title": "A Hakofyt műtrágyák működési elve",
+      "eyebrow": "Mi a Hakofyt",
+      "title": "Hogyan működnek a Hakofyt műtrágyák",
       "subtitle": "Pontosan kiegyensúlyozott tápanyagarány",
-      "paragraph1": "A Hakofyt műtrágyák hatása a táplálkozás egyik alapelvén, az úgynevezett Liebig-féle minimumtörvényen alapul. Lényege, hogy hiába van a növényben sok más tápanyag bőségben, növekedését az az összetevő korlátozza, amelyből hiány van.",
-      "paragraph2": "Ezért a Hakofyt műtrágyák fejlesztésének célja a lehető legkomplexebb növénytáplálás biztosítása volt. Ennek megfelelően az optimális arányú makroelemek mellett a Hakofyt fontos mikroelemek komplexét is tartalmazza, konkrétan vasat, cinket, mangánt, rezet, bórt és molibdént, amelyek nélkülözhetetlenek az egészséges és minőségi növényi élethez."
+      "paragraph1": "A Hakofyt műtrágyák hatása a táplálkozás egyik alapelvén, az úgynevezett Liebig-féle minimumtörvényen alapul. Ha egy növényben a legtöbb tápanyag bőségesen jelen van, növekedését akkor is az a komponens korlátozza, amelyből éppen hiány van.",
+      "paragraph2": "A Hakofyt termékcsalád célja a komplex növénytáplálás biztosítása. Az optimális arányú makroelemek mellett a Hakofyt műtrágyák vasat, cinket, mangánt, rezet, bórt és molibdént is tartalmaznak, támogatva az egészséges növekedést és a minőségi termést."
     },
     "featuredProducts": {
       "eyebrow": "Teljes kínálat",
@@ -76,12 +76,34 @@
       "description": "A szántóföldi kísérletek igazolják, hogy a terméshozam növekedése jelentősen meghaladja a költségeket. Például 1 liter Hakofyt 200 kg-mal növelte a burgonyatermést. Tudjon meg többet a modern tápanyagellátási kihívások megoldásáról Ing. Koziak szakmai cikkében.",
       "linkLabel": "Tovább olvasom",
       "linkHref": "https://hakofyt.sk/"
+    },
+    "faq": {
+      "eyebrow": "Gyakori kérdések",
+      "title": "Hakofyt: gyakori kérdések",
+      "items": {
+        "what": {
+          "question": "Mi a Hakofyt?",
+          "answer": "A Hakofyt lombtrágyák és növekedésserkentők termékcsaládja, amely alapvető tápanyagokat, nyomelemeket és természetes támogató anyagokat kombinál az egészségesebb növénynövekedésért."
+        },
+        "types": {
+          "question": "Melyik Hakofyt műtrágyát válasszam?",
+          "answer": "A Hakofyt B virágok, eper, áfonya vagy citrusfélék speciális termesztéséhez alkalmas, a Hakofyt Plus zöldségekre, gyümölcsfákra és palánták indítására fókuszál, a Hakofyt Max pedig gyephez és magasabb nitrogénigényű növényekhez készült."
+        },
+        "use": {
+          "question": "Mire használhatók a Hakofyt műtrágyák?",
+          "answer": "A Hakofyt műtrágyák a gyökérrendszer, a fotoszintézis, a stressztűrés és a termésminőség támogatására használhatók zöldségeknél, gyümölcsöknél, dísznövényeknél, fáknál és gyepnél."
+        }
+      }
+    },
+    "schema": {
+      "about": "Hakofyt lombtrágyák és növekedésserkentők komplex növénytápláláshoz."
     }
   },
   "hero": {
     "heading": "Ébreszd fel kerted igazi potenciálját.",
     "subheading": "Természetes műtrágyák és növekedési serkentők a bőséges termésért és virágzó kertért.",
-    "cta": "Termékek megtekintése"
+    "cta": "Termékek megtekintése",
+    "hakofytCta": "Hogyan működik a Hakofyt"
   },
   "homeLatestProducts": {
     "eyebrow": "Újdonságok",

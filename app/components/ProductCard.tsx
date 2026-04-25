@@ -57,8 +57,6 @@ export default function ProductCard({ product, locale: _locale, isPriority = fal
   const regularPrice = parseFloat(product.regular_price);
   const discount = hasDiscount ? Math.round((1 - price / regularPrice) * 100) : 0;
   const isSalesSuspended = isSalesSuspendedClient();
-  const salePrice = parseFloat(product.sale_price || 'NaN');
-  const effectivePrice = Number.isFinite(salePrice) ? salePrice : price;
   const isVariable = product.type === 'variable' && product.variants && product.variants.length > 0;
   const minVariantPrice = isVariable
     ? Math.min(...(product.variants ?? []).map((v) => v.price))
