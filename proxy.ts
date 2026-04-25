@@ -72,7 +72,8 @@ const CSP_DIRECTIVES = {
     'https://*.googletagmanager.com', 'https://www.googletagmanager.com',
     'https://www.google-analytics.com', 'https://googleads.g.doubleclick.net',
     'https://stats.g.doubleclick.net', 'https://www.google.com',
-    'https://*.gstatic.com', 'https://maps.gstatic.com', 'https://upload.wikimedia.org'
+    'https://*.gstatic.com', 'https://maps.gstatic.com', 'https://upload.wikimedia.org',
+    'https://cdn.gardenyx.eu'
   ],
   frameSrc: [
     "'self'", 'https://js.stripe.com', 'https://www.googletagmanager.com',
