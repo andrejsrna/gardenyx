@@ -1,15 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import prisma from '@/app/lib/prisma';
 import { getArticleTranslation, localeBcp47 } from '@/app/lib/article';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('blogIndex.meta');
+type BlogPageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'blogIndex.meta' });
 
   return {
     title: t('title'),
@@ -17,9 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function BlogPage() {
-  const locale = await getLocale();
-  const t = await getTranslations('blogIndex');
+export default async function BlogPage({ params }: BlogPageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'blogIndex' });
 
   const articles = await prisma.article.findMany({
     where: { status: 'published' },

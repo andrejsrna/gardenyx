@@ -3,7 +3,7 @@ import { Link } from '../../i18n/navigation';
 
 export default async function HomeHero({ locale }: { locale: string }) {
   setRequestLocale(locale);
-  const t = await getTranslations('hero');
+  const t = await getTranslations({ locale, namespace: 'hero' });
 
   return (
     <section

@@ -1,6 +1,6 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { routing } from '../../i18n/routing';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -25,7 +25,7 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  const messages = await getMessages();
+  const messages = (await import(`../../messages/${locale}.json`)).default;
   const headerList = await headers();
   const isAdminRoute = headerList.get('x-admin-route') === '1';
 

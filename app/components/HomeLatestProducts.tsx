@@ -4,7 +4,7 @@ import ProductShowcaseSection from './ProductShowcaseSection';
 
 export default async function HomeLatestProducts({ locale }: { locale: string }) {
   setRequestLocale(locale);
-  const t = await getTranslations('homeLatestProducts');
+  const t = await getTranslations({ locale, namespace: 'homeLatestProducts' });
   const products = (await getAllProducts(locale))
     .sort((a, b) => b.wcId - a.wcId)
     .slice(0, 4);

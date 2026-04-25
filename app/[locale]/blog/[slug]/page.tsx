@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 
 import prisma from '@/app/lib/prisma';
 import { getArticleTranslation, localeBcp47, markdownToHtml } from '@/app/lib/article';
@@ -14,9 +14,10 @@ const getPublishedArticle = cache((slug: string) =>
   prisma.article.findUnique({ where: { slug, status: 'published' } })
 );
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
-  const locale = await getLocale();
+type ArticlePageProps = { params: Promise<{ locale: string; slug: string }> };
+
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
   const article = await getPublishedArticle(slug);
   if (!article) return {};
   const t = getArticleTranslation(article.translations, locale);
@@ -31,9 +32,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function ArticleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const locale = await getLocale();
+export default async function ArticleDetailPage({ params }: ArticlePageProps) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
 
   const article = await getPublishedArticle(slug);
   if (!article) notFound();
