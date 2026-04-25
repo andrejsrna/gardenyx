@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
 import prisma from '@/app/lib/prisma';
-import { getArticleTranslation, localeBcp47 } from '@/app/lib/article';
+import { getArticleTranslation, getLocalizedArticleSlug, localeBcp47 } from '@/app/lib/article';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,11 +50,12 @@ export default async function BlogPage({ params }: BlogPageProps) {
             {articles.map((article) => {
               const t = getArticleTranslation(article.translations, locale);
               const title = t.title || article.slug;
+              const localizedSlug = getLocalizedArticleSlug(article.slug, article.translations, locale);
 
               return (
                 <Link
                   key={article.id}
-                  href={{ pathname: '/blog/[slug]', params: { slug: article.slug } }}
+                  href={{ pathname: '/blog/[slug]', params: { slug: localizedSlug } }}
                   className="group flex flex-col rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                 >
                   {article.coverImage ? (

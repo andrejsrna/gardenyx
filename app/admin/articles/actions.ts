@@ -8,9 +8,10 @@ import prisma from '@/app/lib/prisma';
 
 function parseTranslations(formData: FormData) {
   const locales = ['sk', 'en', 'hu'] as const;
-  const result: Record<string, { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string }> = {};
+  const result: Record<string, { slug: string; title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string }> = {};
   for (const locale of locales) {
     result[locale] = {
+      slug: String(formData.get(`translations.${locale}.slug`) ?? '').trim(),
       title: String(formData.get(`translations.${locale}.title`) ?? ''),
       excerpt: String(formData.get(`translations.${locale}.excerpt`) ?? ''),
       content: String(formData.get(`translations.${locale}.content`) ?? ''),

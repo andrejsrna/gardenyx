@@ -8,16 +8,17 @@ import DeleteArticleButton from '../DeleteArticleButton';
 export const dynamic = 'force-dynamic';
 
 type Translations = {
-  sk: { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string };
-  en: { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string };
-  hu: { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string };
+  sk: { slug: string; title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string };
+  en: { slug: string; title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string };
+  hu: { slug: string; title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string };
 };
 
 function safeTranslations(raw: unknown): Translations {
-  const empty = { title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' };
+  const empty = { slug: '', title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' };
   if (!raw || typeof raw !== 'object') return { sk: empty, en: empty, hu: empty };
   const t = raw as Record<string, Record<string, string>>;
   const parse = (l: string) => ({
+    slug: t[l]?.slug ?? '',
     title: t[l]?.title ?? '',
     excerpt: t[l]?.excerpt ?? '',
     content: t[l]?.content ?? '',

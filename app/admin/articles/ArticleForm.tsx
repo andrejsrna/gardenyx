@@ -7,6 +7,7 @@ import Link from 'next/link';
 import SubmitButton from '@/app/admin/products/SubmitButton';
 
 type ArticleTranslation = {
+  slug: string;
   title: string;
   excerpt: string;
   content: string;
@@ -45,6 +46,17 @@ function LangSection({ locale, t }: { locale: 'sk' | 'en' | 'hu'; t: ArticleTran
     <section className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
       <h2 className="text-lg font-semibold text-white">{flag} {name}</h2>
       <div className="mt-5 grid gap-4">
+        <label className="space-y-2">
+          <span className="text-sm font-medium text-slate-200">Lokalizovaný slug</span>
+          <input
+            name={`translations.${locale}.slug`}
+            defaultValue={t.slug}
+            pattern="[a-z0-9\-]+"
+            placeholder={locale === 'sk' ? 'ako-pestovat-paradajky' : locale === 'en' ? 'how-to-grow-tomatoes' : 'hogyan-neveljunk-paradicsomot'}
+            title="Len malé písmená, číslice a pomlčky"
+            className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-mono text-sm text-white focus:border-emerald-500 focus:outline-none"
+          />
+        </label>
         <label className="space-y-2">
           <span className="text-sm font-medium text-slate-200">
             Nadpis {locale === 'sk' && <span className="text-red-400">*</span>}

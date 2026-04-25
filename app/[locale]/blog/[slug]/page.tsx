@@ -10,15 +10,25 @@ import { getArticleTranslation, localeBcp47, markdownToHtml } from '@/app/lib/ar
 
 // Deduplicates the DB call between generateMetadata and the page component
 // within a single request.
-const getPublishedArticle = cache((slug: string) =>
-  prisma.article.findUnique({ where: { slug, status: 'published' } })
-);
+const getPublishedArticle = cache(async (slug: string, locale: string) => {
+  const byCanonicalSlug = await prisma.article.findFirst({ where: { slug, status: 'published' } });
+  if (byCanonicalSlug) return byCanonicalSlug;
+
+  const publishedArticles = await prisma.article.findMany({
+    where: { status: 'published' },
+  });
+
+  return publishedArticles.find((article) => {
+    const translation = getArticleTranslation(article.translations, locale);
+    return translation.slug === slug;
+  }) ?? null;
+});
 
 type ArticlePageProps = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const article = await getPublishedArticle(slug);
+  const article = await getPublishedArticle(slug, locale);
   if (!article) return {};
   const t = getArticleTranslation(article.translations, locale);
   return {
@@ -36,7 +46,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const article = await getPublishedArticle(slug);
+  const article = await getPublishedArticle(slug, locale);
   if (!article) notFound();
 
   const t = getArticleTranslation(article.translations, locale);

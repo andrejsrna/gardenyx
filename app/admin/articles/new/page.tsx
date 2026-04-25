@@ -9,9 +9,9 @@ const EMPTY = {
   coverImage: '',
   publishedAt: '',
   translations: {
-    sk: { title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' },
-    en: { title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' },
-    hu: { title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' },
+    sk: { slug: '', title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' },
+    en: { slug: '', title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' },
+    hu: { slug: '', title: '', excerpt: '', content: '', metaTitle: '', metaDescription: '' },
   },
 };
 
