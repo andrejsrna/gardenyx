@@ -15,7 +15,7 @@ import { GoogleTagManagerHead, GoogleTagManagerBody } from "./components/GoogleT
 import Loading from './loading';
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gardenyx.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.gardenyx.eu";
 
 const nunitoSans = Nunito_Sans({
   subsets: ['latin'],
@@ -37,11 +37,25 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Gardenyx",
-  description: "Gardenyx",
+  title: "GardenYX – Prírodné hnojivá a stimulátory rastu",
+  description: "Objavte prírodné hnojivá a stimulátory rastu GardenYX pre bohatú úrodu a kvitnúcu záhradu.",
   robots: {
     index: true,
     follow: true,
+  },
+  openGraph: {
+    images: [
+      {
+        url: `${SITE_URL}/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'GardenYX',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [`${SITE_URL}/og-image.jpg`],
   },
   icons: {
     icon: [

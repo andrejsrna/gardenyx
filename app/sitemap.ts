@@ -12,6 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: '/kupit', changeFrequency: 'weekly', priority: 0.9 },
     { url: '/blog', changeFrequency: 'weekly', priority: 0.8 },
     { url: '/hnojiva-hakofyt', changeFrequency: 'weekly', priority: 0.8 },
+    { url: '/hnojivo-na-travnik', changeFrequency: 'monthly', priority: 0.7 },
     { url: '/kontakt', changeFrequency: 'monthly', priority: 0.6 },
     { url: '/obchodne-podmienky', changeFrequency: 'monthly', priority: 0.5 },
     { url: '/ochrana-osobnych-udajov', changeFrequency: 'monthly', priority: 0.5 },
