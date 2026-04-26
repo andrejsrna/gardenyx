@@ -73,6 +73,11 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     alternates: canonicalUrl
       ? {
           canonical: canonicalUrl,
+          languages: {
+            sk: `${siteUrl}/produkt/${product.slug}`,
+            en: `${siteUrl}/en/product/${product.slug}`,
+            hu: `${siteUrl}/hu/termek/${product.slug}`,
+          },
         }
       : undefined,
   };

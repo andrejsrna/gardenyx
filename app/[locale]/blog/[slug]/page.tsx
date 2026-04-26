@@ -31,13 +31,35 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const article = await getPublishedArticle(slug, locale);
   if (!article) return {};
   const t = getArticleTranslation(article.translations, locale);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
+  const canonicalUrl = `${siteUrl}/${locale === 'sk' ? '' : locale + '/'}blog/${slug}`;
+
   return {
     title: t.metaTitle || t.title || slug,
     description: t.metaDescription || t.excerpt || '',
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        sk: `${siteUrl}/blog/${slug}`,
+        en: `${siteUrl}/en/blog/${slug}`,
+        hu: `${siteUrl}/hu/blog/${slug}`,
+      },
+    },
     openGraph: {
       title: t.metaTitle || t.title || slug,
       description: t.metaDescription || t.excerpt || '',
-      ...(article.coverImage ? { images: [{ url: article.coverImage }] } : {}),
+      type: 'article',
+      url: canonicalUrl,
+      siteName: 'GardenYX',
+      ...(article.coverImage ? { images: [{ url: article.coverImage, alt: t.title || slug }] } : {}),
+      ...(article.publishedAt ? { publishedTime: new Date(article.publishedAt).toISOString() } : {}),
+      ...(article.updatedAt ? { modifiedTime: new Date(article.updatedAt).toISOString() } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t.metaTitle || t.title || slug,
+      description: t.metaDescription || t.excerpt || '',
+      ...(article.coverImage ? { images: [article.coverImage] } : {}),
     },
   };
 }
@@ -52,9 +74,42 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   const t = getArticleTranslation(article.translations, locale);
   const title = t.title || article.slug;
   const contentHtml = t.content ? await markdownToHtml(t.content) : '';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
+  const canonicalUrl = `${siteUrl}/${locale === 'sk' ? '' : locale + '/'}blog/${slug}`;
+
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: t.excerpt || t.metaDescription || '',
+    url: canonicalUrl,
+    ...(article.coverImage ? { image: article.coverImage } : {}),
+    ...(article.publishedAt ? { datePublished: new Date(article.publishedAt).toISOString() } : {}),
+    dateModified: new Date(article.updatedAt).toISOString(),
+    author: {
+      '@type': 'Organization',
+      name: 'GardenYX',
+      url: siteUrl,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'GardenYX',
+      url: siteUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteUrl}/logo_gardenyx.png`,
+      },
+    },
+    inLanguage: locale,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+    },
+  };
 
   return (
     <main className="min-h-screen bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         <Link href="/blog" className="text-sm text-emerald-700 hover:text-emerald-600 mb-8 inline-block">
           ← {locale === 'sk' ? 'Späť na blog' : locale === 'hu' ? 'Vissza a blogra' : 'Back to blog'}
