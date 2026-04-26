@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, User as UserIcon, X, Globe } from 'lucide-react';
+import { ChevronDown, Menu, User as UserIcon, X, Globe } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -9,6 +9,8 @@ import CartButton from './CartButton';
 import { safeGetItem } from '../lib/utils/safe-local-storage';
 import { useTranslations } from 'next-intl';
 import { Link } from '../../i18n/navigation';
+
+type NavItem = { title: string; href: string; children?: { title: string; href: string }[] };
 
 const LOCALES = [
   { code: 'sk', label: 'SK', name: 'Slovenčina' },
@@ -83,13 +85,20 @@ export default function Header({ locale }: { locale: string }) {
   const { closeCart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const NAV_LINKS = [
+  const NAV_LINKS: NavItem[] = [
     { title: t('shop'), href: '/kupit' },
-    { title: t('hakofytFertilizers'), href: '/hnojiva-hakofyt' },
-    { title: t('lawnFertilizer'), href: '/hnojivo-na-travnik' },
+    {
+      title: t('hakofytFertilizers'),
+      href: '/hnojiva-hakofyt',
+      children: [
+        { title: t('lawnFertilizer'), href: '/hnojivo-na-travnik' },
+      ],
+    },
     { title: t('news'), href: '/blog' },
     { title: t('contact'), href: '/kontakt' },
-  ] as const;
+  ];
+
+  const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -120,15 +129,41 @@ export default function Header({ locale }: { locale: string }) {
             />
           </Link>
           <nav className="hidden items-center gap-2 lg:flex">
-            {NAV_LINKS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="px-4 py-2 text-sm font-medium text-slate-600 rounded-full transition-all duration-200 hover:text-emerald-700 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
-              >
-                {item.title}
-              </Link>
-            ))}
+            {NAV_LINKS.map((item) =>
+              item.children ? (
+                <div key={item.href} className="group relative">
+                  <Link
+                    href={item.href}
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-slate-600 rounded-full transition-all duration-200 hover:text-emerald-700 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
+                  >
+                    {item.title}
+                    <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
+                  </Link>
+                  <div className="pointer-events-none absolute left-0 top-full pt-1 opacity-0 transition-all group-hover:pointer-events-auto group-hover:opacity-100">
+                    <ul className="min-w-[200px] overflow-hidden rounded-2xl border border-emerald-100 bg-white py-2 shadow-xl shadow-stone-200/60">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className="block px-5 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-emerald-50 hover:text-emerald-700"
+                          >
+                            {child.title}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="px-4 py-2 text-sm font-medium text-slate-600 rounded-full transition-all duration-200 hover:text-emerald-700 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
+                >
+                  {item.title}
+                </Link>
+              )
+            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -209,16 +244,51 @@ export default function Header({ locale }: { locale: string }) {
 
           <div className="flex-1 overflow-y-auto">
             <nav className="container mx-auto flex flex-col gap-2 px-4 pb-12">
-              {NAV_LINKS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-2xl bg-white/70 px-4 py-3 text-lg font-semibold text-slate-700 shadow-sm ring-1 ring-emerald-100 transition-all hover:bg-white"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.title}
-                </Link>
-              ))}
+              {NAV_LINKS.map((item) =>
+                item.children ? (
+                  <div key={item.href} className="overflow-hidden rounded-2xl bg-white/70 shadow-sm ring-1 ring-emerald-100">
+                    <div className="flex items-center justify-between">
+                      <Link
+                        href={item.href}
+                        className="flex-1 px-4 py-3 text-lg font-semibold text-slate-700"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.title}
+                      </Link>
+                      <button
+                        className="px-4 py-3 text-slate-500"
+                        onClick={() => setOpenMobileSubmenu(openMobileSubmenu === item.href ? null : item.href)}
+                        aria-label="Otvoriť podmenu"
+                      >
+                        <ChevronDown className={`h-5 w-5 transition-transform ${openMobileSubmenu === item.href ? 'rotate-180' : ''}`} />
+                      </button>
+                    </div>
+                    {openMobileSubmenu === item.href && (
+                      <div className="border-t border-emerald-100 bg-emerald-50/60 px-4 py-2">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className="block py-2.5 text-base font-medium text-slate-600 hover:text-emerald-700"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            {child.title}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-2xl bg-white/70 px-4 py-3 text-lg font-semibold text-slate-700 shadow-sm ring-1 ring-emerald-100 transition-all hover:bg-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.title}
+                  </Link>
+                )
+              )}
             </nav>
           </div>
         </div>
