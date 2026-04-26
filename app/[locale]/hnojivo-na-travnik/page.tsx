@@ -375,7 +375,7 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
           {/* Right — product card */}
           <div className="flex items-center justify-center">
             <article className="grid w-full overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl shadow-stone-200/80 md:grid-cols-[0.9fr_1.1fr]">
-              <Link href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }} className="relative min-h-72 bg-stone-50">
+              <Link href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }} className="relative min-h-72 bg-stone-50 p-4">
                 {productImage ? (
                   <Image
                     src={productImage.src}
@@ -383,7 +383,7 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
                     fill
                     priority
                     sizes="(max-width: 768px) 100vw, 40vw"
-                    className="object-cover"
+                    className="object-contain p-4"
                   />
                 ) : null}
               </Link>
