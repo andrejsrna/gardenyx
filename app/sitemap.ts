@@ -10,18 +10,19 @@ type StaticRoute = {
   hu: string;
   changeFrequency: MetadataRoute.Sitemap[0]['changeFrequency'];
   priority: number;
+  lastModified: string;
 };
 
 const STATIC_ROUTES: StaticRoute[] = [
-  { sk: '/', en: '/en', hu: '/hu', changeFrequency: 'daily', priority: 1.0 },
-  { sk: '/kupit', en: '/en/shop', hu: '/hu/vasarlas', changeFrequency: 'weekly', priority: 0.9 },
-  { sk: '/blog', en: '/en/blog', hu: '/hu/blog', changeFrequency: 'weekly', priority: 0.8 },
-  { sk: '/hnojiva-hakofyt', en: '/en/hakofyt-fertilizers', hu: '/hu/hakofyt-mutragyak', changeFrequency: 'weekly', priority: 0.8 },
-  { sk: '/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya', changeFrequency: 'monthly', priority: 0.7 },
-  { sk: '/kontakt', en: '/en/contact', hu: '/hu/kapcsolat', changeFrequency: 'monthly', priority: 0.6 },
-  { sk: '/obchodne-podmienky', en: '/en/terms-and-conditions', hu: '/hu/aszf', changeFrequency: 'monthly', priority: 0.5 },
-  { sk: '/ochrana-osobnych-udajov', en: '/en/privacy-policy', hu: '/hu/adatvedelem', changeFrequency: 'monthly', priority: 0.5 },
-  { sk: '/doprava-a-platba', en: '/en/doprava-a-platba', hu: '/hu/doprava-a-platba', changeFrequency: 'monthly', priority: 0.5 },
+  { sk: '/', en: '/en', hu: '/hu', changeFrequency: 'daily', priority: 1.0, lastModified: '2026-04-26' },
+  { sk: '/kupit', en: '/en/shop', hu: '/hu/vasarlas', changeFrequency: 'weekly', priority: 0.9, lastModified: '2026-04-26' },
+  { sk: '/blog', en: '/en/blog', hu: '/hu/blog', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
+  { sk: '/hnojiva-hakofyt', en: '/en/hakofyt-fertilizers', hu: '/hu/hakofyt-mutragyak', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
+  { sk: '/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-26' },
+  { sk: '/kontakt', en: '/en/contact', hu: '/hu/kapcsolat', changeFrequency: 'monthly', priority: 0.6, lastModified: '2026-04-08' },
+  { sk: '/obchodne-podmienky', en: '/en/terms-and-conditions', hu: '/hu/aszf', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
+  { sk: '/ochrana-osobnych-udajov', en: '/en/privacy-policy', hu: '/hu/adatvedelem', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
+  { sk: '/doprava-a-platba', en: '/en/doprava-a-platba', hu: '/hu/doprava-a-platba', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -29,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
     url: `${siteUrl}${route.sk}`,
-    lastModified: new Date(),
+    lastModified: new Date(route.lastModified),
     changeFrequency: route.changeFrequency,
     priority: route.priority,
     alternates: {
@@ -51,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const productEntries: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${siteUrl}/produkt/${product.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date('2026-04-26'),
     changeFrequency: 'weekly',
     priority: 0.8,
     alternates: {
