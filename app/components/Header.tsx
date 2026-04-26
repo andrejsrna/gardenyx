@@ -124,7 +124,7 @@ export default function Header({ locale }: { locale: string }) {
             <Image
               src="/logo_gardenyx.png"
               alt="GardenYX"
-              width={991}
+              width={824}
               height={221}
               priority
               className="h-11 w-auto"
