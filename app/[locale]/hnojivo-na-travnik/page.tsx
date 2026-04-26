@@ -330,29 +330,20 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
 
       {/* Hero */}
-      <section className="relative isolate min-h-[calc(100vh-5rem)] overflow-hidden border-b border-emerald-100">
-        {productImage ? (
-          <Image
-            src={productImage.src}
-            alt={productImage.alt || product.name}
-            fill
-            priority
-            sizes="100vw"
-            className="absolute inset-0 -z-20 object-contain object-[85%_58%] opacity-20 md:opacity-40 lg:object-[80%_52%]"
-          />
-        ) : null}
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,#f8f8f3_0%,rgba(248,248,243,0.96)_45%,rgba(248,248,243,0.55)_100%)]" />
-        <div className="absolute bottom-0 left-0 right-0 -z-10 h-40 bg-gradient-to-t from-[#f8f8f3] to-transparent" />
+      <section className="relative isolate overflow-hidden border-b border-emerald-100">
+        <div className="absolute inset-0 -z-10 bg-[#f8f8f3]" />
+        <div className="absolute bottom-0 left-0 right-0 -z-10 h-32 bg-gradient-to-t from-[#f8f8f3] to-transparent" />
 
-        <div className="container mx-auto flex min-h-[calc(100vh-5rem)] items-center px-6 py-16">
-          <div className="max-w-3xl">
+        <div className="container mx-auto grid min-h-[calc(100vh-5rem)] items-center gap-12 px-6 py-16 lg:grid-cols-2">
+          {/* Left — text */}
+          <div>
             <p className="w-fit rounded-full bg-emerald-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-800">
               {t.eyebrow}
             </p>
-            <h1 className="mt-6 max-w-4xl text-5xl font-bold leading-[1.03] tracking-tight text-stone-950 sm:text-6xl lg:text-7xl">
+            <h1 className="mt-6 text-5xl font-bold leading-[1.03] tracking-tight text-stone-950 sm:text-6xl lg:text-7xl">
               {t.title}
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-stone-700 sm:text-xl sm:leading-9">
+            <p className="mt-6 max-w-xl text-lg leading-8 text-stone-700 sm:text-xl sm:leading-9">
               {t.intro}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -371,7 +362,7 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
             </div>
 
             {/* Quick benefits */}
-            <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="mt-12 grid grid-cols-2 gap-4">
               {t.benefits.map(([label, sub]) => (
                 <div key={label} className="flex flex-col gap-1 border-l-2 border-emerald-300 pl-3">
                   <span className="text-sm font-bold text-stone-950">{label}</span>
@@ -380,59 +371,51 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
               ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Product card */}
-      <section className="py-16 sm:py-24">
-        <div className="container mx-auto grid gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">{t.productEyebrow}</p>
-            <h2 className="mt-3 text-4xl font-bold tracking-tight text-stone-950 sm:text-5xl">{t.productTitle}</h2>
-            <p className="mt-5 text-lg leading-8 text-stone-700">{t.productText}</p>
-          </div>
-
-          <article className="grid overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-xl shadow-stone-200/70 md:grid-cols-[0.9fr_1.1fr]">
-            <Link href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }} className="relative min-h-80 bg-stone-50">
-              {productImage ? (
-                <Image
-                  src={productImage.src}
-                  alt={productImage.alt || product.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                  className="object-cover"
-                />
-              ) : null}
-            </Link>
-            <div className="flex flex-col p-7 sm:p-9">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">{product.categories[0]?.name || 'Hakofyt'}</p>
-              <h3 className="mt-3 text-3xl font-bold text-stone-950">{product.name}</h3>
-              <p className="mt-4 text-base leading-7 text-stone-600">{productDescription}</p>
-              <div className="mt-7 flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold text-stone-500">{t.priceLabel}</p>
-                  <p className="mt-1 text-4xl font-bold text-stone-950">{Number(product.price).toFixed(2)} €</p>
+          {/* Right — product card */}
+          <div className="flex items-center justify-center">
+            <article className="w-full max-w-sm overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl shadow-stone-200/80">
+              <Link href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }} className="relative block h-64 bg-stone-50">
+                {productImage ? (
+                  <Image
+                    src={productImage.src}
+                    alt={productImage.alt || product.name}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    className="object-cover"
+                  />
+                ) : null}
+              </Link>
+              <div className="flex flex-col p-7">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">{product.categories[0]?.name || 'Hakofyt'}</p>
+                <h2 className="mt-2 text-2xl font-bold text-stone-950">{product.name}</h2>
+                <div className="mt-5 flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-stone-500">{t.priceLabel}</p>
+                    <p className="mt-1 text-3xl font-bold text-stone-950">{Number(product.price).toFixed(2)} €</p>
+                  </div>
+                  <span className={`rounded-full px-4 py-2 text-sm font-semibold ${product.stock_status === 'outofstock' ? 'bg-stone-100 text-stone-600' : 'bg-emerald-50 text-emerald-800'}`}>
+                    {product.stock_status === 'outofstock' ? t.outOfStock : t.inStock}
+                  </span>
                 </div>
-                <span className={`rounded-full px-4 py-2 text-sm font-semibold ${product.stock_status === 'outofstock' ? 'bg-stone-100 text-stone-600' : 'bg-emerald-50 text-emerald-800'}`}>
-                  {product.stock_status === 'outofstock' ? t.outOfStock : t.inStock}
-                </span>
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  <Link
+                    href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }}
+                    className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
+                  >
+                    {t.buyLabel}
+                  </Link>
+                  <Link
+                    href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }}
+                    className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-bold text-stone-900 transition hover:border-emerald-500 hover:text-emerald-700"
+                  >
+                    {t.detailLabel}
+                  </Link>
+                </div>
               </div>
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                <Link
-                  href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }}
-                  className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
-                >
-                  {t.buyLabel}
-                </Link>
-                <Link
-                  href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }}
-                  className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-bold text-stone-900 transition hover:border-emerald-500 hover:text-emerald-700"
-                >
-                  {t.detailLabel}
-                </Link>
-              </div>
-            </div>
-          </article>
+            </article>
+          </div>
         </div>
       </section>
 
