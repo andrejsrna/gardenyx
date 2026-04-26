@@ -374,20 +374,20 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
 
           {/* Right — product card */}
           <div className="flex items-center justify-center">
-            <article className="w-full max-w-sm overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl shadow-stone-200/80">
-              <Link href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }} className="relative block h-64 bg-stone-50">
+            <article className="grid w-full overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl shadow-stone-200/80 md:grid-cols-[0.9fr_1.1fr]">
+              <Link href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }} className="relative min-h-72 bg-stone-50">
                 {productImage ? (
                   <Image
                     src={productImage.src}
                     alt={productImage.alt || product.name}
                     fill
                     priority
-                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    sizes="(max-width: 768px) 100vw, 40vw"
                     className="object-cover"
                   />
                 ) : null}
               </Link>
-              <div className="flex flex-col p-7">
+              <div className="flex flex-col p-7 sm:p-9">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">{product.categories[0]?.name || 'Hakofyt'}</p>
                 <h2 className="mt-2 text-2xl font-bold text-stone-950">{product.name}</h2>
                 <div className="mt-5 flex items-end justify-between gap-4">
