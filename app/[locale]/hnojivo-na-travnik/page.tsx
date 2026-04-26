@@ -87,6 +87,12 @@ const copy = {
     ctaText: 'Hakofyt Max tráva je dostupný skladom. Objednajte ešte dnes a varovnicou jar sa zazelenáte skôr.',
     ctaBuy: 'Objednať Hakofyt Max tráva',
     ctaDetail: 'Zobraziť detail produktu',
+    readAlsoLabel: 'Prečítajte si tiež',
+    readAlsoLink: 'Čítať článok',
+    readAlsoSlug: 'ako-a-kedy-hnojit-travnik-na-jar',
+    readAlsoTitle: 'Ako a kedy hnojiť trávnik na jar',
+    readAlsoExcerpt: 'Jar je najdôležitejšie obdobie pre starostlivosť o trávnik. Zistite, kedy začať, aké hnojivo použiť a ako dosiahnuť sýtozelený a hustý porast už od prvých teplých dní.',
+    readAlsoReadTime: '5 min čítania',
   },
   en: {
     metaTitle: 'Lawn fertilizer Hakofyt Max Grass | GardenYX',
@@ -154,6 +160,12 @@ const copy = {
     ctaText: 'Hakofyt Max Grass is available in stock. Order today and enjoy a green lawn sooner this spring.',
     ctaBuy: 'Order Hakofyt Max Grass',
     ctaDetail: 'View product detail',
+    readAlsoLabel: 'Read also',
+    readAlsoLink: 'Read article',
+    readAlsoSlug: 'ako-a-kedy-hnojit-travnik-na-jar',
+    readAlsoTitle: 'How and when to fertilize your lawn in spring',
+    readAlsoExcerpt: 'Spring is the most important time for lawn care. Find out when to start, which fertilizer to use and how to achieve a deep green, dense lawn from the very first warm days.',
+    readAlsoReadTime: '5 min read',
   },
   hu: {
     metaTitle: 'Gyeptrágya Hakofyt Max gyep | GardenYX',
@@ -221,6 +233,12 @@ const copy = {
     ctaText: 'A Hakofyt Max gyep raktáron elérhető. Rendelje meg még ma, és gyepje hamarabb zöldüljön ki.',
     ctaBuy: 'Hakofyt Max gyep rendelése',
     ctaDetail: 'Termék részleteinek megtekintése',
+    readAlsoLabel: 'Olvassa el',
+    readAlsoLink: 'Cikk olvasása',
+    readAlsoSlug: 'ako-a-kedy-hnojit-travnik-na-jar',
+    readAlsoTitle: 'Hogyan és mikor trágyázzuk a gyepet tavasszal',
+    readAlsoExcerpt: 'A tavasz a gyepápolás legfontosabb időszaka. Tudja meg, mikor kezdje, melyik trágyát használja, és hogyan érhet el mélyzöld, sűrű gyepet már az első meleg napoktól.',
+    readAlsoReadTime: '5 perc olvasás',
   },
 } as const;
 
@@ -470,6 +488,32 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Read also */}
+      <section className="py-16 sm:py-20">
+        <div className="container mx-auto px-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">{t.readAlsoLabel}</p>
+          <Link
+            href={{ pathname: '/blog/[slug]', params: { slug: t.readAlsoSlug } }}
+            className="mt-6 grid overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm transition hover:shadow-md sm:grid-cols-[auto_1fr]"
+          >
+            <div className="flex items-center justify-center bg-emerald-50 px-10 py-8 sm:px-12">
+              <svg className="h-14 w-14 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+            </div>
+            <div className="flex flex-col justify-center p-7 sm:p-9">
+              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">{t.readAlsoReadTime}</span>
+              <h3 className="mt-2 text-2xl font-bold text-stone-950 sm:text-3xl">{t.readAlsoTitle}</h3>
+              <p className="mt-3 text-base leading-7 text-stone-600">{t.readAlsoExcerpt}</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                {t.readAlsoLink}
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </span>
+            </div>
+          </Link>
         </div>
       </section>
 
