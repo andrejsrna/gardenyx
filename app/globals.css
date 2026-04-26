@@ -9,7 +9,14 @@
 body {
   color: var(--foreground);
   background: #fafafa;
-  font-family: Inter, serif;
+  font-family: var(--font-nunito-sans), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-heading {
+  font-family: var(--font-fraunces), Georgia, serif;
 }
 
 /* YouTube Responsive Embed */

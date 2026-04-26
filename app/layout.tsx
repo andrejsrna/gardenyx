@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import './polyfills';
-import { Inter } from "next/font/google";
+import { Fraunces, Nunito_Sans } from "next/font/google";
 import { Suspense } from 'react';
 import { Toaster } from 'sonner';
 import CookieConsentBanner from './components/CookieConsentBanner';
@@ -17,9 +17,16 @@ import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gardenyx.com";
 
-const inter = Inter({
+const nunitoSans = Nunito_Sans({
   subsets: ['latin'],
-  variable: '--font-inter'
+  variable: '--font-nunito-sans',
+  display: 'swap'
+});
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap'
 });
 
 export const viewport: Viewport = {
@@ -37,9 +44,14 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    apple: [{ url: '/favicon.ico' }],
-    icon: [{ url: '/favicon.ico' }]
-  }
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
@@ -48,7 +60,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning className={`${inter.variable} antialiased`}>
+    <html suppressHydrationWarning className={`${nunitoSans.variable} ${fraunces.variable} antialiased`}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -62,7 +74,7 @@ export default function RootLayout({
         <WebSiteSchema />
         <GoogleTagManagerHead />
       </head>
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${nunitoSans.variable} ${fraunces.variable} antialiased`}>
         <GoogleTagManagerBody />
         <Suspense fallback={<Loading />}>
           {children}

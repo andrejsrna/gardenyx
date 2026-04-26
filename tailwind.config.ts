@@ -16,8 +16,10 @@ const config: Config = {
           'spin-slow': 'spin 20s linear infinite',
       },
       fontFamily: {
-        sans: ['var(--font-inter)'],
-        inter: ['var(--font-inter)']
+        sans: ['var(--font-nunito-sans)'],
+        heading: ['var(--font-fraunces)'],
+        fraunces: ['var(--font-fraunces)'],
+        nunito: ['var(--font-nunito-sans)'],
       },
     },
   },
