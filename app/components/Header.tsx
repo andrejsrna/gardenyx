@@ -11,6 +11,8 @@ import { useTranslations } from 'next-intl';
 import { Link } from '../../i18n/navigation';
 
 type NavItem = { title: string; href: string; children?: { title: string; href: string }[] };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyHref = any;
 
 const LOCALES = [
   { code: 'sk', label: 'SK', name: 'Slovenčina' },
@@ -133,7 +135,7 @@ export default function Header({ locale }: { locale: string }) {
               item.children ? (
                 <div key={item.href} className="group relative">
                   <Link
-                    href={item.href}
+                    href={item.href as AnyHref}
                     className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-slate-600 rounded-full transition-all duration-200 hover:text-emerald-700 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
                   >
                     {item.title}
@@ -144,7 +146,7 @@ export default function Header({ locale }: { locale: string }) {
                       {item.children.map((child) => (
                         <li key={child.href}>
                           <Link
-                            href={child.href}
+                            href={child.href as AnyHref}
                             className="block px-5 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-emerald-50 hover:text-emerald-700"
                           >
                             {child.title}
@@ -157,7 +159,7 @@ export default function Header({ locale }: { locale: string }) {
               ) : (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={item.href as AnyHref}
                   className="px-4 py-2 text-sm font-medium text-slate-600 rounded-full transition-all duration-200 hover:text-emerald-700 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
                 >
                   {item.title}
@@ -249,7 +251,7 @@ export default function Header({ locale }: { locale: string }) {
                   <div key={item.href} className="overflow-hidden rounded-2xl bg-white/70 shadow-sm ring-1 ring-emerald-100">
                     <div className="flex items-center justify-between">
                       <Link
-                        href={item.href}
+                        href={item.href as AnyHref}
                         className="flex-1 px-4 py-3 text-lg font-semibold text-slate-700"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -268,7 +270,7 @@ export default function Header({ locale }: { locale: string }) {
                         {item.children.map((child) => (
                           <Link
                             key={child.href}
-                            href={child.href}
+                            href={child.href as AnyHref}
                             className="block py-2.5 text-base font-medium text-slate-600 hover:text-emerald-700"
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
@@ -281,7 +283,7 @@ export default function Header({ locale }: { locale: string }) {
                 ) : (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={item.href as AnyHref}
                     className="rounded-2xl bg-white/70 px-4 py-3 text-lg font-semibold text-slate-700 shadow-sm ring-1 ring-emerald-100 transition-all hover:bg-white"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
