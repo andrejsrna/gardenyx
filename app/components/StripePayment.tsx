@@ -819,7 +819,7 @@ export default function StripePayment({
               appearance: {
                 theme: 'stripe',
                 variables: {
-                  colorPrimary: '#059669',
+                  colorPrimary: '#515a45',
                 },
               },
             }}

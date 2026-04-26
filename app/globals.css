@@ -1,6 +1,32 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@theme {
+  --color-green-50: #f4f6f1;
+  --color-green-100: #e5eadf;
+  --color-green-200: #cbd5bf;
+  --color-green-300: #adbb9f;
+  --color-green-400: #879878;
+  --color-green-500: #677158;
+  --color-green-600: #515a45;
+  --color-green-700: #414838;
+  --color-green-800: #343a2e;
+  --color-green-900: #2b3026;
+  --color-green-950: #171a14;
+
+  --color-emerald-50: #f4f6f1;
+  --color-emerald-100: #e5eadf;
+  --color-emerald-200: #cbd5bf;
+  --color-emerald-300: #adbb9f;
+  --color-emerald-400: #879878;
+  --color-emerald-500: #677158;
+  --color-emerald-600: #515a45;
+  --color-emerald-700: #414838;
+  --color-emerald-800: #343a2e;
+  --color-emerald-900: #2b3026;
+  --color-emerald-950: #171a14;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

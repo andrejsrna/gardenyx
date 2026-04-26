@@ -233,7 +233,7 @@ export default function CookieConsentBanner() {
           padding: '20px',
         }}
         buttonStyle={{
-          backgroundColor: '#10b981',
+          backgroundColor: '#515a45',
           color: '#fff',
           fontSize: '14px',
           borderRadius: '6px',

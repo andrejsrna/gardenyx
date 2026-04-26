@@ -38,7 +38,7 @@ export default function Hero() {
       <div className="absolute inset-0 -z-10">
         <div className="absolute -top-32 -left-24 h-96 w-96 rounded-full bg-emerald-200/40 blur-3xl" />
         <div className="absolute -bottom-24 right-0 h-[420px] w-[420px] rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(81,90,69,0.12),transparent_60%)]" />
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-emerald-50/80 via-transparent" />
       </div>
 
@@ -124,7 +124,7 @@ export default function Hero() {
                 Klinicky overené zložky
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-[40px] border border-emerald-100 bg-white/70 p-6 shadow-[0_40px_80px_-40px_rgba(16,185,129,0.45)] backdrop-blur-xl">
+            <div className="relative overflow-hidden rounded-[40px] border border-emerald-100 bg-white/70 p-6 shadow-[0_40px_80px_-40px_rgba(81,90,69,0.45)] backdrop-blur-xl">
               <div className="absolute -inset-6 -z-10 rounded-[52px] bg-gradient-to-br from-emerald-400/10 via-green-300/5 to-transparent" />
               <div className="relative h-full w-full rounded-3xl bg-emerald-50/40 p-6">
                 <div className="absolute inset-x-10 -top-6 h-20 rounded-full bg-white/80 blur-3xl" />

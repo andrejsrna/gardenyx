@@ -1,6 +1,7 @@
 'use client';
 
 import { Menu, User as UserIcon, X, Globe } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -107,8 +108,15 @@ export default function Header({ locale }: { locale: string }) {
       />
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20 transition-all">
-          <Link href="/" className="relative z-10 flex items-center">
-            <span className="text-2xl font-bold tracking-tight text-emerald-700">GardenYX</span>
+          <Link href="/" className="relative z-10 flex items-center" aria-label="GardenYX">
+            <Image
+              src="/logo_gardenyx.png"
+              alt="GardenYX"
+              width={991}
+              height={221}
+              priority
+              className="h-11 w-auto"
+            />
           </Link>
           <nav className="hidden items-center gap-2 lg:flex">
             {NAV_LINKS.map((item) => (
@@ -126,7 +134,7 @@ export default function Header({ locale }: { locale: string }) {
             <LanguageSwitcher locale={locale} />
             <Link
               href="/moj-ucet"
-              className="group relative flex items-center gap-2 rounded-full bg-white/40 px-3 py-2 text-sm font-medium text-slate-600 transition-all duration-200 hover:text-emerald-700 hover:shadow-[0_10px_30px_-18px_rgba(16,185,129,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50"
+              className="group relative flex items-center gap-2 rounded-full bg-white/40 px-3 py-2 text-sm font-medium text-slate-600 transition-all duration-200 hover:text-emerald-700 hover:shadow-[0_10px_30px_-18px_rgba(81,90,69,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50"
               title={customerData ? `${t('hello', { name: customerName })}` : t('myAccount')}
             >
               {isLoading ? (
@@ -163,8 +171,15 @@ export default function Header({ locale }: { locale: string }) {
         <div className="fixed inset-0 z-50 flex min-h-screen flex-col bg-gradient-to-b from-white via-white to-emerald-50 lg:hidden">
           <div className="container mx-auto px-4">
             <div className="flex h-20 items-center justify-between">
-              <Link href="/" className="relative" onClick={() => setIsMobileMenuOpen(false)}>
-                <span className="text-2xl font-bold tracking-tight text-emerald-700">GardenYX</span>
+              <Link href="/" className="relative flex items-center" aria-label="GardenYX" onClick={() => setIsMobileMenuOpen(false)}>
+                <Image
+                  src="/logo_gardenyx.png"
+                  alt="GardenYX"
+                  width={991}
+                  height={221}
+                  priority
+                  className="h-11 w-auto"
+                />
               </Link>
               <div className="flex items-center gap-3">
                 <LanguageSwitcher locale={locale} />

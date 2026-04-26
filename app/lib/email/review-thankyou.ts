@@ -22,7 +22,7 @@ export async function sendReviewThankYouEmail(params: ReviewThankYouParams) {
   const content = `
     <p style="margin:0 0 12px 0;color:#475569;">Ďakujeme za tvoju recenziu. Vážime si, že pomáhaš ostatným rozhodnúť sa.</p>
     <p style="margin:0 0 12px 0;color:#475569;">Tu je tvoj kupón na ďalší nákup:</p>
-    <div style="margin:0 0 14px 0;padding:12px 14px;border-radius:12px;background:#ecfdf3;color:#064e3b;font-weight:800;letter-spacing:0.04em;">${params.couponCode}</div>
+    <div style="margin:0 0 14px 0;padding:12px 14px;border-radius:12px;background:#f4f6f1;color:#2b3026;font-weight:800;letter-spacing:0.04em;">${params.couponCode}</div>
     ${emailButton({ label: 'Nakúpiť s kupónom', url: `${getSiteUrl()}?coupon=${encodeURIComponent(params.couponCode)}` })}
     ${infoNote('Kupón je jednorazový a platí pre túto emailovú adresu. Ak niečo nefunguje, odpovedz na tento email.')}
   `;

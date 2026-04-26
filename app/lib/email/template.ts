@@ -15,8 +15,8 @@ type RenderEmailParams = {
 };
 
 const BRAND = {
-  primary: '#10b981',
-  primaryDark: '#0f766e',
+  primary: '#515a45',
+  primaryDark: '#414838',
   surface: '#ffffff',
   paper: '#f5f7fb',
   text: '#0f172a',
@@ -68,7 +68,7 @@ export function renderEmail(params: RenderEmailParams) {
     : '';
 
   const highlight = params.highlight
-    ? `<div style="margin:0 0 14px 0;padding:12px 14px;border-radius:12px;background:#ecfdf3;color:#064e3b;font-weight:700;">${params.highlight}</div>`
+    ? `<div style="margin:0 0 14px 0;padding:12px 14px;border-radius:12px;background:#f4f6f1;color:#2b3026;font-weight:700;">${params.highlight}</div>`
     : '';
 
   const button = params.cta ? emailButton(params.cta) : '';
@@ -78,8 +78,8 @@ export function renderEmail(params: RenderEmailParams) {
   const headerVariant = params.headerVariant || 'image';
   const brandMarkup = headerVariant === 'text'
     ? `
-      <span style="display:inline-block;font-size:30px;line-height:1;font-weight:900;letter-spacing:0.08em;color:#ecfdf3;text-transform:uppercase;">
-        Garden<span style="color:#dcfce7;">YX</span>
+      <span style="display:inline-block;font-size:30px;line-height:1;font-weight:900;letter-spacing:0.08em;color:#f4f6f1;text-transform:uppercase;">
+        Garden<span style="color:#e5eadf;">YX</span>
       </span>
     `
     : `
@@ -93,11 +93,11 @@ export function renderEmail(params: RenderEmailParams) {
         <td align="center" style="padding:28px 14px;">
           <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:720px;background:${BRAND.surface};border-radius:24px;overflow:hidden;border:1px solid ${BRAND.border};box-shadow:0 18px 60px rgba(15,118,110,0.18);">
             <tr>
-              <td style="padding:0;background:linear-gradient(135deg,${BRAND.primary} 0%,${BRAND.primaryDark} 100%);color:#ecfdf3;">
+              <td style="padding:0;background:linear-gradient(135deg,${BRAND.primary} 0%,${BRAND.primaryDark} 100%);color:#f4f6f1;">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                   <tr>
                     <td style="padding:18px 22px;font-family:'Inter','Arial',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;">
-                      <a href="${SITE_URL}" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;color:#ecfdf3;">
+                      <a href="${SITE_URL}" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;color:#f4f6f1;">
                         ${brandMarkup}
                       </a>
                     </td>
@@ -109,7 +109,7 @@ export function renderEmail(params: RenderEmailParams) {
             <tr>
               <td style="padding:28px 24px 22px 24px;font-family:'Inter','Arial',sans-serif;color:${BRAND.text};font-size:15px;line-height:24px;background:linear-gradient(180deg,#f8fafc 0%,#ffffff 18%);">
                 ${greeting}
-                <h1 style="margin:0 0 12px 0;font-size:26px;line-height:32px;font-weight:800;color:#052e16;">${params.title}</h1>
+                <h1 style="margin:0 0 12px 0;font-size:26px;line-height:32px;font-weight:800;color:#2b3026;">${params.title}</h1>
                 ${highlight}
                 <div style="margin:0 0 14px 0;color:${BRAND.muted};">${params.content}</div>
                 ${button}

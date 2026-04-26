@@ -251,7 +251,7 @@ export async function sendPacketaStatusEmail(order: OrderWithRelations, to: stri
 
   const content = `
     ${infoNote(`Balík sme posunuli ďalej. Aktuálny stav: <strong>${status}</strong>.`)}
-    ${trackingUrl ? `<p style="margin:0 0 12px 0;color:#475569;">Sledovať balík: <a href="${trackingUrl}" style="color:#0f766e;">${trackingUrl}</a></p>` : ''}
+    ${trackingUrl ? `<p style="margin:0 0 12px 0;color:#475569;">Sledovať balík: <a href="${trackingUrl}" style="color:#414838;">${trackingUrl}</a></p>` : ''}
     <p style="margin:0;color:#475569;">Ak niečo nesedí alebo potrebujete pomôcť, stačí odpovedať na tento email.</p>
   `;
 

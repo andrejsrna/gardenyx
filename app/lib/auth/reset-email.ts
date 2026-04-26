@@ -13,7 +13,7 @@ const buildHtml = (params: ResetEmailParams) => {
   const content = `
     <p style="margin:0 0 12px 0;color:#475569;">Dostali sme žiadosť o obnovenie hesla. Klikni na tlačidlo nižšie a nastav si nové heslo. Odkaz je platný ${ttl} minút.</p>
     ${emailButton({ label: 'Obnoviť heslo', url: params.resetUrl })}
-    ${infoNote(`Ak tlačidlo nefunguje, skopírujte si odkaz: <a href="${params.resetUrl}" style="color:#0f766e;">${params.resetUrl}</a>`)}
+    ${infoNote(`Ak tlačidlo nefunguje, skopírujte si odkaz: <a href="${params.resetUrl}" style="color:#414838;">${params.resetUrl}</a>`)}
   `;
 
   return renderEmail({

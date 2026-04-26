@@ -21,7 +21,7 @@ export async function sendVerifyEmail(params: VerifyEmailParams) {
   const content = `
     <p style="margin:0 0 12px 0;color:#475569;">Ešte posledný krok – potvrďte prosím svoj email, aby sme vám vedeli bezpečne posielať dôležité správy.</p>
     ${emailButton({ label: 'Overiť email', url: params.verifyUrl })}
-    ${infoNote(`Ak tlačidlo nefunguje, skopírujte odkaz do prehliadača: <a href="${params.verifyUrl}" style="color:#0f766e;">${params.verifyUrl}</a>`)}
+    ${infoNote(`Ak tlačidlo nefunguje, skopírujte odkaz do prehliadača: <a href="${params.verifyUrl}" style="color:#414838;">${params.verifyUrl}</a>`)}
   `;
 
   const email = new SendSmtpEmail();

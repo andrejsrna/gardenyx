@@ -43,8 +43,8 @@ export async function sendReactivationEmail(to: string, firstName?: string | nul
     <p style="margin:0 0 18px 0;color:#475569;">Nájdete v nej prehľad produktov, odporúčané dávkovanie a jednoduché tipy pre starostlivosť o záhradu.</p>
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 18px 0;">
       <tr>
-        <td style="padding:18px;border:1px solid #bbf7d0;border-radius:16px;background:#f0fdf4;">
-          <p style="margin:0 0 10px 0;font-size:14px;font-weight:700;color:#166534;">Čo nájdete v aplikácii GardenYX:</p>
+        <td style="padding:18px;border:1px solid #cbd5bf;border-radius:16px;background:#f4f6f1;">
+          <p style="margin:0 0 10px 0;font-size:14px;font-weight:700;color:#414838;">Čo nájdete v aplikácii GardenYX:</p>
           <ul style="margin:0;padding-left:18px;color:#1f2937;">
             <li style="margin:0 0 8px 0;">Odporúčané dávkovanie podľa typu rastliny</li>
             <li style="margin:0 0 8px 0;">Praktické pripomienky starostlivosti</li>

@@ -36,7 +36,7 @@ Font.register({
   ]
 });
 
-const accentColor = '#16a34a';
+const accentColor = '#515a45';
 const borderColor = '#d1d5db';
 
 const styles = StyleSheet.create({

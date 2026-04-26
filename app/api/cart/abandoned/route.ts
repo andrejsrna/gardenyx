@@ -73,7 +73,7 @@ export async function POST(request: Request) {
           ${itemsList}
           <tr>
             <td colspan="2" style="padding:10px;font-weight:bold;border:1px solid #e2e8f0;">Celková suma:</td>
-            <td style="padding:10px;text-align:right;font-weight:bold;color:#16a34a;border:1px solid #e2e8f0;">${cart.totalPrice.toFixed(2)} €</td>
+            <td style="padding:10px;text-align:right;font-weight:bold;color:#515a45;border:1px solid #e2e8f0;">${cart.totalPrice.toFixed(2)} €</td>
           </tr>
         </tbody>
       </table>

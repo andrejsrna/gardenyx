@@ -50,7 +50,7 @@ export default function JointBoostGelIngredients({
 }: JointBoostGelIngredientsProps) {
   return (
     <section
-      className={`relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100/70 p-6 shadow-[0_25px_70px_-40px_rgba(16,185,129,0.55)] md:p-10 ${className}`}
+      className={`relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100/70 p-6 shadow-[0_25px_70px_-40px_rgba(81,90,69,0.55)] md:p-10 ${className}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(52,211,153,0.15),transparent_35%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(52,211,153,0.18),transparent_30%)] blur-3xl" />
@@ -85,7 +85,7 @@ export default function JointBoostGelIngredients({
               {ingredients.map((item, index) => (
                 <div
                   key={`${item}-${index}`}
-                  className="group relative flex items-start gap-3 rounded-lg border border-emerald-50 bg-white/70 px-3 py-2 shadow-[0_6px_18px_-14px_rgba(16,185,129,0.6)] transition hover:-translate-y-0.5 hover:border-emerald-200/80"
+                  className="group relative flex items-start gap-3 rounded-lg border border-emerald-50 bg-white/70 px-3 py-2 shadow-[0_6px_18px_-14px_rgba(81,90,69,0.6)] transition hover:-translate-y-0.5 hover:border-emerald-200/80"
                 >
                   <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-800">
                     {index + 1}
