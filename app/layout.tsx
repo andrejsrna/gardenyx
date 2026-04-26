@@ -68,13 +68,17 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale?: string }>;
 }>) {
+  const { locale } = await params.catch?.(() => ({ locale: undefined })) ?? await params;
+  const lang = locale ?? 'sk';
   return (
-    <html suppressHydrationWarning className={`${nunitoSans.variable} ${fraunces.variable} antialiased`}>
+    <html suppressHydrationWarning lang={lang} className={`${nunitoSans.variable} ${fraunces.variable} antialiased`}>
       <head>
         <script
           dangerouslySetInnerHTML={{
