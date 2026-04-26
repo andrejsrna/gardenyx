@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '../../i18n/navigation';
 
@@ -6,10 +7,15 @@ export default async function HomeHero({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'hero' });
 
   return (
-    <section
-      className="relative min-h-[90vh] flex items-center overflow-hidden"
-      style={{ backgroundImage: 'url(/hnojiva.webp)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-    >
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <Image
+        src="/hnojiva.webp"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
+      />
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
 
