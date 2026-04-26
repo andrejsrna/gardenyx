@@ -56,7 +56,7 @@ const copy = {
     methodText:
       'Správna aplikácia hnojiva je rovnako dôležitá ako výber produktu. Dodržte jednoduchý postup a výsledky sa dostavia rýchlejšie.',
     steps: [
-      { number: '01', title: 'Pripravte trávnik', description: 'Pokošte a odstráňte zvyšky. Najlepší výsledok dosiahnete na očistenom poraste po prvom jarnom kosení.' },
+      { number: '01', title: 'Pripravte trávnik', description: 'Pokoste a odstráňte zvyšky. Najlepší výsledok dosiahnete na očistenom poraste po prvom jarnom kosení.' },
       { number: '02', title: 'Aplikujte hnojivo', description: 'Rozrieďte Hakofyt Max tráva podľa návodu a aplikujte rovnomerne na celý trávnik, ideálne mimo horúčav.' },
       { number: '03', title: 'Zalievajte pravidelne', description: 'Po aplikácii trávnik dôkladne zavlažte. Správna hydratácia urychlí vstrebávanie a viditeľné výsledky.' },
     ],
