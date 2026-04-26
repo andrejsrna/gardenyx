@@ -26,132 +26,201 @@ const copy = {
     metaDescription:
       'Hľadáte hnojivo na trávnik na jar aj počas sezóny? Hakofyt Max tráva podporuje sýtozelený vzhľad, hustejší porast a vitalitu trávnika.',
     eyebrow: 'Hnojivo na trávnik',
-    title: 'Hnojivo na trávnik pre hustý a sýtozelený porast',
+    title: 'Hustý, sýtozelený trávnik začína správnou výživou',
     intro:
-      'Hakofyt Max tráva je listové hnojivo určené pre trávnik a rastliny s vyššou potrebou dusíka. Pomáha doplniť výživu v období aktívneho rastu, po zime aj počas sezóny.',
+      'Hakofyt Max tráva je listové hnojivo špeciálne navrhnuté pre trávniky s vyššou potrebou dusíka. Viditeľný rozdiel pocítite už po prvej aplikácii — intenzívnejšia farba, rovnomernejší rast, vitálnejší porast.',
     primaryCta: 'Pozrieť Hakofyt Max tráva',
     secondaryCta: 'Ako hnojiť trávnik',
+    benefits: [
+      ['Viditeľný výsledok', 'už po 1. aplikácii'],
+      ['Vhodné na jar aj v sezóne', 'flexibilné použitie'],
+      ['Listová výživa', 'rýchle vstrebávanie'],
+      ['Odporúčané záhradníkmi', 'overená účinnosť'],
+    ],
     productEyebrow: 'Odporúčaný produkt',
     productTitle: 'Hakofyt Max tráva',
     productText:
-      'Jediný odporúčaný produkt na tejto stránke. Vhodný pre starostlivosť o trávnik, kde chcete podporiť zelenú farbu, hustejší rast a celkovú kondíciu porastu.',
+      'Listové hnojivo s vyšším obsahom dusíka pre intenzívnu zelenú farbu, hustejší porast a celkovú kondíciu trávnika. Vhodné na jar po zime aj počas rastovej sezóny.',
+    priceLabel: 'Cena',
+    outOfStock: 'Na dopyt',
+    inStock: 'Skladom',
     detailLabel: 'Detail produktu',
     buyLabel: 'Kúpiť produkt',
     reasonsTitle: 'Kedy siahnuť po hnojive na trávnik',
     reasons: [
-      ['Po zime', 'keď trávnik začína rásť a potrebuje doplniť výživu po chladnom období.'],
-      ['Pri redšom poraste', 'ak chcete podporiť rovnomernejšie zahustenie a vitálnejší vzhľad.'],
-      ['Po záťaži', 'keď trávnik oslabí sucho, časté kosenie alebo intenzívne používanie záhrady.'],
+      ['Po zime', 'keď trávnik začína rásť a potrebuje doplniť výživu po chladnom období. Prvé hnojenie na jar nastartuje rovnomerný rast.'],
+      ['Pri redšom poraste', 'ak chcete podporiť rovnomernejšie zahustenie, tmavšiu farbu a vitálnejší celkový vzhľad trávnika.'],
+      ['Po záťaži', 'keď trávnik oslabí sucho, časté kosenie alebo intenzívne používanie záhrady počas letných mesiacov.'],
     ],
-    methodTitle: 'Ako používať hnojivo na trávnik rozumne',
+    methodTitle: 'Ako správne hnojiť trávnik krok za krokom',
     methodText:
-      'Hnojivo aplikujte na aktívne rastúci trávnik podľa dávkovania konkrétneho produktu. Najlepší výsledok dosiahnete po prvom ľahkom kosení, na očistenom poraste a mimo horúčav alebo prudkého slnka.',
+      'Správna aplikácia hnojiva je rovnako dôležitá ako výber produktu. Dodržte jednoduchý postup a výsledky sa dostavia rýchlejšie.',
+    steps: [
+      { number: '01', title: 'Pripravte trávnik', description: 'Pokošte a odstráňte zvyšky. Najlepší výsledok dosiahnete na očistenom poraste po prvom jarnom kosení.' },
+      { number: '02', title: 'Aplikujte hnojivo', description: 'Rozrieďte Hakofyt Max tráva podľa návodu a aplikujte rovnomerne na celý trávnik, ideálne mimo horúčav.' },
+      { number: '03', title: 'Zalievajte pravidelne', description: 'Po aplikácii trávnik dôkladne zavlažte. Správna hydratácia urychlí vstrebávanie a viditeľné výsledky.' },
+    ],
     faqTitle: 'Časté otázky k hnojivu na trávnik',
     faqs: [
       {
         question: 'Kedy je vhodné použiť hnojivo na trávnik?',
         answer:
-          'Najvhodnejšie je obdobie, keď trávnik aktívne rastie. Na jar počkajte, kým pôda preschne a trávnik absolvuje prvé ľahké kosenie.',
+          'Najvhodnejšie je obdobie, keď trávnik aktívne rastie. Na jar počkajte, kým pôda preschne a trávnik absolvuje prvé ľahké kosenie. Hnojivo možno opakovane aplikovať počas celej sezóny podľa stavu porastu.',
       },
       {
         question: 'Je Hakofyt Max tráva vhodný ako jarné hnojivo na trávnik?',
         answer:
-          'Áno, používa sa pri trávniku a rastlinách s vyššou potrebou dusíka, najmä keď chcete podporiť zelený rast a vitalitu porastu.',
+          'Áno, Hakofyt Max tráva je ideálne jarné hnojivo. Má vyšší obsah dusíka, ktorý podporuje intenzívny zelený rast po zimnom období a pomáha trávniku rýchlo nabrať kondíciu.',
+      },
+      {
+        question: 'Ako rýchlo uvidím výsledky?',
+        answer:
+          'Listové hnojivá pôsobia rýchlejšie ako granulované — prvé zmeny v sfarbení a rastovej aktivite sú väčšinou viditeľné do 7 – 14 dní od aplikácie za predpokladu dostatočnej závlahy.',
       },
       {
         question: 'Stačí použiť iba hnojivo?',
         answer:
-          'Hnojivo funguje najlepšie spolu so správnym kosením, primeranou závlahou a odstránením plsti alebo zvyškov po zime.',
+          'Hnojivo funguje najlepšie spolu so správnym kosením (ideálna výška 4–6 cm), primeranou závlahou a odstránením plsti alebo zvyškov po zime. Komplex starostlivosti prináša najlepší výsledok.',
       },
     ],
+    ctaTitle: 'Pripravte trávnik na sezónu',
+    ctaText: 'Hakofyt Max tráva je dostupný skladom. Objednajte ešte dnes a varovnicou jar sa zazelenáte skôr.',
+    ctaBuy: 'Objednať Hakofyt Max tráva',
+    ctaDetail: 'Zobraziť detail produktu',
   },
   en: {
     metaTitle: 'Lawn fertilizer Hakofyt Max Grass | GardenYX',
     metaDescription:
       'Looking for a lawn fertilizer for spring and the growing season? Hakofyt Max Grass supports a deep green look, denser growth and lawn vitality.',
     eyebrow: 'Lawn fertilizer',
-    title: 'Lawn fertilizer for dense, deep green grass',
+    title: 'A dense, deep green lawn starts with the right nutrition',
     intro:
-      'Hakofyt Max Grass is a foliar fertilizer for lawns and plants with higher nitrogen needs. It helps replenish nutrition during active growth, after winter and throughout the season.',
+      'Hakofyt Max Grass is a foliar fertilizer designed specifically for lawns with higher nitrogen needs. You will notice a visible difference after the very first application — more intense color, more even growth, healthier turf.',
     primaryCta: 'View Hakofyt Max Grass',
     secondaryCta: 'How to fertilize a lawn',
+    benefits: [
+      ['Visible results', 'from the 1st application'],
+      ['Spring & season use', 'flexible application'],
+      ['Foliar nutrition', 'fast absorption'],
+      ['Trusted by gardeners', 'proven effectiveness'],
+    ],
     productEyebrow: 'Recommended product',
     productTitle: 'Hakofyt Max Grass',
     productText:
-      'The only recommended product on this page. Suitable for lawn care when you want to support green color, denser growth and overall turf condition.',
+      'Foliar fertilizer with higher nitrogen content for intense green color, denser growth and overall lawn condition. Suitable for spring after winter as well as throughout the growing season.',
+    priceLabel: 'Price',
+    outOfStock: 'On request',
+    inStock: 'In stock',
     detailLabel: 'Product detail',
     buyLabel: 'Buy product',
     reasonsTitle: 'When to use lawn fertilizer',
     reasons: [
-      ['After winter', 'when the lawn starts growing and needs nutrition after the cold period.'],
-      ['For thinner turf', 'when you want to support more even density and a healthier appearance.'],
-      ['After stress', 'when the lawn is weakened by drought, frequent mowing or intensive garden use.'],
+      ['After winter', 'when the lawn starts growing and needs nutrition after the cold period. The first spring application kickstarts even growth.'],
+      ['For thinner turf', 'when you want to support more even density, a darker color and a healthier overall appearance.'],
+      ['After stress', 'when the lawn is weakened by drought, frequent mowing or intensive garden use during the summer months.'],
     ],
-    methodTitle: 'How to use lawn fertilizer sensibly',
+    methodTitle: 'How to fertilize your lawn step by step',
     methodText:
-      'Apply fertilizer to actively growing grass according to the specific product instructions. The best result comes after the first light mowing, on a cleaned lawn and outside heat or strong direct sun.',
+      'Correct application is just as important as choosing the right product. Follow these simple steps and results will come faster.',
+    steps: [
+      { number: '01', title: 'Prepare the lawn', description: 'Mow and remove clippings. Best results come on a clean lawn after the first spring mowing.' },
+      { number: '02', title: 'Apply the fertilizer', description: 'Dilute Hakofyt Max Grass per the instructions and apply evenly over the entire lawn, ideally outside peak heat.' },
+      { number: '03', title: 'Water regularly', description: 'After application water the lawn thoroughly. Proper hydration speeds up absorption and visible results.' },
+    ],
     faqTitle: 'Lawn fertilizer FAQ',
     faqs: [
       {
         question: 'When should I use lawn fertilizer?',
         answer:
-          'Use it when the lawn is actively growing. In spring, wait until the soil dries and the lawn has had its first light mowing.',
+          'Use it when the lawn is actively growing. In spring, wait until the soil dries and the lawn has had its first light mowing. You can reapply throughout the season according to turf condition.',
       },
       {
         question: 'Is Hakofyt Max Grass suitable as a spring lawn fertilizer?',
         answer:
-          'Yes. It is used for lawns and plants with higher nitrogen needs, especially when you want to support green growth and vitality.',
+          'Yes. Hakofyt Max Grass is an ideal spring fertilizer. Its higher nitrogen content promotes intense green growth after winter and helps the lawn regain condition quickly.',
+      },
+      {
+        question: 'How fast will I see results?',
+        answer:
+          'Foliar fertilizers act faster than granular ones — the first changes in color and growth activity are usually visible within 7–14 days of application, given adequate watering.',
       },
       {
         question: 'Is fertilizer alone enough?',
         answer:
-          'Fertilizer works best together with correct mowing, adequate watering and removal of thatch or winter debris.',
+          'Fertilizer works best together with correct mowing (ideal height 4–6 cm), adequate watering and removal of thatch or winter debris. A complete care routine delivers the best results.',
       },
     ],
+    ctaTitle: 'Get your lawn ready for the season',
+    ctaText: 'Hakofyt Max Grass is available in stock. Order today and enjoy a green lawn sooner this spring.',
+    ctaBuy: 'Order Hakofyt Max Grass',
+    ctaDetail: 'View product detail',
   },
   hu: {
     metaTitle: 'Gyeptrágya Hakofyt Max gyep | GardenYX',
     metaDescription:
       'Gyeptrágyát keres tavaszra és a szezonra? A Hakofyt Max gyep támogatja a mélyzöld megjelenést, a sűrűbb növekedést és a gyep vitalitását.',
     eyebrow: 'Gyeptrágya',
-    title: 'Gyeptrágya sűrű, mélyzöld gyephez',
+    title: 'A sűrű, mélyzöld gyep a megfelelő tápanyaggal kezdődik',
     intro:
-      'A Hakofyt Max gyep lombtrágya gyephez és magasabb nitrogénigényű növényekhez. Segít pótolni a tápanyagokat aktív növekedéskor, tél után és a szezon során.',
+      'A Hakofyt Max gyep lombtrágya kifejezetten magasabb nitrogénigényű gyepekhez fejlesztve. Az első alkalmazás után már látható a különbség — intenzívebb szín, egyenletesebb növekedés, egészségesebb gyep.',
     primaryCta: 'Hakofyt Max gyep megtekintése',
     secondaryCta: 'Gyeptrágyázási útmutató',
+    benefits: [
+      ['Látható eredmény', 'már az 1. alkalmazástól'],
+      ['Tavaszi és szezonális', 'rugalmas felhasználás'],
+      ['Lombtrágya', 'gyors felszívódás'],
+      ['Kertészek ajánlásával', 'bevált hatékonyság'],
+    ],
     productEyebrow: 'Ajánlott termék',
     productTitle: 'Hakofyt Max gyep',
     productText:
-      'Az egyetlen ajánlott termék ezen az oldalon. Gyepápoláshoz, ha cél a zöldebb szín, a sűrűbb növekedés és a jobb általános kondíció.',
+      'Magasabb nitrogéntartalmú lombtrágya az intenzív zöld színért, sűrűbb növekedésért és a gyep általános kondíciójáért. Alkalmas tavasszal tél után és az egész vegetációs időszakban.',
+    priceLabel: 'Ár',
+    outOfStock: 'Rendelésre',
+    inStock: 'Raktáron',
     detailLabel: 'Termék részletei',
     buyLabel: 'Termék vásárlása',
     reasonsTitle: 'Mikor érdemes gyeptrágyát használni',
     reasons: [
-      ['Tél után', 'amikor a gyep növekedni kezd, és tápanyagpótlásra van szüksége.'],
-      ['Ritkább gyepnél', 'ha egyenletesebb sűrűséget és egészségesebb megjelenést szeretne.'],
-      ['Stressz után', 'amikor a gyepet aszály, gyakori nyírás vagy intenzív használat gyengítette.'],
+      ['Tél után', 'amikor a gyep növekedni kezd, és tápanyagpótlásra van szüksége. Az első tavaszi trágyázás egyenletes növekedést indít el.'],
+      ['Ritkább gyepnél', 'ha egyenletesebb sűrűséget, sötétebb színt és egészségesebb megjelenést szeretne.'],
+      ['Stressz után', 'amikor a gyepet aszály, gyakori nyírás vagy intenzív nyári kerthasználat gyengítette.'],
     ],
-    methodTitle: 'Hogyan használjuk ésszerűen a gyeptrágyát',
+    methodTitle: 'A gyeptrágyázás lépésről lépésre',
     methodText:
-      'A trágyát aktívan növekvő gyepen alkalmazza az adott termék útmutatója szerint. A legjobb eredmény az első enyhe nyírás után, megtisztított gyepen, hőség és erős napsütés nélkül érhető el.',
+      'A helyes alkalmazás éppoly fontos, mint a megfelelő termék kiválasztása. Kövesse az egyszerű lépéseket, és az eredmények hamarabb megjelennek.',
+    steps: [
+      { number: '01', title: 'Készítse elő a gyepet', description: 'Nyírja le és távolítsa el a nyesedéket. A legjobb eredmény az első tavaszi nyírás utáni, megtisztított gyepen érhető el.' },
+      { number: '02', title: 'Alkalmazza a trágyát', description: 'Hígítsa a Hakofyt Max gyepet az útmutató szerint, és egyenletesen vigye fel az egész gyepre, lehetőleg hőség nélkül.' },
+      { number: '03', title: 'Rendszeresen öntözze', description: 'Az alkalmazás után alaposan öntözze meg a gyepet. A megfelelő hidratáció felgyorsítja a felszívódást és a látható eredményeket.' },
+    ],
     faqTitle: 'Gyakori kérdések a gyeptrágyáról',
     faqs: [
       {
         question: 'Mikor érdemes gyeptrágyát használni?',
         answer:
-          'Akkor, amikor a gyep aktívan növekszik. Tavasszal várja meg, amíg a talaj felszárad és megtörténik az első enyhe fűnyírás.',
+          'Akkor, amikor a gyep aktívan növekszik. Tavasszal várja meg, amíg a talaj felszárad és megtörténik az első enyhe fűnyírás. A szezon során a gyep állapota szerint ismételheti az alkalmazást.',
       },
       {
         question: 'A Hakofyt Max gyep alkalmas tavaszi gyeptrágyának?',
         answer:
-          'Igen. Gyephez és magasabb nitrogénigényű növényekhez használható, különösen a zöld növekedés és vitalitás támogatására.',
+          'Igen. A Hakofyt Max gyep ideális tavaszi trágya. Magasabb nitrogéntartalma intenzív zöld növekedést segít elő tél után, és gyorsan visszaállítja a gyep kondícióját.',
+      },
+      {
+        question: 'Milyen gyorsan látok eredményt?',
+        answer:
+          'A lombtrágyák gyorsabban hatnak, mint a szemcsések — a szín és a növekedési aktivitás első változásai általában 7–14 nappal az alkalmazás után láthatók, megfelelő öntözés esetén.',
       },
       {
         question: 'Elég önmagában a trágya?',
         answer:
-          'A trágya megfelelő fűnyírással, elegendő öntözéssel és a filcréteg vagy téli maradványok eltávolításával működik a legjobban.',
+          'A trágya megfelelő fűnyírással (ideális magasság 4–6 cm), elegendő öntözéssel és a filcréteg vagy téli maradványok eltávolításával működik a legjobban. A komplex gondozás hozza a legjobb eredményt.',
       },
     ],
+    ctaTitle: 'Készítse fel gyepét a szezonra',
+    ctaText: 'A Hakofyt Max gyep raktáron elérhető. Rendelje meg még ma, és gyepje hamarabb zöldüljön ki.',
+    ctaBuy: 'Hakofyt Max gyep rendelése',
+    ctaDetail: 'Termék részleteinek megtekintése',
   },
 } as const;
 
@@ -260,6 +329,7 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
     <main className="bg-[#f8f8f3] text-stone-900">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
 
+      {/* Hero */}
       <section className="relative isolate min-h-[calc(100vh-5rem)] overflow-hidden border-b border-emerald-100">
         {productImage ? (
           <Image
@@ -268,10 +338,10 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
             fill
             priority
             sizes="100vw"
-            className="absolute inset-0 -z-20 object-contain object-[85%_58%] opacity-20 md:opacity-35 lg:object-[80%_52%]"
+            className="absolute inset-0 -z-20 object-contain object-[85%_58%] opacity-20 md:opacity-40 lg:object-[80%_52%]"
           />
         ) : null}
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,#f8f8f3_0%,rgba(248,248,243,0.94)_42%,rgba(248,248,243,0.62)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,#f8f8f3_0%,rgba(248,248,243,0.96)_45%,rgba(248,248,243,0.55)_100%)]" />
         <div className="absolute bottom-0 left-0 right-0 -z-10 h-40 bg-gradient-to-t from-[#f8f8f3] to-transparent" />
 
         <div className="container mx-auto flex min-h-[calc(100vh-5rem)] items-center px-6 py-16">
@@ -299,10 +369,21 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
                 {t.secondaryCta}
               </Link>
             </div>
+
+            {/* Quick benefits */}
+            <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {t.benefits.map(([label, sub]) => (
+                <div key={label} className="flex flex-col gap-1 border-l-2 border-emerald-300 pl-3">
+                  <span className="text-sm font-bold text-stone-950">{label}</span>
+                  <span className="text-xs text-stone-500">{sub}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
+      {/* Product card */}
       <section className="py-16 sm:py-24">
         <div className="container mx-auto grid gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
@@ -329,11 +410,11 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
               <p className="mt-4 text-base leading-7 text-stone-600">{productDescription}</p>
               <div className="mt-7 flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-sm font-semibold text-stone-500">Cena</p>
+                  <p className="text-sm font-semibold text-stone-500">{t.priceLabel}</p>
                   <p className="mt-1 text-4xl font-bold text-stone-950">{Number(product.price).toFixed(2)} €</p>
                 </div>
-                <span className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-800">
-                  {product.stock_status === 'outofstock' ? 'Na dopyt' : 'Skladom'}
+                <span className={`rounded-full px-4 py-2 text-sm font-semibold ${product.stock_status === 'outofstock' ? 'bg-stone-100 text-stone-600' : 'bg-emerald-50 text-emerald-800'}`}>
+                  {product.stock_status === 'outofstock' ? t.outOfStock : t.inStock}
                 </span>
               </div>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -355,13 +436,17 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
         </div>
       </section>
 
+      {/* When to use */}
       <section className="border-y border-emerald-100 bg-white py-16 sm:py-20">
         <div className="container mx-auto px-6">
           <h2 className="max-w-3xl text-4xl font-bold tracking-tight text-stone-950">{t.reasonsTitle}</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-8 md:grid-cols-3">
             {t.reasons.map(([title, description]) => (
-              <article key={title} className="border-l border-emerald-200 pl-6">
-                <h3 className="text-2xl font-semibold text-stone-950">{title}</h3>
+              <article key={title} className="group relative rounded-2xl bg-[#f8f8f3] p-7 ring-1 ring-emerald-100 transition hover:ring-emerald-300">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
+                  <span className="text-lg text-emerald-700">✦</span>
+                </div>
+                <h3 className="text-xl font-bold text-stone-950">{title}</h3>
                 <p className="mt-3 text-base leading-7 text-stone-600">{description}</p>
               </article>
             ))}
@@ -369,35 +454,60 @@ export default async function LawnFertilizerLandingPage({ params }: { params: Pr
         </div>
       </section>
 
+      {/* How to use — steps */}
       <section className="py-16 sm:py-24">
-        <div className="container mx-auto grid gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-          <h2 className="text-4xl font-bold tracking-tight text-stone-950">{t.methodTitle}</h2>
-          <div className="text-lg leading-9 text-stone-700">
-            <p>{t.methodText}</p>
-            <dl className="mt-10 grid gap-4 sm:grid-cols-3">
-              {['1', '2', '3'].map((step, index) => (
-                <div key={step} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-emerald-100">
-                  <dt className="text-3xl font-bold text-emerald-700">{step}</dt>
-                  <dd className="mt-2 text-sm leading-6 text-stone-600">{t.reasons[index][0]}</dd>
-                </div>
-              ))}
-            </dl>
+        <div className="container mx-auto px-6">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-4xl font-bold tracking-tight text-stone-950">{t.methodTitle}</h2>
+            <p className="mt-5 text-lg leading-8 text-stone-700">{t.methodText}</p>
+          </div>
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {t.steps.map((step) => (
+              <div key={step.number} className="relative rounded-2xl bg-white p-8 shadow-sm ring-1 ring-emerald-100">
+                <span className="block text-5xl font-black text-emerald-100 leading-none">{step.number}</span>
+                <h3 className="mt-4 text-xl font-bold text-stone-950">{step.title}</h3>
+                <p className="mt-3 text-base leading-7 text-stone-600">{step.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* FAQ */}
       <section className="bg-white py-16 sm:py-20">
         <div className="container mx-auto px-6">
           <div className="mx-auto max-w-4xl">
             <h2 className="text-4xl font-bold tracking-tight text-stone-950">{t.faqTitle}</h2>
             <div className="mt-8 divide-y divide-stone-200 border-y border-stone-200">
               {t.faqs.map((item) => (
-                <article key={item.question} className="py-6">
+                <article key={item.question} className="py-7">
                   <h3 className="text-xl font-semibold text-stone-950">{item.question}</h3>
                   <p className="mt-3 text-base leading-7 text-stone-600">{item.answer}</p>
                 </article>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="border-t border-emerald-100 bg-emerald-700 py-16 sm:py-20">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">{t.ctaTitle}</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-emerald-100">{t.ctaText}</p>
+          <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <Link
+              href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }}
+              className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-sm font-bold text-emerald-800 shadow-lg transition hover:bg-emerald-50"
+            >
+              {t.ctaBuy}
+            </Link>
+            <Link
+              href={{ pathname: '/produkt/[slug]', params: { slug: product.slug } }}
+              className="inline-flex items-center justify-center rounded-full border border-emerald-400 px-8 py-4 text-sm font-bold text-white transition hover:border-white"
+            >
+              {t.ctaDetail}
+            </Link>
           </div>
         </div>
       </section>
