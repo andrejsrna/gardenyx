@@ -3,6 +3,7 @@
     "shop": "Obchod",
     "hakofytFertilizers": "Hnojivá Hakofyt",
     "lawnFertilizer": "Hnojivo na trávnik",
+    "fruitTreeFertilizer": "Hnojivo na ovocné stromy",
     "news": "Aktuality",
     "contact": "Kontakt",
     "myAccount": "Môj účet",
@@ -45,13 +46,13 @@
     }
   },
   "hakofytFertilizersPage": {
-    "eyebrow": "Hakofyt",
-    "title": "Hakofyt hnojivá pre silné rastliny a bohatú úrodu",
-    "description": "Hakofyt je rada listových hnojív s makroprvkami, mikroprvkami a prírodnými stimulátormi rastu pre zeleninu, ovocie, kvety, dreviny aj trávnik.",
+    "eyebrow": "Hakofyt – organické NPK hnojivo",
+    "title": "Hakofyt – organické NPK hnojivo pre silné rastliny a bohatú úrodu",
+    "description": "Hakofyt je organické NPK hnojivo s makroprvkami, mikroprvkami a prírodnými stimulátormi rastu. Ideálne hnojivo pre zeleninu, ovocie, kvety, dreviny aj trávnik.",
     "meta": {
-      "title": "Hakofyt hnojivá na rastliny | GardenYX",
-      "description": "Hakofyt hnojivá pre zeleninu, ovocné dreviny, kvety, čučoriedky, jahody aj trávnik. Pozrite si zloženie, výhody a odporúčané produkty GardenYX.",
-      "imageAlt": "Hnojivá Hakofyt"
+      "title": "Hakofyt – organické NPK hnojivo pre záhradu | GardenYX",
+      "description": "Hakofyt je organické NPK hnojivo pre zeleninu, ovocné dreviny, kvety, čučoriedky, jahody aj trávnik. Pozrite si zloženie, výhody a odporúčané produkty.",
+      "imageAlt": "Hnojivá Hakofyt – organické NPK hnojivo"
     },
     "principle": {
       "eyebrow": "Čo je Hakofyt",
@@ -88,9 +89,49 @@
       "linkLabel": "Čítať ďalej",
       "linkHref": "https://hakofyt.sk/"
     },
+    "npk": {
+      "eyebrow": "NPK hnojivo",
+      "title": "Čo je NPK hnojivo a prečo na ňom záleží?",
+      "intro": "Každé hnojivo pre rastliny je charakterizované tromi základnými makroprvkami – dusíkom (N), fosforom (P) a draslíkom (K). Práve ich pomer rozhoduje o tom, ako rýchlo rastlina rastie, ako kvitne a akú úrodu prinesie.",
+      "items": {
+        "n": {
+          "symbol": "N",
+          "name": "Dusík",
+          "description": "Zodpovedá za bujný rast listovej hmoty, sýtu zelenú farbu a tvorbu chlorofylu. Nedostatok dusíka spôsobuje žltnutie a spomalenie rastu."
+        },
+        "p": {
+          "symbol": "P",
+          "name": "Fosfor",
+          "description": "Kľúčový pre vývoj koreňového systému, tvorbu kvetov a plodov. Podporuje prenos energie v bunke a urýchľuje dozrievanie úrody."
+        },
+        "k": {
+          "symbol": "K",
+          "name": "Draslík",
+          "description": "Posilňuje bunkové steny, zvyšuje odolnosť voči suchu, mrazu a chorobám. Zlepšuje chuť, pevnosť a trvanlivosť plodov."
+        }
+      },
+      "closing": "Hakofyt dopĺňa NPK o mikroprvky (Fe, Zn, Mn, Cu, B, Mo) a prírodné stimulátory rastu – humínové látky a aminokyseliny – ktoré minerálne hnojivá bežne neobsahujú."
+    },
+    "organic": {
+      "eyebrow": "Organické hnojivo",
+      "title": "Organické hnojivo vs. minerálne: v čom je rozdiel?",
+      "intro": "Nie každé hnojivo pôsobí rovnako. Správny výber hnojiva výrazne ovplyvní nielen aktuálnu úrodu, ale aj dlhodobé zdravie pôdy a rastlín.",
+      "compareTitle": "Hakofyt – to najlepšie z oboch svetov",
+      "compareText": "Hakofyt spája presnosť minerálneho NPK hnojiva s výhodami organických zložiek. Obsahuje humínové látky, aminokyseliny a sacharidy, ktoré zlepšujú biologickú aktivitu pôdy a zvyšujú účinnosť živín – bez rizika zasolenia pôdy typického pre čisto minerálne hnojivá.",
+      "mineral": {
+        "title": "Minerálne hnojivo",
+        "pros": ["Rýchly nástup účinku", "Presné dávkovanie NPK", "Nízka cena"],
+        "cons": ["Bez organickej hmoty", "Riziko zasolenia pôdy", "Nevylepšuje mikrobiológiu"]
+      },
+      "organic": {
+        "title": "Organické hnojivo",
+        "pros": ["Zlepšuje štruktúru pôdy", "Podporuje pôdne mikroorganizmy", "Dlhodobý efekt"],
+        "cons": ["Pomalší nástup účinku", "Menej presné NPK pomery", "Vyššia spotreba"]
+      }
+    },
     "faq": {
       "eyebrow": "Časté otázky",
-      "title": "Hakofyt: najčastejšie otázky",
+      "title": "Hnojivá: najčastejšie otázky",
       "items": {
         "what": {
           "question": "Čo je Hakofyt?",
@@ -103,11 +144,23 @@
         "use": {
           "question": "Na čo sa používajú hnojivá Hakofyt?",
           "answer": "Hnojivá Hakofyt sa používajú na podporu koreňového systému, fotosyntézy, odolnosti voči stresu a kvality úrody pri zelenine, ovocí, okrasných rastlinách, drevinách a trávniku."
+        },
+        "whatIsNpk": {
+          "question": "Čo je NPK hnojivo?",
+          "answer": "NPK hnojivo obsahuje tri hlavné živiny: dusík (N) pre rast listov, fosfor (P) pre korene a kvety a draslík (K) pre odolnosť a kvalitu plodov. Hakofyt je NPK hnojivo obohatené o mikroprvky a organické stimulátory, ktoré zvyšujú celkovú efektivitu výživy."
+        },
+        "whatIsOrganic": {
+          "question": "Čo je organické hnojivo?",
+          "answer": "Organické hnojivo obsahuje živiny viazané v organickej hmote – humínové látky, aminokyseliny, kompost alebo rastlinné výťažky. Zlepšuje štruktúru pôdy a podporuje pôdne mikroorganizmy. Hakofyt kombinuje organické zložky s presným NPK pomerom, čím dosahuje rýchly aj dlhodobý efekt."
+        },
+        "bestFertilizer": {
+          "question": "Aké hnojivo je najlepšie pre záhradu?",
+          "answer": "Najlepšie hnojivo pre záhradu závisí od druhu rastlín a stavu pôdy. Všeobecne platí, že listové NPK hnojivo s organickými stimulátormi – ako Hakofyt – dáva rastlinám rýchlo dostupné živiny a zároveň zlepšuje mikrobiológiu pôdy. Pre trávnik je ideálny Hakofyt Max, pre zeleninu a ovocie Hakofyt Plus."
         }
       }
     },
     "schema": {
-      "about": "Hakofyt listové hnojivá a rastové stimulátory pre komplexnú výživu rastlín."
+      "about": "Hakofyt organické NPK hnojivo – listové hnojivá a rastové stimulátory pre komplexnú výživu rastlín."
     }
   },
   "hero": {

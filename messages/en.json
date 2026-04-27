@@ -3,6 +3,7 @@
     "shop": "Shop",
     "hakofytFertilizers": "Hakofyt Fertilizers",
     "lawnFertilizer": "Lawn Fertilizer",
+    "fruitTreeFertilizer": "Fruit Tree Fertilizer",
     "news": "News",
     "contact": "Contact",
     "myAccount": "My Account",
@@ -45,13 +46,13 @@
     }
   },
   "hakofytFertilizersPage": {
-    "eyebrow": "Hakofyt",
-    "title": "Hakofyt fertilizers for strong plants and richer harvests",
-    "description": "Hakofyt is a range of foliar fertilizers with macro-elements, micro-elements and natural growth stimulators for vegetables, fruit, flowers, trees and lawns.",
+    "eyebrow": "Hakofyt – organic NPK fertilizer",
+    "title": "Hakofyt – organic NPK fertilizer for strong plants and richer harvests",
+    "description": "Hakofyt is an organic NPK fertilizer with macro-elements, micro-elements and natural growth stimulators. The ideal fertilizer for vegetables, fruit, flowers, trees and lawns.",
     "meta": {
-      "title": "Hakofyt fertilizers for plants | GardenYX",
-      "description": "Hakofyt fertilizers for vegetables, fruit trees, flowers, blueberries, strawberries and lawns. See the composition, benefits and recommended GardenYX products.",
-      "imageAlt": "Hakofyt Fertilizers"
+      "title": "Hakofyt – organic NPK fertilizer for the garden | GardenYX",
+      "description": "Hakofyt is an organic NPK fertilizer for vegetables, fruit trees, flowers, blueberries, strawberries and lawns. See composition, benefits and recommended products.",
+      "imageAlt": "Hakofyt Fertilizers – organic NPK fertilizer"
     },
     "principle": {
       "eyebrow": "What is Hakofyt",
@@ -88,9 +89,49 @@
       "linkLabel": "Read more",
       "linkHref": "https://hakofyt.sk/"
     },
+    "npk": {
+      "eyebrow": "NPK fertilizer",
+      "title": "What is NPK fertilizer and why does it matter?",
+      "intro": "Every plant fertilizer is characterized by three key macro-elements – nitrogen (N), phosphorus (P) and potassium (K). Their ratio determines how fast a plant grows, how it flowers and what harvest it will produce.",
+      "items": {
+        "n": {
+          "symbol": "N",
+          "name": "Nitrogen",
+          "description": "Drives lush leafy growth, deep green color and chlorophyll production. Nitrogen deficiency causes yellowing and stunted growth."
+        },
+        "p": {
+          "symbol": "P",
+          "name": "Phosphorus",
+          "description": "Essential for root system development, flower and fruit formation. Supports energy transfer in cells and speeds up crop ripening."
+        },
+        "k": {
+          "symbol": "K",
+          "name": "Potassium",
+          "description": "Strengthens cell walls and improves resistance to drought, frost and disease. Enhances flavor, firmness and shelf life of fruit."
+        }
+      },
+      "closing": "Hakofyt complements NPK with micro-elements (Fe, Zn, Mn, Cu, B, Mo) and natural growth stimulators – humic substances and amino acids – which standard mineral fertilizers typically do not contain."
+    },
+    "organic": {
+      "eyebrow": "Organic fertilizer",
+      "title": "Organic fertilizer vs. mineral: what is the difference?",
+      "intro": "Not all fertilizers work the same way. Choosing the right fertilizer significantly affects not only the current harvest but also the long-term health of the soil and plants.",
+      "compareTitle": "Hakofyt – the best of both worlds",
+      "compareText": "Hakofyt combines the precision of a mineral NPK fertilizer with the benefits of organic components. It contains humic substances, amino acids and carbohydrates that improve soil biological activity and increase nutrient efficiency – without the soil salinization risk typical of purely mineral fertilizers.",
+      "mineral": {
+        "title": "Mineral fertilizer",
+        "pros": ["Fast action", "Precise NPK dosing", "Low cost"],
+        "cons": ["No organic matter", "Risk of soil salinization", "Does not improve microbiology"]
+      },
+      "organic": {
+        "title": "Organic fertilizer",
+        "pros": ["Improves soil structure", "Supports soil microorganisms", "Long-term effect"],
+        "cons": ["Slower action", "Less precise NPK ratios", "Higher application rates"]
+      }
+    },
     "faq": {
       "eyebrow": "FAQ",
-      "title": "Hakofyt: frequently asked questions",
+      "title": "Fertilizers: frequently asked questions",
       "items": {
         "what": {
           "question": "What is Hakofyt?",
@@ -103,11 +144,23 @@
         "use": {
           "question": "What are Hakofyt fertilizers used for?",
           "answer": "Hakofyt fertilizers are used to support root systems, photosynthesis, stress resistance and crop quality in vegetables, fruit, ornamental plants, trees and lawns."
+        },
+        "whatIsNpk": {
+          "question": "What is NPK fertilizer?",
+          "answer": "NPK fertilizer contains three main nutrients: nitrogen (N) for leaf growth, phosphorus (P) for roots and flowers, and potassium (K) for resistance and fruit quality. Hakofyt is an NPK fertilizer enriched with micro-elements and organic stimulators that increase overall nutritional efficiency."
+        },
+        "whatIsOrganic": {
+          "question": "What is organic fertilizer?",
+          "answer": "Organic fertilizer contains nutrients bound in organic matter – humic substances, amino acids, compost or plant extracts. It improves soil structure and supports soil microorganisms. Hakofyt combines organic components with a precise NPK ratio, achieving both fast and long-term effects."
+        },
+        "bestFertilizer": {
+          "question": "What is the best fertilizer for the garden?",
+          "answer": "The best garden fertilizer depends on the plants and soil condition. Generally, a foliar NPK fertilizer with organic stimulators – like Hakofyt – delivers rapidly available nutrients while also improving soil microbiology. Hakofyt Max is ideal for lawns, while Hakofyt Plus is best for vegetables and fruit."
         }
       }
     },
     "schema": {
-      "about": "Hakofyt foliar fertilizers and growth stimulators for comprehensive plant nutrition."
+      "about": "Hakofyt organic NPK fertilizer – foliar fertilizers and growth stimulators for comprehensive plant nutrition."
     }
   },
   "hero": {

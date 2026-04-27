@@ -3,6 +3,7 @@
     "shop": "Bolt",
     "hakofytFertilizers": "Hakofyt műtrágyák",
     "lawnFertilizer": "Gyeptrágya",
+    "fruitTreeFertilizer": "Gyümölcsfa trágya",
     "news": "Hírek",
     "contact": "Kapcsolat",
     "myAccount": "Fiókom",
@@ -45,13 +46,13 @@
     }
   },
   "hakofytFertilizersPage": {
-    "eyebrow": "Hakofyt",
-    "title": "Hakofyt műtrágyák erős növényekhez és gazdagabb terméshez",
-    "description": "A Hakofyt lombtrágyák makroelemeket, mikroelemeket és természetes növekedésserkentőket biztosítanak zöldségekhez, gyümölcsökhöz, virágokhoz, fákhoz és gyephez.",
+    "eyebrow": "Hakofyt – organikus NPK műtrágya",
+    "title": "Hakofyt – organikus NPK műtrágya erős növényekhez és gazdagabb terméshez",
+    "description": "A Hakofyt organikus NPK műtrágya makroelemekkel, mikroelemekkel és természetes növekedésserkentőkkel. Ideális műtrágya zöldségekhez, gyümölcsökhöz, virágokhoz, fákhoz és gyephez.",
     "meta": {
-      "title": "Hakofyt műtrágyák növényekhez | GardenYX",
-      "description": "Hakofyt műtrágyák zöldségekhez, gyümölcsfákhoz, virágokhoz, áfonyához, eperhez és gyephez. Ismerje meg az összetételt, előnyöket és ajánlott GardenYX termékeket.",
-      "imageAlt": "Hakofyt műtrágyák"
+      "title": "Hakofyt – organikus NPK műtrágya a kerthez | GardenYX",
+      "description": "A Hakofyt organikus NPK műtrágya zöldségekhez, gyümölcsfákhoz, virágokhoz, áfonyához, eperhez és gyephez. Ismerje meg az összetételt, előnyöket és ajánlott termékeket.",
+      "imageAlt": "Hakofyt műtrágyák – organikus NPK műtrágya"
     },
     "principle": {
       "eyebrow": "Mi a Hakofyt",
@@ -88,9 +89,49 @@
       "linkLabel": "Tovább olvasom",
       "linkHref": "https://hakofyt.sk/"
     },
+    "npk": {
+      "eyebrow": "NPK műtrágya",
+      "title": "Mi az NPK műtrágya és miért fontos?",
+      "intro": "Minden növényi műtrágyát három alapvető makroelem jellemez – nitrogén (N), foszfor (P) és kálium (K). Arányuk dönti el, milyen gyorsan nő a növény, hogyan virágzik és milyen termést hoz.",
+      "items": {
+        "n": {
+          "symbol": "N",
+          "name": "Nitrogén",
+          "description": "Felelős a dús lombozatért, a telített zöld színért és a klorofilltermelésért. A nitrogénhiány elsárgulást és lassult növekedést okoz."
+        },
+        "p": {
+          "symbol": "P",
+          "name": "Foszfor",
+          "description": "Kulcsfontosságú a gyökérrendszer fejlődéséhez, a virág- és gyümölcsképzéshez. Támogatja az energiaátvitelt a sejtekben és felgyorsítja a termés érését."
+        },
+        "k": {
+          "symbol": "K",
+          "name": "Kálium",
+          "description": "Erősíti a sejtfalakat és növeli az aszállyal, faggyal és betegségekkel szembeni ellenálló képességet. Javítja a gyümölcsök ízét, tömörségét és eltarthatóságát."
+        }
+      },
+      "closing": "A Hakofyt az NPK mellé mikroelemeket (Fe, Zn, Mn, Cu, B, Mo) és természetes növekedésserkentőket – huminsavakat és aminosavakat – is tartalmaz, amelyek a hagyományos ásványi műtrágyákban általában nem találhatók meg."
+    },
+    "organic": {
+      "eyebrow": "Organikus műtrágya",
+      "title": "Organikus vs. ásványi műtrágya: mi a különbség?",
+      "intro": "Nem minden műtrágya hat ugyanúgy. A megfelelő műtrágya kiválasztása nemcsak az aktuális termést, hanem a talaj és a növények hosszú távú egészségét is jelentősen befolyásolja.",
+      "compareTitle": "Hakofyt – mindkét világ legjobbja",
+      "compareText": "A Hakofyt az ásványi NPK műtrágya pontosságát ötvözi az organikus összetevők előnyeivel. Huminsavakat, aminosavakat és szénhidrátokat tartalmaz, amelyek javítják a talaj biológiai aktivitását és növelik a tápanyag-hasznosulást – a tisztán ásványi műtrágyákra jellemző talajsósodási kockázat nélkül.",
+      "mineral": {
+        "title": "Ásványi műtrágya",
+        "pros": ["Gyors hatás", "Pontos NPK adagolás", "Alacsony ár"],
+        "cons": ["Nincs szerves anyag", "Talajsósodás kockázata", "Nem javítja a mikrobiológiát"]
+      },
+      "organic": {
+        "title": "Organikus műtrágya",
+        "pros": ["Javítja a talajszerkezetet", "Támogatja a talajmikroorganizmusokat", "Hosszú távú hatás"],
+        "cons": ["Lassabb hatás", "Kevésbé pontos NPK arányok", "Nagyobb kijuttatási mennyiség"]
+      }
+    },
     "faq": {
       "eyebrow": "Gyakori kérdések",
-      "title": "Hakofyt: gyakori kérdések",
+      "title": "Műtrágyák: gyakori kérdések",
       "items": {
         "what": {
           "question": "Mi a Hakofyt?",
@@ -103,11 +144,23 @@
         "use": {
           "question": "Mire használhatók a Hakofyt műtrágyák?",
           "answer": "A Hakofyt műtrágyák a gyökérrendszer, a fotoszintézis, a stressztűrés és a termésminőség támogatására használhatók zöldségeknél, gyümölcsöknél, dísznövényeknél, fáknál és gyepnél."
+        },
+        "whatIsNpk": {
+          "question": "Mi az NPK műtrágya?",
+          "answer": "Az NPK műtrágya három fő tápanyagot tartalmaz: nitrogént (N) a lombnövekedéshez, foszfort (P) a gyökerekhez és virágokhoz, káliumot (K) az ellenálló képességhez és gyümölcsminőséghez. A Hakofyt mikroelemekkel és organikus serkentőkkel dúsított NPK műtrágya, amely növeli a teljes táplálkozási hatékonyságot."
+        },
+        "whatIsOrganic": {
+          "question": "Mi az organikus műtrágya?",
+          "answer": "Az organikus műtrágya szerves anyagba kötött tápanyagokat tartalmaz – huminsavakat, aminosavakat, komposztot vagy növényi kivonatokat. Javítja a talajszerkezetet és támogatja a talajmikroorganizmusokat. A Hakofyt organikus összetevőket precíz NPK aránnyal ötvöz, így gyors és hosszú távú hatást is elér."
+        },
+        "bestFertilizer": {
+          "question": "Melyik a legjobb műtrágya a kerthez?",
+          "answer": "A legjobb kerti műtrágya a növényektől és a talaj állapotától függ. Általánosságban elmondható, hogy egy organikus serkentőkkel ellátott lombtrágya NPK műtrágya – mint a Hakofyt – gyorsan hozzáférhető tápanyagokat juttat a növényekhez, miközben javítja a talaj mikrobiológiáját. Gyephez a Hakofyt Max, zöldségekhez és gyümölcshöz a Hakofyt Plus ideális."
         }
       }
     },
     "schema": {
-      "about": "Hakofyt lombtrágyák és növekedésserkentők komplex növénytápláláshoz."
+      "about": "Hakofyt organikus NPK műtrágya – lombtrágyák és növekedésserkentők komplex növénytápláláshoz."
     }
   },
   "hero": {

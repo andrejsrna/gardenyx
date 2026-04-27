@@ -122,7 +122,25 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
       question: t('faq.items.use.question'),
       answer: t('faq.items.use.answer'),
     },
+    {
+      question: t('faq.items.whatIsNpk.question'),
+      answer: t('faq.items.whatIsNpk.answer'),
+    },
+    {
+      question: t('faq.items.whatIsOrganic.question'),
+      answer: t('faq.items.whatIsOrganic.answer'),
+    },
+    {
+      question: t('faq.items.bestFertilizer.question'),
+      answer: t('faq.items.bestFertilizer.answer'),
+    },
   ];
+
+  const npkItems = [
+    { key: 'n', color: 'bg-emerald-500', light: 'bg-emerald-50', text: 'text-emerald-700' },
+    { key: 'p', color: 'bg-amber-500', light: 'bg-amber-50', text: 'text-amber-700' },
+    { key: 'k', color: 'bg-violet-500', light: 'bg-violet-50', text: 'text-violet-700' },
+  ] as const;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gardenyx.eu';
   const canonical = `${siteUrl}${localeToPath[locale] || localeToPath.sk}`;
   const pageSchema = {
@@ -216,13 +234,50 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
         </div>
       </section>
 
+      {/* NPK sekcia */}
+      <section className="py-16 sm:py-20 bg-stone-50">
+        <div className="container mx-auto px-6">
+          <div className="mx-auto max-w-4xl text-center mb-12">
+            <p className="mb-4 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-800">
+              {t('npk.eyebrow')}
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
+              {t('npk.title')}
+            </h2>
+            <p className="mt-5 text-base leading-8 text-stone-600 max-w-2xl mx-auto">
+              {t('npk.intro')}
+            </p>
+          </div>
+          <div className="mx-auto max-w-4xl grid gap-6 sm:grid-cols-3">
+            {npkItems.map((item) => (
+              <div key={item.key} className={`rounded-3xl ${item.light} border border-stone-200 p-8`}>
+                <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl ${item.color} mb-4`}>
+                  <span className="text-2xl font-black text-white">
+                    {t(`npk.items.${item.key}.symbol`)}
+                  </span>
+                </div>
+                <h3 className={`text-xl font-bold ${item.text} mb-3`}>
+                  {t(`npk.items.${item.key}.name`)}
+                </h3>
+                <p className="text-sm leading-7 text-stone-600">
+                  {t(`npk.items.${item.key}.description`)}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-7 text-stone-500 border-t border-stone-200 pt-8">
+            {t('npk.closing')}
+          </p>
+        </div>
+      </section>
+
       <ProductShowcaseSection
         eyebrow={t('featuredProducts.eyebrow')}
         title={t('featuredProducts.title')}
         description={t('featuredProducts.description')}
         detailLabel={t('featuredProducts.detail')}
         products={hakofytProducts}
-        className="bg-stone-50 py-16 sm:py-20"
+        className="bg-white py-16 sm:py-20"
       />
 
       <section className="py-16 sm:py-20">
@@ -234,6 +289,58 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
                 <p className="mt-4 text-base leading-8 text-stone-600">{benefit.description}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Organic vs mineral sekcia */}
+      <section className="py-16 sm:py-20 bg-stone-50 border-t border-stone-100">
+        <div className="container mx-auto px-6">
+          <div className="mx-auto max-w-4xl">
+            <p className="mb-4 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-green-800">
+              {t('organic.eyebrow')}
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
+              {t('organic.title')}
+            </h2>
+            <p className="mt-5 text-base leading-8 text-stone-600">
+              {t('organic.intro')}
+            </p>
+
+            <div className="mt-10 grid gap-6 sm:grid-cols-2">
+              {(['mineral', 'organic'] as const).map((type) => (
+                <div key={type} className="rounded-3xl border border-stone-200 bg-white p-8">
+                  <h3 className="text-xl font-semibold text-stone-900 mb-5">
+                    {t(`organic.${type}.title`)}
+                  </h3>
+                  <ul className="space-y-2 mb-5">
+                    {[0, 1, 2].map((i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-stone-700">
+                        <span className="mt-0.5 text-emerald-500">✓</span>
+                        {t(`organic.${type}.pros.${i}`)}
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="space-y-2">
+                    {[0, 1, 2].map((i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-stone-400">
+                        <span className="mt-0.5">✗</span>
+                        {t(`organic.${type}.cons.${i}`)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 rounded-3xl border border-emerald-200 bg-emerald-50 p-8">
+              <h3 className="text-xl font-semibold text-emerald-900 mb-3">
+                {t('organic.compareTitle')}
+              </h3>
+              <p className="text-base leading-8 text-emerald-800">
+                {t('organic.compareText')}
+              </p>
+            </div>
           </div>
         </div>
       </section>

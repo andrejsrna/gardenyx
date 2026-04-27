@@ -19,6 +19,7 @@ const STATIC_ROUTES: StaticRoute[] = [
   { sk: '/blog', en: '/en/blog', hu: '/hu/blog', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
   { sk: '/hnojiva-hakofyt', en: '/en/hakofyt-fertilizers', hu: '/hu/hakofyt-mutragyak', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
   { sk: '/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-26' },
+  { sk: '/hnojivo-na-ovocne-stromy', en: '/en/fruit-tree-fertilizer', hu: '/hu/gyumolcsfa-tragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-27' },
   { sk: '/kontakt', en: '/en/contact', hu: '/hu/kapcsolat', changeFrequency: 'monthly', priority: 0.6, lastModified: '2026-04-08' },
   { sk: '/obchodne-podmienky', en: '/en/terms-and-conditions', hu: '/hu/aszf', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
   { sk: '/ochrana-osobnych-udajov', en: '/en/privacy-policy', hu: '/hu/adatvedelem', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
