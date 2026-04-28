@@ -77,8 +77,8 @@ export default async function Home({ params }: PageProps) {
   return (
     <main>
       <HomeHero locale={locale} />
-      <HomeLatestProducts locale={locale} />
       <AppDownloadSection locale={locale} />
+      <HomeLatestProducts locale={locale} />
     </main>
   );
 }
