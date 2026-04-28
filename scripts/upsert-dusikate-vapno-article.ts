@@ -4,7 +4,8 @@ import prisma from '../app/lib/prisma';
 
 const slug = 'dusikate-vapno';
 const publishedAt = new Date('2026-04-28T12:00:00.000Z');
-const coverImage = '/articles/dusikate-vapno-hero.png';
+const imageBase = 'https://cdn.najsilnejsiaklbovavyziva.sk/gardenyx/articles/dusikate-vapno';
+const coverImage = `${imageBase}/dusikate-vapno-hero.png`;
 
 const content = String.raw`Dusíkaté vápno patrí medzi hnojivá, ktoré sa v záhrade používajú inak než bežné sezónne hnojivo. Nie je určené na rýchle prihnojenie rastlín počas rastu. Najväčší zmysel má vtedy, keď pripravujete pôdu pred výsadbou, obnovujete záhon po zbere alebo riešite pôdu v skleníku, kde sa plodiny opakujú na malom priestore.
 
@@ -18,7 +19,7 @@ Po zapracovaní do vlhkej pôdy nefunguje okamžite ako klasické hnojivo typu N
 
 Pre záhradkára z toho vyplýva jednoduché pravidlo: dusíkaté vápno používajte na pôdu bez porastu a nechajte mu čas, aby sa v pôde premenilo.
 
-![Granuly dusíkatého vápna v pôdnom profile s koreňmi](/articles/dusikate-vapno-poda.png)
+![Granuly dusíkatého vápna v pôdnom profile s koreňmi](https://cdn.najsilnejsiaklbovavyziva.sk/gardenyx/articles/dusikate-vapno/dusikate-vapno-poda.png)
 
 ## Kedy sa dusíkaté vápno oplatí použiť
 
@@ -57,7 +58,7 @@ Pri dávke sa riaďte etiketou konkrétneho výrobku. Rôzne produkty a situáci
 
 Po aplikácii nechajte pôdu odpočívať. Bežná orientačná prestávka pred výsevom alebo výsadbou býva približne 1 až 3 týždne podľa teploty, vlhkosti, dávky a pokynov výrobcu. V chladnej a suchej pôde počítajte radšej s dlhším odstupom.
 
-![Pripravený skleníkový záhon po zbere úrody](/articles/dusikate-vapno-sklenik.png)
+![Pripravený skleníkový záhon po zbere úrody](https://cdn.najsilnejsiaklbovavyziva.sk/gardenyx/articles/dusikate-vapno/dusikate-vapno-sklenik.png)
 
 ## Na čo si dať pozor
 
