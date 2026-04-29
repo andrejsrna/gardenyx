@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import SubmitButton from '@/app/admin/products/SubmitButton';
 import ImageUploadZone from '@/app/admin/ImageUploadZone';
+import RichEditor from '@/app/admin/articles/RichEditor';
 
 type ArticleTranslation = {
   slug: string;
@@ -77,15 +78,14 @@ function LangSection({ locale, t }: { locale: 'sk' | 'en' | 'hu'; t: ArticleTran
             className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
           />
         </label>
-        <label className="space-y-2">
-          <span className="text-sm font-medium text-slate-200">Obsah (Markdown)</span>
-          <textarea
+        <div className="space-y-2">
+          <span className="text-sm font-medium text-slate-200">Obsah</span>
+          <RichEditor
             name={`translations.${locale}.content`}
             defaultValue={t.content}
-            rows={16}
-            className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-mono text-sm text-white focus:border-emerald-500 focus:outline-none"
+            placeholder={locale === 'sk' ? 'Začnite písať obsah článku…' : locale === 'en' ? 'Start writing the article content…' : 'Kezdje el írni a cikk tartalmát…'}
           />
-        </label>
+        </div>
         <label className="space-y-2">
           <span className="text-sm font-medium text-slate-200">Meta title (SEO)</span>
           <input
