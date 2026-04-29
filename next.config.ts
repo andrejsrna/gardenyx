@@ -41,6 +41,15 @@ const nextConfig = {
   experimental: {
     serverActions: {},
   },
+  async redirects() {
+    return [
+      {
+        source: '/:locale(sk|en|hu)/site.webmanifest',
+        destination: '/site.webmanifest',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {
