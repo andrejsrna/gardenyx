@@ -2,8 +2,9 @@ import { event as gtagEvent } from '../components/GoogleAnalytics';
 import { fbq } from '../components/FacebookPixel';
 import { sendFacebookConversionEvent } from './facebook-conversion';
 import { getCookie } from 'cookies-next';
+import { normalizeFacebookPixelId } from './tracking-ids';
 
-const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+const PIXEL_ID = normalizeFacebookPixelId(process.env.NEXT_PUBLIC_FB_PIXEL_ID);
 const CUSTOMER_IDENTITY_STORAGE_KEY = 'customerIdentity';
 const CHECKOUT_STORAGE_KEY = 'checkoutFormData';
 const ABANDONED_CART_STORAGE_KEY = 'abandonedCart';

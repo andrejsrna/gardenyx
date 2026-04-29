@@ -1,7 +1,9 @@
+import { normalizeFacebookPixelId } from './tracking-ids';
+
 export const TRACKING_CONFIG = {
   currency: 'EUR',
   defaultLanguage: 'sk',
-  pixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID,
+  pixelId: normalizeFacebookPixelId(process.env.NEXT_PUBLIC_FB_PIXEL_ID),
   gaId: process.env.NEXT_PUBLIC_GA_ID,
   
   events: {

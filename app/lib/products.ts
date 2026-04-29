@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import remarkHtml from 'remark-html';
 
 import prisma from './prisma';
+import { normalizePublicAssetUrl } from './media';
 
 export type ProductTranslationInput = {
   name?: string;
@@ -282,7 +283,7 @@ function normalizeImages(value: unknown): ProductImage[] {
   return value
     .filter(isRecord)
     .map((image) => ({
-      src: typeof image.src === 'string' ? image.src : '',
+      src: typeof image.src === 'string' ? normalizePublicAssetUrl(image.src) : '',
       alt: typeof image.alt === 'string' ? image.alt : null,
     }))
     .filter((image) => image.src);

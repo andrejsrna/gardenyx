@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import { normalizeFacebookPixelId } from '@/app/lib/tracking-ids';
 
 const ACCESS_TOKEN = process.env.FB_CONVERSION_API_ACCESS_TOKEN;
-const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+const PIXEL_ID = normalizeFacebookPixelId(process.env.NEXT_PUBLIC_FB_PIXEL_ID);
 
 interface TestResult {
   test: string;

@@ -5,11 +5,12 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { getCookieConsentValue } from 'react-cookie-consent';
 import { hasConsentFor } from './CookieConsentBanner';
+import { normalizeFacebookPixelId } from '../lib/tracking-ids';
 
 export default function FacebookPixel() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  const pixelId = normalizeFacebookPixelId(process.env.NEXT_PUBLIC_FB_PIXEL_ID);
 
   useEffect(() => {
     const cookieConsent = getCookieConsentValue('cookieConsent');
@@ -60,7 +61,7 @@ export const fbq = (
 ) => {
   if (typeof window === 'undefined') return;
 
-  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  const pixelId = normalizeFacebookPixelId(process.env.NEXT_PUBLIC_FB_PIXEL_ID);
   if (!pixelId) {
     return;
   }

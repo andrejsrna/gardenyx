@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import prisma from '@/app/lib/prisma';
+import { normalizePublicAssetUrl } from '@/app/lib/media';
 import { getAllMarkdownProducts } from '@/app/lib/products';
 
 const PRODUCT_STATUSES = new Set<string>(Object.values(ProductStatus));
@@ -119,7 +120,7 @@ function getImagesInput(formData: FormData) {
 
   return [
     {
-      src: primaryImageSrc,
+      src: normalizePublicAssetUrl(primaryImageSrc),
       alt: primaryImageAlt,
     },
   ] as Prisma.InputJsonValue;

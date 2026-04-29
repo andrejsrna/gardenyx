@@ -1,7 +1,8 @@
 import { sendFacebookConversionEvent } from './facebook-conversion';
 import { getCookie } from 'cookies-next';
+import { normalizeFacebookPixelId } from './tracking-ids';
 
-const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+const PIXEL_ID = normalizeFacebookPixelId(process.env.NEXT_PUBLIC_FB_PIXEL_ID);
 
 export async function trackServerSideEvent(
   eventName: string,

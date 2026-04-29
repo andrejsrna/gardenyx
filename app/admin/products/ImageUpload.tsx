@@ -3,8 +3,10 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 
+import { normalizePublicAssetUrl } from '@/app/lib/media';
+
 export default function ImageUpload({ defaultSrc, defaultAlt }: { defaultSrc: string; defaultAlt: string }) {
-  const [src, setSrc] = useState(defaultSrc);
+  const [src, setSrc] = useState(normalizePublicAssetUrl(defaultSrc));
   const [alt, setAlt] = useState(defaultAlt);
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,7 +20,7 @@ export default function ImageUpload({ defaultSrc, defaultAlt }: { defaultSrc: st
       const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
       if (!res.ok) throw new Error('Upload failed');
       const data = await res.json();
-      setSrc(data.url);
+      setSrc(normalizePublicAssetUrl(data.url));
     } catch (err) {
       alert('Upload sa nepodaril: ' + (err instanceof Error ? err.message : 'Neznáma chyba'));
     } finally {
@@ -36,7 +38,7 @@ export default function ImageUpload({ defaultSrc, defaultAlt }: { defaultSrc: st
             <span className="text-sm font-medium text-slate-200">URL obrázka</span>
             <input
               value={src}
-              onChange={(e) => setSrc(e.target.value)}
+              onChange={(e) => setSrc(normalizePublicAssetUrl(e.target.value))}
               placeholder="/images/products/produkt.jpg"
               className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
             />

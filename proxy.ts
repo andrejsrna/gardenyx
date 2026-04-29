@@ -28,6 +28,7 @@ const RATE_LIMIT_EXEMPT_PATHS = [
   '.svg',
   '.woff',
   '.woff2',
+  '.webmanifest',
   '.ttf',
   '.eot'
 ];
@@ -280,7 +281,7 @@ export async function proxy(request: NextRequest) {
     let intlRewriteTarget: string | null = null;
 
     // Run intl locale routing for non-admin, non-API, non-static paths
-    const isStaticFile = /\.(?:webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|css|js|mp4|webm|pdf)$/i.test(pathname);
+    const isStaticFile = /\.(?:webmanifest|webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|css|js|mp4|webm|pdf)$/i.test(pathname);
     if (!isAdmin && !isApi && !isStaticFile) {
       const intlResponse = intlMiddleware(request);
       // If intl wants to redirect (e.g. / → /sk), return that redirect
@@ -371,7 +372,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|images|public|.*\\.(?:css|js|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|images|public|.*\\.(?:webmanifest|css|js|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$).*)',
   ],
 };
 
