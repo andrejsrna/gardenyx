@@ -3,9 +3,10 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
+import TiptapImage from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from 'tiptap-markdown';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type Props = {
   name: string;
@@ -45,17 +46,10 @@ function Divider() {
   return <div className="mx-1 h-5 w-px bg-slate-700" />;
 }
 
-function LinkIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-    </svg>
-  );
-}
-
 export default function RichEditor({ name, defaultValue = '', placeholder }: Props) {
   const hiddenRef = useRef<HTMLInputElement>(null);
+  const imgInputRef = useRef<HTMLInputElement>(null);
+  const [imgUploading, setImgUploading] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -71,6 +65,11 @@ export default function RichEditor({ name, defaultValue = '', placeholder }: Pro
       Link.configure({
         openOnClick: false,
         HTMLAttributes: { class: 'text-emerald-400 underline' },
+      }),
+      TiptapImage.configure({
+        inline: false,
+        allowBase64: false,
+        HTMLAttributes: { class: 'editor-image' },
       }),
       Placeholder.configure({
         placeholder: placeholder || 'Začnite písať obsah…',
@@ -112,6 +111,24 @@ export default function RichEditor({ name, defaultValue = '', placeholder }: Pro
       editor.chain().focus().extendMarkRange('link').unsetLink().run();
     } else {
       editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    }
+  }, [editor]);
+
+  const uploadAndInsertImage = useCallback(async (file: File) => {
+    setImgUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('folder', 'articles');
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('Upload zlyhal');
+      const data = await res.json();
+      editor?.chain().focus().setImage({ src: data.url, alt: file.name.replace(/\.[^.]+$/, '') }).run();
+    } catch (err) {
+      alert('Upload obrázka zlyhal: ' + (err instanceof Error ? err.message : 'Neznáma chyba'));
+    } finally {
+      setImgUploading(false);
+      if (imgInputRef.current) imgInputRef.current.value = '';
     }
   }, [editor]);
 
@@ -169,8 +186,12 @@ export default function RichEditor({ name, defaultValue = '', placeholder }: Pro
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         </ToolbarButton>
-        <ToolbarButton onClick={setLink} active={editor?.isActive('link')} title="Odkaz">
-          <LinkIcon />
+        <ToolbarButton
+          onClick={setLink}
+          active={editor?.isActive('link')}
+          title="Odkaz"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
         </ToolbarButton>
 
         <Divider />
@@ -217,6 +238,21 @@ export default function RichEditor({ name, defaultValue = '', placeholder }: Pro
 
         <Divider />
 
+        {/* Image upload */}
+        <ToolbarButton
+          onClick={() => imgInputRef.current?.click()}
+          disabled={imgUploading}
+          title={imgUploading ? 'Nahrávam obrázok…' : 'Vložiť obrázok'}
+        >
+          {imgUploading ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          )}
+        </ToolbarButton>
+
+        <Divider />
+
         {/* History */}
         <ToolbarButton
           onClick={() => editor?.chain().focus().undo().run()}
@@ -237,8 +273,18 @@ export default function RichEditor({ name, defaultValue = '', placeholder }: Pro
       {/* Editor area */}
       <EditorContent editor={editor} />
 
-      {/* Hidden input pre form submission */}
+      {/* Hidden inputs */}
       <input ref={hiddenRef} type="hidden" name={name} defaultValue={initialMarkdown} />
+      <input
+        ref={imgInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) uploadAndInsertImage(f);
+        }}
+      />
 
       <style>{`
         .tiptap.ProseMirror p.is-editor-empty:first-child::before {
@@ -265,6 +311,18 @@ export default function RichEditor({ name, defaultValue = '', placeholder }: Pro
         .tiptap.ProseMirror li { margin-bottom: 0.25rem; }
         .tiptap.ProseMirror hr { border: none; border-top: 1px solid #334155; margin: 1.5rem 0; }
         .tiptap.ProseMirror a { color: #34d399; text-decoration: underline; }
+        .tiptap.ProseMirror img.editor-image {
+          max-width: 100%;
+          height: auto;
+          border-radius: 0.75rem;
+          margin: 1rem 0;
+          border: 1px solid #1e293b;
+          display: block;
+        }
+        .tiptap.ProseMirror img.editor-image.ProseMirror-selectednode {
+          outline: 2px solid #10b981;
+          outline-offset: 2px;
+        }
       `}</style>
     </div>
   );
