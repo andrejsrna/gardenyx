@@ -1,10 +1,10 @@
 'use client';
 
 import { useActionState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import SubmitButton from '@/app/admin/products/SubmitButton';
+import ImageUploadZone from '@/app/admin/ImageUploadZone';
 
 type ArticleTranslation = {
   slug: string;
@@ -183,27 +183,11 @@ export default function ArticleForm({ initial, action, title }: Props) {
             <section className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
               <h2 className="text-lg font-semibold text-white">Titulný obrázok</h2>
               <div className="mt-5">
-                <label className="space-y-2">
-                  <span className="text-sm font-medium text-slate-200">URL obrázka</span>
-                  <input
-                    name="coverImage"
-                    type="url"
-                    defaultValue={initial.coverImage}
-                    placeholder="https://..."
-                    className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
-                  />
-                </label>
-                {initial.coverImage && (
-                  <div className="relative mt-3 h-48 w-full overflow-hidden rounded-2xl">
-                    <Image
-                      src={initial.coverImage}
-                      alt="Cover preview"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover"
-                    />
-                  </div>
-                )}
+                <ImageUploadZone
+                  folder="articles"
+                  hiddenFieldName="coverImage"
+                  defaultSrc={initial.coverImage}
+                />
               </div>
             </section>
 
