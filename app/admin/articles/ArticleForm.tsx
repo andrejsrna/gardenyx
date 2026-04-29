@@ -6,6 +6,8 @@ import Link from 'next/link';
 import SubmitButton from '@/app/admin/products/SubmitButton';
 import ImageUploadZone from '@/app/admin/ImageUploadZone';
 import RichEditor from '@/app/admin/articles/RichEditor';
+import DatePicker from '@/app/admin/DatePicker';
+import DeleteArticleButton from '@/app/admin/articles/DeleteArticleButton';
 
 type ArticleTranslation = {
   slug: string;
@@ -21,7 +23,7 @@ type ArticleFormData = {
   slug: string;
   status: string;
   coverImage: string;
-  publishedAt: string;
+  publishedAt: string; // YYYY-MM-DD
   translations: {
     sk: ArticleTranslation;
     en: ArticleTranslation;
@@ -33,6 +35,7 @@ type Props = {
   initial: ArticleFormData;
   action: (prevState: unknown, formData: FormData) => Promise<unknown>;
   title: string;
+  deleteId?: string;
 };
 
 const LANG_LABELS = {
@@ -108,7 +111,7 @@ function LangSection({ locale, t }: { locale: 'sk' | 'en' | 'hu'; t: ArticleTran
   );
 }
 
-export default function ArticleForm({ initial, action, title }: Props) {
+export default function ArticleForm({ initial, action, title, deleteId }: Props) {
   const [, formAction] = useActionState(action, null);
 
   return (
@@ -167,16 +170,11 @@ export default function ArticleForm({ initial, action, title }: Props) {
                     <option value="published">published</option>
                   </select>
                 </label>
-                <label className="space-y-2">
+                <div className="space-y-2">
                   <span className="text-sm font-medium text-slate-200">Dátum publikovania</span>
-                  <input
-                    name="publishedAt"
-                    type="datetime-local"
-                    defaultValue={initial.publishedAt}
-                    className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
-                  />
+                  <DatePicker name="publishedAt" defaultValue={initial.publishedAt} />
                   <p className="text-xs text-slate-400">Nechaj prázdne = aktuálny čas pri publikovaní.</p>
-                </label>
+                </div>
               </div>
             </section>
 
@@ -198,6 +196,16 @@ export default function ArticleForm({ initial, action, title }: Props) {
                 className="w-full rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
               />
             </section>
+
+            {deleteId && (
+              <section className="rounded-3xl border border-red-900/40 bg-red-950/20 p-6">
+                <h2 className="text-sm font-semibold text-red-300">Nebezpečná zóna</h2>
+                <p className="mt-1 text-xs text-red-400/80">Táto akcia je nenávratná.</p>
+                <div className="mt-4">
+                  <DeleteArticleButton id={deleteId} />
+                </div>
+              </section>
+            )}
           </div>
         </div>
       </form>

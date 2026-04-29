@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import prisma from '@/app/lib/prisma';
 import ArticleForm from '../ArticleForm';
 import { updateArticleAction } from '../actions';
-import DeleteArticleButton from '../DeleteArticleButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +33,7 @@ export default async function AdminEditArticlePage({ params }: { params: Promise
   if (!article) notFound();
 
   const publishedAt = article.publishedAt
-    ? new Date(article.publishedAt).toISOString().slice(0, 16)
+    ? new Date(article.publishedAt).toISOString().slice(0, 10)
     : '';
 
   const initial = {
@@ -47,20 +46,11 @@ export default async function AdminEditArticlePage({ params }: { params: Promise
   };
 
   return (
-    <div className="space-y-6">
-      <ArticleForm
-        initial={initial}
-        action={updateArticleAction}
-        title={`Upraviť: ${initial.translations.sk.title || article.slug}`}
-      />
-
-      <div className="rounded-3xl border border-red-900/40 bg-red-950/20 p-6">
-        <h2 className="text-sm font-semibold text-red-300">Nebezpečná zóna</h2>
-        <p className="mt-1 text-xs text-red-400">Táto akcia je nenávratná.</p>
-        <div className="mt-4">
-          <DeleteArticleButton id={article.id} />
-        </div>
-      </div>
-    </div>
+    <ArticleForm
+      initial={initial}
+      action={updateArticleAction}
+      title={`Upraviť: ${initial.translations.sk.title || article.slug}`}
+      deleteId={article.id}
+    />
   );
 }
