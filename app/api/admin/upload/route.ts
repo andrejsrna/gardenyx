@@ -22,9 +22,18 @@ function buildPublicUrl(key: string): string {
   const domain = process.env.R2_DOMAIN;
   const api = process.env.R2_API;
   const trimmed = key.startsWith('/') ? key.slice(1) : key;
-  if (domain) return `${domain.replace(/\/$/, '')}/${trimmed}`;
-  if (api) return `${api.replace(/\/$/, '')}/${trimmed}`;
-  return `${process.env.R2_ENDPOINT?.replace(/\/$/, '')}/${trimmed}`;
+  const publicBase = domain || api || process.env.R2_ENDPOINT;
+  const normalizedBase = publicBase?.replace(/\/$/, '');
+
+  if (!normalizedBase) {
+    return `/${trimmed}`;
+  }
+
+  const absoluteBase = /^https?:\/\//i.test(normalizedBase)
+    ? normalizedBase
+    : `https://${normalizedBase.replace(/^\/+/, '')}`;
+
+  return `${absoluteBase}/${trimmed}`;
 }
 
 function checkAdminAuth(request: NextRequest): boolean {
