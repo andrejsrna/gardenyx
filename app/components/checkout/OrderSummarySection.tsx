@@ -9,6 +9,7 @@ import { PRODUCT_VAT_PERCENT, PRODUCT_VAT_RATE, SHIPPING_VAT_PERCENT, SHIPPING_V
 import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
 import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
 import { useCart } from '../../context/CartContext';
+import CouponSection from '../CouponSection';
 
 interface CartItem {
   id: number;
@@ -125,6 +126,11 @@ export default function OrderSummarySection({
             </button>
           </div>
         ))}
+      </div>
+
+      {/* Coupon section */}
+      <div className="mb-4">
+        <CouponSection />
       </div>
 
       <div className="border-t pt-4 space-y-2">

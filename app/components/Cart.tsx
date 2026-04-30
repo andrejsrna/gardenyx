@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from '../../i18n/navigation';
+import CouponSection from './CouponSection';
 
 interface CartProps {
     onCloseAction: () => void;
@@ -178,6 +179,11 @@ export default function Cart({onCloseAction}: CartProps) {
                 </div>
             </div>
 
+            {/* Coupon section - inside scrollable area */}
+            <div className="px-4 pb-4">
+                <CouponSection />
+            </div>
+
             {/* Footer with summary and checkout button - always visible */}
             <div className="border-t border-gray-200 p-4 bg-white rounded-b-lg flex-shrink-0">
                 <div className="space-y-2 mb-4">
@@ -226,9 +232,6 @@ export default function Cart({onCloseAction}: CartProps) {
                     {t('summary.proceedToCheckout')}
                 </Link>
                 
-                <p className="text-xs text-gray-500 text-center mt-2">
-                    {t('summary.couponHint')}
-                </p>
             </div>
         </div>
     );
