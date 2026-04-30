@@ -7,9 +7,35 @@
  *   - Bofix (simple): 0.1 kg
  *   - Product-level weight for variable products: null (weight lives on variants)
  */
+import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
-const prisma = new PrismaClient();
+// Load local environment variables when running the script manually.
+dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
+
+const buildConnectionString = () => {
+  const base = process.env.POSTGRES_URL_PRISMA || process.env.POSTGRES_URL;
+  if (!base) {
+    throw new Error('POSTGRES_URL is required for Prisma');
+  }
+
+  const schema = process.env.PRISMA_DB_SCHEMA || 'nkv_admin';
+  const hasSchemaParam = base.includes('schema=');
+  if (hasSchemaParam || process.env.POSTGRES_URL_PRISMA) {
+    return { connectionString: base, schema };
+  }
+
+  const separator = base.includes('?') ? '&' : '?';
+  return { connectionString: `${base}${separator}schema=${schema}`, schema };
+};
+
+const { connectionString, schema } = buildConnectionString();
+const pool = new Pool({ connectionString, options: `-c search_path=${schema}` });
+const adapter = new PrismaPg(pool, { schema });
+const prisma = new PrismaClient({ adapter });
 
 const PRODUCT_WEIGHTS = {
   'mospilan-20-sp': 0.6,
@@ -81,10 +107,12 @@ async function main() {
 
   console.log(`\nDone: ${updatedProducts} products, ${totalVariantUpdates} variants updated`);
   await prisma.$disconnect();
+  await pool.end();
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error(err);
-  prisma.$disconnect();
+  await prisma.$disconnect();
+  await pool.end();
   process.exitCode = 1;
 });
