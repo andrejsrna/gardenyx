@@ -1,5 +1,4 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
-import { withSentryConfig } from '@sentry/nextjs';
 import type { Configuration } from 'webpack';
 import createNextIntlPlugin from 'next-intl/plugin';
 
@@ -110,8 +109,4 @@ const nextConfig = {
   },
 }
 
-const sentryWebpackPluginOptions = {
-  silent: true,
-};
-
-export default withNextIntl(withBundleAnalyzer(withSentryConfig(nextConfig, sentryWebpackPluginOptions)));
+export default withNextIntl(withBundleAnalyzer(nextConfig));

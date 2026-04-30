@@ -1,6 +1,5 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
 import { Link } from '../../../i18n/navigation';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -87,11 +86,7 @@ export default function CheckoutClient() {
     if (items.length > 0) {
       tracking.initiateCheckout(items, totalPrice);
 
-      Sentry.setContext('checkout', {
-        items_count: items.length,
-        total_price: totalPrice,
-        currency: 'EUR',
-      });
+      // Payment context removed (Sentry)
     }
   }, [items, totalPrice]);
 
@@ -130,7 +125,7 @@ export default function CheckoutClient() {
             setSameAsShipping(true);
           }
         } catch (error) {
-          Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
+          console.error(error instanceof Error ? error : new Error(String(error)));
           localStorage.removeItem('checkoutFormData');
         }
       }
@@ -488,7 +483,7 @@ export default function CheckoutClient() {
         window.location.href = `/objednavka/uspesna/${result.order.id}`;
       }, 100);
     } catch (error: unknown) {
-      Sentry.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error(error instanceof Error ? error : new Error(String(error)));
 
       setIsProcessingOrder(false); // Reset processing state on error
 
@@ -705,13 +700,9 @@ export default function CheckoutClient() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
               
-              Sentry.addBreadcrumb({
-                category: 'payment',
-                message: 'Payment success callback initiated',
-                level: 'info',
-              });
-
-              // Create account if requested (Stripe flow bypasses the COD account creation)
+              // Sentry breadcrumb removed
+              
+              // Create account if requested
               if (formData.create_account && customerData === null && formData.account_password) {
                 fetch('/api/auth/register', {
                   method: 'POST',
@@ -734,20 +725,20 @@ export default function CheckoutClient() {
                   localStorage.removeItem('checkoutFormData');
                   setShowStripePayment(false);
                 } catch (cleanupError) {
-                  Sentry.captureException(cleanupError, {
+                  console.error(cleanupError, {
                     extra: { phase: 'payment_success_cleanup' }
                   });
                 }
               }, 50);
             } catch (successError) {
-              Sentry.captureException(successError, {
+              console.error(successError, {
                 extra: { phase: 'payment_success_callback' }
               });
             }
           }}
           onError={(error) => {
             try {
-              Sentry.captureMessage('Stripe payment error', {
+              console.error('Stripe payment error', {
                 level: 'error',
                 extra: { error, timestamp: new Date().toISOString() }
               });

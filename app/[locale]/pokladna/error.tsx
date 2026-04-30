@@ -1,6 +1,5 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
@@ -21,16 +20,6 @@ export default function CheckoutRouteError({
       digest: error.digest,
       pathname,
       stack: error.stack,
-    });
-
-    Sentry.captureException(error, {
-      tags: {
-        area: 'checkout-route',
-      },
-      extra: {
-        digest: error.digest,
-        pathname,
-      },
     });
   }, [error, pathname]);
 

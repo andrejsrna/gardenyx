@@ -28,7 +28,7 @@ type OrderItemWithProduct = {
  * weight is set on the product or variant.
  */
 export async function calculateTotalWeight(items: OrderItemWithProduct[]): Promise<number> {
-  const productIds = [...new Set(items.map((item) => item.productId))];
+  const productIds = Array.from(new Set(items.map((item) => item.productId)));
   if (productIds.length === 0) return 0;
 
   const products = await prisma.product.findMany({

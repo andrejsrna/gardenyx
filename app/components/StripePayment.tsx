@@ -7,7 +7,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, ExpressCheckoutElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import type { StripeExpressCheckoutElementConfirmEvent } from '@stripe/stripe-js';
 import { toast } from 'sonner';
-import * as Sentry from '@sentry/nextjs';
 import { usePaymentStore } from '../stores/paymentStore';
 
 import { tracking } from '../lib/tracking';
@@ -24,12 +23,7 @@ const logPaymentEvent = (type: string, data: Record<string, unknown>) => {
   }
   
   if (['error', 'warning'].some(level => type.toLowerCase().includes(level))) {
-    Sentry.addBreadcrumb({
-      category: 'payment',
-      message: type,
-      data: sanitizedData,
-      level: type.toLowerCase().includes('error') ? 'error' : 'warning',
-    });
+    console.warn(type, sanitizedData);
   }
 };
 
@@ -124,7 +118,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
     
     return () => {
       isProcessingRef.current = false;
-      Sentry.setContext('payment', null);
+      // Sentry context removed
       if (formAbortControllerRef.current) {
         formAbortControllerRef.current.abort();
       }
@@ -204,12 +198,8 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
     setPaymentProgress(t('progress.processingPayment'));
     isProcessingRef.current = true;
 
-    Sentry.setContext('payment', {
-      phase: 'confirmation',
-      payment_intent_id: clientSecret.split('_secret_')[0],
-      timestamp: new Date().toISOString()
-    });
-
+    // Payment context removed (Sentry)
+    
     try {
 
       const paymentMethodData: Record<string, unknown> = {};
@@ -245,7 +235,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
             error_type: confirmError.type,
             error_code: confirmError.code
           });
-          Sentry.captureException(new Error(`Payment error: ${confirmError.type} - ${confirmError.code}`), {
+          console.error(new Error(`Payment error: ${confirmError.type} - ${confirmError.code}`), {
             extra: { confirmError, payment_intent_id: clientSecret.split('_secret_')[0] }
           });
           setError(errorMessage);
@@ -261,7 +251,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
             payment_intent_id: clientSecret.split('_secret_')[0],
             error_type: confirmError.type
           });
-          Sentry.captureException(new Error(`Unexpected payment error: ${confirmError.type}`), {
+          console.error(new Error(`Unexpected payment error: ${confirmError.type}`), {
             extra: { confirmError, payment_intent_id: clientSecret.split('_secret_')[0] }
           });
           setError(errorMessage);
@@ -303,7 +293,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
                 orderId: result.orderId,
                 payment_intent_id: clientSecret.split('_secret_')[0]
               });
-              Sentry.captureException(trackingError, {
+              console.error(trackingError, {
                 extra: { orderId: result.orderId, payment_intent_id: clientSecret.split('_secret_')[0] }
               });
             }
@@ -391,7 +381,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
                   orderId,
                   payment_intent_id: paymentIntentId
                 });
-                Sentry.captureException(trackingError, {
+                console.error(trackingError, {
                   extra: { orderId, payment_intent_id: paymentIntentId, phase: 'polling' }
                 });
               }
@@ -427,7 +417,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
         payment_intent_id: paymentIntentId,
         total_attempts: attempts
       });
-      Sentry.captureMessage('Payment polling exhausted', {
+      console.error('Payment polling exhausted', {
         level: 'warning',
         extra: { payment_intent_id: paymentIntentId, attempts }
       });
@@ -441,7 +431,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
         error: unexpectedError instanceof Error ? unexpectedError.message : String(unexpectedError),
         payment_intent_id: clientSecret.split('_secret_')[0]
       });
-      Sentry.captureException(unexpectedError, {
+      console.error(unexpectedError, {
         extra: { payment_intent_id: clientSecret.split('_secret_')[0], phase: 'payment_processing' }
       });
       setError(errorMessage);
@@ -451,7 +441,7 @@ function StripePaymentForm({ clientSecret, billingDetails, onSuccess, onError }:
       setIsProcessing(false);
       isProcessingRef.current = false;
       
-      Sentry.setContext('payment', null);
+      // Sentry context removed
     }
   }, [stripe, elements, clientSecret, onSuccess, onError, billingDetails, t, locale]);
 
@@ -722,7 +712,7 @@ export default function StripePayment({
           error: err instanceof Error ? err.message : String(err)
         });
         
-        Sentry.captureException(err, {
+        console.error(err, {
           extra: { 
             phase: 'payment_intent_creation',
             items_count: stableItems?.length,
