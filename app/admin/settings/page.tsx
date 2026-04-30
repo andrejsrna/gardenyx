@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import prisma from '../../lib/prisma';
 import InvoiceExportForm from './InvoiceExportForm';
 
@@ -18,6 +19,7 @@ export default async function SettingsPage() {
   const dbTime = dbCheck?.[0]?.now;
 
   const subscribersCount = await prisma.newsletterSubscriber.count();
+  const activeCoupons = await prisma.$queryRawUnsafe<Array<{ code: string; type: string; percent: number | null; amount: string | null; usedCount: number; endsAt: Date | null }>>('SELECT code, type, percent, amount, "usedCount", "endsAt" FROM "Coupon" WHERE active = true ORDER BY "createdAt" DESC');
   return (
     <div className="space-y-8">
       <div className="rounded-3xl border border-slate-800 bg-gradient-to-r from-emerald-500/15 via-slate-900 to-slate-950 p-8 shadow-2xl shadow-emerald-900/20">
@@ -46,6 +48,29 @@ export default async function SettingsPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">Aktívne kupóny</h2>
+          <Link href="/admin/coupons" className="text-sm text-emerald-400 hover:underline">Spravovať →</Link>
+        </div>
+        {activeCoupons.length === 0 ? (
+          <p className="text-sm text-slate-400">Žiadne aktívne kupóny.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {activeCoupons.map(c => (
+              <div key={c.code} className="rounded-xl border border-slate-700 bg-slate-950/60 px-4 py-2">
+                <span className="font-mono font-bold text-emerald-300">{c.code}</span>
+                <span className="ml-2 text-sm text-slate-300">
+                  {c.type === 'percent' ? `${c.percent}%` : `${Number(c.amount).toFixed(2)} €`}
+                </span>
+                <span className="ml-2 text-xs text-slate-500">({c.usedCount}×)</span>
+                {c.endsAt && <span className="ml-2 text-xs text-amber-400">do {new Date(c.endsAt).toLocaleDateString('sk-SK')}</span>}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10 space-y-4">
