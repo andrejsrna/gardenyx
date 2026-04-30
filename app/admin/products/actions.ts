@@ -85,6 +85,7 @@ function getVariantsInput(formData: FormData): Prisma.InputJsonValue | typeof Pr
       sku: v.sku ? String(v.sku) : null,
       price: Number(v.price) || 0,
       stockStatus: String(v.stockStatus || 'instock'),
+      weight: typeof v.weight === 'number' && Number.isFinite(v.weight) ? v.weight : null,
     })) as Prisma.InputJsonValue;
   } catch {
     return Prisma.JsonNull;

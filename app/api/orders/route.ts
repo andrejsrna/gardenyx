@@ -14,6 +14,7 @@ import { taxFromGross, taxFromNet } from '@/app/lib/pricing/math';
 import { getIronSession } from 'iron-session';
 import { sessionConfig } from '@/app/lib/config/session';
 import type { SessionData } from '@/app/lib/config/session';
+import { calculateTotalWeight } from '@/app/lib/packeta';
 
 interface PacketaResponse {
   response: {
@@ -153,10 +154,6 @@ function parseAddress(addressLine: string): { street: string; houseNumber: strin
   return { street: addressLine.trim(), houseNumber: '' };
 }
 
-function calculateTotalWeight(lineItems: Array<{ quantity: number }>): number {
-  return lineItems.reduce((total, item) => total + (item.quantity * 0.5), 0);
-}
-
 /** Reserved for future Packeta integration from order creation flow */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- keep for potential use
 async function createPacketaPacket(orderData: OrderData, order: OrderWithRelations) {
@@ -173,7 +170,11 @@ async function createPacketaPacket(orderData: OrderData, order: OrderWithRelatio
     phone: orderData.billing.phone.replace(/[^\d]/g, ''),
     value: order.total.toString(),
     currency: order.currency,
-    weight: calculateTotalWeight(orderData.line_items).toString(),
+    weight: (await calculateTotalWeight(orderData.line_items.map(li => ({
+      productId: BigInt(li.product_id),
+      variationId: li.variation_id ? BigInt(li.variation_id) : null,
+      quantity: li.quantity,
+    })))).toString(),
     eshop_id: PACKETA_ESHOP_ID,
     cod: orderData.payment_method === 'cod' ? order.total.toString() : undefined
   };

@@ -8,6 +8,7 @@ export interface VariantRow {
   sku: string;
   price: string;
   stockStatus: string;
+  weight: string;
 }
 
 export default function VariantsEditor({ initial }: { initial: VariantRow[] }) {
@@ -20,7 +21,7 @@ export default function VariantsEditor({ initial }: { initial: VariantRow[] }) {
   const add = () =>
     setRows((prev) => [
       ...prev,
-      { id: Date.now(), name: '', sku: '', price: '', stockStatus: 'instock' },
+      { id: Date.now(), name: '', sku: '', price: '', stockStatus: 'instock', weight: '' },
     ]);
 
   const remove = (id: number) => setRows((prev) => prev.filter((r) => r.id !== id));
@@ -48,7 +49,7 @@ export default function VariantsEditor({ initial }: { initial: VariantRow[] }) {
               Odstrániť
             </button>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <label className="space-y-1">
               <span className="text-xs text-slate-400">Názov (napr. 1 L)</span>
               <input
@@ -75,6 +76,17 @@ export default function VariantsEditor({ initial }: { initial: VariantRow[] }) {
                 value={row.price}
                 onChange={(e) => update(row.id, 'price', e.target.value)}
                 placeholder="4.80"
+                className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white focus:border-emerald-500 focus:outline-none"
+              />
+            </label>
+            <label className="space-y-1">
+              <span className="text-xs text-slate-400">Hmotnosť (kg)</span>
+              <input
+                type="number"
+                step="0.001"
+                value={row.weight}
+                onChange={(e) => update(row.id, 'weight', e.target.value)}
+                placeholder="0.5"
                 className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white focus:border-emerald-500 focus:outline-none"
               />
             </label>

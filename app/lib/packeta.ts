@@ -1,9 +1,11 @@
 import { Builder, Parser } from 'xml2js';
+import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { PACKETA_HOME_CARRIER_IDS } from '@/app/lib/checkout/constants';
 
 const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
 const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
+const DEFAULT_WEIGHT_KG = 0.5;
 
 function parseAddress(addressLine: string): { street: string; houseNumber: string } {
   if (!addressLine) return { street: '', houseNumber: '' };
@@ -14,8 +16,58 @@ function parseAddress(addressLine: string): { street: string; houseNumber: strin
   return { street: addressLine.trim(), houseNumber: '' };
 }
 
-function calculateTotalWeight(items: Array<{ quantity: number }>): number {
-  return items.reduce((total, item) => total + (Number(item.quantity || 0) * 0.5), 0);
+type OrderItemWithProduct = {
+  productId: bigint;
+  variationId: bigint | null;
+  quantity: number;
+};
+
+/**
+ * Calculate total weight for order items by looking up actual product/variant
+ * weights from the database. Falls back to DEFAULT_WEIGHT_KG per item if no
+ * weight is set on the product or variant.
+ */
+export async function calculateTotalWeight(items: OrderItemWithProduct[]): Promise<number> {
+  const productIds = [...new Set(items.map((item) => item.productId))];
+  if (productIds.length === 0) return 0;
+
+  const products = await prisma.product.findMany({
+    where: { wcId: { in: productIds } },
+    select: { wcId: true, weight: true, variants: true },
+  });
+
+  const productMap = new Map<string, { weight: Prisma.Decimal | null; variants: unknown }>();
+  for (const p of products) {
+    productMap.set(p.wcId.toString(), p);
+  }
+
+  let total = 0;
+  for (const item of items) {
+    const product = productMap.get(item.productId.toString());
+    let itemWeight: number | null = null;
+
+    if (product && item.variationId) {
+      // Try to find weight in the specific variant
+      const variants = Array.isArray(product.variants) ? product.variants : [];
+      const variant = variants.find(
+        (v: Record<string, unknown>) => typeof v === 'object' && v !== null && Number(v.id) === Number(item.variationId),
+      ) as Record<string, unknown> | undefined;
+      if (variant && typeof variant.weight === 'number' && Number.isFinite(variant.weight)) {
+        itemWeight = variant.weight;
+      }
+    }
+
+    if (itemWeight === null && product?.weight) {
+      // Use product-level weight
+      const w = product.weight;
+      itemWeight = typeof w === 'object' && 'toNumber' in w ? w.toNumber() : Number(w);
+      if (!Number.isFinite(itemWeight)) itemWeight = null;
+    }
+
+    total += (itemWeight ?? DEFAULT_WEIGHT_KG) * item.quantity;
+  }
+
+  return total;
 }
 
 export type PacketaResult = { id: string; barcode: string; barcodeText: string };
@@ -97,7 +149,7 @@ export async function createPacketaPacketForOrder(orderId: string, opts?: { forc
     phone: String(billing.phone || '').replace(/[^\d]/g, ''),
     value: String(order.total),
     currency: String(order.currency || 'EUR'),
-    weight: String(calculateTotalWeight(order.items)),
+    weight: String(await calculateTotalWeight(order.items)),
     eshop_id: PACKETA_ESHOP_ID,
     cod: order.paymentMethod === 'cod' ? String(order.total) : undefined,
   };

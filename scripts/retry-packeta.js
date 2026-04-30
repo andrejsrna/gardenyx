@@ -68,8 +68,48 @@ function parseAddress(addressLine) {
   return { street: String(addressLine).trim(), houseNumber: '' };
 }
 
-function calculateTotalWeight(lineItems) {
-  return (lineItems || []).reduce((total, item) => total + (Number(item.quantity) || 0) * 0.5, 0);
+const DEFAULT_WEIGHT_KG = 0.5;
+
+async function calculateTotalWeight(prisma, lineItems) {
+  const productIds = [...new Set(lineItems.map(item => BigInt(item.product_id || item.productId || 0)))];
+  if (productIds.length === 0) return 0;
+
+  const products = await prisma.product.findMany({
+    where: { wcId: { in: productIds } },
+    select: { wcId: true, weight: true, variants: true },
+  });
+
+  const productMap = new Map();
+  for (const p of products) {
+    productMap.set(p.wcId.toString(), p);
+  }
+
+  let total = 0;
+  for (const item of lineItems) {
+    const productId = String(item.product_id || item.productId);
+    const variationId = item.variation_id || item.variationId || null;
+    const quantity = Number(item.quantity) || 0;
+    const product = productMap.get(productId);
+    let itemWeight = null;
+
+    if (product && variationId) {
+      const variants = Array.isArray(product.variants) ? product.variants : [];
+      const variant = variants.find(v => typeof v === 'object' && v !== null && Number(v.id) === Number(variationId));
+      if (variant && typeof variant.weight === 'number' && Number.isFinite(variant.weight)) {
+        itemWeight = variant.weight;
+      }
+    }
+
+    if (itemWeight === null && product?.weight) {
+      const w = product.weight;
+      itemWeight = typeof w === 'object' && typeof w.toNumber === 'function' ? w.toNumber() : Number(w);
+      if (!Number.isFinite(itemWeight)) itemWeight = null;
+    }
+
+    total += (itemWeight ?? DEFAULT_WEIGHT_KG) * quantity;
+  }
+
+  return total;
 }
 
 async function retryPacketa(prisma, orderId) {
@@ -108,6 +148,7 @@ async function retryPacketa(prisma, orderId) {
 
   const lineItems = order.items.map(item => ({
     product_id: item.productId,
+    variation_id: item.variationId,
     quantity: item.quantity,
   }));
 
@@ -119,7 +160,7 @@ async function retryPacketa(prisma, orderId) {
     phone: String(billing.phone || '').replace(/[^\d]/g, ''),
     value: order.total.toString(),
     currency: order.currency,
-    weight: String(calculateTotalWeight(lineItems)),
+    weight: String(await calculateTotalWeight(prisma, lineItems)),
     eshop_id: PACKETA_ESHOP_ID,
     cod: order.paymentMethod === 'cod' ? order.total.toString() : undefined,
   };

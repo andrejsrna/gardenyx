@@ -28,7 +28,7 @@ type ProductTranslations = Partial<Record<'en' | 'hu', ProductTranslation>>;
 
 export type ProductCategory = { id: number; name: string; slug: string };
 export type ProductImage = { src: string; alt?: string | null };
-export type ProductVariant = { id: number; name: string; sku?: string | null; price: number; stockStatus?: string | null };
+export type ProductVariant = { id: number; name: string; sku?: string | null; price: number; stockStatus?: string | null; weight?: number | null };
 export type ProductDocument = { id?: number; label: string; url: string; lang: string };
 
 export type StoredProductRecord = {
@@ -254,6 +254,7 @@ function normalizeVariants(value: unknown): ProductVariant[] | undefined {
       sku: typeof v.sku === 'string' ? v.sku : null,
       price: normalizeNumber(v.price) || 0,
       stockStatus: typeof v.stockStatus === 'string' ? v.stockStatus : null,
+      weight: normalizeNumber(v.weight),
     }))
     .filter((v) => v.name);
 

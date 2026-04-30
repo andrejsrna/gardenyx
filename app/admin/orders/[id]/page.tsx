@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
 import { sendOrderConfirmationEmail, sendOrderNotificationToAdmin } from '@/app/lib/email/order-confirmation';
+import { calculateTotalWeight } from '@/app/lib/packeta';
 import { Builder, Parser } from 'xml2js';
 
 type PageProps = {
@@ -67,10 +68,6 @@ function parseAddress(addressLine: string): { street: string; houseNumber: strin
     return { street: (match[1] || '').trim(), houseNumber: match[2].trim() };
   }
   return { street: addressLine.trim(), houseNumber: '' };
-}
-
-function calculateTotalWeight(items: Array<{ quantity: number }>): number {
-  return items.reduce((total, item) => total + (Number(item.quantity || 0) * 0.5), 0);
 }
 
 export default async function OrderDetailPage({ params }: PageProps) {
@@ -139,7 +136,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
       phone: String(billing.phone || '').replace(/[^\d]/g, ''),
       value: String(fresh.total),
       currency: String(fresh.currency || 'EUR'),
-      weight: String(calculateTotalWeight(fresh.items)),
+      weight: String(await calculateTotalWeight(fresh.items)),
       eshop_id: PACKETA_ESHOP_ID,
       cod: fresh.paymentMethod === 'cod' ? String(fresh.total) : undefined,
     };

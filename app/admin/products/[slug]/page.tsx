@@ -56,6 +56,7 @@ export default async function AdminProductDetailPage({
     sku: typeof v.sku === 'string' ? v.sku : '',
     price: typeof v.price === 'number' ? String(v.price) : typeof v.price === 'string' ? v.price : '',
     stockStatus: typeof v.stockStatus === 'string' ? v.stockStatus : 'instock',
+    weight: typeof v.weight === 'number' ? String(v.weight) : typeof v.weight === 'string' ? v.weight : '',
   }));
 
   // Documents
