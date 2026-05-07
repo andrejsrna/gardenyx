@@ -4,8 +4,8 @@ import { ChangeEvent } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import type { FormData, PacketaPoint } from '../../lib/checkout/types';
-import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
-import { Package, Truck } from 'lucide-react';
+import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME, SHIPPING_COST_PERSONAL_PICKUP } from '../../lib/checkout/constants';
+import { Package, Truck, MapPin } from 'lucide-react';
 
 interface ShippingMethodsSectionProps {
   formData: FormData;
@@ -28,13 +28,14 @@ export default function ShippingMethodsSection({
   const t = useTranslations('checkout.shipping');
   const locale = useLocale();
 
-  const shippingMethods = [
+  const allShippingMethods = [
     {
       id: 'packeta_pickup',
       title: t('methods.packetaPickup.title'),
       price: SHIPPING_COST_PACKETA_PICKUP,
       description: t('methods.packetaPickup.description'),
       icon: <Package className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
+      countries: null,
     },
     {
       id: 'packeta_home',
@@ -42,8 +43,21 @@ export default function ShippingMethodsSection({
       price: SHIPPING_COST_PACKETA_HOME,
       description: t('methods.packetaHome.description'),
       icon: <Truck className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
+      countries: null,
+    },
+    {
+      id: 'personal_pickup',
+      title: t('methods.personalPickup.title'),
+      price: SHIPPING_COST_PERSONAL_PICKUP,
+      description: t('methods.personalPickup.description'),
+      icon: <MapPin className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
+      countries: ['SK'],
     },
   ];
+
+  const shippingMethods = allShippingMethods.filter(
+    (m) => m.countries === null || m.countries.includes(formData.billing.country)
+  );
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">

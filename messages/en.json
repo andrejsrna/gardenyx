@@ -416,7 +416,8 @@
     },
     "shippingMethods": {
       "packetaPickup": "Packeta - Pickup point",
-      "packetaHome": "Packeta - Home delivery"
+      "packetaHome": "Packeta - Home delivery",
+      "personalPickup": "Personal pickup"
     },
     "paymentSuccess": {
       "title": "Payment was successful",
@@ -457,6 +458,10 @@
         "packetaHome": {
           "title": "Packeta - Home delivery",
           "description": "Courier delivery directly to your address"
+        },
+        "personalPickup": {
+          "title": "Personal pickup",
+          "description": "Cities: Galanta, Nitra, Trnava — by prior phone arrangement"
         }
       }
     },

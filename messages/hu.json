@@ -416,7 +416,8 @@
     },
     "shippingMethods": {
       "packetaPickup": "Packeta - Átvételi pont",
-      "packetaHome": "Packeta - Házhozszállítás"
+      "packetaHome": "Packeta - Házhozszállítás",
+      "personalPickup": "Személyes átvétel"
     },
     "paymentSuccess": {
       "title": "A fizetés sikeres volt",
@@ -457,6 +458,10 @@
         "packetaHome": {
           "title": "Packeta - Házhozszállítás",
           "description": "Futárszolgálatos kézbesítés közvetlenül a címre"
+        },
+        "personalPickup": {
+          "title": "Személyes átvétel",
+          "description": "Városok: Galanta, Nitra, Trnava — előzetes telefonos egyeztetés alapján"
         }
       }
     },

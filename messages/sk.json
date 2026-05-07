@@ -416,7 +416,8 @@
     },
     "shippingMethods": {
       "packetaPickup": "Packeta - Výdajné miesto",
-      "packetaHome": "Packeta - Doručenie domov"
+      "packetaHome": "Packeta - Doručenie domov",
+      "personalPickup": "Osobný odber"
     },
     "paymentSuccess": {
       "title": "Platba bola úspešná",
@@ -457,6 +458,10 @@
         "packetaHome": {
           "title": "Packeta - Doručenie domov",
           "description": "Doručenie kuriérom priamo na adresu"
+        },
+        "personalPickup": {
+          "title": "Osobný odber",
+          "description": "Mestá: Galanta, Nitra, Trnava — po telefonickom dohovore"
         }
       }
     },

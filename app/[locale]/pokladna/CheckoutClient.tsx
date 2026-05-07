@@ -190,8 +190,9 @@ export default function CheckoutClient() {
   // Shipping cost calculation
   const getShippingCost = useCallback(() => {
     switch (formData.shipping_method) {
-      case 'packeta_pickup': return 2.9; // základ bez DPH
-      case 'packeta_home': return 3.8;   // základ bez DPH
+      case 'packeta_pickup': return 2.9;
+      case 'packeta_home': return 3.8;
+      case 'personal_pickup': return 0;
       default: return 0;
     }
   }, [formData.shipping_method]);
@@ -421,13 +422,17 @@ export default function CheckoutClient() {
           sku: item.sku,
           image: item.image
         })),
-        shipping_lines: shippingCostBase > 0 ? [{
+        shipping_lines: [{
           method_id: formData.shipping_method,
-          method_title: formData.shipping_method === 'packeta_pickup' ? t('shippingMethods.packetaPickup') : t('shippingMethods.packetaHome'),
+          method_title: formData.shipping_method === 'packeta_pickup'
+            ? t('shippingMethods.packetaPickup')
+            : formData.shipping_method === 'packeta_home'
+              ? t('shippingMethods.packetaHome')
+              : t('shippingMethods.personalPickup'),
           total: shippingCostBase.toFixed(2),
           total_tax: taxFromNet(shippingCostBase, SHIPPING_VAT_RATE).toFixed(2),
           taxes: []
-        }] : [],
+        }],
         idempotency_key: attemptKey,
       };
 
