@@ -252,6 +252,10 @@ export default function Footer() {
         <div className="border-t border-gray-200 pt-8 text-center text-sm text-gray-600">
           <p>
             Copyright © {new Date().getFullYear()} GardenYX. {t('rights')}
+            {' · '}
+            <a href="https://synthbit.sk/development/tvorba-eshopu" target="_blank" rel="noopener noreferrer" className="transition hover:text-green-700">
+              {t('credits')}
+            </a>
           </p>
         </div>
       </div>
