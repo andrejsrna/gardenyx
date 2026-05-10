@@ -3,6 +3,7 @@
     "shop": "Shop",
     "hakofytFertilizers": "Hakofyt Fertilizers",
     "allFertilizers": "All Fertilizers",
+    "organicFertilizer": "Organic Fertilizer",
     "lawnFertilizer": "Lawn Fertilizer",
     "fruitTreeFertilizer": "Fruit Tree Fertilizer",
     "news": "News",
@@ -692,6 +693,7 @@
       "description": "Quick links to the main GardenYX pages about fertilizers, plant nutrition and seasonal garden care.",
       "links": {
         "fertilizer": "Fertilizer",
+        "organic": "Organic fertilizer",
         "hakofyt": "Hakofyt fertilizers",
         "lawn": "Lawn fertilizer",
         "fruitTrees": "Fruit tree fertilizer",

@@ -3,6 +3,7 @@
     "shop": "Bolt",
     "hakofytFertilizers": "Hakofyt műtrágyák",
     "allFertilizers": "Minden műtrágya",
+    "organicFertilizer": "Szerves műtrágya",
     "lawnFertilizer": "Gyeptrágya",
     "fruitTreeFertilizer": "Gyümölcsfa trágya",
     "news": "Hírek",
@@ -692,6 +693,7 @@
       "description": "Gyors linkek a GardenYX fő oldalaira műtrágyákról, növénytáplálásról és szezonális kertgondozásról.",
       "links": {
         "fertilizer": "Műtrágya",
+        "organic": "Szerves műtrágya",
         "hakofyt": "Hakofyt műtrágyák",
         "lawn": "Gyeptrágya",
         "fruitTrees": "Gyümölcsfa trágya",

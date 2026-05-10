@@ -94,6 +94,7 @@ export default function Header({ locale }: { locale: string }) {
       href: '/hnojiva-hakofyt',
       children: [
         { title: t('allFertilizers'), href: '/hnojivo' },
+        { title: t('organicFertilizer'), href: '/organicke-hnojivo' },
         { title: t('lawnFertilizer'), href: '/hnojivo-na-travnik' },
         { title: t('fruitTreeFertilizer'), href: '/hnojivo-na-ovocne-stromy' },
       ],

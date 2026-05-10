@@ -3,6 +3,7 @@
     "shop": "Obchod",
     "hakofytFertilizers": "Hnojivá Hakofyt",
     "allFertilizers": "Všetky hnojivá",
+    "organicFertilizer": "Organické hnojivo",
     "lawnFertilizer": "Hnojivo na trávnik",
     "fruitTreeFertilizer": "Hnojivo na ovocné stromy",
     "news": "Aktuality",
@@ -692,6 +693,7 @@
       "description": "Rýchle odkazy na hlavné GardenYX stránky o hnojivách, výžive rastlín a sezónnej starostlivosti.",
       "links": {
         "fertilizer": "Hnojivo",
+        "organic": "Organické hnojivo",
         "hakofyt": "Hnojivá Hakofyt",
         "lawn": "Hnojivo na trávnik",
         "fruitTrees": "Hnojivo na ovocné stromy",

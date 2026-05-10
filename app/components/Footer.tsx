@@ -89,6 +89,7 @@ export default function Footer() {
 
   const seoLinks = [
     { href: '/hnojivo', label: t('seoPages.links.fertilizer') },
+    { href: '/organicke-hnojivo', label: t('seoPages.links.organic') },
     { href: '/hnojiva-hakofyt', label: t('seoPages.links.hakofyt') },
     { href: '/hnojivo-na-travnik', label: t('seoPages.links.lawn') },
     { href: '/hnojivo-na-ovocne-stromy', label: t('seoPages.links.fruitTrees') },
