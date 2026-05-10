@@ -686,6 +686,19 @@
         "helper": "You can unsubscribe anytime directly from the email."
       }
     },
+    "seoPages": {
+      "eyebrow": "Guides",
+      "title": "Fertilizers and plant care",
+      "description": "Quick links to the main GardenYX pages about fertilizers, plant nutrition and seasonal garden care.",
+      "links": {
+        "fertilizer": "Fertilizer",
+        "hakofyt": "Hakofyt fertilizers",
+        "lawn": "Lawn fertilizer",
+        "fruitTrees": "Fruit tree fertilizer",
+        "shop": "All products",
+        "blog": "Guides and articles"
+      }
+    },
     "payments": {
       "title": "Payment methods"
     },

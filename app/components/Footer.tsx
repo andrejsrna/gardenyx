@@ -8,6 +8,9 @@ import { useTranslations } from 'next-intl';
 import { safeRemoveItem } from '../lib/utils/safe-local-storage';
 import { Link } from '../../i18n/navigation';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyHref = any;
+
 export default function Footer() {
   const t = useTranslations('footer');
   const [email, setEmail] = useState('');
@@ -82,6 +85,15 @@ export default function Footer() {
     { name: 'Google Pay', src: '/paymets/gpay.svg' },
     { name: 'Apple Pay', src: '/paymets/applepay.svg' },
     { name: 'Stripe', src: '/paymets/stripe.svg' },
+  ];
+
+  const seoLinks = [
+    { href: '/hnojivo', label: t('seoPages.links.fertilizer') },
+    { href: '/hnojiva-hakofyt', label: t('seoPages.links.hakofyt') },
+    { href: '/hnojivo-na-travnik', label: t('seoPages.links.lawn') },
+    { href: '/hnojivo-na-ovocne-stromy', label: t('seoPages.links.fruitTrees') },
+    { href: '/kupit', label: t('seoPages.links.shop') },
+    { href: '/blog', label: t('seoPages.links.blog') },
   ];
 
   return (
@@ -183,6 +195,29 @@ export default function Footer() {
                 </p>
               </form>
             </div>
+          </div>
+        </div>
+
+        <div className="mb-12 rounded-3xl border border-green-100 bg-white/75 p-6 shadow-sm sm:p-8">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-green-700">
+                {t('seoPages.eyebrow')}
+              </p>
+              <h3 className="mt-2 text-2xl font-bold text-gray-900">{t('seoPages.title')}</h3>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600">{t('seoPages.description')}</p>
+            </div>
+            <nav aria-label={t('seoPages.title')} className="grid gap-3 sm:grid-cols-2">
+              {seoLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href as AnyHref}
+                  className="rounded-2xl border border-green-100 bg-green-50/60 px-4 py-3 text-sm font-semibold text-gray-800 transition hover:border-green-300 hover:bg-green-100 hover:text-green-800"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
 

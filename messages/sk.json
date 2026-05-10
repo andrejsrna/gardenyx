@@ -686,6 +686,19 @@
         "helper": "Môžete sa kedykoľvek odhlásiť priamo z emailu."
       }
     },
+    "seoPages": {
+      "eyebrow": "Sprievodcovia",
+      "title": "Hnojivá a starostlivosť o rastliny",
+      "description": "Rýchle odkazy na hlavné GardenYX stránky o hnojivách, výžive rastlín a sezónnej starostlivosti.",
+      "links": {
+        "fertilizer": "Hnojivo",
+        "hakofyt": "Hnojivá Hakofyt",
+        "lawn": "Hnojivo na trávnik",
+        "fruitTrees": "Hnojivo na ovocné stromy",
+        "shop": "Všetky produkty",
+        "blog": "Poradňa a články"
+      }
+    },
     "payments": {
       "title": "Platobné metódy"
     },

@@ -686,6 +686,19 @@
         "helper": "Bármikor leiratkozhatsz közvetlenül az emailből."
       }
     },
+    "seoPages": {
+      "eyebrow": "Útmutatók",
+      "title": "Műtrágyák és növényápolás",
+      "description": "Gyors linkek a GardenYX fő oldalaira műtrágyákról, növénytáplálásról és szezonális kertgondozásról.",
+      "links": {
+        "fertilizer": "Műtrágya",
+        "hakofyt": "Hakofyt műtrágyák",
+        "lawn": "Gyeptrágya",
+        "fruitTrees": "Gyümölcsfa trágya",
+        "shop": "Minden termék",
+        "blog": "Útmutatók és cikkek"
+      }
+    },
     "payments": {
       "title": "Fizetési módok"
     },
