@@ -135,8 +135,8 @@ export default async function ShopPage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'productPage.breadcrumbs' });
   const breadcrumbItems = [
-    { name: t('home'), url: 'https://gardenyx.eu' },
-    { name: t('shop'), url: `https://gardenyx.eu${localeToShopPath[locale] || '/kupit'}` }
+    { name: t('home'), url: 'https://www.gardenyx.eu' },
+    { name: t('shop'), url: `https://www.gardenyx.eu${localeToShopPath[locale] || '/kupit'}` }
   ];
 
   return (

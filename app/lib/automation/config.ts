@@ -32,5 +32,5 @@ export function isMarketingAutomationEnabled(): boolean {
 }
 
 export function getSiteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL || 'https://gardenyx.eu').replace(/\/$/, '');
+  return (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu').replace(/\/$/, '');
 }

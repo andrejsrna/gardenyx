@@ -25,12 +25,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       follow: false,
     },
     alternates: {
-      canonical: `https://gardenyx.eu${path}`,
+      canonical: `https://www.gardenyx.eu${path}`,
     },
     openGraph: {
       title: t('title'),
       description: t('description'),
-      url: `https://gardenyx.eu${path}`,
+      url: `https://www.gardenyx.eu${path}`,
       siteName: 'GardenYX',
       locale: localeToOgLocale[locale] ?? localeToOgLocale.sk,
       type: 'website',

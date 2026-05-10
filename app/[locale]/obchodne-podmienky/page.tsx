@@ -582,7 +582,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const content = getContent(locale);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gardenyx.eu';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu';
   const canonicalUrl = `${siteUrl}/${locale}/obchodne-podmienky`;
 
   return {

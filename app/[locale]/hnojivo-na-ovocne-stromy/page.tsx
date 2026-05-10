@@ -28,7 +28,7 @@ const copy = {
     eyebrow: 'Hnojivo na ovocné stromy',
     title: 'Bohatá úroda začína správnou výživou ovocných stromov',
     intro:
-      'Hakofyt Plus na ovocné dreviny je listové hnojivo špeciálne zložené pre jabloňe, hrušky, čerešne, slivky a ďalšie ovocné stromy. Kombinácia dusíka, fosforu, draslíka a prírodných stimulátorov rastu podporuje zdravý rast výhonov, intenzívne kvitnutie a kvalitné plody.',
+      'Hakofyt Plus na ovocné dreviny je listové hnojivo špeciálne zložené pre jablone, hrušky, čerešne, slivky a ďalšie ovocné stromy. Kombinácia dusíka, fosforu, draslíka a prírodných stimulátorov rastu podporuje zdravý rast výhonov, intenzívne kvitnutie a kvalitné plody.',
     primaryCta: 'Pozrieť Hakofyt Plus ovocné dreviny',
     secondaryCta: 'Prečo listové hnojivo?',
     benefits: [
@@ -48,7 +48,7 @@ const copy = {
     buyLabel: 'Kúpiť produkt',
     reasonsTitle: 'Kedy hnojiť ovocné stromy',
     reasons: [
-      ['Na jar pred kvitnutím', 'Prvé jarné hnojenie pred rozkvitnutím stromov dodá energiu pre bohaté kvitnutie a tvorbu plodov. Ideálne aplikovať, keď pôda dostatočne prehrejú.'],
+      ['Na jar pred kvitnutím', 'Prvé jarné hnojenie pred rozkvitnutím stromov dodá energiu pre bohaté kvitnutie a tvorbu plodov. Ideálne aplikovať, keď sa pôda dostatočne prehreje.'],
       ['Po odkvitnutí', 'Po opadnutí kvetov začína intenzívny rast plodov. Hnojivo v tejto fáze zaisťuje dostatok živín pre správny vývoj a veľkosť ovocia.'],
       ['Počas leta', 'Pravidelná výživa počas sezóny udržiava stromy v kondícii, podporuje tvorbu ovocných pukov na budúci rok a zvyšuje odolnosť voči suchu a chorobám.'],
     ],
@@ -70,7 +70,7 @@ const copy = {
       {
         question: 'Je Hakofyt Plus vhodný pre všetky ovocné stromy?',
         answer:
-          'Áno. Hakofyt Plus na ovocné dreviny je určený pre jabloňe, hrušky, čerešne, slivky, marhule, broskyne aj ďalšie ovocné dreviny. Obsahuje vyvážený pomer živín pre väčšinu druhy ovocných stromov.',
+          'Áno. Hakofyt Plus na ovocné dreviny je určený pre jablone, hrušky, čerešne, slivky, marhule, broskyne aj ďalšie ovocné dreviny. Obsahuje vyvážený pomer živín pre väčšinu druhov ovocných stromov.',
       },
       {
         question: 'Prečo zvoliť listové hnojivo namiesto granulovaného?',

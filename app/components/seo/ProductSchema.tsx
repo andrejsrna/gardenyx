@@ -4,7 +4,7 @@ interface ProductSchemaProps {
   product: Product;
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gardenyx.eu';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu';
 const SHIPPING_COUNTRIES = ['SK', 'CZ', 'HU'] as const;
 
 function makeShipping(country: string) {

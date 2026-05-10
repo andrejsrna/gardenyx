@@ -1,6 +1,6 @@
 import { Product } from '@/app/lib/content-types';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gardenyx.eu';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu';
 
 interface CollectionPageSchemaProps {
   products: Product[];

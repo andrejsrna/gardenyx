@@ -26,6 +26,7 @@ const RATE_LIMIT_EXEMPT_PATHS = [
   '.jpeg',
   '.gif',
   '.svg',
+  '.xml',
   '.woff',
   '.woff2',
   '.webmanifest',
@@ -280,7 +281,7 @@ export async function proxy(request: NextRequest) {
     let intlRewriteTarget: string | null = null;
 
     // Run intl locale routing for non-admin, non-API, non-static paths
-    const isStaticFile = /\.(?:webmanifest|webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|css|js|mp4|webm|pdf)$/i.test(pathname);
+    const isStaticFile = /\.(?:webmanifest|xml|webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|css|js|mp4|webm|pdf)$/i.test(pathname);
     if (!isAdmin && !isApi && !isStaticFile) {
       const intlResponse = intlMiddleware(request);
       // If intl wants to redirect (e.g. / → /sk), return that redirect

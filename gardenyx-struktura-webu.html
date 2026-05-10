@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <title>GardenYX – Návrh SEO štruktúry webu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #2e4a29;
+      --brand-2: #55684b;
+      --accent: #a6b89c;
+      --ink: #091208;
+      --muted: #41503e;
+      --surface: #e8ede4;
+      --line: rgba(46,74,41,0.15);
+      --paper: #fafcf8;
+      --opportunity: #1a4a2e;
+      --gap: #7a2e2e;
+      --neutral: #2e3f4a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Work Sans", sans-serif;
+      font-size: 10pt;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f4f8f1 0%, #edf3e8 100%);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    h1,h2,h3,h4 { font-family: "Instrument Sans", sans-serif; letter-spacing: -0.03em; }
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 36px 24px 64px; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #0d1f0b 0%, #2e4a29 100%);
+      color: #f3f8f1;
+      border-radius: 18px;
+      padding: 36px 40px 30px;
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 7.5pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(243,248,241,0.7);
+      border: 1px solid rgba(243,248,241,0.2);
+      border-radius: 999px;
+      padding: 5px 12px;
+      margin-bottom: 16px;
+    }
+    .hero h1 { font-size: 28pt; line-height: 1.05; color: #f3f8f1; margin-bottom: 12px; }
+    .hero p { font-size: 10pt; color: rgba(243,248,241,0.8); max-width: 65ch; margin-bottom: 20px; line-height: 1.65; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .meta-chip {
+      font-size: 8pt; color: rgba(243,248,241,0.7);
+      background: rgba(243,248,241,0.09); border: 1px solid rgba(243,248,241,0.13);
+      border-radius: 999px; padding: 4px 11px;
+    }
+
+    /* LEGENDA */
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 22px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 8.5pt; color: var(--muted);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-opportunity { background: #22c55e; }
+    .dot-gap        { background: #ef4444; }
+    .dot-existing   { background: #3b82f6; }
+    .dot-new        { background: #f59e0b; }
+
+    /* SECTION */
+    .section {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 26px 28px;
+      margin-bottom: 16px;
+    }
+    .section-label {
+      font-size: 7.5pt; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--brand-2); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .section-label::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+    .section h2 { font-size: 17pt; margin-bottom: 6px; }
+    .section-desc { font-size: 9.5pt; color: var(--muted); max-width: 72ch; margin-bottom: 20px; }
+
+    /* HOMEPAGE CARD */
+    .homepage-card {
+      background: linear-gradient(135deg, #0d1f0b, #2e4a29);
+      color: #f3f8f1; border-radius: 12px;
+      padding: 22px 24px; margin-bottom: 14px;
+    }
+    .homepage-card h3 { font-size: 14pt; color: #f3f8f1; margin-bottom: 8px; }
+    .homepage-card p { font-size: 9pt; color: rgba(243,248,241,0.8); margin-bottom: 10px; }
+    .kw-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .kw {
+      font-size: 8pt; border-radius: 999px; padding: 4px 10px;
+      border: 1px solid transparent;
+    }
+    .kw-opp  { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.3); color: #16a34a; }
+    .kw-gap  { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.25); color: #dc2626; }
+    .kw-exist{ background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.25); color: #2563eb; }
+    .kw-new  { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.25); color: #d97706; }
+
+    /* GRID */
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+
+    /* PAGE NODE */
+    .node {
+      background: linear-gradient(180deg, #fff 0%, #f0f4ed 100%);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 16px 18px;
+    }
+    .node-badge {
+      display: inline-block; font-size: 7pt; letter-spacing: 0.1em;
+      text-transform: uppercase; border-radius: 999px;
+      padding: 3px 9px; margin-bottom: 10px;
+    }
+    .badge-opp  { background: rgba(34,197,94,0.15);  color: #16a34a; }
+    .badge-gap  { background: rgba(239,68,68,0.12);  color: #dc2626; }
+    .badge-exist{ background: rgba(59,130,246,0.12); color: #2563eb; }
+    .badge-new  { background: rgba(245,158,11,0.12); color: #d97706; }
+    .node h4 { font-size: 10.5pt; margin-bottom: 5px; }
+    .node .url { font-size: 8pt; color: var(--brand-2); font-family: monospace; margin-bottom: 8px; }
+    .node p { font-size: 8.5pt; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+    .node .kw-list { margin-top: 6px; }
+    .vol-badge {
+      display: inline-block; font-size: 7.5pt; font-weight: 600;
+      background: var(--surface); border-radius: 999px;
+      padding: 2px 8px; color: var(--brand); margin-bottom: 6px;
+    }
+
+    /* TREE */
+    .tree { margin: 0; padding: 0; list-style: none; }
+    .tree-item {
+      position: relative; padding: 0 0 0 22px; margin-bottom: 4px;
+    }
+    .tree-item::before {
+      content: ""; position: absolute; left: 8px; top: 10px;
+      width: 8px; height: 1px; background: var(--line);
+    }
+    .tree-item::after {
+      content: ""; position: absolute; left: 8px; top: 0;
+      bottom: 0; width: 1px; background: var(--line);
+    }
+    .tree-item:last-child::after { height: 10px; }
+    .tree-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 9pt; padding: 4px 10px; border-radius: 8px;
+      background: var(--surface); border: 1px solid var(--line);
+    }
+    .tree-url { font-size: 7.5pt; color: var(--brand-2); font-family: monospace; }
+    .tree-vol { font-size: 7.5pt; color: var(--muted); }
+
+    /* PRIORITY TABLE */
+    table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+    th {
+      background: var(--surface); text-align: left;
+      padding: 9px 12px; font-family: "Instrument Sans", sans-serif;
+      font-size: 8.5pt; border-bottom: 1px solid var(--line);
+    }
+    td { padding: 8px 12px; border-bottom: 1px solid rgba(46,74,41,0.08); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(166,184,156,0.1); }
+    .priority-high { color: #16a34a; font-weight: 600; }
+    .priority-med  { color: #d97706; font-weight: 600; }
+    .priority-low  { color: #6b7280; }
+    .pos-good { color: #16a34a; font-weight: 600; }
+    .pos-mid  { color: #d97706; }
+    .pos-bad  { color: #dc2626; }
+    .pos-none { color: #9ca3af; font-style: italic; }
+
+    /* INSIGHT BOX */
+    .insight {
+      background: linear-gradient(135deg, rgba(46,74,41,0.95), rgba(85,104,75,0.92));
+      color: rgba(243,248,241,0.92); border-radius: 12px;
+      padding: 18px 22px; margin-top: 14px;
+    }
+    .insight strong { color: #f3f8f1; font-family: "Instrument Sans", sans-serif; font-size: 10.5pt; display: block; margin-bottom: 6px; }
+    .insight p { font-size: 9pt; line-height: 1.6; }
+
+    @media (max-width: 800px) {
+      .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @page { size: A4 portrait; margin: 12mm 10mm; }
+    @media print {
+      body { background: #fff; font-size: 9pt; }
+      .page { padding: 0; max-width: 100%; }
+      .node, .section, .homepage-card { page-break-inside: avoid; break-inside: avoid; }
+      .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow">Návrh štruktúry webu · na základe KW analýzy konkurenta</div>
+    <h1>GardenYX – SEO architektúra webu</h1>
+    <p>Štruktúra je navrhnutá na základe keyword analýzy zahradne-centrum.sk (433 KW). Zamerali sme sa na oblasti, kde konkurent buď chýba alebo je slabý — predovšetkým hnojivá, substráty a sezónne poradenstvo.</p>
+    <div class="hero-meta">
+      <span class="meta-chip">Klient: GardenYX</span>
+      <span class="meta-chip">Dátum: 24. apríl 2026</span>
+      <span class="meta-chip">Zdroj: zahradne-centrum.sk · 433 organic KW</span>
+      <span class="meta-chip">Hlavná príležitosť: hnojivá + substráty</span>
+    </div>
+  </div>
+
+  <!-- LEGENDA -->
+  <div class="legend">
+    <div class="legend-item"><span class="dot dot-opportunity"></span> Príležitosť — konkurent chýba alebo je slabý</div>
+    <div class="legend-item"><span class="dot dot-gap"></span> Medzera — vysoký objem, treba obsah</div>
+    <div class="legend-item"><span class="dot dot-existing"></span> Existujúca stránka — optimalizovať</div>
+    <div class="legend-item"><span class="dot dot-new"></span> Nová stránka — vytvoriť</div>
+  </div>
+
+  <!-- 1. HOMEPAGE -->
+  <div class="section">
+    <div class="section-label">Hlavná stránka</div>
+    <h2>Homepage — vstupná brána a brandový signál</h2>
+    <p class="section-desc">Homepage musí jasne komunikovať, že GardenYX = hnojivá a výživa rastlín. Interné prelinkovanie na produktové sekcie a poradňu. Sezónny obsah (jar = hnojenie).</p>
+    <div class="homepage-card">
+      <h3>/ — gardenyx.eu</h3>
+      <p>Primárna KW: <strong>GardenYX</strong> · Sekundárne: organické hnojivo, hnojivo na záhradu, výživa rastlín</p>
+      <div class="kw-list">
+        <span class="kw kw-exist">GardenYX</span>
+        <span class="kw kw-opp">organické hnojivo <em>150/mes</em></span>
+        <span class="kw kw-opp">hnojivo na záhradu</span>
+        <span class="kw kw-gap">hnojivo <em>500/mes</em></span>
+        <span class="kw kw-new">výživa rastlín</span>
+        <span class="kw kw-new">prírodné hnojivo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PRODUKTY -->
+  <div class="section">
+    <div class="section-label">Produktová sekcia</div>
+    <h2>Produkty — hnojivá podľa použitia</h2>
+    <p class="section-desc">Každý typ hnojiva má vlastnú URL s rozšíreným popisom, FAQ blokom a interným prelinkovaním na poradňu. Zahradne-centrum.sk tu prakticky chýba — najväčšia príležitosť.</p>
+    <div class="grid-3">
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">1 900 + 100 hľadaní/mes</div>
+        <h4>Hnojivo na trávnik</h4>
+        <div class="url">/hnojivo-na-travnik/</div>
+        <p>Konkurent na pozícii 20. Silná príležitosť na obsadenie. Zahrnúť jarné aj jesenné hnojenie, NPK pre trávnik.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">hnojivo na travu <em>1900</em></span>
+          <span class="kw kw-opp">jarne hnojivo na travu <em>200</em></span>
+          <span class="kw kw-opp">jarne hnojivo na trávnik <em>100</em></span>
+          <span class="kw kw-opp">travnikove hnojivo <em>30</em></span>
+          <span class="kw kw-opp">hnojiva na travnik <em>70</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-gap">Medzera</span>
+        <div class="vol-badge">500 hľadaní/mes</div>
+        <h4>Hnojivo — hlavná kategória</h4>
+        <div class="url">/hnojivo/</div>
+        <p>Generická kategória pre všetky hnojivá. Konkurent tu vôbec nie je. Zachytí broad dopyt a rozdelí návštevnosť na podkategórie.</p>
+        <div class="kw-list">
+          <span class="kw kw-gap">hnojivo <em>500</em></span>
+          <span class="kw kw-opp">organické hnojivo <em>150</em></span>
+          <span class="kw kw-opp">npk hnojivo <em>250</em></span>
+          <span class="kw kw-opp">dusíkaté hnojivo <em>80</em></span>
+          <span class="kw kw-opp">hnojivo npk <em>50</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">300 hľadaní/mes</div>
+        <h4>Hnojivo na ovocné stromy</h4>
+        <div class="url">/hnojivo-na-ovocne-stromy/</div>
+        <p>Konkurent na pozícii 10 — ľahko prekonateľné. Zahrnúť jarné hnojenie, NPK pre ovocné stromy, dávkovanie.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">hnojivo na ovocné stromy <em>300</em></span>
+          <span class="kw kw-opp">hnojivo na ovocne stromy <em>30</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">200 hľadaní/mes</div>
+        <h4>Hnojivo na kvety</h4>
+        <div class="url">/hnojivo-na-kvety/</div>
+        <p>Konkurent vôbec chýba. Pokryť hortenzie, levandule, balkónové kvety, izbové rastliny.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">hnojivo na kvety <em>200</em></span>
+          <span class="kw kw-opp">hnojivo na hortenzie <em>50</em></span>
+          <span class="kw kw-opp">hnojivo na levandule <em>60</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">200 + 150 hľadaní/mes</div>
+        <h4>Hnojivo na zeleninu</h4>
+        <div class="url">/hnojivo-na-zeleninu/</div>
+        <p>Konkurent na pozícii 23 pre uhorky. Zahrnúť paradajky, zemiaky, bylinky — všetky majú samostatný dopyt.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">hnojivo na uhorky <em>200</em></span>
+          <span class="kw kw-opp">npk hnojivo na zemiaky <em>150</em></span>
+          <span class="kw kw-opp">hnojivo na paradajky</span>
+          <span class="kw kw-opp">hnojivo na bylinky</span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">150 + 100 hľadaní/mes</div>
+        <h4>Organické hnojivo</h4>
+        <div class="url">/organicke-hnojivo/</div>
+        <p>Konkurent na pozícii 3 pre "organické hnojivo" — ale textovo slabý. Vytvoriť autoritatívnu stránku s edukačným obsahom.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">organické hnojivo <em>150</em></span>
+          <span class="kw kw-opp">organicke hnojivo <em>100</em></span>
+          <span class="kw kw-opp">prírodné hnojivo</span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">200 hľadaní/mes</div>
+        <h4>Močovina hnojivo</h4>
+        <div class="url">/mocovina-hnojivo/</div>
+        <p>Konkurent na pozícii 12. Spolu s NPK tvorí silný transackčný dopyt. Zahrnúť dávkovanie a použitie.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">močovina hnojivo <em>200</em></span>
+          <span class="kw kw-opp">npk hnojivo 25kg <em>60</em></span>
+          <span class="kw kw-opp">hnojivo npk 25kg cena <em>60</em></span>
+          <span class="kw kw-opp">npk hnojivo na travu <em>20</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">150 hľadaní/mes</div>
+        <h4>Hnojivo na ihličnany</h4>
+        <div class="url">/hnojivo-na-ihlicnany/</div>
+        <p>Konkurent vôbec chýba. Nízka KD, konkrétny dopyt — rýchla výhra. Zahrnúť tuje, smreky, borievky.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">hnojivo na ihličnany <em>150</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-new">Nová stránka</span>
+        <div class="vol-badge">1 100 hľadaní/mes</div>
+        <h4>Dusíkaté vápno</h4>
+        <div class="url">/dusikata-vapno/</div>
+        <p>Vysoký objem (1 100), konkurent na pozícii 50. Veľká príležitosť. Vápnenie + hnojenie v jednom — edukačný + produktový obsah.</p>
+        <div class="kw-list">
+          <span class="kw kw-gap">dusíkaté vápno <em>1100</em></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. SUBSTRÁTY -->
+  <div class="section">
+    <div class="section-label">Substráty a pôda</div>
+    <h2>Substráty — sekundárna produktová kategória</h2>
+    <p class="section-desc">Substráty sú prirodzený doplnok k hnojivám. Konkurent tu tiež zaostáva — príležitosť budovať tematickú autoritu naprieč oboma kategóriami.</p>
+    <div class="grid-3">
+
+      <div class="node">
+        <span class="node-badge badge-gap">Medzera</span>
+        <div class="vol-badge">300 hľadaní/mes</div>
+        <h4>Záhradný substrát</h4>
+        <div class="url">/zahradny-substrat/</div>
+        <p>Konkurent vôbec chýba. Univerzálny substrát + špeciálne varianty.</p>
+        <div class="kw-list">
+          <span class="kw kw-gap">substrát <em>300</em></span>
+          <span class="kw kw-opp">záhradný substrát <em>80</em></span>
+          <span class="kw kw-opp">záhradnícky substrát <em>60</em></span>
+          <span class="kw kw-opp">zahradny substrat <em>150</em></span>
+          <span class="kw kw-opp">univerzálny substrát <em>90</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">100 hľadaní/mes</div>
+        <h4>Substrát na paradajky</h4>
+        <div class="url">/substrat-na-paradajky/</div>
+        <p>Konkurent na pozícii 7. Prepojenie s hnojivom na zeleninu — cross-link príležitosť.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">substrat na paradajky <em>60</em></span>
+          <span class="kw kw-opp">zem na paradajky <em>10</em></span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-opp">Príležitosť</span>
+        <div class="vol-badge">100 hľadaní/mes</div>
+        <h4>Substrát na hortenzie</h4>
+        <div class="url">/substrat-na-hortenzie/</div>
+        <p>Úzky dopyt, žiadna konkurencia. Prepojenie s hnojivom na kvety.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">substrát na hortenzie <em>100</em></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. BLOG / PORADNA -->
+  <div class="section">
+    <div class="section-label">Poradňa / Blog</div>
+    <h2>Poradňa — obsahový hub pre poradenský dopyt</h2>
+    <p class="section-desc">Poradenský obsah buduje autoritu, zachytáva informačný dopyt a prirodzene prepája na produkty. Každý článok má CTA na príslušný produkt.</p>
+    <div class="grid-2">
+
+      <div class="node">
+        <span class="node-badge badge-new">Nový článok</span>
+        <div class="vol-badge">sezónny · jar 2026</div>
+        <h4>Ako a kedy hnojiť trávnik na jar</h4>
+        <div class="url">/poradna/ako-hnojit-travnik-na-jar/</div>
+        <p>Evergreen + sezónny článok. CTA na hnojivo na trávnik. Zachytí poradenský dopyt okolo jarného hnojenia.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">jarne hnojivo na travu <em>200</em></span>
+          <span class="kw kw-opp">kedy hnojiť trávnik</span>
+          <span class="kw kw-new">ako hnojiť trávnik na jar</span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-new">Nový článok</span>
+        <div class="vol-badge">evergreen</div>
+        <h4>Organické vs minerálne hnojivo — rozdiel</h4>
+        <div class="url">/poradna/organicke-vs-mineralne-hnojivo/</div>
+        <p>Vysoký poradenský dopyt. Buduje autoritu v téme, prepojí sa na obe kategórie produktov.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">organické hnojivo <em>150</em></span>
+          <span class="kw kw-new">rozdiel organické minerálne hnojivo</span>
+          <span class="kw kw-new">aké hnojivo vybrať</span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-new">Nový článok</span>
+        <div class="vol-badge">evergreen</div>
+        <h4>Hnojivo na paradajky — kedy a ako dávkovať</h4>
+        <div class="url">/poradna/hnojivo-na-paradajky/</div>
+        <p>Silný poradenský dopyt pri zelenine. CTA na substrát + hnojivo na zeleninu.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">hnojivo na paradajky</span>
+          <span class="kw kw-opp">substrat na paradajky <em>60</em></span>
+          <span class="kw kw-new">dávkovanie hnojiva na paradajky</span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-new">Nový článok</span>
+        <div class="vol-badge">evergreen</div>
+        <h4>Dusíkaté vápno — čo to je a kedy ho použiť</h4>
+        <div class="url">/poradna/dusikata-vapno-pouzitie/</div>
+        <p>Objem 1 100, konkurent na pozícii 50. Edukačný článok zachytí dopyt a prepojí sa na produkt.</p>
+        <div class="kw-list">
+          <span class="kw kw-gap">dusíkaté vápno <em>1100</em></span>
+          <span class="kw kw-new">kedy použiť dusíkaté vápno</span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-new">Nový článok</span>
+        <div class="vol-badge">evergreen</div>
+        <h4>NPK hnojivo — čo znamenajú čísla na obale</h4>
+        <div class="url">/poradna/npk-hnojivo-co-znamena/</div>
+        <p>Vzdelávací obsah pre zákazníkov. Prepojenie na celý sortiment NPK hnojív.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">npk hnojivo <em>250</em></span>
+          <span class="kw kw-opp">npk hnojivo 25kg <em>60</em></span>
+          <span class="kw kw-new">čo znamená NPK na hnojivu</span>
+        </div>
+      </div>
+
+      <div class="node">
+        <span class="node-badge badge-new">Nový článok</span>
+        <div class="vol-badge">sezónny · jar/jeseň</div>
+        <h4>Kedy a ako hnojiť ovocné stromy</h4>
+        <div class="url">/poradna/hnojivo-na-ovocne-stromy/</div>
+        <p>CTA priamo na produktovú stránku. Sezónny dopyt pred jarou a po zbere úrody.</p>
+        <div class="kw-list">
+          <span class="kw kw-opp">hnojivo na ovocné stromy <em>300</em></span>
+          <span class="kw kw-new">kedy hnojiť ovocné stromy</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. PRIORITNÁ TABUĽKA -->
+  <div class="section">
+    <div class="section-label">Prioritizácia</div>
+    <h2>Poradie implementácie</h2>
+    <p class="section-desc">Zoradené podľa pomeru objemu vyhľadávania a slabosti konkurenta. Začať od riadkov s vysokou prioritou.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>URL</th>
+          <th>Typ</th>
+          <th>Objem KW</th>
+          <th>Pozícia konkurenta</th>
+          <th>Priorita</th>
+          <th>Akcia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/dusikata-vapno/</code></td>
+          <td>Produkt</td>
+          <td>1 900</td>
+          <td class="pos-bad">50</td>
+          <td class="priority-high">Vysoká</td>
+          <td>Vytvoriť produktovú stránku + článok</td>
+        </tr>
+        <tr>
+          <td><code>/hnojivo-na-travnik/</code></td>
+          <td>Produkt</td>
+          <td>1 900+</td>
+          <td class="pos-bad">20</td>
+          <td class="priority-high">Vysoká</td>
+          <td>Vytvoriť stránku, optimalizovať na jar</td>
+        </tr>
+        <tr>
+          <td><code>/hnojivo/</code></td>
+          <td>Kategória</td>
+          <td>500</td>
+          <td class="pos-none">—</td>
+          <td class="priority-high">Vysoká</td>
+          <td>Vytvoriť hlavnú kategóriu hnojív</td>
+        </tr>
+        <tr>
+          <td><code>/organicke-hnojivo/</code></td>
+          <td>Produkt</td>
+          <td>250</td>
+          <td class="pos-good">3</td>
+          <td class="priority-high">Vysoká</td>
+          <td>Optimalizovať existujúcu stránku, rozšíriť obsah</td>
+        </tr>
+        <tr>
+          <td><code>/npk-hnojivo/</code></td>
+          <td>Produkt</td>
+          <td>250+</td>
+          <td class="pos-none">—</td>
+          <td class="priority-high">Vysoká</td>
+          <td>Vytvoriť stránku + poradňa článok</td>
+        </tr>
+        <tr>
+          <td><code>/hnojivo-na-ovocne-stromy/</code></td>
+          <td>Produkt</td>
+          <td>300+</td>
+          <td class="pos-good">10</td>
+          <td class="priority-med">Stredná</td>
+          <td>Vytvoriť stránku pred jarou</td>
+        </tr>
+        <tr>
+          <td><code>/mocovina-hnojivo/</code></td>
+          <td>Produkt</td>
+          <td>200+</td>
+          <td class="pos-mid">12</td>
+          <td class="priority-med">Stredná</td>
+          <td>Vytvoriť stránku s dávkovaním</td>
+        </tr>
+        <tr>
+          <td><code>/hnojivo-na-kvety/</code></td>
+          <td>Produkt</td>
+          <td>200+</td>
+          <td class="pos-none">—</td>
+          <td class="priority-med">Stredná</td>
+          <td>Vytvoriť stránku</td>
+        </tr>
+        <tr>
+          <td><code>/hnojivo-na-zeleninu/</code></td>
+          <td>Produkt</td>
+          <td>200+</td>
+          <td class="pos-bad">23</td>
+          <td class="priority-med">Stredná</td>
+          <td>Vytvoriť stránku + podstránky</td>
+        </tr>
+        <tr>
+          <td><code>/zahradny-substrat/</code></td>
+          <td>Kategória</td>
+          <td>300+</td>
+          <td class="pos-none">—</td>
+          <td class="priority-med">Stredná</td>
+          <td>Vytvoriť kategóriu substrátov</td>
+        </tr>
+        <tr>
+          <td><code>/hnojivo-na-ihlicnany/</code></td>
+          <td>Produkt</td>
+          <td>150</td>
+          <td class="pos-none">—</td>
+          <td class="priority-low">Nižšia</td>
+          <td>Rýchla výhra — nízka KD</td>
+        </tr>
+        <tr>
+          <td><code>/poradna/ako-hnojit-travnik-na-jar/</code></td>
+          <td>Článok</td>
+          <td>200+</td>
+          <td class="pos-none">—</td>
+          <td class="priority-high">Vysoká</td>
+          <td>Napísať pred jarou 2026</td>
+        </tr>
+        <tr>
+          <td><code>/poradna/dusikata-vapno-pouzitie/</code></td>
+          <td>Článok</td>
+          <td>1 100</td>
+          <td class="pos-bad">50</td>
+          <td class="priority-high">Vysoká</td>
+          <td>Edukovať + prepoj na produkt</td>
+        </tr>
+        <tr>
+          <td><code>/poradna/npk-hnojivo-co-znamena/</code></td>
+          <td>Článok</td>
+          <td>250+</td>
+          <td class="pos-none">—</td>
+          <td class="priority-med">Stredná</td>
+          <td>Evergreen, buduje autoritu</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="insight">
+      <strong>Záver z analýzy</strong>
+      <p>zahradne-centrum.sk je silný v kvetináčoch, záhradnom náradi a postrekoch — ale na hnojivách a substrátoch je prekvapivo slabý. GardenYX môže obsadiť tento priestor systematicky: začať od stránok s najvyšším objemom (dusíkaté vápno, hnojivo na trávnik) a súbežne budovať tematickú autoritu cez poradňu. Väčšina kľúčových slov má KD = 0 — čo znamená, že stačí relevantný obsah a základná on-page optimalizácia.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

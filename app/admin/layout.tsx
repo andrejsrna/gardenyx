@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex items-center gap-3">
             <div className="text-sm font-semibold text-white">Gardenyx Admin</div>
             <a
-              href="https://gardenyx.eu"
+              href="https://www.gardenyx.eu"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-lg px-2 py-1 text-xs font-medium text-emerald-300 hover:bg-slate-800 flex items-center gap-1"

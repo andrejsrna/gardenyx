@@ -26,7 +26,7 @@ const localeToOgLocale: Record<string, string> = {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'hakofytFertilizersPage.meta' });
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gardenyx.eu';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
   const path = localeToPath[locale] || '/hnojiva-hakofyt';
   const canonical = `${siteUrl}${path}`;
   const localeAlternates = Object.fromEntries(
@@ -141,7 +141,7 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
     { key: 'p', color: 'bg-amber-500', light: 'bg-amber-50', text: 'text-amber-700' },
     { key: 'k', color: 'bg-violet-500', light: 'bg-violet-50', text: 'text-violet-700' },
   ] as const;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gardenyx.eu';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
   const canonical = `${siteUrl}${localeToPath[locale] || localeToPath.sk}`;
   const pageSchema = {
     '@context': 'https://schema.org',

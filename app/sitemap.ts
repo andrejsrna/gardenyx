@@ -14,16 +14,17 @@ type StaticRoute = {
 };
 
 const STATIC_ROUTES: StaticRoute[] = [
-  { sk: '/', en: '/en', hu: '/hu', changeFrequency: 'daily', priority: 1.0, lastModified: '2026-04-26' },
-  { sk: '/kupit', en: '/en/shop', hu: '/hu/vasarlas', changeFrequency: 'weekly', priority: 0.9, lastModified: '2026-04-26' },
-  { sk: '/blog', en: '/en/blog', hu: '/hu/blog', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
-  { sk: '/hnojiva-hakofyt', en: '/en/hakofyt-fertilizers', hu: '/hu/hakofyt-mutragyak', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
-  { sk: '/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-26' },
-  { sk: '/hnojivo-na-ovocne-stromy', en: '/en/fruit-tree-fertilizer', hu: '/hu/gyumolcsfa-tragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-27' },
-  { sk: '/kontakt', en: '/en/contact', hu: '/hu/kapcsolat', changeFrequency: 'monthly', priority: 0.6, lastModified: '2026-04-08' },
-  { sk: '/obchodne-podmienky', en: '/en/terms-and-conditions', hu: '/hu/aszf', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
-  { sk: '/ochrana-osobnych-udajov', en: '/en/privacy-policy', hu: '/hu/adatvedelem', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
-  { sk: '/doprava-a-platba', en: '/en/doprava-a-platba', hu: '/hu/doprava-a-platba', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
+  { sk: '/sk', en: '/en', hu: '/hu', changeFrequency: 'daily', priority: 1.0, lastModified: '2026-04-26' },
+  { sk: '/sk/kupit', en: '/en/shop', hu: '/hu/vasarlas', changeFrequency: 'weekly', priority: 0.9, lastModified: '2026-04-26' },
+  { sk: '/sk/blog', en: '/en/blog', hu: '/hu/blog', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
+  { sk: '/sk/hnojiva-hakofyt', en: '/en/hakofyt-fertilizers', hu: '/hu/hakofyt-mutragyak', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
+  { sk: '/sk/hnojivo', en: '/en/fertilizer', hu: '/hu/mutragya', changeFrequency: 'weekly', priority: 0.85, lastModified: '2026-05-10' },
+  { sk: '/sk/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-26' },
+  { sk: '/sk/hnojivo-na-ovocne-stromy', en: '/en/fruit-tree-fertilizer', hu: '/hu/gyumolcsfa-tragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-27' },
+  { sk: '/sk/kontakt', en: '/en/contact', hu: '/hu/kapcsolat', changeFrequency: 'monthly', priority: 0.6, lastModified: '2026-04-08' },
+  { sk: '/sk/obchodne-podmienky', en: '/en/terms-and-conditions', hu: '/hu/aszf', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
+  { sk: '/sk/ochrana-osobnych-udajov', en: '/en/privacy-policy', hu: '/hu/adatvedelem', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
+  { sk: '/sk/doprava-a-platba', en: '/en/doprava-a-platba', hu: '/hu/doprava-a-platba', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-04-08' },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -52,13 +53,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const productEntries: MetadataRoute.Sitemap = products.map((product) => ({
-    url: `${siteUrl}/produkt/${product.slug}`,
+    url: `${siteUrl}/sk/produkt/${product.slug}`,
     lastModified: new Date('2026-04-26'),
     changeFrequency: 'weekly',
     priority: 0.8,
     alternates: {
       languages: {
-        sk: `${siteUrl}/produkt/${product.slug}`,
+        sk: `${siteUrl}/sk/produkt/${product.slug}`,
         en: `${siteUrl}/en/product/${product.slug}`,
         hu: `${siteUrl}/hu/termek/${product.slug}`,
       },
@@ -66,13 +67,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const articleEntries: MetadataRoute.Sitemap = articles.map((article) => ({
-    url: `${siteUrl}/blog/${article.slug}`,
+    url: `${siteUrl}/sk/blog/${article.slug}`,
     lastModified: article.updatedAt,
     changeFrequency: 'monthly',
     priority: 0.6,
     alternates: {
       languages: {
-        sk: `${siteUrl}/blog/${article.slug}`,
+        sk: `${siteUrl}/sk/blog/${article.slug}`,
         en: `${siteUrl}/en/blog/${article.slug}`,
         hu: `${siteUrl}/hu/blog/${article.slug}`,
       },

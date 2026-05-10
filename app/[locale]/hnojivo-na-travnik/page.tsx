@@ -58,7 +58,7 @@ const copy = {
     steps: [
       { number: '01', title: 'Pripravte trávnik', description: 'Pokoste a odstráňte zvyšky. Najlepší výsledok dosiahnete na očistenom poraste po prvom jarnom kosení.' },
       { number: '02', title: 'Aplikujte hnojivo', description: 'Rozrieďte Hakofyt Max tráva podľa návodu a aplikujte rovnomerne na celý trávnik, ideálne mimo horúčav.' },
-      { number: '03', title: 'Zalievajte pravidelne', description: 'Po aplikácii trávnik dôkladne zavlažte. Správna hydratácia urychlí vstrebávanie a viditeľné výsledky.' },
+      { number: '03', title: 'Zalievajte pravidelne', description: 'Po aplikácii trávnik dôkladne zavlažte. Správna hydratácia urýchli vstrebávanie a viditeľné výsledky.' },
     ],
     faqTitle: 'Časté otázky k hnojivu na trávnik',
     faqs: [
@@ -84,7 +84,7 @@ const copy = {
       },
     ],
     ctaTitle: 'Pripravte trávnik na sezónu',
-    ctaText: 'Hakofyt Max tráva je dostupný skladom. Objednajte ešte dnes a varovnicou jar sa zazelenáte skôr.',
+    ctaText: 'Hakofyt Max tráva je dostupný skladom. Objednajte ešte dnes a pripravte trávnik na zelenšiu jar.',
     ctaBuy: 'Objednať Hakofyt Max tráva',
     ctaDetail: 'Zobraziť detail produktu',
     readAlsoLabel: 'Prečítajte si tiež',

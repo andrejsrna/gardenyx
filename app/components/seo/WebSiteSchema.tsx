@@ -1,4 +1,4 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gardenyx.eu';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu';
 
 export default function WebSiteSchema() {
   const structuredData = {

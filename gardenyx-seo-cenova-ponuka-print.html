@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GardenYX | Cenová ponuka SEO optimalizácie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --brand: #2e4a29;
+        --brand-2: #55684b;
+        --accent: #a6b89c;
+        --ink: #091208;
+        --muted: #41503e;
+        --surface: #e8ede4;
+        --line: rgba(46, 74, 41, 0.18);
+        --paper: #fafcf8;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: "Work Sans", sans-serif;
+        font-size: 10pt;
+        color: var(--ink);
+        background: #fff;
+        line-height: 1.55;
+      }
+
+      h1, h2, h3, h4, strong {
+        font-family: "Instrument Sans", sans-serif;
+      }
+
+      /* ── PAGE ── */
+      .page {
+        width: 190mm;
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      /* ── HERO ── */
+      .hero {
+        background: linear-gradient(135deg, #0d1f0b 0%, #2e4a29 100%);
+        color: #f3f8f1;
+        border-radius: 14px;
+        padding: 26px 28px 22px;
+        margin-bottom: 14px;
+        page-break-inside: avoid;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        font-size: 7.5pt;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(243,248,241,0.75);
+        border: 1px solid rgba(243,248,241,0.22);
+        border-radius: 999px;
+        padding: 5px 11px;
+        margin-bottom: 14px;
+      }
+
+      .hero h1 {
+        font-size: 22pt;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        color: #f3f8f1;
+        max-width: 28ch;
+        margin-bottom: 10px;
+      }
+
+      .hero-sub {
+        font-size: 9.5pt;
+        color: rgba(243,248,241,0.82);
+        max-width: 60ch;
+        margin-bottom: 14px;
+        line-height: 1.6;
+      }
+
+      .hero-note {
+        background: rgba(243,248,241,0.1);
+        border: 1px solid rgba(243,248,241,0.14);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 9pt;
+        color: rgba(243,248,241,0.88);
+        margin-bottom: 14px;
+      }
+
+      .hero-note strong {
+        display: block;
+        color: #f3f8f1;
+        margin-bottom: 4px;
+        font-size: 9.5pt;
+      }
+
+      .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .meta-chip {
+        font-size: 8pt;
+        color: rgba(243,248,241,0.7);
+        background: rgba(243,248,241,0.09);
+        border: 1px solid rgba(243,248,241,0.13);
+        border-radius: 999px;
+        padding: 4px 10px;
+      }
+
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .stat {
+        background: rgba(243,248,241,0.92);
+        color: var(--ink);
+        border-radius: 10px;
+        padding: 12px 13px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 9.5pt;
+        margin-bottom: 4px;
+        color: var(--brand);
+      }
+
+      .stat p {
+        font-size: 8.5pt;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ── SECTIONS ── */
+      .section {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px 22px;
+        margin-bottom: 12px;
+        page-break-inside: avoid;
+      }
+
+      .mini-label {
+        font-size: 7.5pt;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--brand-2);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .mini-label::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        flex-shrink: 0;
+      }
+
+      .section h2 {
+        font-size: 15pt;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin-bottom: 6px;
+      }
+
+      .section-desc {
+        font-size: 9pt;
+        color: var(--muted);
+        max-width: 70ch;
+        margin-bottom: 14px;
+        line-height: 1.6;
+      }
+
+      /* ── GRIDS ── */
+      .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+      .two-col   { display: grid; grid-template-columns: 1.1fr 0.9fr;   gap: 12px; }
+      .four-col  { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+      .two-col-eq{ display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+
+      /* ── CARDS ── */
+      .card {
+        background: linear-gradient(180deg, #fff 0%, #f0f4ed 100%);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 13px 14px;
+        page-break-inside: avoid;
+      }
+
+      .card strong {
+        display: block;
+        font-size: 9.5pt;
+        margin-bottom: 5px;
+        color: var(--ink);
+      }
+
+      .card p {
+        font-size: 8.5pt;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .card ul {
+        margin: 8px 0 0 14px;
+        font-size: 8.5pt;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .card span.step-label {
+        display: block;
+        font-size: 7.5pt;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--brand);
+        margin-bottom: 5px;
+      }
+
+      /* ── KEYWORD CLUSTERS ── */
+      .cluster {
+        background: var(--surface);
+        border: 1px solid rgba(46,74,41,0.14);
+        border-radius: 9px;
+        padding: 12px 13px;
+        margin-bottom: 8px;
+        page-break-inside: avoid;
+      }
+
+      .cluster:last-child { margin-bottom: 0; }
+
+      .cluster strong {
+        display: block;
+        font-size: 9pt;
+        margin-bottom: 7px;
+        color: var(--ink);
+      }
+
+      .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+      .chip {
+        font-size: 8pt;
+        background: rgba(46,74,41,0.09);
+        border: 1px solid rgba(46,74,41,0.14);
+        border-radius: 999px;
+        padding: 4px 9px;
+        color: var(--ink);
+      }
+
+      /* ── PANEL (aside) ── */
+      .panel {
+        background: linear-gradient(180deg,#fff,#f0f4ed);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 15px;
+      }
+
+      .panel h3 {
+        font-size: 11pt;
+        letter-spacing: -0.02em;
+        margin-bottom: 7px;
+      }
+
+      .panel p {
+        font-size: 8.5pt;
+        color: var(--muted);
+        margin-bottom: 4px;
+        line-height: 1.55;
+      }
+
+      .panel ul {
+        margin: 8px 0 0 14px;
+        font-size: 8.5pt;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      /* ── STRUCTURE ── */
+      .structure-section { margin-bottom: 10px; }
+
+      .level-label {
+        font-size: 7.5pt;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--brand-2);
+        background: rgba(166,184,156,0.35);
+        border-radius: 999px;
+        padding: 3px 9px;
+        display: inline-block;
+        margin-bottom: 8px;
+      }
+
+      /* ── DIVIDER ── */
+      .divider {
+        width: 100%;
+        height: 1px;
+        background: var(--line);
+        margin: 12px 0;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 14mm 12mm 14mm 12mm;
+      }
+
+      @media print {
+        .section, .hero, .card, .cluster, .panel { page-break-inside: avoid; break-inside: avoid; }
+        body { font-size: 9.5pt; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="eyebrow">SEO cenová ponuka</div>
+        <h1>GardenYX SEO optimalizácia s fokusom na hnojivá.</h1>
+        <p class="hero-sub">
+          Návrh je postavený pre e-shop s menším aktuálnym portfóliom a primárnym fokusom na hnojivá.
+          SEO stratégia preto stojí na presnom keyword researchi, silnom produktovom a poradenskom obsahu
+          a na budovaní tematickej autority v úzkej, ale obchodne relevantnej oblasti.
+        </p>
+        <div class="hero-note">
+          <strong>Úvodná fáza obsahuje aj research KWs.</strong>
+          Vstupom bude mapa prioritných kľúčových slov pre hnojivá, návrh štruktúry webu prispôsobený
+          menšiemu portfóliu, obsahový plán a model mesačného pridávania článkov s prepojením na produkty GardenYX.
+        </div>
+        <div class="meta-row">
+          <span class="meta-chip">Klient: GardenYX</span>
+          <span class="meta-chip">Dátum: 23. apríl 2026</span>
+          <span class="meta-chip">Formát: strategická SEO ponuka</span>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>Research + architektúra</strong>
+            <p>Základ pre lepšie indexovanie, pokrytie dopytu okolo hnojív a silnejšie interné prelinkovanie.</p>
+          </div>
+          <div class="stat">
+            <strong>Obsah + články</strong>
+            <p>Kombinácia evergreen tém, sezónnych článkov a poradenského obsahu naviazaného na sortiment.</p>
+          </div>
+          <div class="stat">
+            <strong>Technické SEO + reporting</strong>
+            <p>Priebežná optimalizácia title, meta popisov, indexácie, interných odkazov a meranie dopadu.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. ČO NÁVRH POKRÝVA -->
+      <section class="section">
+        <div class="mini-label">Čo návrh pokrýva</div>
+        <h2>SEO rámec od analýzy po kontinuálnu obsahovú správu</h2>
+        <p class="section-desc">
+          Návrh kombinuje strategické aj exekučné časti tak, aby GardenYX vedel rásť aj s menším počtom produktov.
+          Cieľom je posilniť relevantnosť domény pre tému hnojív, zachytiť poradenský dopyt a privádzať návštevnosť
+          bližšiu k nákupu.
+        </p>
+        <div class="three-col">
+          <div class="card">
+            <strong>1. SEO audit a keyword research</strong>
+            <p>Zber dopytov, zhlukovanie tém podľa intentu a pomenovanie priorít pre produkty s hnojivami, produktové stránky, poradňu a tematické landing pages.</p>
+          </div>
+          <div class="card">
+            <strong>2. Návrh štruktúry webu</strong>
+            <p>Úprava navigácie, hlavných tematických sekcií a interného prelinkovania s dôrazom na lepšiu orientáciu používateľa aj tematické ukotvenie okolo hnojív.</p>
+          </div>
+          <div class="card">
+            <strong>3. Dlhodobá obsahová výroba</strong>
+            <p>Tvorba produktového copy, poradenských landing pages, článkov, FAQ blokov a pravidelné mesačné pridávanie nového obsahu.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. KEYWORD RESEARCH -->
+      <section class="section">
+        <div class="mini-label">Research KWs</div>
+        <h2>Úvodný keyword research pre GardenYX</h2>
+        <p class="section-desc">
+          Nižšie je ukážkový rámec tematických klastrov, ktoré budú v úvodnej fáze validované cez dopyt,
+          konkurenciu a obchodnú prioritu s primárnym fokusom na hnojivá.
+        </p>
+        <div class="two-col">
+          <div>
+            <div class="cluster">
+              <strong>Hlavný transakčný dopyt pre hnojivá</strong>
+              <div class="chips">
+                <span class="chip">hnojivo</span>
+                <span class="chip">záhradné hnojivo</span>
+                <span class="chip">organické hnojivo</span>
+                <span class="chip">prírodné hnojivo</span>
+                <span class="chip">najlepšie hnojivo pre záhradu</span>
+              </div>
+            </div>
+            <div class="cluster">
+              <strong>Produktové a aplikačné varianty</strong>
+              <div class="chips">
+                <span class="chip">hnojivo na paradajky</span>
+                <span class="chip">hnojivo pre zeleninu</span>
+                <span class="chip">hnojivo na bylinky</span>
+                <span class="chip">tekuté hnojivo</span>
+                <span class="chip">granulované hnojivo</span>
+              </div>
+            </div>
+            <div class="cluster">
+              <strong>Poradenský a informačný dopyt</strong>
+              <div class="chips">
+                <span class="chip">ako používať hnojivo</span>
+                <span class="chip">kedy hnojiť zeleninu</span>
+                <span class="chip">ako vybrať hnojivo</span>
+                <span class="chip">rozdiel medzi organickým a minerálnym hnojivom</span>
+                <span class="chip">ako správne dávkovať hnojivo</span>
+              </div>
+            </div>
+            <div class="cluster">
+              <strong>Brand + trust dopyt</strong>
+              <div class="chips">
+                <span class="chip">GardenYX</span>
+                <span class="chip">GardenYX hnojivá</span>
+                <span class="chip">GardenYX recenzie</span>
+                <span class="chip">GardenYX e-shop</span>
+                <span class="chip">kvalitné hnojivo online</span>
+                <span class="chip">kúpiť hnojivo online</span>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Výstup research fázy</h3>
+            <p>Výsledkom nebude iba zoznam slov, ale rozhodovací dokument pre SEO aj obsahovú stratégiu pri úzkom sortimente.</p>
+            <ul>
+              <li>prioritizácia dopytov s najväčším obchodným potenciálom,</li>
+              <li>rozlíšenie produktových a poradenských tém okolo hnojív,</li>
+              <li>mapovanie hlavných a sekundárnych KW na konkrétne URL,</li>
+              <li>odporúčanie nových tematických landing pages a článkov,</li>
+              <li>návrh interného prelinkovania medzi poradňou a produktmi.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. ŠTRUKTÚRA WEBU -->
+      <section class="section">
+        <div class="mini-label">Štruktúra webu</div>
+        <h2>Návrh SEO štruktúry e-shopu pre menší sortiment</h2>
+        <p class="section-desc">
+          Cieľom nie je umelo rozširovať architektúru, ale postaviť ju tak, aby aj menší počet produktov
+          vedel zachytiť širší dopyt cez dobre navrhnuté produktové, poradenské a tematické stránky.
+        </p>
+        <div class="structure-section">
+          <span class="level-label">Úroveň 1 — hlavné sekcie</span>
+          <div class="three-col">
+            <div class="card">
+              <strong>Homepage</strong>
+              <p>Jasné odkomunikovanie, že GardenYX rieši hnojivá a výživu rastlín, s prepojením na hlavné produkty, benefity a poradenský obsah.</p>
+            </div>
+            <div class="card">
+              <strong>Produkty / hnojivá</strong>
+              <p>Hlavná obchodná sekcia so silným produktovým copy, FAQ blokmi, benefitmi, použitím a interným prelinkovaním.</p>
+            </div>
+            <div class="card">
+              <strong>Blog / poradňa</strong>
+              <p>Samostatný obsahový hub s článkami o výbere, dávkovaní, použití a porovnaní hnojív.</p>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="structure-section">
+          <span class="level-label">Úroveň 2 — tematické podstránky</span>
+          <div class="three-col">
+            <div class="card">
+              <strong>Produktové landing pages</strong>
+              <p>Stránky alebo sekcie zamerané na konkrétne potreby, plodiny, spôsob použitia alebo typ hnojiva.</p>
+            </div>
+            <div class="card">
+              <strong>Tematické SEO landing pages</strong>
+              <p>Stránky pre silné témy typu „ako vybrať hnojivo na zeleninu" alebo „kedy začať s hnojením na jar".</p>
+            </div>
+            <div class="card">
+              <strong>Obsahové klastry</strong>
+              <p>Zoskupené články a FAQ bloky, ktoré podporujú predaj produktov a zachytávajú top-of-funnel dopyt.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. OBSAH -->
+      <section class="section">
+        <div class="mini-label">Obsah</div>
+        <h2>Tvorba obsahu pre produkty s hnojivami aj poradenský intent</h2>
+        <p class="section-desc">
+          SEO obsah má pre GardenYX fungovať ako predĺžená predajná vrstva.
+          Každý text bude navrhnutý tak, aby prirodzene prepájal edukáciu, dôveryhodnosť a produktový zámer.
+        </p>
+        <div class="three-col">
+          <div class="card">
+            <strong>Produktové texty</strong>
+            <p>Rozšírené produktové popisy, FAQ bloky a SEO texty, ktoré pomôžu produktu rankovať aj pri menšom počte URL.</p>
+          </div>
+          <div class="card">
+            <strong>Tematické landing pages</strong>
+            <p>Témy s vysokým dopytom a jasným intentom, kde je priestor pre návod, porovnanie a odporúčanie konkrétnych hnojív.</p>
+          </div>
+          <div class="card">
+            <strong>Blogové články</strong>
+            <p>Evergreen rady, sezónne tipy, návody na hnojenie, dávkovanie, chyby pri používaní a porovnania typov hnojív.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. MESAČNÁ SPRÁVA -->
+      <section class="section">
+        <div class="mini-label">Mesačná správa</div>
+        <h2>Model mesačného pridávania článkov a SEO starostlivosti</h2>
+        <p class="section-desc">
+          Mesačná spolupráca je navrhnutá tak, aby aj menší e-shop vedel pravidelne rozširovať tematický
+          záber a zvyšovať dôveru v hlavnú produktovú oblasť.
+        </p>
+        <div class="four-col">
+          <div class="card">
+            <span class="step-label">Krok 01</span>
+            <strong>Editorial plán</strong>
+            <p>Výber tém podľa sezóny, priorít e-shopu, otázok zákazníkov a identifikovaných content gapov okolo hnojív.</p>
+          </div>
+          <div class="card">
+            <span class="step-label">Krok 02</span>
+            <strong>Copywriting a optimalizácia</strong>
+            <p>Príprava článkov, interné prelinkovanie, návrh CTA, meta titulkov, description a FAQ prvkov.</p>
+          </div>
+          <div class="card">
+            <span class="step-label">Krok 03</span>
+            <strong>Publikácia a prepojenie</strong>
+            <p>Osadenie článkov do blogu, prelinkovanie na produkty s hnojivami a prepojenie na relevantné tematické stránky.</p>
+          </div>
+          <div class="card">
+            <span class="step-label">Krok 04</span>
+            <strong>Vyhodnotenie dopadu</strong>
+            <p>Kontrola indexácie, pozícií, organických vstupov, CTR a návrh ďalších tém na nasledujúci mesiac.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. DÔLEŽITÉ SEO OBLASTI -->
+      <section class="section">
+        <div class="mini-label">Čo doplním navyše</div>
+        <h2>Dôležité SEO oblasti, ktoré odporúčam zahrnúť</h2>
+        <p class="section-desc">
+          Popri researchi, štruktúre a obsahu odporúčam riešiť aj technické a reputačné vrstvy,
+          ktoré pri úzkom sortimente pomáhajú rozšíriť viditeľnosť bez potreby desiatok produktových URL.
+        </p>
+        <div class="two-col-eq">
+          <div class="card">
+            <strong>Technické SEO</strong>
+            <ul>
+              <li>kontrola indexácie, canonical nastavení a sitemap,</li>
+              <li>optimalizácia title, meta description a heading hierarchie,</li>
+              <li>revízia interného prelinkovania a orphan pages,</li>
+              <li>návrh FAQ / Article / Product schema prvkov,</li>
+              <li>kontrola duplicitných alebo slabých URL.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>Obsahová autorita a trust</strong>
+            <ul>
+              <li>rozvoj tematických hubov podľa tém okolo hnojív,</li>
+              <li>FAQ bloky pri produktoch a tematických stránkach,</li>
+              <li>sprievodcovia nákupom a porovnávacie články,</li>
+              <li>obsah pre sezónne špičky a recirkuláciu návštevnosti,</li>
+              <li>prepojenie blogu s produktovým katalógom.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>Meranie a reporting</strong>
+            <ul>
+              <li>mesačný prehľad organickej návštevnosti a trendov,</li>
+              <li>tracking priorizovaných landing pages a produktov,</li>
+              <li>sledovanie vývoja tém, ktoré generujú dopyt,</li>
+              <li>identifikácia článkov vhodných na aktualizáciu,</li>
+              <li>priebežný zoznam odporúčaných úprav.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>Konverzný presah</strong>
+            <ul>
+              <li>lepšie CTA v blogových článkoch a produktových sekciách,</li>
+              <li>odporúčania pre produktové cross-linky,</li>
+              <li>obsahové bloky pre edukáciu tesne pred nákupom,</li>
+              <li>práca s dôkazmi, benefitmi a odpoveďami na námietky,</li>
+              <li>zosúladenie SEO copy s brand voice GardenYX.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. FÁZY SPOLUPRÁCE -->
+      <section class="section">
+        <div class="mini-label">Fázy spolupráce</div>
+        <h2>Od štartu po dlhodobú exekúciu</h2>
+        <p class="section-desc">
+          Spoluprácu odporúčam rozdeliť na onboarding, implementačné úpravy a pravidelný mesačný režim,
+          aby sa dalo priebežne merať, čo funguje a kde treba pridať.
+        </p>
+        <div class="four-col">
+          <div class="card">
+            <span class="step-label">Fáza 1</span>
+            <strong>Audit a research</strong>
+            <p>Analýza webu, dopytu, konkurencie a identifikácia rýchlych winov.</p>
+          </div>
+          <div class="card">
+            <span class="step-label">Fáza 2</span>
+            <strong>Architektúra a plán</strong>
+            <p>Návrh štruktúry, mapa URL, obsahové priority a redakčný kalendár.</p>
+          </div>
+          <div class="card">
+            <span class="step-label">Fáza 3</span>
+            <strong>Implementácia</strong>
+            <p>Úpravy produktových stránok, meta prvkov, interných odkazov, tematických landing pages a prvých článkov.</p>
+          </div>
+          <div class="card">
+            <span class="step-label">Fáza 4</span>
+            <strong>Kontinuálny rast</strong>
+            <p>Priebežná optimalizácia, publikovanie ďalších článkov a reporting s návrhmi na ďalší mesiac.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. KPI -->
+      <section class="section">
+        <div class="mini-label">Metriky</div>
+        <h2>KPI, ktoré má zmysel sledovať</h2>
+        <p class="section-desc">
+          Pri SEO pre e-shop je dôležité merať nielen pozície, ale aj kvalitu návštevnosti a jej reálny obchodný dopad.
+        </p>
+        <div class="four-col">
+          <div class="card">
+            <strong>Organické vstupy</strong>
+            <p>Vývoj návštevnosti na produktových stránkach, blogu a nových tematických landing pages.</p>
+          </div>
+          <div class="card">
+            <strong>Viditeľnosť tém</strong>
+            <p>Rast pokrytia prioritných keyword klastrov a posun dôležitých URL.</p>
+          </div>
+          <div class="card">
+            <strong>CTR z vyhľadávania</strong>
+            <p>Zlepšenie výkonu titulkov a meta popisov v organických výsledkoch.</p>
+          </div>
+          <div class="card">
+            <strong>Asistované konverzie</strong>
+            <p>Prínos blogu, poradenských stránok a produktových URL k nákupnej ceste.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </body>
+</html>
