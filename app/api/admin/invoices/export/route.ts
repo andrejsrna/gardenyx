@@ -30,7 +30,8 @@ export async function GET(request: Request) {
 
   const orders = await prisma.order.findMany({
     where: {
-      createdAt: { gte: start, lt: end }
+      createdAt: { gte: start, lt: end },
+      status: 'completed'
     },
     include: { items: true, addresses: true, meta: true }
   }) as OrderWithRelations[];
