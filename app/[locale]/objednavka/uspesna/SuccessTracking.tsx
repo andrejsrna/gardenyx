@@ -24,7 +24,7 @@ export default function SuccessTracking({ orderId, total, tax, shipping, items }
     void (async () => {
       try {
         await tracking.purchaseWithConversionAPI(orderId, items, total, undefined, tax, shipping);
-        reportPurchaseConversion({ value: total, transactionId: orderId });
+        reportPurchaseConversion({ value: total, transactionId: orderId, items });
         sessionStorage.setItem(key, 'true');
       } catch {
         // ignore

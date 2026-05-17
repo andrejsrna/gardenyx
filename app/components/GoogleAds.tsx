@@ -9,15 +9,24 @@ const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-16627910487';
 const PURCHASE_CONVERSION_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_CONVERSION_LABEL || 'aXspCIyAm8gZENeO5_g9';
 const ADD_TO_CART_CONVERSION_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_ADD_TO_CART_CONVERSION_LABEL || 'YjPMCJDhxcIbENeO5_g9';
 
+type ConversionItem = {
+  id: string | number;
+  name: string;
+  price: number;
+  quantity: number;
+  category?: string;
+};
+
 type ConversionParams = {
   sendTo: string;
   url?: string;
   value?: number;
   currency?: string;
   transactionId?: string;
+  items?: ConversionItem[];
 };
 
-const fireConversion = ({ sendTo, url, value = 1.0, currency = 'EUR', transactionId }: ConversionParams) => {
+const fireConversion = ({ sendTo, url, value = 1.0, currency = 'EUR', transactionId, items }: ConversionParams) => {
   if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
     return false;
   }
@@ -33,6 +42,13 @@ const fireConversion = ({ sendTo, url, value = 1.0, currency = 'EUR', transactio
     value,
     currency,
     ...(transactionId ? { transaction_id: transactionId } : {}),
+    ...(items && items.length > 0 ? { items: items.map(i => ({
+      id: String(i.id),
+      name: i.name,
+      price: i.price,
+      quantity: i.quantity,
+      ...(i.category ? { category: i.category } : {}),
+    })) } : {}),
     event_callback: callback,
   });
 
@@ -106,6 +122,7 @@ type ConversionOptions = {
   value?: number;
   transactionId?: string;
   currency?: string;
+  items?: ConversionItem[];
 };
 
 export const reportPurchaseConversion = (options?: ConversionOptions) =>
@@ -115,6 +132,7 @@ export const reportPurchaseConversion = (options?: ConversionOptions) =>
     value: options?.value,
     transactionId: options?.transactionId,
     currency: options?.currency,
+    items: options?.items,
   });
 
 export const reportAddToCartConversion = (options?: ConversionOptions) =>
