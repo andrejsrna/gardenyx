@@ -311,6 +311,7 @@
     "tip": "💡 Tip: You can get coupons by subscribing to the newsletter or during special promotions"
   },
   "checkout": {
+    "deliveryDisclaimerSk": "We currently deliver <strong>only within Slovakia</strong>. International delivery is coming soon.",
     "meta": {
       "title": "Checkout | GardenYX",
       "description": "Complete your GardenYX order."

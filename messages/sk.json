@@ -311,6 +311,7 @@
     "tip": "💡 Tip: Kupóny môžete získať pri odbere newsletteru alebo počas špeciálnych akcií"
   },
   "checkout": {
+    "deliveryDisclaimerSk": "Momentálne doručujeme <strong>iba na územie Slovenska</strong>. Doručenie do zahraničia plánujeme spustiť čoskoro.",
     "meta": {
       "title": "Pokladňa | GardenYX",
       "description": "Dokončite svoju objednávku GardenYX."

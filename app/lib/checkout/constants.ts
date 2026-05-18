@@ -8,8 +8,9 @@ export const RECOMMENDED_PRODUCT_IDS = '839,680,669,47';
 
 export const SUPPORTED_COUNTRIES = [
   { code: 'SK', label: 'Slovensko' },
-  { code: 'CZ', label: 'Česká republika' },
-  { code: 'HU', label: 'Maďarsko' },
+  // { code: 'CZ', label: 'Česká republika' },  // dočasne vypnuté
+  // { code: 'HU', label: 'Maďarsko' },          // dočasne vypnuté
+  // { code: 'AT', label: 'Rakúsko' },            // pripravené pre budúce povolenie
 ] as const;
 
 export type SupportedCountryCode = typeof SUPPORTED_COUNTRIES[number]['code'];
