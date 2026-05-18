@@ -310,6 +310,11 @@
     "submit": "Apply coupon",
     "tip": "💡 Tip: You can get coupons by subscribing to the newsletter or during special promotions"
   },
+  "deliveryPopup": {
+    "title": "Delivery to Slovakia only",
+    "body": "We currently ship exclusively within the Slovak Republic. We look forward to expanding our delivery to other countries soon.",
+    "cta": "Got it"
+  },
   "checkout": {
     "deliveryDisclaimerSk": "We currently deliver <strong>only within Slovakia</strong>. International delivery is coming soon.",
     "meta": {

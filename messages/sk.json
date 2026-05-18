@@ -310,6 +310,11 @@
     "submit": "Použiť kupón",
     "tip": "💡 Tip: Kupóny môžete získať pri odbere newsletteru alebo počas špeciálnych akcií"
   },
+  "deliveryPopup": {
+    "title": "Doručujeme iba na Slovensko",
+    "body": "Momentálne realizujeme doručenie výhradne na územie Slovenskej republiky. Tešíme sa, že čoskoro rozšírime doručovanie aj do zahraničia.",
+    "cta": "Rozumiem"
+  },
   "checkout": {
     "deliveryDisclaimerSk": "Momentálne doručujeme <strong>iba na územie Slovenska</strong>. Doručenie do zahraničia plánujeme spustiť čoskoro.",
     "meta": {

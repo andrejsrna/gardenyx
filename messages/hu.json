@@ -310,6 +310,11 @@
     "submit": "Kupon alkalmazása",
     "tip": "💡 Tipp: Kuponokat a hírlevélre feliratkozva vagy speciális akciók során szerezhet"
   },
+  "deliveryPopup": {
+    "title": "Csak Szlovákiába szállítunk",
+    "body": "Jelenleg kizárólag a Szlovák Köztársaság területére szállítunk. Hamarosan örömmel bővítjük a kézbesítést más országokba is.",
+    "cta": "Értem"
+  },
   "checkout": {
     "deliveryDisclaimerSk": "Jelenleg <strong>csak Szlovákiába</strong> szállítunk. A külföldi szállítás hamarosan elérhető lesz.",
     "meta": {

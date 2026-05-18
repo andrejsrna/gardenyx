@@ -5,6 +5,7 @@ import { routing } from '../../i18n/routing';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SalesSuspensionBanner from '../components/SalesSuspensionBanner';
+import DeliveryCountryPopup from '../components/DeliveryCountryPopup';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
 import { CookieConsentProvider } from '../context/CookieConsentContext';
@@ -35,6 +36,7 @@ export default async function LocaleLayout({
         <CartProvider>
           <CookieConsentProvider>
             {!isAdminRoute && <SalesSuspensionBanner />}
+            {!isAdminRoute && <DeliveryCountryPopup />}
             {!isAdminRoute && <Header locale={locale} />}
             {children}
             {!isAdminRoute && <Footer />}
