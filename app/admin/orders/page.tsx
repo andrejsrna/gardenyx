@@ -55,7 +55,8 @@ async function ensurePacketaStatuses(orders: Order[]) {
   if (!hasPacketaCredentials()) return;
 
   const ordersToSync = orders.filter(order =>
-    getMetaValue(order, '_packeta_packet_id') && !getMetaValue(order, '_packeta_status_text')
+    getMetaValue(order, '_packeta_packet_id') &&
+    !['completed', 'cancelled'].includes(order.status)
   );
 
   for (const order of ordersToSync) {

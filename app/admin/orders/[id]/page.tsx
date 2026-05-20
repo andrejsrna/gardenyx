@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
 import { sendOrderConfirmationEmail, sendOrderNotificationToAdmin } from '@/app/lib/email/order-confirmation';
 import { calculateTotalWeight } from '@/app/lib/packeta';
 import { Builder, Parser } from 'xml2js';
+import { createInvoiceForOrder } from '@/app/lib/invoice/create-invoice';
 
 type PageProps = {
   params?: Promise<{ id: string }>;
@@ -100,6 +102,17 @@ export default async function OrderDetailPage({ params }: PageProps) {
   const invoiceNumber = order.meta.find(m => m.key === '_invoice_number')?.value;
 
   const orderNumberLabel = order.orderNumber ? `#${order.orderNumber}` : `#${order.id}`;
+
+  async function generateInvoiceAction() {
+    'use server';
+    const fresh = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true, addresses: true, meta: true }
+    });
+    if (!fresh) throw new Error('Order not found');
+    await createInvoiceForOrder(fresh, { force: true });
+    revalidatePath(`/admin/orders/${orderId}`);
+  }
 
   async function retryPacketaAndResend() {
     'use server';
@@ -347,24 +360,38 @@ export default async function OrderDetailPage({ params }: PageProps) {
         ) : null}
         </div>
 
-        {invoiceUrl && (
-          <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Faktúra</p>
-            <div className="mt-2">
-              <Link
-                href={invoiceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm text-emerald-300 hover:text-emerald-200 underline flex items-center gap-2"
-              >
-                <span>Stiahnuť faktúru {invoiceNumber ? `(${invoiceNumber})` : ''}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12.75h-15m7.5-7.5v15" />
-                </svg>
-              </Link>
+        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Faktúra</p>
+              {invoiceUrl ? (
+                <div className="mt-2">
+                  <Link
+                    href={invoiceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-emerald-300 hover:text-emerald-200 underline flex items-center gap-2"
+                  >
+                    <span>Stiahnuť faktúru {invoiceNumber ? `(${invoiceNumber})` : ''}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12.75h-15m7.5-7.5v15" />
+                    </svg>
+                  </Link>
+                </div>
+              ) : (
+                <p className="mt-1 text-sm text-slate-400">Faktúra nebola vygenerovaná.</p>
+              )}
             </div>
+            <form action={generateInvoiceAction}>
+              <button
+                type="submit"
+                className="rounded-full border border-emerald-600/40 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 transition hover:border-emerald-400 hover:text-emerald-100 whitespace-nowrap"
+              >
+                {invoiceUrl ? 'Regenerovať faktúru' : 'Vytvoriť faktúru'}
+              </button>
+            </form>
           </div>
-        )}
+        </div>
 
         <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
           <div className="flex items-center justify-between">
