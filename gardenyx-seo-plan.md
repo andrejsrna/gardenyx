@@ -51,7 +51,7 @@ Hlavne obchodne SEO jadro:
 | `/hnojiva-hakofyt/` | hotove | Hakofyt, organicke NPK hnojivo, listove hnojivo | cely Hakofyt rad | Pouzit ako hlavny hub a interne prelinkovat vsetky nove landing pages. |
 | `/hnojivo/` | chyba | hnojivo, zahradne hnojivo, NPK hnojivo | vsetky hnojiva | Vytvorit hlavnu kategoriu/hub pre hnojiva. |
 | `/organicke-hnojivo/` | chyba | organicke hnojivo, prirodne hnojivo | Hakofyt rad | Vytvorit edukacno-predajnu landing page. |
-| `/npk-hnojivo/` | chyba | NPK hnojivo, hnojivo NPK, co znamena NPK | Hakofyt rad | Vytvorit landing page alebo silny poradensky hub. |
+| `/blog/npk-hnojivo-co-znamena/` | hotove cez DB | NPK hnojivo, hnojivo NPK, co znamena NPK | Hakofyt rad | Pouzivat ako poradensky clanok, nie ako samostatnu landing page. |
 
 ### Priorita B - druha vlna
 
@@ -82,7 +82,7 @@ Blog ma fungovat ako podpora predaja. Kazdy clanok musi mat jasny interny odkaz 
 | --- | --- | --- | --- |
 | 1 | `/blog/ako-a-kedy-hnojit-travnik-na-jar/` | Ako a kedy hnojit travnik na jar | `/hnojivo-na-travnik/` + `hakofyt-max-trava` |
 | 2 | `/blog/dusikate-vapno/` | Dusikate vapno: pouzitie, davkovanie, rizika | `/hnojivo-na-travnik/`, `/hnojivo-na-zeleninu/`, `/kupit/` |
-| 3 | `/blog/npk-hnojivo-co-znamena/` | NPK hnojivo: co znamenaju cisla na obale | `/hnojiva-hakofyt/`, `/npk-hnojivo/` |
+| 3 | `/blog/npk-hnojivo-co-znamena/` | NPK hnojivo: co znamenaju cisla na obale | `/hnojiva-hakofyt/`, `/hnojivo/` |
 | 4 | `/blog/organicke-vs-mineralne-hnojivo/` | Organicke vs mineralne hnojivo | `/organicke-hnojivo/`, `/hnojiva-hakofyt/` |
 | 5 | `/blog/hnojivo-na-paradajky/` | Hnojivo na paradajky: kedy a ako davkovat | `/hnojivo-na-zeleninu/`, `hakofyt-plus-zelenina` |
 | 6 | `/blog/kedy-hnojit-ovocne-stromy/` | Kedy a ako hnojit ovocne stromy | `/hnojivo-na-ovocne-stromy/` |
@@ -167,7 +167,7 @@ Najdolezitejsie interné linky:
 ### Faza 2 - 3 az 4 tyzdne
 
 - Vytvorit `/organicke-hnojivo/`.
-- Vytvorit `/npk-hnojivo/`.
+- Pouzit DB clanok `npk-hnojivo-co-znamena` namiesto samostatnej `/npk-hnojivo/` landing page.
 - Vytvorit a publikovat clanky:
   - `npk-hnojivo-co-znamena`,
   - `organicke-vs-mineralne-hnojivo`,
@@ -220,7 +220,7 @@ Najlepsia najblizsia exekucia je:
 1. Opravit copy a canonical drobnosti na existujucich SEO landing pages.
 2. Vytvorit `/hnojivo/` ako hlavny hnojivovy hub.
 3. Publikovat/overit `dusikate-vapno` clanok.
-4. Vytvorit `npk-hnojivo` a `organicke-hnojivo` ako dve autoritativne podporne stranky.
+4. Vytvorit `organicke-hnojivo` ako autoritativnu podporna stranku a NPK riesit cez DB clanok `npk-hnojivo-co-znamena`.
 5. Nastavit internu linkovu strukturu tak, aby kazda nova URL posilnovala Hakofyt hub a relevantny produkt.
 
 ## 11. Realizovane 2026-05-10
@@ -249,19 +249,15 @@ Dokoncena prva implementacna cast SEO planu:
   - `/en/fertilizer` a `/hu/mutragya` maju spravne canonical,
   - `/sitemap.xml` vracia `200` a obsahuje novu `/sk/hnojivo` URL s hreflang alternates.
 
-Najblizsia odporucana exekucia po tejto faze: vytvorit `/organicke-hnojivo/` a nasledne `/npk-hnojivo/`.
+Najblizsia odporucana exekucia po tejto faze: vytvorit `/organicke-hnojivo/` a NPK riesit cez poradensky DB clanok.
 
 ## 12. Realizovane 2026-05-21
 
 Dokoncena dalsia implementacna cast SEO planu pre NPK a ocistenie blogovych zdrojov:
 
-- Vytvorena nova SEO landing page `/npk-hnojivo/` so SK/EN/HU lokalizaciami:
-  - SK: `/sk/npk-hnojivo`
-  - EN: `/en/npk-fertilizer`
-  - HU: `/hu/npk-mutragya`
-- Stranka obsahuje SEO metadata, canonical, hreflang alternates, OpenGraph data, FAQ blok a `CollectionPage` + `FAQPage` JSON-LD.
-- Doplnene route mapovanie v `i18n/routing.ts`.
-- Doplnena sitemap entry pre novu landing page.
+- Samostatna `/npk-hnojivo/` landing page bola odstranena, pretoze NPK uz pokryva DB clanok `npk-hnojivo-co-znamena`.
+- NPK clanok zostava v DB ako poradensky obsah a nove landing pages na neho odkazujuc cez blog URL.
+- Route mapovanie a sitemap entry pre `/npk-hnojivo/` boli odstranene.
 - Vytvorena nova transakcna SEO landing page `/hnojivo-na-zeleninu/` so SK/EN/HU lokalizaciami:
   - SK: `/sk/hnojivo-na-zeleninu`
   - EN: `/en/vegetable-fertilizer`
@@ -282,7 +278,7 @@ Dokoncena dalsia implementacna cast SEO planu pre NPK a ocistenie blogovych zdro
   - `npm run lint` preslo,
   - `npx tsc --noEmit` preslo,
   - `npx prisma generate` preslo s DB env,
-  - `npx next build` preslo s realnym `.env.local` a v build vystupe su nove routy `/[locale]/npk-hnojivo`, `/[locale]/hnojivo-na-zeleninu` a `/[locale]/hnojivo-na-kvety`.
+  - `npx next build` preslo s realnym `.env.local` a v build vystupe su nove routy `/[locale]/hnojivo-na-zeleninu` a `/[locale]/hnojivo-na-kvety`.
 
 Najblizsia odporucana exekucia po tejto faze:
 

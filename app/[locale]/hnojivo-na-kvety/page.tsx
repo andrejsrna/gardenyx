@@ -23,6 +23,12 @@ const localeToOgLocale: Record<string, string> = {
   hu: 'hu_HU',
 };
 
+const npkArticleSlug: Record<string, string> = {
+  sk: 'npk-hnojivo-co-znamena',
+  en: 'npk-fertilizer-meaning',
+  hu: 'npk-mutragya-jelentese',
+};
+
 const copy = {
   sk: {
     metaTitle: 'Hnojivo na kvety: balkónové rastliny, hortenzie a záhony | GardenYX',
@@ -57,7 +63,7 @@ const copy = {
     related: [
       ['/hnojivo', 'Hnojivo pre záhradu'],
       ['/organicke-hnojivo', 'Organické hnojivo'],
-      ['/npk-hnojivo', 'Čo znamená NPK hnojivo'],
+      ['npkArticle', 'Čo znamená NPK hnojivo'],
     ],
     faqTitle: 'Časté otázky k hnojivu na kvety',
     faqs: [
@@ -100,7 +106,7 @@ const copy = {
     related: [
       ['/hnojivo', 'Garden fertilizer'],
       ['/organicke-hnojivo', 'Organic fertilizer'],
-      ['/npk-hnojivo', 'What NPK fertilizer means'],
+      ['npkArticle', 'What NPK fertilizer means'],
     ],
     faqTitle: 'Flower fertilizer FAQ',
     faqs: [
@@ -143,7 +149,7 @@ const copy = {
     related: [
       ['/hnojivo', 'Kerti műtrágya'],
       ['/organicke-hnojivo', 'Szerves műtrágya'],
-      ['/npk-hnojivo', 'Mit jelent az NPK'],
+      ['npkArticle', 'Mit jelent az NPK'],
     ],
     faqTitle: 'Gyakori kérdések virág műtrágyához',
     faqs: [
@@ -329,7 +335,15 @@ export default async function FlowerFertilizerPage({ params }: { params: Promise
         <h2 className="text-3xl font-black tracking-tight text-stone-950">{t.relatedTitle}</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {t.related.map(([href, label]) => (
-            <Link key={href} href={href as AnyHref} className="rounded-3xl border border-amber-100 bg-white p-6 font-bold text-amber-800 shadow-sm hover:border-amber-300">
+            <Link
+              key={href}
+              href={
+                href === 'npkArticle'
+                  ? { pathname: '/blog/[slug]', params: { slug: npkArticleSlug[locale] || npkArticleSlug.sk } }
+                  : href as AnyHref
+              }
+              className="rounded-3xl border border-amber-100 bg-white p-6 font-bold text-amber-800 shadow-sm hover:border-amber-300"
+            >
               {label}
             </Link>
           ))}

@@ -20,7 +20,6 @@ const STATIC_ROUTES: StaticRoute[] = [
   { sk: '/sk/hnojiva-hakofyt', en: '/en/hakofyt-fertilizers', hu: '/hu/hakofyt-mutragyak', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-04-26' },
   { sk: '/sk/hnojivo', en: '/en/fertilizer', hu: '/hu/mutragya', changeFrequency: 'weekly', priority: 0.85, lastModified: '2026-05-10' },
   { sk: '/sk/organicke-hnojivo', en: '/en/organic-fertilizer', hu: '/hu/szerves-mutragya', changeFrequency: 'weekly', priority: 0.82, lastModified: '2026-05-10' },
-  { sk: '/sk/npk-hnojivo', en: '/en/npk-fertilizer', hu: '/hu/npk-mutragya', changeFrequency: 'weekly', priority: 0.82, lastModified: '2026-05-21' },
   { sk: '/sk/hnojivo-na-zeleninu', en: '/en/vegetable-fertilizer', hu: '/hu/zoldseg-mutragya', changeFrequency: 'monthly', priority: 0.74, lastModified: '2026-05-21' },
   { sk: '/sk/hnojivo-na-kvety', en: '/en/flower-fertilizer', hu: '/hu/virag-mutragya', changeFrequency: 'monthly', priority: 0.72, lastModified: '2026-05-21' },
   { sk: '/sk/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-04-26' },
