@@ -9,15 +9,6 @@ import type {
 } from './content-types';
 import type { LocalProduct } from './products';
 import { getAllProducts } from './products';
-import {
-  getLocalPosts,
-  getLocalPostBySlug,
-  getLocalTags,
-  getLocalTagBySlug,
-  getLocalCategories,
-  getLocalCategoryBySlug,
-} from './local-posts';
-
 
 const POSTS_PER_PAGE = 9;
 
@@ -33,7 +24,7 @@ export const getPaginatedPosts = async (options: { page?: number; search?: strin
   const tagId = options.tags;
   const categoryId = options.category;
 
-  const allPosts = await getLocalPosts();
+  const allPosts: BlogPost[] = [];
 
   const filtered = allPosts.filter((post) => {
     if (tagId) {
@@ -60,13 +51,20 @@ export const getPaginatedPosts = async (options: { page?: number; search?: strin
 };
 
 export const getPostBySlug = async (slug: string): Promise<WordPressPost | null> => {
-  return getLocalPostBySlug(slug);
+  void slug;
+  return null;
 };
 
-export const getAllTags = async (): Promise<WordPressTag[]> => getLocalTags();
-export const getTagBySlug = async (slug: string): Promise<WordPressTag | null> => getLocalTagBySlug(slug);
-export const getCategories = async (): Promise<WordPressCategory[]> => getLocalCategories();
-export const getCategoryBySlug = async (slug: string): Promise<WordPressCategory | null> => getLocalCategoryBySlug(slug);
+export const getAllTags = async (): Promise<WordPressTag[]> => [];
+export const getTagBySlug = async (slug: string): Promise<WordPressTag | null> => {
+  void slug;
+  return null;
+};
+export const getCategories = async (): Promise<WordPressCategory[]> => [];
+export const getCategoryBySlug = async (slug: string): Promise<WordPressCategory | null> => {
+  void slug;
+  return null;
+};
 
 // Product helpers (local markdown) kept for compatibility with old Woo imports
 export type ProductType = Product;
@@ -80,17 +78,17 @@ export const getWooCommerceUrl = (endpoint: string) => `${process.env.NEXT_PUBLI
 
 // Blog helper shims
 export const getLatestPosts = async (limit = 5): Promise<BlogPost[]> => {
-  const posts = await getLocalPosts();
-  return posts.slice(0, limit);
+  void limit;
+  return [];
 };
 export const getPopularPosts = getLatestPosts;
 export const getPostsByCategory = async (_categorySlug: string, limit = 5): Promise<BlogPost[]> => {
-  const posts = await getLocalPosts();
-  return posts.slice(0, limit);
+  void limit;
+  return [];
 };
 export const getRelatedPosts = async (_slug: string, limit = 3): Promise<BlogPost[]> => {
-  const posts = await getLocalPosts();
-  return posts.slice(0, limit);
+  void limit;
+  return [];
 };
 export const getMediaDetails = async (id: number) => {
   void id;

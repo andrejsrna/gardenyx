@@ -1,19 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 const STORAGE_KEY = 'gardenyx_delivery_popup_seen';
 
 export default function DeliveryCountryPopup() {
   const t = useTranslations('deliveryPopup');
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      setVisible(true);
-    }
-  }, []);
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !localStorage.getItem(STORAGE_KEY);
+  });
 
   function close() {
     localStorage.setItem(STORAGE_KEY, '1');

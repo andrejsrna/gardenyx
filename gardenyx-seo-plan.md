@@ -57,8 +57,8 @@ Hlavne obchodne SEO jadro:
 
 | URL | Stav | Primarne KW | Produktovy ciel | Akcia |
 | --- | --- | --- | --- | --- |
-| `/hnojivo-na-zeleninu/` | chyba | hnojivo na zeleninu, hnojivo na paradajky, hnojivo na uhorky | Hakofyt Plus zelenina | Vytvorit landing page + FAQ davkovanie. |
-| `/hnojivo-na-kvety/` | chyba | hnojivo na kvety, hnojivo na hortenzie, hnojivo na levandule | Hakofyt B kvety | Vytvorit landing page, neskor clanky pre hortenzie/levandule. |
+| `/hnojivo-na-zeleninu/` | hotove 2026-05-21 | hnojivo na zeleninu, hnojivo na paradajky, hnojivo na uhorky | Hakofyt Plus zelenina | Doplnit clanok `hnojivo-na-paradajky` a sledovat CTR. |
+| `/hnojivo-na-kvety/` | hotove 2026-05-21 | hnojivo na kvety, hnojivo na hortenzie, hnojivo na levandule | Hakofyt B kvety | Doplnit clanok `hnojivo-na-hortenzie` a prelinkovanie. |
 | `/startovacie-hnojivo/` | chyba | startovacie hnojivo, hnojivo na sadenice | Hakofyt Plus startovacie | Vytvorit pred sezonou vysadby. |
 | `/hnojivo-na-cucoriedky/` | chyba | hnojivo na cucoriedky, hnojivo pre kyslomilne rastliny | Hakofyt B cucoriedky | Rychla long-tail stranka. |
 | `/hnojivo-na-jahody/` | chyba | hnojivo na jahody | Hakofyt B jahody | Rychla long-tail stranka. |
@@ -176,8 +176,8 @@ Najdolezitejsie interné linky:
 
 ### Faza 3 - 2. mesiac
 
-- Vytvorit `/hnojivo-na-zeleninu/`.
-- Vytvorit `/hnojivo-na-kvety/`.
+- `/hnojivo-na-zeleninu/` hotove 2026-05-21.
+- `/hnojivo-na-kvety/` hotove 2026-05-21.
 - Vytvorit clanky:
   - `hnojivo-na-paradajky`,
   - `hnojivo-na-hortenzie`,
@@ -250,3 +250,52 @@ Dokoncena prva implementacna cast SEO planu:
   - `/sitemap.xml` vracia `200` a obsahuje novu `/sk/hnojivo` URL s hreflang alternates.
 
 Najblizsia odporucana exekucia po tejto faze: vytvorit `/organicke-hnojivo/` a nasledne `/npk-hnojivo/`.
+
+## 12. Realizovane 2026-05-21
+
+Dokoncena dalsia implementacna cast SEO planu pre NPK a ocistenie blogovych zdrojov:
+
+- Vytvorena nova SEO landing page `/npk-hnojivo/` so SK/EN/HU lokalizaciami:
+  - SK: `/sk/npk-hnojivo`
+  - EN: `/en/npk-fertilizer`
+  - HU: `/hu/npk-mutragya`
+- Stranka obsahuje SEO metadata, canonical, hreflang alternates, OpenGraph data, FAQ blok a `CollectionPage` + `FAQPage` JSON-LD.
+- Doplnene route mapovanie v `i18n/routing.ts`.
+- Doplnena sitemap entry pre novu landing page.
+- Vytvorena nova transakcna SEO landing page `/hnojivo-na-zeleninu/` so SK/EN/HU lokalizaciami:
+  - SK: `/sk/hnojivo-na-zeleninu`
+  - EN: `/en/vegetable-fertilizer`
+  - HU: `/hu/zoldseg-mutragya`
+- Stranka cieli na `Hakofyt Plus zelenina`, obsahuje produktovy CTA blok, FAQ a `WebPage` + `Product` + `FAQPage` JSON-LD.
+- Vytvorena nova transakcna SEO landing page `/hnojivo-na-kvety/` so SK/EN/HU lokalizaciami:
+  - SK: `/sk/hnojivo-na-kvety`
+  - EN: `/en/flower-fertilizer`
+  - HU: `/hu/virag-mutragya`
+- Stranka cieli na `Hakofyt B kvety`, obsahuje produktovy CTA blok, FAQ a `WebPage` + `Product` + `FAQPage` JSON-LD.
+- Doplneny interny link z hlavnej stranky `/hnojivo/` na novu zeleninovu aj kvetovu landing page.
+- Odstraneny stary klbovy fallback z `app/lib/blog-data.ts`.
+- Legacy blog helpery v `app/lib/content.ts` uz nevracaju staticke markdown posty; verejny blog ma ist cez databazovy model `Article`.
+- Opraveny lint problem v `DeliveryCountryPopup.tsx`, kde sa `setState` volal synchronne v `useEffect`.
+- Lokalne doplneny `.env.local` pre build a DB overenia. Subor je ignorovany Gitom a nesmie sa commitovat.
+- Spusteny `scripts/upsert-npk-hnojivo-article.ts` proti realnej databaze; clanok `npk-hnojivo-co-znamena` je upsertnuty ako `published`.
+- Overenie po implementacii:
+  - `npm run lint` preslo,
+  - `npx tsc --noEmit` preslo,
+  - `npx prisma generate` preslo s DB env,
+  - `npx next build` preslo s realnym `.env.local` a v build vystupe su nove routy `/[locale]/npk-hnojivo`, `/[locale]/hnojivo-na-zeleninu` a `/[locale]/hnojivo-na-kvety`.
+
+Najblizsia odporucana exekucia po tejto faze:
+
+1. Overit verejne URL clanku `npk-hnojivo-co-znamena` v SK/EN/HU po deployi.
+2. Pripravit DB seed clanok `hnojivo-na-paradajky` a prelinkovat ho na `/hnojivo-na-zeleninu/`.
+3. Pripravit DB seed clanok `hnojivo-na-hortenzie` a prelinkovat ho na `/hnojivo-na-kvety/`.
+4. Doplnit produktove stranky o kratky interny blok "Poradime s vyberom" s odkazom na relevantnu landing page.
+5. Po deployi skontrolovat v Google Search Console indexaciu novych URL, sitemap a prve impressions pre NPK/zelenina/kvety query.
+
+## 13. Poznatky pre dalsie pokracovanie
+
+- Hlavny blog flow uz ide cez databazovy model `Article`; staticke `content/posts` netreba dalej rozvijat a legacy helpery maju ostat bez markdown fallbacku.
+- Landing pages maju teraz lepsi komercny zaklad ako blog: najprv oplati posilnit transakcne URL a az potom pridavat podporne clanky.
+- Najblizsie obsahove clanky maju byt velmi cielene: `hnojivo-na-paradajky`, `hnojivo-na-hortenzie`, potom `kedy-hnojit-ovocne-stromy`.
+- Po kvetoch a zelenine dava zmysel ist do rychlych long-tail landing pages: cucoriedky, jahody, citrusy, startovacie hnojivo a ihlicnany.
+- Pri kazdej novej DB article seed treba kontrolovat interny link minimalne na jednu landing page, jeden produkt a jeden suvisiaci poradensky alebo hub obsah.
