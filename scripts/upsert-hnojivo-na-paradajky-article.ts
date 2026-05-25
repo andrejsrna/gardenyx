@@ -4,7 +4,7 @@ import prisma from '../app/lib/prisma';
 
 const slug = 'hnojivo-na-paradajky';
 const publishedAt = new Date('2026-05-25T12:00:00.000Z');
-const imageBase = '/articles/hnojivo-na-paradajky';
+const imageBase = 'https://cdn.gardenyx.eu/gardenyx/articles/hnojivo-na-paradajky';
 const coverImage = `${imageBase}/hnojivo-na-paradajky-hero.png`;
 
 const content = String.raw`Paradajky patria medzi plodiny, pri ktorých je výživa vidieť veľmi rýchlo. Keď majú dostatok svetla, vody a vyvážených živín, tvoria pevné rastliny, zdravé listy, kvety a postupne aj kvalitné plody. Keď je výživa nevyrovnaná, výsledkom môže byť bujný zelený porast bez úrody, slabé kvitnutie alebo rastliny citlivé na stres.
