@@ -5,7 +5,7 @@ import prisma from '../app/lib/prisma';
 const slug = 'hnojivo-na-paradajky';
 const publishedAt = new Date('2026-05-25T12:00:00.000Z');
 const imageBase = 'https://cdn.gardenyx.eu/gardenyx/articles/hnojivo-na-paradajky';
-const coverImage = `${imageBase}/hnojivo-na-paradajky-hero.png`;
+const coverImage = `${imageBase}/hnojivo-na-paradajky-hero-ai.png`;
 
 const content = String.raw`Paradajky patria medzi plodiny, pri ktorých je výživa vidieť veľmi rýchlo. Keď majú dostatok svetla, vody a vyvážených živín, tvoria pevné rastliny, zdravé listy, kvety a postupne aj kvalitné plody. Keď je výživa nevyrovnaná, výsledkom môže byť bujný zelený porast bez úrody, slabé kvitnutie alebo rastliny citlivé na stres.
 
@@ -17,7 +17,7 @@ Najlepšie je myslieť na výživu ešte pred výsadbou. Pôda by mala byť kypr
 
 Po výsadbe nechajte rastliny najprv zakoreniť. Príliš silné hnojenie hneď po presadení môže byť zbytočné, najmä ak bola pôda pripravená. Jemná podpora po ujmutí sadeníc dáva zmysel vtedy, keď rastlina začne tvoriť nové listy a vidíte, že prekonala presádzací stres.
 
-![Vývoj hnojenia paradajok od výsadby po plody](${imageBase}/kedy-hnojit-paradajky.png)
+![Vývoj hnojenia paradajok od výsadby po plody](${imageBase}/kedy-hnojit-paradajky-ai.png)
 
 ## Čo paradajky potrebujú počas rastu
 
@@ -49,7 +49,7 @@ Ak hľadáte širší prehľad výživy pre zeleninovú záhradu, pozrite si aj 
 
 ## Najčastejšie chyby pri hnojení paradajok
 
-![Najčastejšie chyby pri hnojení paradajok](${imageBase}/chyby-pri-hnojeni-paradajok.png)
+![Najčastejšie chyby pri hnojení paradajok](${imageBase}/chyby-pri-hnojeni-paradajok-ai.png)
 
 Najčastejšou chybou je prehnojenie dusíkom. Rastlina potom vyzerá silno, má veľa listov, ale menej energie smeruje do kvetov a plodov. Druhou chybou je hnojenie počas horúčav alebo na rastliny, ktoré trpia suchom. Vtedy najprv riešte zálievku a stabilizáciu rastliny.
 
@@ -101,7 +101,7 @@ The best time to think about tomato nutrition is before planting. Soil should be
 
 After transplanting, let plants establish first. Strong feeding immediately after planting can be unnecessary, especially if the soil was prepared well. Gentle support makes sense once the plant starts making new leaves and has moved past transplant stress.
 
-![Tomato fertilizing stages from planting to fruit](${imageBase}/kedy-hnojit-paradajky.png)
+![Tomato fertilizing stages from planting to fruit](${imageBase}/kedy-hnojit-paradajky-ai.png)
 
 ## What tomatoes need during growth
 
@@ -133,7 +133,7 @@ For a broader overview, see the [vegetable fertilizer](/en/vegetable-fertilizer)
 
 ## Common tomato fertilizing mistakes
 
-![Common tomato fertilizing mistakes](${imageBase}/chyby-pri-hnojeni-paradajok.png)
+![Common tomato fertilizing mistakes](${imageBase}/chyby-pri-hnojeni-paradajok-ai.png)
 
 The most common mistake is excess nitrogen. The plant may look strong and leafy, but less energy goes into flowers and fruit. Another mistake is fertilizing during heat or when plants are drought-stressed. In that case, stabilize watering first.
 
@@ -185,7 +185,7 @@ A tápanyagellátásra már ültetés előtt érdemes gondolni. A talaj legyen l
 
 Kiültetés után először hagyja a növényt meggyökeresedni. Az erős trágyázás közvetlenül ültetés után felesleges lehet, főleg jól előkészített talajban. Kíméletes tápanyagpótlás akkor indokolt, amikor a növény már új leveleket hoz és túljutott az átültetési stresszen.
 
-![A paradicsom trágyázásának szakaszai az ültetéstől a termésig](${imageBase}/kedy-hnojit-paradajky.png)
+![A paradicsom trágyázásának szakaszai az ültetéstől a termésig](${imageBase}/kedy-hnojit-paradajky-ai.png)
 
 ## Mire van szüksége a paradicsomnak növekedés közben
 
@@ -217,7 +217,7 @@ Zöldségekhez, így paradicsomhoz is megfelelő választás a [Hakofyt Plus Zö
 
 ## Gyakori hibák a paradicsom trágyázásánál
 
-![Gyakori hibák a paradicsom trágyázásánál](${imageBase}/chyby-pri-hnojeni-paradajok.png)
+![Gyakori hibák a paradicsom trágyázásánál](${imageBase}/chyby-pri-hnojeni-paradajok-ai.png)
 
 A leggyakoribb hiba a túl sok nitrogén. A növény erősnek és lombosnak tűnhet, de kevesebb energia jut virágokra és termésre. Másik hiba a hőségben vagy szárazságtól szenvedő növényen végzett trágyázás. Ilyenkor először az öntözést és a növény stabilizálását kell rendezni.
 
