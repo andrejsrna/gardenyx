@@ -234,7 +234,7 @@ export default async function VegetableFertilizerPage({ params }: { params: Prom
         '@id': `${productUrl}#product`,
         name: product.name,
         description: productDescription,
-        image: productImage ? `${siteUrl}${productImage.src}` : undefined,
+        image: productImage?.src || undefined,
         sku: product.sku || undefined,
         brand: { '@type': 'Brand', name: 'Hakofyt' },
         offers: {
