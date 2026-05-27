@@ -243,6 +243,16 @@ export default async function VegetableFertilizerPage({ params }: { params: Prom
           priceCurrency: product.currency || 'EUR',
           price: product.price,
           availability: product.stock_status === 'outofstock' ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+          shippingDetails: ['SK', 'CZ', 'HU'].map((country) => ({
+            '@type': 'OfferShippingDetails',
+            shippingRate: { '@type': 'MonetaryAmount', value: '3.50', currency: 'EUR' },
+            shippingDestination: { '@type': 'DefinedRegion', addressCountry: country },
+            deliveryTime: {
+              '@type': 'ShippingDeliveryTime',
+              handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+              transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+            },
+          })),
         },
       },
       {
