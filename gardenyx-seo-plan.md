@@ -295,3 +295,114 @@ Najblizsia odporucana exekucia po tejto faze:
 - Najblizsie obsahove clanky maju byt velmi cielene: `hnojivo-na-paradajky`, `hnojivo-na-hortenzie`, potom `kedy-hnojit-ovocne-stromy`.
 - Po kvetoch a zelenine dava zmysel ist do rychlych long-tail landing pages: cucoriedky, jahody, citrusy, startovacie hnojivo a ihlicnany.
 - Pri kazdej novej DB article seed treba kontrolovat interny link minimalne na jednu landing page, jeden produkt a jeden suvisiaci poradensky alebo hub obsah.
+
+## 14. Aktualne GSC dopyty a odporucany dalsi postup (stav k 2026-06-02)
+
+Aktualny export GSC bol najdeny v subore `/root/Dopyty.csv`.
+
+### Aktualne zachytene dopyty
+
+- `gardenyx` - 14 kliknuti, 44 zobrazeni, CTR 31.82 %, pozicia 2.52
+- `hakofyt plus` - 2 kliknutia, 14 zobrazeni, CTR 14.29 %, pozicia 3.86
+- `hakofyt hnojivo` - 1 kliknutie, 13 zobrazeni, CTR 7.69 %, pozicia 11.92
+- `hakofyt` - 0 kliknuti, 17 zobrazeni, CTR 0 %, pozicia 7.65
+- `grotuxiv` - 0 kliknuti, 6 zobrazeni, CTR 0 %, pozicia 12.67
+- `hakofyt b` - 0 kliknuti, 3 zobrazenia, CTR 0 %, pozicia 2
+- `max trava` - 0 kliknuti, 1 zobrazenie, CTR 0 %, pozicia 1
+- `ake hnojivo na zeleninu` - 0 kliknuti, 1 zobrazenie, CTR 0 %, pozicia 5
+- `hakofyt max` - 0 kliknuti, 1 zobrazenie, CTR 0 %, pozicia 9
+- `fertilizers` - 0 kliknuti, 1 zobrazenie, CTR 0 %, pozicia 33
+- `fertilizer contact` - 0 kliknuti, 1 zobrazenie, CTR 0 %, pozicia 46
+
+### Co z tychto dat vyplyva
+
+1. Organika je zatial dominantne brandova.
+   - Najsilnejsie dopyty su `gardenyx`, `hakofyt plus`, `hakofyt hnojivo`, `hakofyt`.
+   - To znamena, ze Google uz web ciastocne spaja s brandom a produktovou radou Hakofyt.
+
+2. Najzaujimavejsi kratkodoby quick win je query `hakofyt`.
+   - Ma 17 zobrazeni, priemernu poziciu 7.65 a zatial 0 kliknuti.
+   - To je signal, ze ranking uz existuje, ale snippet alebo cielova stranka este nepresviedca na klik.
+
+3. Query `hakofyt hnojivo` je blizko dna lievika.
+   - Pozicia 11.92 je tesne za prvou stranou.
+   - Pri lepsom title, description a internom prelinkovani moze ist o relativne rychly posun.
+
+4. Objavil sa aj prvy nebrandovy signal `ake hnojivo na zeleninu`.
+   - Je to zatial len 1 zobrazenie, ale potvrdzuje, ze nova landing page `/hnojivo-na-zeleninu/` uz zacina zachytavat relevantny dopyt.
+   - Zatial to nie je dovod na velky rewrite, skor na trpezlive posilnovanie internymi linkami a obsahovou podporou.
+
+### Odporucany dalsi postup podla GSC
+
+#### Krok 1 - upravit snippet a intent pre Hakofyt hub
+
+Najskor sa oplati zlepsit stranky, ktore maju najvacsiu sancu vytazit existujuce brandovo-produktove impressions:
+
+- `/sk/hnojiva-hakofyt`
+- sekundarne aj `/sk/hnojivo`
+
+Ciel:
+- posilnit relevanciu na `hakofyt`, `hakofyt plus`, `hakofyt hnojivo`
+- zvysit CTR bez potreby novej URL
+
+Prakticky to znamena:
+- prepisat `title` a `description` tak, aby explicitne pomenovali Hakofyt a typy hnojiv,
+- v hero sekcii jasne vysvetlit, co je Hakofyt a pre koho je vhodny,
+- doplnit FAQ otazky obsahujucu brandove dopyty a intent typu "ktory Hakofyt na travnik / zeleninu / kvety / ovocne stromy".
+
+#### Krok 2 - posilnit internu architekturu okolo Hakofyt Plus
+
+`hakofyt plus` uz prinasa kliky a ma dobru poziciu. Preto treba posilnit interny cluster:
+
+- z `/hnojiva-hakofyt/` linkovat na konkretne use-case landing pages,
+- na hub stranke rozdelit varianty Hakofyt Plus podla pouzitia,
+- pouzit anchor texty typu `Hakofyt Plus na ovocne dreviny`, `Hakofyt Plus zelenina`, `Hakofyt Max trava`.
+
+#### Krok 3 - pokracovat v transakcnych long-tail landing pages
+
+Podla aktualnych dat je stale rozumnejsie rozsirovat komercne use-case URL nez pisat siroky blog bez nakupneho intentu.
+
+Odporucane poradie dalsich landing pages:
+
+1. `/hnojivo-na-cucoriedky/`
+2. `/hnojivo-na-jahody/`
+3. `/startovacie-hnojivo/`
+4. `/hnojivo-na-citrusy/`
+5. `/hnojivo-na-ihlicnany/`
+6. `/burina-v-travniku/`
+
+Dovod:
+- kazda z tychto tem ma jasny produktovy ciel,
+- ide o prirodzene long-tail use cases,
+- daju sa dobre prelinkovat z existujuceho Hakofyt hubu a produktovych detailov.
+
+#### Krok 4 - blog pouzivat ako podporu landing pages, nie ako hlavny motor
+
+Najblizsie clanky maju podporovat uz existujuce alebo bezprostredne planovane landing pages:
+
+- `kedy-hnojit-ovocne-stromy`
+- `organicke-vs-mineralne-hnojivo`
+- `ako-a-kedy-hnojit-travnik-na-jar`
+- `hnojivo-na-hortenzie`
+
+Kazdy clanok ma mat:
+- 1 hlavny odkaz na landing page,
+- 1 odkaz na konkretny produkt,
+- 1 suvisiaci interny poradensky odkaz.
+
+### Prakticka priorita na najblizsi sprint
+
+Odporucane poradie exekucie:
+
+1. Upravit metadata a snippet strategiu pre `/hnojiva-hakofyt`.
+2. Doplinit interni prelinkovanie okolo `Hakofyt Plus` a hlavnych use-case stranok.
+3. Vytvorit `/hnojivo-na-cucoriedky/` ako dalsiu transakcnu landing page.
+4. Nadviazat clankom `kedy-hnojit-ovocne-stromy` alebo `hnojivo-na-hortenzie` podla toho, ktora landing page ma byt najblizsie posilnena.
+
+### Dolezita interpretacia dat
+
+Aktualny GSC export je maly a vhodny skor na urcenie smeru ako na tvrdou statisticku optimalizaciu. Napriek tomu uz ukazuje spravny pattern:
+
+- brand + produktovy cluster Hakofyt sa zacina chytat,
+- landing pages uz generuju prve nebrandove signaly,
+- dalsi rast ma ist cez silnejsi snippet, interni linking a dalsie komercne use-case URL.

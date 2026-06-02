@@ -35,6 +35,11 @@ export const routing = defineRouting({
       en: '/vegetable-fertilizer',
       hu: '/zoldseg-mutragya',
     },
+    '/hnojivo-na-cucoriedky': {
+      sk: '/hnojivo-na-cucoriedky',
+      en: '/blueberry-fertilizer',
+      hu: '/afonya-mutragya',
+    },
     '/hnojivo-na-kvety': {
       sk: '/hnojivo-na-kvety',
       en: '/flower-fertilizer',

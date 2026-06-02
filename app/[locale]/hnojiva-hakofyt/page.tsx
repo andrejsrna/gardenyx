@@ -23,6 +23,90 @@ const localeToOgLocale: Record<string, string> = {
   hu: 'hu_HU',
 };
 
+const localeToUseCaseIntro: Record<string, { eyebrow: string; title: string; description: string }> = {
+  sk: {
+    eyebrow: 'Hakofyt Plus / Hakofyt Max',
+    title: 'Vyberte si správne Hakofyt hnojivo podľa toho, čo pestujete',
+    description:
+      'Táto stránka slúži ako hlavný Hakofyt hub. Ak už viete, či riešite trávnik, zeleninu alebo ovocné dreviny, pokračujte na konkrétnu landing page s presnejším odporúčaním produktu.',
+  },
+  en: {
+    eyebrow: 'Hakofyt Plus / Hakofyt Max',
+    title: 'Choose the right Hakofyt fertilizer based on what you grow',
+    description:
+      'This page works as the main Hakofyt hub. If you already know whether you are treating a lawn, vegetables or fruit trees, continue to the dedicated landing page with a more precise product recommendation.',
+  },
+  hu: {
+    eyebrow: 'Hakofyt Plus / Hakofyt Max',
+    title: 'Válassza ki a megfelelő Hakofyt műtrágyát aszerint, hogy mit termeszt',
+    description:
+      'Ez az oldal a fő Hakofyt hubként működik. Ha már tudja, hogy gyepet, zöldséget vagy gyümölcsfát kezel, lépjen tovább a célzott landing oldalra a pontosabb termékajánláshoz.',
+  },
+};
+
+const localeToUseCaseCards: Record<string, Array<{ title: string; description: string; href: string; label: string }>> = {
+  sk: [
+    {
+      title: 'Hakofyt Plus na zeleninu',
+      description: 'Pre paradajky, uhorky, zemiaky aj bylinky. Vhodné, keď hľadáte hnojivo na zeleninu s jasným produktovým odporúčaním.',
+      href: '/sk/hnojivo-na-zeleninu',
+      label: 'Pozrieť hnojivo na zeleninu',
+    },
+    {
+      title: 'Hakofyt Plus na ovocné dreviny',
+      description: 'Pre jablone, slivky a ďalšie ovocné stromy. Dobrá voľba pre query okolo hnojenia ovocných drevín a jarnej výživy.',
+      href: '/sk/hnojivo-na-ovocne-stromy',
+      label: 'Pozrieť hnojivo na ovocné stromy',
+    },
+    {
+      title: 'Hakofyt Max na trávnik',
+      description: 'Ak riešite hustý zelený trávnik, vyšší dopyt po dusíku alebo regeneráciu po zime, sem vedie najrelevantnejšia cesta.',
+      href: '/sk/hnojivo-na-travnik',
+      label: 'Pozrieť hnojivo na trávnik',
+    },
+  ],
+  en: [
+    {
+      title: 'Hakofyt Plus for vegetables',
+      description: 'For tomatoes, cucumbers, potatoes and herbs. A strong fit when visitors are looking for a clear vegetable fertilizer recommendation.',
+      href: '/en/vegetable-fertilizer',
+      label: 'View vegetable fertilizer',
+    },
+    {
+      title: 'Hakofyt Plus for fruit trees',
+      description: 'For apples, plums and other fruit trees. A good match for fruit tree fertilizing intent and seasonal feeding queries.',
+      href: '/en/fruit-tree-fertilizer',
+      label: 'View fruit tree fertilizer',
+    },
+    {
+      title: 'Hakofyt Max for lawns',
+      description: 'If the goal is a dense green lawn, higher nitrogen demand or post-winter recovery, this is the most relevant next page.',
+      href: '/en/lawn-fertilizer',
+      label: 'View lawn fertilizer',
+    },
+  ],
+  hu: [
+    {
+      title: 'Hakofyt Plus zöldségekhez',
+      description: 'Paradicsomhoz, uborkához, burgonyához és fűszernövényekhez. Erős következő lépés, ha a látogató konkrét zöldségtrágya ajánlást keres.',
+      href: '/hu/zoldseg-mutragya',
+      label: 'Zöldség műtrágya megtekintése',
+    },
+    {
+      title: 'Hakofyt Plus gyümölcsfákhoz',
+      description: 'Almához, szilvához és más gyümölcsfákhoz. Jó illeszkedés a gyümölcsfák trágyázása és szezonális tápanyag-utánpótlás témákhoz.',
+      href: '/hu/gyumolcsfa-tragya',
+      label: 'Gyümölcsfa műtrágya megtekintése',
+    },
+    {
+      title: 'Hakofyt Max gyephez',
+      description: 'Ha a cél sűrű zöld gyep, magasabb nitrogénigény vagy téli regeneráció utáni erősítés, ez a legrelevánsabb következő oldal.',
+      href: '/hu/gyeptragya',
+      label: 'Gyep műtrágya megtekintése',
+    },
+  ],
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'hakofytFertilizersPage.meta' });
@@ -135,6 +219,8 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
       answer: t('faq.items.bestFertilizer.answer'),
     },
   ];
+  const useCaseCards = localeToUseCaseCards[locale] || localeToUseCaseCards.sk;
+  const useCaseIntro = localeToUseCaseIntro[locale] || localeToUseCaseIntro.sk;
 
   const npkItems = [
     { key: 'n', color: 'bg-emerald-500', light: 'bg-emerald-50', text: 'text-emerald-700' },
@@ -209,6 +295,38 @@ export default async function HakofytFertilizersPage({ params }: { params: Promi
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12 sm:py-14">
+        <div className="container mx-auto px-6">
+          <div className="mx-auto max-w-6xl rounded-3xl border border-emerald-100 bg-emerald-50/60 p-8 sm:p-10">
+            <div className="max-w-3xl">
+              <p className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-800 w-fit">
+                {useCaseIntro.eyebrow}
+              </p>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
+                {useCaseIntro.title}
+              </h2>
+              <p className="mt-4 text-base leading-8 text-stone-600">
+                {useCaseIntro.description}
+              </p>
+            </div>
+            <div className="mt-8 grid gap-6 lg:grid-cols-3">
+              {useCaseCards.map((card) => (
+                <article key={card.href} className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
+                  <h3 className="text-xl font-semibold text-stone-900">{card.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-stone-600">{card.description}</p>
+                  <NextLink
+                    href={card.href}
+                    className="mt-5 inline-flex items-center text-sm font-semibold text-emerald-700 transition hover:text-emerald-900"
+                  >
+                    {card.label}
+                  </NextLink>
+                </article>
+              ))}
             </div>
           </div>
         </div>
