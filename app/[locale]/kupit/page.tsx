@@ -12,9 +12,9 @@ const localeToOgLocale: Record<string, string> = {
 };
 
 const localeToShopPath: Record<string, string> = {
-  sk: '/kupit',
-  en: '/shop',
-  hu: '/vasarlas',
+  sk: '/sk/kupit',
+  en: '/en/shop',
+  hu: '/hu/vasarlas',
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const seoData = await getRankMathSEO();
   const fallbackTitle = t('title');
   const fallbackDescription = t('description');
-  const fallbackUrl = `${siteUrl}${localeToShopPath[locale] || '/kupit'}`;
+  const fallbackUrl = `${siteUrl}${localeToShopPath[locale] || '/sk/kupit'}`;
   const fallbackLocale = localeToOgLocale[locale] || 'sk_SK';
   const preferLocalizedFallback = locale !== 'sk';
 
@@ -62,7 +62,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
           : [`${siteUrl}/logo.png`],
       },
       alternates: {
-        canonical: preferLocalizedFallback ? fallbackUrl : (parser.getCanonical() || fallbackUrl),
+        canonical: fallbackUrl,
+        languages: {
+          sk: `${siteUrl}${localeToShopPath.sk}`,
+          en: `${siteUrl}${localeToShopPath.en}`,
+          hu: `${siteUrl}${localeToShopPath.hu}`,
+        },
       },
       robots: {
         index: parser.getRobots()?.includes('noindex') ? false : true,
@@ -110,6 +115,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     alternates: {
       canonical: fallbackUrl,
+      languages: {
+        sk: `${siteUrl}${localeToShopPath.sk}`,
+        en: `${siteUrl}${localeToShopPath.en}`,
+        hu: `${siteUrl}${localeToShopPath.hu}`,
+      },
     },
     robots: {
       index: true,
@@ -135,7 +145,7 @@ export default async function ShopPage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'productPage.breadcrumbs' });
   const breadcrumbItems = [
-    { name: t('home'), url: 'https://www.gardenyx.eu' },
+    { name: t('home'), url: `https://www.gardenyx.eu/${locale}` },
     { name: t('shop'), url: `https://www.gardenyx.eu${localeToShopPath[locale] || '/kupit'}` }
   ];
 

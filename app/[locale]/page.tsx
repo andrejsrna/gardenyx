@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locale } = await params;
   const meta = metaByLocale[locale] ?? metaByLocale.sk;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
-  const localePrefix = locale === 'sk' ? '' : `/${locale}`;
+  const localePrefix = `/${locale || 'sk'}`;
   const canonicalUrl = siteUrl ? `${siteUrl}${localePrefix}` : undefined;
 
   return {
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? {
           canonical: canonicalUrl,
           languages: {
-            'sk': `${siteUrl}`,
+            'sk': `${siteUrl}/sk`,
             'en': `${siteUrl}/en`,
             'hu': `${siteUrl}/hu`,
           },

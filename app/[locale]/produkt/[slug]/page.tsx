@@ -22,7 +22,19 @@ interface ProductPageProps {
 const DEFAULT_LOCALE = 'sk';
 
 function getLocalePrefix(locale: string) {
-  return locale === DEFAULT_LOCALE ? '' : `/${locale}`;
+  return `/${locale || DEFAULT_LOCALE}`;
+}
+
+function localizedProductPath(locale: string, slug: string) {
+  if (locale === 'en') return `/en/product/${slug}`;
+  if (locale === 'hu') return `/hu/termek/${slug}`;
+  return `/sk/produkt/${slug}`;
+}
+
+function localizedShopPath(locale: string) {
+  if (locale === 'en') return '/en/shop';
+  if (locale === 'hu') return '/hu/vasarlas';
+  return '/sk/kupit';
 }
 
 function stripHtml(value: string) {
@@ -45,8 +57,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
-  const localePrefix = getLocalePrefix(locale);
-  const canonicalUrl = siteUrl ? `${siteUrl}${localePrefix}/produkt/${product.slug}` : undefined;
+  const canonicalPath = localizedProductPath(locale, product.slug);
+  const canonicalUrl = siteUrl ? `${siteUrl}${canonicalPath}` : undefined;
   const description = stripHtml(product.short_description || product.description).slice(0, 160);
 
   return {
@@ -74,7 +86,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       ? {
           canonical: canonicalUrl,
           languages: {
-            sk: `${siteUrl}/produkt/${product.slug}`,
+            sk: `${siteUrl}/sk/produkt/${product.slug}`,
             en: `${siteUrl}/en/product/${product.slug}`,
             hu: `${siteUrl}/hu/termek/${product.slug}`,
           },
@@ -105,11 +117,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const stockClass = product.stock_status === 'instock' ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50';
   const localePrefix = getLocalePrefix(locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
-  const productUrl = siteUrl ? `${siteUrl}${localePrefix}/produkt/${product.slug}` : `${localePrefix}/produkt/${product.slug}`;
+  const productPath = localizedProductPath(locale, product.slug);
+  const shopPath = localizedShopPath(locale);
+  const productUrl = siteUrl ? `${siteUrl}${productPath}` : productPath;
 
   const breadcrumbItems = [
     { name: t('breadcrumbs.home'), url: siteUrl ? `${siteUrl}${localePrefix}` : `${localePrefix || '/'}` },
-    { name: t('breadcrumbs.shop'), url: siteUrl ? `${siteUrl}${localePrefix}/kupit` : `${localePrefix}/kupit` },
+    { name: t('breadcrumbs.shop'), url: siteUrl ? `${siteUrl}${shopPath}` : shopPath },
     { name: product.name, url: productUrl },
   ];
 

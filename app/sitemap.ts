@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { getAllProducts } from './lib/products';
+import { getLocalizedArticleSlug } from './lib/article';
 import prisma from './lib/prisma';
 
 const BASE_URL = 'https://www.gardenyx.eu';
@@ -52,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getAllProducts(),
     prisma.article.findMany({
       where: { status: 'published' },
-      select: { slug: true, publishedAt: true, updatedAt: true },
+      select: { slug: true, translations: true, publishedAt: true, updatedAt: true },
     }),
   ]);
 
@@ -70,19 +71,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
-  const articleEntries: MetadataRoute.Sitemap = articles.map((article) => ({
-    url: `${siteUrl}/sk/blog/${article.slug}`,
-    lastModified: article.updatedAt,
-    changeFrequency: 'monthly',
-    priority: 0.6,
-    alternates: {
-      languages: {
-        sk: `${siteUrl}/sk/blog/${article.slug}`,
-        en: `${siteUrl}/en/blog/${article.slug}`,
-        hu: `${siteUrl}/hu/blog/${article.slug}`,
+  const articleEntries: MetadataRoute.Sitemap = articles.map((article) => {
+    const localizedSlugs = {
+      sk: getLocalizedArticleSlug(article.slug, article.translations, 'sk'),
+      en: getLocalizedArticleSlug(article.slug, article.translations, 'en'),
+      hu: getLocalizedArticleSlug(article.slug, article.translations, 'hu'),
+    };
+
+    return {
+      url: `${siteUrl}/sk/blog/${localizedSlugs.sk}`,
+      lastModified: article.updatedAt,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+      alternates: {
+        languages: {
+          sk: `${siteUrl}/sk/blog/${localizedSlugs.sk}`,
+          en: `${siteUrl}/en/blog/${localizedSlugs.en}`,
+          hu: `${siteUrl}/hu/blog/${localizedSlugs.hu}`,
+        },
       },
-    },
-  }));
+    };
+  });
 
   return [...staticEntries, ...productEntries, ...articleEntries];
 }

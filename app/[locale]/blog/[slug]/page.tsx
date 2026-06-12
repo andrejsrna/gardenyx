@@ -6,7 +6,7 @@ import { setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
 import prisma from '@/app/lib/prisma';
-import { getArticleTranslation, localeBcp47, markdownToHtml } from '@/app/lib/article';
+import { getArticleTranslation, getLocalizedArticleSlug, localeBcp47, markdownToHtml } from '@/app/lib/article';
 
 // Deduplicates the DB call between generateMetadata and the page component
 // within a single request.
@@ -26,13 +26,18 @@ const getPublishedArticle = cache(async (slug: string, locale: string) => {
 
 type ArticlePageProps = { params: Promise<{ locale: string; slug: string }> };
 
+function localizedArticleUrl(siteUrl: string, locale: string, articleSlug: string, translations: unknown) {
+  const localizedSlug = getLocalizedArticleSlug(articleSlug, translations, locale);
+  return `${siteUrl}/${locale}/blog/${localizedSlug}`;
+}
+
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { locale, slug } = await params;
   const article = await getPublishedArticle(slug, locale);
   if (!article) return {};
   const t = getArticleTranslation(article.translations, locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
-  const canonicalUrl = `${siteUrl}/${locale === 'sk' ? '' : locale + '/'}blog/${slug}`;
+  const canonicalUrl = localizedArticleUrl(siteUrl, locale, article.slug, article.translations);
 
   return {
     title: t.metaTitle || t.title || slug,
@@ -40,9 +45,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        sk: `${siteUrl}/blog/${slug}`,
-        en: `${siteUrl}/en/blog/${slug}`,
-        hu: `${siteUrl}/hu/blog/${slug}`,
+        sk: localizedArticleUrl(siteUrl, 'sk', article.slug, article.translations),
+        en: localizedArticleUrl(siteUrl, 'en', article.slug, article.translations),
+        hu: localizedArticleUrl(siteUrl, 'hu', article.slug, article.translations),
       },
     },
     openGraph: {
@@ -75,7 +80,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   const title = t.title || article.slug;
   const contentHtml = t.content ? await markdownToHtml(t.content) : '';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
-  const canonicalUrl = `${siteUrl}/${locale === 'sk' ? '' : locale + '/'}blog/${slug}`;
+  const canonicalUrl = localizedArticleUrl(siteUrl, locale, article.slug, article.translations);
 
   const articleSchema = {
     '@context': 'https://schema.org',

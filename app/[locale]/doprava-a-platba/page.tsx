@@ -265,7 +265,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locale } = await params;
   const c = content[locale] ?? content.sk;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
-  const localePrefix = locale === 'sk' ? '' : `/${locale}`;
+  const localePrefix = `/${locale || 'sk'}`;
   return {
     title: c.meta.title,
     description: c.meta.description,
@@ -273,7 +273,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? {
           canonical: `${siteUrl}${localePrefix}/doprava-a-platba`,
           languages: {
-            sk: `${siteUrl}/doprava-a-platba`,
+            sk: `${siteUrl}/sk/doprava-a-platba`,
             en: `${siteUrl}/en/doprava-a-platba`,
             hu: `${siteUrl}/hu/doprava-a-platba`,
           },

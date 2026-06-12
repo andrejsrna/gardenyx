@@ -583,13 +583,23 @@ export async function generateMetadata({
   const { locale } = await params;
   const content = getContent(locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu';
-  const canonicalUrl = `${siteUrl}/${locale}/obchodne-podmienky`;
+  const localeToTermsPath: Record<string, string> = {
+    sk: '/sk/obchodne-podmienky',
+    en: '/en/terms-and-conditions',
+    hu: '/hu/aszf',
+  };
+  const canonicalUrl = `${siteUrl}${localeToTermsPath[locale] || localeToTermsPath.sk}`;
 
   return {
     title: content.metadataTitle,
     description: content.metadataDescription,
     alternates: {
       canonical: canonicalUrl,
+      languages: {
+        sk: `${siteUrl}${localeToTermsPath.sk}`,
+        en: `${siteUrl}${localeToTermsPath.en}`,
+        hu: `${siteUrl}${localeToTermsPath.hu}`,
+      },
     },
     openGraph: {
       title: content.metadataTitle,
