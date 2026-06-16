@@ -20,6 +20,61 @@ const LOCALES = [
   { code: 'hu', label: 'HU', name: 'Magyar' },
 ];
 
+const LOCALIZED_STATIC_PATHS: Record<string, Record<string, string>> = {
+  '/': { sk: '/sk', en: '/en', hu: '/hu' },
+  '/kupit': { sk: '/sk/kupit', en: '/en/shop', hu: '/hu/vasarlas' },
+  '/kontakt': { sk: '/sk/kontakt', en: '/en/contact', hu: '/hu/kapcsolat' },
+  '/hnojiva-hakofyt': { sk: '/sk/hnojiva-hakofyt', en: '/en/hakofyt-fertilizers', hu: '/hu/hakofyt-mutragyak' },
+  '/hnojivo': { sk: '/sk/hnojivo', en: '/en/fertilizer', hu: '/hu/mutragya' },
+  '/organicke-hnojivo': { sk: '/sk/organicke-hnojivo', en: '/en/organic-fertilizer', hu: '/hu/szerves-mutragya' },
+  '/hnojivo-na-zeleninu': { sk: '/sk/hnojivo-na-zeleninu', en: '/en/vegetable-fertilizer', hu: '/hu/zoldseg-mutragya' },
+  '/hnojivo-na-cucoriedky': { sk: '/sk/hnojivo-na-cucoriedky', en: '/en/blueberry-fertilizer', hu: '/hu/afonya-mutragya' },
+  '/hnojivo-na-kvety': { sk: '/sk/hnojivo-na-kvety', en: '/en/flower-fertilizer', hu: '/hu/virag-mutragya' },
+  '/hnojivo-na-travnik': { sk: '/sk/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya' },
+  '/hnojivo-na-ovocne-stromy': { sk: '/sk/hnojivo-na-ovocne-stromy', en: '/en/fruit-tree-fertilizer', hu: '/hu/gyumolcsfa-tragya' },
+  '/moj-ucet': { sk: '/sk/moj-ucet', en: '/en/my-account', hu: '/hu/fiokom' },
+  '/obchodne-podmienky': { sk: '/sk/obchodne-podmienky', en: '/en/terms-and-conditions', hu: '/hu/aszf' },
+  '/ochrana-osobnych-udajov': { sk: '/sk/ochrana-osobnych-udajov', en: '/en/privacy-policy', hu: '/hu/adatvedelem' },
+  '/stiahnut': { sk: '/sk/stiahnut', en: '/en/download', hu: '/hu/letoltes' },
+  '/newsletter': { sk: '/sk/newsletter', en: '/en/newsletter', hu: '/hu/hirlevel' },
+  '/pokladna': { sk: '/sk/pokladna', en: '/en/checkout', hu: '/hu/penztar' },
+  '/reset-hesla': { sk: '/sk/reset-hesla', en: '/en/reset-password', hu: '/hu/jelszo-visszaallitas' },
+  '/overit-email': { sk: '/sk/overit-email', en: '/en/verify-email', hu: '/hu/email-ellenorzes' },
+  '/blog': { sk: '/sk/blog', en: '/en/blog', hu: '/hu/blog' },
+  '/doprava-a-platba': { sk: '/sk/doprava-a-platba', en: '/en/doprava-a-platba', hu: '/hu/doprava-a-platba' },
+};
+
+function normalizeLocalizedPath(pathname: string) {
+  const segments = pathname.split('/').filter(Boolean);
+  const currentLocale = LOCALES.some(({ code }) => code === segments[0]) ? segments[0] : 'sk';
+  const pathWithoutLocale = `/${segments.slice(LOCALES.some(({ code }) => code === segments[0]) ? 1 : 0).join('/')}`;
+  return { segments, currentLocale, pathWithoutLocale: pathWithoutLocale === '/' ? '/' : pathWithoutLocale };
+}
+
+function matchStaticLocalizedPath(pathWithoutLocale: string) {
+  return Object.values(LOCALIZED_STATIC_PATHS).find((paths) => Object.values(paths).some((path) => path.replace(/^\/(sk|en|hu)/, '') === pathWithoutLocale));
+}
+
+function localizeProductPath(segments: string[], newLocale: string) {
+  const productIndex = segments.findIndex((segment) => ['produkt', 'product', 'termek'].includes(segment));
+  const slug = productIndex >= 0 ? segments[productIndex + 1] : undefined;
+  if (!slug) return null;
+  if (newLocale === 'en') return `/en/product/${slug}`;
+  if (newLocale === 'hu') return `/hu/termek/${slug}`;
+  return `/sk/produkt/${slug}`;
+}
+
+async function localizeBlogArticlePath(segments: string[], newLocale: string) {
+  const blogIndex = segments.findIndex((segment) => segment === 'blog');
+  const slug = blogIndex >= 0 ? segments[blogIndex + 1] : undefined;
+  if (!slug) return null;
+
+  const response = await fetch(`/api/localized-article-path?slug=${encodeURIComponent(slug)}&locale=${encodeURIComponent(newLocale)}`);
+  if (!response.ok) return null;
+  const data = await response.json() as { path?: string };
+  return data.path ?? null;
+}
+
 function LanguageSwitcher({ locale }: { locale: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -34,18 +89,32 @@ function LanguageSwitcher({ locale }: { locale: string }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  function switchLocale(newLocale: string) {
+  async function switchLocale(newLocale: string) {
     if (typeof window === 'undefined') return;
 
-    const segments = window.location.pathname.split('/').filter(Boolean);
-    if (segments.length > 0 && LOCALES.some(({ code }) => code === segments[0])) {
-      segments[0] = newLocale;
-    } else {
-      segments.unshift(newLocale);
+    const { segments, pathWithoutLocale } = normalizeLocalizedPath(window.location.pathname);
+    const searchAndHash = `${window.location.search}${window.location.hash}`;
+
+    let nextPath: string | null = null;
+
+    if (segments.includes('blog') && segments.length > segments.findIndex((segment) => segment === 'blog') + 1) {
+      nextPath = await localizeBlogArticlePath(segments, newLocale);
     }
 
-    const nextPath = `/${segments.join('/')}`;
-    window.location.assign(`${nextPath}${window.location.search}`);
+    nextPath ??= localizeProductPath(segments, newLocale);
+    nextPath ??= matchStaticLocalizedPath(pathWithoutLocale)?.[newLocale] ?? null;
+
+    if (!nextPath) {
+      const localizedSegments = [...segments];
+      if (localizedSegments.length > 0 && LOCALES.some(({ code }) => code === localizedSegments[0])) {
+        localizedSegments[0] = newLocale;
+      } else {
+        localizedSegments.unshift(newLocale);
+      }
+      nextPath = `/${localizedSegments.join('/')}`;
+    }
+
+    window.location.assign(`${nextPath}${searchAndHash}`);
     setOpen(false);
   }
 
