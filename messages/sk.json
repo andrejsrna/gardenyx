@@ -122,13 +122,29 @@
       "compareText": "Hakofyt spája presnosť minerálneho NPK hnojiva s výhodami organických zložiek. Obsahuje humínové látky, aminokyseliny a sacharidy, ktoré zlepšujú biologickú aktivitu pôdy a zvyšujú účinnosť živín – bez rizika zasolenia pôdy typického pre čisto minerálne hnojivá.",
       "mineral": {
         "title": "Minerálne hnojivo",
-        "pros": ["Rýchly nástup účinku", "Presné dávkovanie NPK", "Nízka cena"],
-        "cons": ["Bez organickej hmoty", "Riziko zasolenia pôdy", "Nevylepšuje mikrobiológiu"]
+        "pros": [
+          "Rýchly nástup účinku",
+          "Presné dávkovanie NPK",
+          "Nízka cena"
+        ],
+        "cons": [
+          "Bez organickej hmoty",
+          "Riziko zasolenia pôdy",
+          "Nevylepšuje mikrobiológiu"
+        ]
       },
       "organic": {
         "title": "Organické hnojivo",
-        "pros": ["Zlepšuje štruktúru pôdy", "Podporuje pôdne mikroorganizmy", "Dlhodobý efekt"],
-        "cons": ["Pomalší nástup účinku", "Menej presné NPK pomery", "Vyššia spotreba"]
+        "pros": [
+          "Zlepšuje štruktúru pôdy",
+          "Podporuje pôdne mikroorganizmy",
+          "Dlhodobý efekt"
+        ],
+        "cons": [
+          "Pomalší nástup účinku",
+          "Menej presné NPK pomery",
+          "Vyššia spotreba"
+        ]
       }
     },
     "faq": {
@@ -717,7 +733,8 @@
       "terms": "Obchodné podmienky",
       "privacy": "Ochrana osobných údajov",
       "download": "Na stiahnutie",
-      "cookies": "Nastavenia cookies"
+      "cookies": "Nastavenia cookies",
+      "withdrawal": "Odstúpiť od zmluvy"
     }
   },
   "common": {
@@ -751,6 +768,38 @@
     },
     "toasts": {
       "success": "Registrácia úspešná. Skontrolujte email pre overenie."
+    }
+  },
+  "withdrawalPage": {
+    "meta": {
+      "title": "Odstúpenie od zmluvy | GardenYX",
+      "description": "Chcete vrátiť tovar? Využite zákonné právo na odstúpenie od zmluvy do 14 dní od prevzatia tovaru."
+    },
+    "backLink": "Späť na úvod",
+    "title": "Odstúpenie od zmluvy",
+    "description": "Ako spotrebiteľ máte právo odstúpiť od kúpnej zmluvy do 14 dní od prevzatia tovaru bez udania dôvodu, v súlade s § 7 zákona č. 102/2014 Z. z. Vyplňte nižšie uvedený formulár. Po odoslaní Vám bezodkladne pošleme potvrdenie emailom.",
+    "form": {
+      "name": "Meno a priezvisko",
+      "namePlaceholder": "Ján Novák",
+      "orderNumber": "Číslo objednávky",
+      "orderNumberPlaceholder": "napr. 12345",
+      "orderNumberHint": "Číslo objednávky nájdete v potvrdzovacom emaili alebo vo svojom účte.",
+      "email": "Emailová adresa",
+      "emailPlaceholder": "jan@email.sk",
+      "submit": "Odoslať oznámenie o odstúpení",
+      "submitting": "Odosielam…",
+      "submitNote": "Po odoslaní formulára Vám ihneď zašleme potvrdenie s dátumom a časom.",
+      "successTitle": "Oznámenie bolo prijaté",
+      "successMessage": "Vaše oznámenie o odstúpení od zmluvy bolo úspešne odoslané a zaevidované.",
+      "confirmedAt": "Dátum a čas odoslania",
+      "successNote": "Potvrdenie sme zaslali na Vašu emailovú adresu. Platbu vrátime do 14 dní.",
+      "errorGeneric": "Nastala chyba. Skúste to prosím znova neskôr."
+    },
+    "info": {
+      "title": "Dôležité informácie",
+      "deadline": "Lehota na odstúpenie je 14 dní odo dňa prevzatia tovaru.",
+      "address": "Tovar zašlite späť na adresu: JOINA Garden, s. r. o., Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06.",
+      "contact": "Ak potrebujete pomoc, kontaktujte nás na"
     }
   }
 }

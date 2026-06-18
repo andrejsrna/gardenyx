@@ -122,13 +122,29 @@
       "compareText": "A Hakofyt az ásványi NPK műtrágya pontosságát ötvözi az organikus összetevők előnyeivel. Huminsavakat, aminosavakat és szénhidrátokat tartalmaz, amelyek javítják a talaj biológiai aktivitását és növelik a tápanyag-hasznosulást – a tisztán ásványi műtrágyákra jellemző talajsósodási kockázat nélkül.",
       "mineral": {
         "title": "Ásványi műtrágya",
-        "pros": ["Gyors hatás", "Pontos NPK adagolás", "Alacsony ár"],
-        "cons": ["Nincs szerves anyag", "Talajsósodás kockázata", "Nem javítja a mikrobiológiát"]
+        "pros": [
+          "Gyors hatás",
+          "Pontos NPK adagolás",
+          "Alacsony ár"
+        ],
+        "cons": [
+          "Nincs szerves anyag",
+          "Talajsósodás kockázata",
+          "Nem javítja a mikrobiológiát"
+        ]
       },
       "organic": {
         "title": "Organikus műtrágya",
-        "pros": ["Javítja a talajszerkezetet", "Támogatja a talajmikroorganizmusokat", "Hosszú távú hatás"],
-        "cons": ["Lassabb hatás", "Kevésbé pontos NPK arányok", "Nagyobb kijuttatási mennyiség"]
+        "pros": [
+          "Javítja a talajszerkezetet",
+          "Támogatja a talajmikroorganizmusokat",
+          "Hosszú távú hatás"
+        ],
+        "cons": [
+          "Lassabb hatás",
+          "Kevésbé pontos NPK arányok",
+          "Nagyobb kijuttatási mennyiség"
+        ]
       }
     },
     "faq": {
@@ -717,7 +733,8 @@
       "terms": "Általános szerződési feltételek",
       "privacy": "Adatvédelmi tájékoztató",
       "download": "Letöltés",
-      "cookies": "Cookie beállítások"
+      "cookies": "Cookie beállítások",
+      "withdrawal": "Elállás a szerződéstől"
     }
   },
   "common": {
@@ -751,6 +768,38 @@
     },
     "toasts": {
       "success": "Sikeres regisztráció. Ellenőrizze email-fiókját a megerősítéshez."
+    }
+  },
+  "withdrawalPage": {
+    "meta": {
+      "title": "Elállási jog | GardenYX",
+      "description": "Vissza szeretné küldeni a terméket? Éljen törvényes elállási jogával az áru átvételétől számított 14 napon belül."
+    },
+    "backLink": "Vissza a főoldalra",
+    "title": "Elállási jog",
+    "description": "Fogyasztóként joga van elállni a vásárlási szerződéstől az áru átvételétől számított 14 napon belül, indoklás nélkül, a vonatkozó fogyasztóvédelmi jogszabályok értelmében. Töltse ki az alábbi űrlapot, és azonnal visszaigazoló e-mailt küldünk.",
+    "form": {
+      "name": "Teljes név",
+      "namePlaceholder": "Kovács János",
+      "orderNumber": "Rendelésszám",
+      "orderNumberPlaceholder": "pl. 12345",
+      "orderNumberHint": "A rendelésszámát a visszaigazoló e-mailben vagy fiókjában találja.",
+      "email": "E-mail cím",
+      "emailPlaceholder": "kovacs@email.hu",
+      "submit": "Elállási nyilatkozat elküldése",
+      "submitting": "Küldés…",
+      "submitNote": "Az elküldés után azonnal visszaigazolást küldünk a dátummal és az időponttal.",
+      "successTitle": "Nyilatkozat megérkezett",
+      "successMessage": "Elállási nyilatkozatát sikeresen elküldtük és rögzítettük.",
+      "confirmedAt": "Küldés dátuma és ideje",
+      "successNote": "Visszaigazolást küldtünk az Ön e-mail-címére. A befizetést 14 napon belül visszatérítjük.",
+      "errorGeneric": "Hiba történt. Kérjük, próbálja újra később."
+    },
+    "info": {
+      "title": "Fontos tudnivalók",
+      "deadline": "Az elállási határidő az áru átvételétől számított 14 nap.",
+      "address": "Az árut kérjük visszaküldeni: JOINA Garden, s. r. o., Karpatské námestie 7770/10A, Pozsony – Rača 831 06, Szlovákia.",
+      "contact": "Ha segítségre van szüksége, lépjen velünk kapcsolatba:"
     }
   }
 }

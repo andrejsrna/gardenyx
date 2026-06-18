@@ -242,6 +242,9 @@ export default function Footer() {
             <Link href="/ochrana-osobnych-udajov" className="transition hover:text-green-700">
               {t('links.privacy')}
             </Link>
+            <Link href={'/odstupenie-od-zmluvy' as AnyHref} className="transition hover:text-green-700">
+              {t('links.withdrawal')}
+            </Link>
             <Link href="/stiahnut" className="transition hover:text-green-700">
               {t('links.download')}
             </Link>

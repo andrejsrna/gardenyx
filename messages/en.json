@@ -122,13 +122,29 @@
       "compareText": "Hakofyt combines the precision of a mineral NPK fertilizer with the benefits of organic components. It contains humic substances, amino acids and carbohydrates that improve soil biological activity and increase nutrient efficiency – without the soil salinization risk typical of purely mineral fertilizers.",
       "mineral": {
         "title": "Mineral fertilizer",
-        "pros": ["Fast action", "Precise NPK dosing", "Low cost"],
-        "cons": ["No organic matter", "Risk of soil salinization", "Does not improve microbiology"]
+        "pros": [
+          "Fast action",
+          "Precise NPK dosing",
+          "Low cost"
+        ],
+        "cons": [
+          "No organic matter",
+          "Risk of soil salinization",
+          "Does not improve microbiology"
+        ]
       },
       "organic": {
         "title": "Organic fertilizer",
-        "pros": ["Improves soil structure", "Supports soil microorganisms", "Long-term effect"],
-        "cons": ["Slower action", "Less precise NPK ratios", "Higher application rates"]
+        "pros": [
+          "Improves soil structure",
+          "Supports soil microorganisms",
+          "Long-term effect"
+        ],
+        "cons": [
+          "Slower action",
+          "Less precise NPK ratios",
+          "Higher application rates"
+        ]
       }
     },
     "faq": {
@@ -717,7 +733,8 @@
       "terms": "Terms and conditions",
       "privacy": "Privacy policy",
       "download": "Download",
-      "cookies": "Cookie settings"
+      "cookies": "Cookie settings",
+      "withdrawal": "Withdraw from contract"
     }
   },
   "common": {
@@ -751,6 +768,38 @@
     },
     "toasts": {
       "success": "Registration successful. Check your email for verification."
+    }
+  },
+  "withdrawalPage": {
+    "meta": {
+      "title": "Right of Withdrawal | GardenYX",
+      "description": "Want to return your order? Exercise your legal right to withdraw from the contract within 14 days of receiving your goods."
+    },
+    "backLink": "Back to homepage",
+    "title": "Right of Withdrawal",
+    "description": "As a consumer, you have the right to withdraw from the purchase contract within 14 days of receiving the goods without giving a reason, in accordance with applicable consumer protection law. Fill in the form below and we will immediately send you a confirmation email.",
+    "form": {
+      "name": "Full name",
+      "namePlaceholder": "John Smith",
+      "orderNumber": "Order number",
+      "orderNumberPlaceholder": "e.g. 12345",
+      "orderNumberHint": "You can find your order number in the confirmation email or in your account.",
+      "email": "Email address",
+      "emailPlaceholder": "john@email.com",
+      "submit": "Submit withdrawal notice",
+      "submitting": "Sending…",
+      "submitNote": "After submitting, we will immediately send you a confirmation with the date and time.",
+      "successTitle": "Notice received",
+      "successMessage": "Your withdrawal notice has been successfully submitted and recorded.",
+      "confirmedAt": "Date and time of submission",
+      "successNote": "We have sent a confirmation to your email address. We will refund your payment within 14 days.",
+      "errorGeneric": "An error occurred. Please try again later."
+    },
+    "info": {
+      "title": "Important information",
+      "deadline": "The withdrawal period is 14 days from the day you received the goods.",
+      "address": "Return the goods to: JOINA Garden, s. r. o., Karpatské námestie 7770/10A, Bratislava – Rača 831 06, Slovakia.",
+      "contact": "If you need assistance, please contact us at"
     }
   }
 }
