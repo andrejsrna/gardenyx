@@ -34,7 +34,7 @@ const contentByLocale: Record<string, LegalContent> = {
     appTabLabel: 'Aplikácia',
     bodyHtml: `
       <h2>1. Všeobecné ustanovenia</h2>
-      <p>Tieto Obchodné podmienky ("Podmienky") upravujú používanie internetového obchodu na gardenyx.eu ("E-shop") a nákup produktov ponúkaných prostredníctvom neho. E-shop prevádzkuje spoločnosť JOINA Garden, s. r. o., so sídlom Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovenská republika, IČO: 57 313 504 ("Predávajúci", "my").</p>
+      <p>Tieto Obchodné podmienky ("Podmienky") upravujú používanie internetového obchodu na gardenyx.eu ("E-shop") a nákup produktov ponúkaných prostredníctvom neho. E-shop prevádzkuje spoločnosť JOINA Garden, s. r. o., so sídlom Čerešňová 2625/2, 924 01 Galanta, Slovenská republika, IČO: 57 313 504 ("Predávajúci", "my").</p>
       <p>Odoslaním objednávky cez E-shop vy ("Kupujúci") súhlasíte s týmito Podmienkami. Prečítajte si ich pozorne pred uskutočnením nákupu.</p>
       <h2>2. Produkty</h2>
       <p>E-shop ponúka rastlinné hnojivá a súvisiace záhradnícke produkty ("Produkty"). Všetky Produkty sú popísané s ich kľúčovými charakteristikami, zložením, návodom na použitie a cenou na príslušných produktových stránkach.</p>
@@ -112,7 +112,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p>Ak sa akékoľvek ustanovenie týchto Podmienok ukáže ako neplatné alebo nevymáhateľné, ostatné ustanovenia zostávajú v plnej platnosti.</p>
       <h2>17. Kontaktujte nás</h2>
       <p>V prípade otázok k týmto Podmienkam alebo vašim objednávkam:</p>
-      <p><strong>JOINA Garden, s. r. o.</strong><br />Karpatské námestie 7770/10A<br />Bratislava – mestská časť Rača 831 06<br />Slovenská republika<br /><strong>IČO:</strong> 57 313 504<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
+      <p><strong>JOINA Garden, s. r. o.</strong><br />Čerešňová 2625/2<br />924 01 Galanta<br />Slovenská republika<br /><strong>IČO:</strong> 57 313 504<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
       <hr />
       <p><strong>Podmienky používania aplikácie</strong></p>
       <p><strong>GARDENYX</strong></p>
@@ -120,7 +120,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p><em>Mobilná aplikácia</em></p>
       <p>Dátum účinnosti: 6. marca 2026</p>
       <h2>1. Súhlas s podmienkami</h2>
-      <p>Tieto Podmienky používania ("Podmienky") upravujú váš prístup k mobilnej aplikácii GardenYX ("Aplikácia") a jej používanie. Aplikáciu prevádzkuje spoločnosť JOINA Garden, s. r. o., Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovenská republika, IČO: 57 313 504 ("my", "Spoločnosť").</p>
+      <p>Tieto Podmienky používania ("Podmienky") upravujú váš prístup k mobilnej aplikácii GardenYX ("Aplikácia") a jej používanie. Aplikáciu prevádzkuje spoločnosť JOINA Garden, s. r. o., Čerešňová 2625/2, 924 01 Galanta, Slovenská republika, IČO: 57 313 504 ("my", "Spoločnosť").</p>
       <p>Stiahnutím, nainštalovaním alebo používaním Aplikácie súhlasíte s týmito Podmienkami. Ak nesúhlasíte, Aplikáciu nepoužívajte.</p>
       <h2>2. Oprávnenosť</h2>
       <p>Na používanie Aplikácie musíte mať najmenej 16 rokov. Používaním Aplikácie potvrdzujete, že spĺňate túto vekovú podmienku. Ak máte menej ako 18 rokov, potvrdzujete, že ste získali súhlas rodiča alebo zákonného zástupcu.</p>
@@ -192,7 +192,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p>Ak sa akékoľvek ustanovenie týchto Podmienok ukáže ako neplatné alebo nevymáhateľné, ostatné ustanovenia zostávajú v plnej platnosti a účinnosti.</p>
       <h2>18. Kontaktujte nás</h2>
       <p>Ak máte akékoľvek otázky k týmto Podmienkam, kontaktujte nás:</p>
-      <p><strong>JOINA Garden, s. r. o.</strong><br />Karpatské námestie 7770/10A<br />Bratislava – mestská časť Rača 831 06<br />Slovenská republika<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
+      <p><strong>JOINA Garden, s. r. o.</strong><br />Čerešňová 2625/2<br />924 01 Galanta<br />Slovenská republika<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
     `,
   },
   en: {
@@ -211,7 +211,7 @@ const contentByLocale: Record<string, LegalContent> = {
     appTabLabel: 'App',
     bodyHtml: `
       <h2>1. General Provisions</h2>
-      <p>These Terms of Use ("Terms") govern the use of the online store at gardenyx.eu ("E-shop") and the purchase of products offered through it. The E-shop is operated by JOINA Garden, s. r. o., with its registered office at Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovak Republic, IČO: 57 313 504 ("Seller", "we", "us").</p>
+      <p>These Terms of Use ("Terms") govern the use of the online store at gardenyx.eu ("E-shop") and the purchase of products offered through it. The E-shop is operated by JOINA Garden, s. r. o., with its registered office at Čerešňová 2625/2, 924 01 Galanta, Slovak Republic, IČO: 57 313 504 ("Seller", "we", "us").</p>
       <p>By placing an order through the E-shop, you ("Buyer", "you") agree to these Terms. Please read them carefully before making a purchase.</p>
       <h2>2. Products</h2>
       <p>The E-shop offers plant fertilizers and related gardening products ("Products"). All Products are described with their key characteristics, composition, usage instructions, and pricing on the relevant product pages.</p>
@@ -289,7 +289,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p>If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.</p>
       <h2>17. Contact Us</h2>
       <p>For any questions or concerns regarding these Terms or your orders:</p>
-      <p><strong>JOINA Garden, s. r. o.</strong><br />Karpatské námestie 7770/10A<br />Bratislava – mestská časť Rača 831 06<br />Slovak Republic<br /><strong>IČO:</strong> 57 313 504<br /><strong>Email:</strong> support@gardenyx.eu</p>
+      <p><strong>JOINA Garden, s. r. o.</strong><br />Čerešňová 2625/2<br />924 01 Galanta<br />Slovak Republic<br /><strong>IČO:</strong> 57 313 504<br /><strong>Email:</strong> support@gardenyx.eu</p>
       <hr />
       <p><strong>App Terms of Use</strong></p>
       <p><strong>GARDENYX</strong></p>
@@ -297,7 +297,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p><em>Mobile Application</em></p>
       <p>Effective Date: March 6, 2026</p>
       <h2>1. Acceptance of Terms</h2>
-      <p>These Terms of Use ("Terms") govern your access to and use of the GardenYX mobile application ("App") operated by JOINA Garden, s. r. o., Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovak Republic, IČO: 57 313 504 ("we", "us", "Company").</p>
+      <p>These Terms of Use ("Terms") govern your access to and use of the GardenYX mobile application ("App") operated by JOINA Garden, s. r. o., Čerešňová 2625/2, 924 01 Galanta, Slovak Republic, IČO: 57 313 504 ("we", "us", "Company").</p>
       <p>By downloading, installing, or using the App, you agree to be bound by these Terms. If you do not agree, do not use the App.</p>
       <h2>2. Eligibility</h2>
       <p>You must be at least 16 years of age to use the App. By using the App, you represent and warrant that you meet this age requirement. If you are under 18, you confirm that you have obtained parental or guardian consent to use the App.</p>
@@ -374,7 +374,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p>If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.</p>
       <h2>18. Contact Us</h2>
       <p>If you have any questions about these Terms, please contact us:</p>
-      <p><strong>JOINA Garden, s. r. o.</strong><br />Karpatské námestie 7770/10A<br />Bratislava – mestská časť Rača 831 06<br />Slovak Republic<br /><strong>Email:</strong> support@gardenyx.eu</p>
+      <p><strong>JOINA Garden, s. r. o.</strong><br />Čerešňová 2625/2<br />924 01 Galanta<br />Slovak Republic<br /><strong>Email:</strong> support@gardenyx.eu</p>
     `,
   },
   hu: {
@@ -393,7 +393,7 @@ const contentByLocale: Record<string, LegalContent> = {
     appTabLabel: 'Alkalmazás',
     bodyHtml: `
       <h2>1. Általános rendelkezések</h2>
-      <p>Jelen Felhasználási Feltételek ("Feltételek") szabályozzák az online áruház használatát a gardenyx.eu webhelyen ("E-shop") és az ott kínált termékek megvásárlását. Az E-shopot a JOINA Garden, s. r. o. üzemelteti, amely a Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Szlovák Köztársaság, IČO: 57 313 504 címen bejegyzett szervezet ("Eladó", "mi", "nekünk").</p>
+      <p>Jelen Felhasználási Feltételek ("Feltételek") szabályozzák az online áruház használatát a gardenyx.eu webhelyen ("E-shop") és az ott kínált termékek megvásárlását. Az E-shopot a JOINA Garden, s. r. o. üzemelteti, amely a Čerešňová 2625/2, 924 01 Galanta, Szlovák Köztársaság, IČO: 57 313 504 címen bejegyzett szervezet ("Eladó", "mi", "nekünk").</p>
       <p>Az E-shopban történő megrendelés leadásával Ön ("Vásárló", "Ön") elfogadja jelen Feltételeket. Kérjük, olvassa el azokat figyelmesen a vásárlás előtt.</p>
       <h2>2. Termékek</h2>
       <p>Az E-shop növénytápszereket és kapcsolódó kertészeti termékeket kínál ("Termékek"). Az összes terméket a megfelelő termékoldalon leírják, beleértve a főbb jellemzőiket, összetételüket, használati útmutatóikat és áraikat.</p>
@@ -471,7 +471,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p>Ha a Feltételek bármely rendelkezése érvénytelenek vagy végrehajthatónak találtatnak, a többi rendelkezés teljes erővel és hatályban marad.</p>
       <h2>17. Kapcsolat</h2>
       <p>Bármilyen kérdésben vagy kifogásban ezekre a Feltételekre vagy megrendelésekre:</p>
-      <p><strong>JOINA Garden, s. r. o.</strong><br />Karpatské námestie 7770/10A<br />Bratislava – mestská časť Rača 831 06<br />Szlovák Köztársaság<br /><strong>IČO:</strong> 57 313 504<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
+      <p><strong>JOINA Garden, s. r. o.</strong><br />Čerešňová 2625/2<br />924 01 Galanta<br />Szlovák Köztársaság<br /><strong>IČO:</strong> 57 313 504<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
       <hr />
       <p><strong>Az alkalmazás felhasználási feltételei</strong></p>
       <p><strong>GARDENYX</strong></p>
@@ -479,7 +479,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p><em>Mobilalkalmazás</em></p>
       <p>Hatálybalépés dátuma: 2026. március 6.</p>
       <h2>1. Feltételek elfogadása</h2>
-      <p>Ezek a Felhasználási feltételek ("Feltételek") a GardenYX mobilalkalmazáshoz ("Alkalmazás") való hozzáférést és használatát szabályozzák, amelyet a JOINA Garden, s. r. o., Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Szlovák Köztársaság, IČO: 57 313 504 ("mi", "nekünk", "Vállalat") üzemeltet.</p>
+      <p>Ezek a Felhasználási feltételek ("Feltételek") a GardenYX mobilalkalmazáshoz ("Alkalmazás") való hozzáférést és használatát szabályozzák, amelyet a JOINA Garden, s. r. o., Čerešňová 2625/2, 924 01 Galanta, Szlovák Köztársaság, IČO: 57 313 504 ("mi", "nekünk", "Vállalat") üzemeltet.</p>
       <p>Az Alkalmazás letöltésével, telepítésével vagy használatával Ön elfogadja ezen Feltételekhez kötöttnek lenni. Ha nem fogadja el, ne használja az Alkalmazást.</p>
       <h2>2. Jogosultság</h2>
       <p>Legalább 16 éves korúnak kell lennie az Alkalmazás használatához. Az Alkalmazás használatával Ön kijelenti és garantálja, hogy megfelel ennek az életkori követelménynek. Ha 18 év alatti, megerősíti, hogy szülői vagy gondviselői hozzájárulást szerzett az Alkalmazás használatához.</p>
@@ -556,7 +556,7 @@ const contentByLocale: Record<string, LegalContent> = {
       <p>Ha ezen Feltételek bármely rendelkezése érvénytelennek vagy nem végrehajthatónak bizonyul, a többi rendelkezés teljes erővel és hatályban marad.</p>
       <h2>18. Kapcsolat</h2>
       <p>Ha bármilyen kérdése merül fel ezen Feltételek kapcsán, kérjük, vegye fel velünk a kapcsolatot:</p>
-      <p><strong>JOINA Garden, s. r. o.</strong><br />Karpatské námestie 7770/10A<br />Bratislava – mestská časť Rača 831 06<br />Szlovák Köztársaság<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
+      <p><strong>JOINA Garden, s. r. o.</strong><br />Čerešňová 2625/2<br />924 01 Galanta<br />Szlovák Köztársaság<br /><strong>E-mail:</strong> support@gardenyx.eu</p>
     `,
   },
 };

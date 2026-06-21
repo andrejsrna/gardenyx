@@ -21,10 +21,9 @@ export default function OrganizationSchema() {
     },
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Karpatské námestie 7770/10A',
-      addressLocality: 'Bratislava',
-      addressRegion: 'Rača',
-      postalCode: '831 06',
+      streetAddress: 'Čerešňová 2625/2',
+      addressLocality: 'Galanta',
+      postalCode: '924 01',
       addressCountry: 'SK',
     },
     identifier: {

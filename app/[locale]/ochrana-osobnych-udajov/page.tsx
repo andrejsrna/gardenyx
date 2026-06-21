@@ -19,10 +19,10 @@ const contentByLocale: Record<string, LocaleContent> = {
     effectiveDate: 'Dátum účinnosti: 6. marca 2026',
     body: `
 <h2>1. Úvod</h2>
-<p>Tieto Zásady ochrany osobných údajov popisujú, ako spoločnosť JOINA Garden, s. r. o., so sídlom Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovenská republika, IČO: 57 313 504 („my", „nás", „naša", „Spoločnosť"), zhromažduje, používa, uchováva a chráni vaše osobné údaje pri používaní mobilnej aplikácie GardenYX („Aplikácia") dostupnej na iOS, Android a ako progresívna webová aplikácia.</p>
+<p>Tieto Zásady ochrany osobných údajov popisujú, ako spoločnosť JOINA Garden, s. r. o., so sídlom Čerešňová 2625/2, 924 01 Galanta, Slovenská republika, IČO: 57 313 504 („my", „nás", „naša", „Spoločnosť"), zhromažduje, používa, uchováva a chráni vaše osobné údaje pri používaní mobilnej aplikácie GardenYX („Aplikácia") dostupnej na iOS, Android a ako progresívna webová aplikácia.</p>
 <p>Zaväzujeme sa chrániť vaše súkromie v súlade so všeobecným nariadením o ochrane údajov (EÚ) 2016/679 („GDPR") a príslušnou slovenskou legislatívou o ochrane osobných údajov. Používaním Aplikácie potvrdzujete, že ste si prečítali a porozumeli týmto Zásadám.</p>
 <h2>2. Prevádzkovateľ</h2>
-<p>Spoločnosť: JOINA Garden, s. r. o.<br/>Adresa: Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovenská republika<br/>IČO: 57 313 504<br/>E-mail: privacy@gardenyx.eu</p>
+<p>Spoločnosť: JOINA Garden, s. r. o.<br/>Adresa: Čerešňová 2625/2, 924 01 Galanta, Slovenská republika<br/>IČO: 57 313 504<br/>E-mail: privacy@gardenyx.eu</p>
 <h2>3. Osobné údaje, ktoré zhromažďujeme</h2>
 <h2>3.1 Údaje o účte</h2>
 <p>Pri vytváraní účtu zhromažďujeme:</p>
@@ -88,7 +88,7 @@ const contentByLocale: Record<string, LocaleContent> = {
 <h2>15. Zmeny týchto zásad</h2>
 <p>Tieto Zásady môžeme priebežne aktualizovať. O podstatných zmenách vás budeme informovať zverejnením aktualizovaných zásad v Aplikácii. „Dátum účinnosti" na začiatku tohto dokumentu uvádza, kedy nadobudla účinnosť najnovšia verzia.</p>
 <h2>16. Kontaktujte nás</h2>
-<p>JOINA Garden, s. r. o.<br/>Karpatské námestie 7770/10A<br/>Bratislava – mestská časť Rača 831 06, Slovenská republika<br/>E-mail: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
+<p>JOINA Garden, s. r. o.<br/>Čerešňová 2625/2<br/>924 01 Galanta, Slovenská republika<br/>E-mail: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
     `,
   },
   en: {
@@ -100,10 +100,10 @@ const contentByLocale: Record<string, LocaleContent> = {
     effectiveDate: 'Effective Date: March 6, 2026',
     body: `
 <h2>1. Introduction</h2>
-<p>This Privacy Policy describes how JOINA Garden, s. r. o., with its registered office at Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovak Republic, IČO: 57 313 504 ("we", "us", "our", "Company"), collects, uses, stores, and protects your personal data when you use the GardenYX mobile application ("App") available on iOS, Android, and as a progressive web application.</p>
+<p>This Privacy Policy describes how JOINA Garden, s. r. o., with its registered office at Čerešňová 2625/2, 924 01 Galanta, Slovak Republic, IČO: 57 313 504 ("we", "us", "our", "Company"), collects, uses, stores, and protects your personal data when you use the GardenYX mobile application ("App") available on iOS, Android, and as a progressive web application.</p>
 <p>We are committed to protecting your privacy in accordance with the General Data Protection Regulation (EU) 2016/679 ("GDPR") and applicable Slovak data protection legislation. By using the App, you acknowledge that you have read and understood this Privacy Policy.</p>
 <h2>2. Data Controller</h2>
-<p>Company: JOINA Garden, s. r. o.<br/>Address: Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Slovak Republic<br/>IČO: 57 313 504<br/>Email: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
+<p>Company: JOINA Garden, s. r. o.<br/>Address: Čerešňová 2625/2, 924 01 Galanta, Slovak Republic<br/>IČO: 57 313 504<br/>Email: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
 <h2>3. Personal Data We Collect</h2>
 <h2>3.1 Account Information</h2>
 <p>When you create an account, we collect:</p>
@@ -169,7 +169,7 @@ const contentByLocale: Record<string, LocaleContent> = {
 <h2>15. Changes to This Privacy Policy</h2>
 <p>We may update this Privacy Policy from time to time. We will notify you of material changes by posting the updated policy in the App. The "Effective Date" at the top of this document indicates when the latest version became effective.</p>
 <h2>16. Contact Us</h2>
-<p>JOINA Garden, s. r. o.<br/>Karpatské námestie 7770/10A<br/>Bratislava – mestská časť Rača 831 06, Slovak Republic<br/>Email: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
+<p>JOINA Garden, s. r. o.<br/>Čerešňová 2625/2<br/>924 01 Galanta, Slovak Republic<br/>Email: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
     `,
   },
   hu: {
@@ -181,10 +181,10 @@ const contentByLocale: Record<string, LocaleContent> = {
     effectiveDate: 'Hatálybalépés dátuma: 2026. március 6.',
     body: `
 <h2>1. Bevezetés</h2>
-<p>Jelen Adatvédelmi irányelvek leírják, hogyan gyűjti, használja, tárolja és védi személyes adatait a JOINA Garden, s. r. o., székhelye: Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Szlovák Köztársaság, IČO: 57 313 504 („mi", „Társaság") a GardenYX mobilalkalmazás („Alkalmazás") használata során, amely elérhető iOS-en, Androidon és progresszív webalkalmazásként.</p>
+<p>Jelen Adatvédelmi irányelvek leírják, hogyan gyűjti, használja, tárolja és védi személyes adatait a JOINA Garden, s. r. o., székhelye: Čerešňová 2625/2, 924 01 Galanta, Szlovák Köztársaság, IČO: 57 313 504 („mi", „Társaság") a GardenYX mobilalkalmazás („Alkalmazás") használata során, amely elérhető iOS-en, Androidon és progresszív webalkalmazásként.</p>
 <p>Elkötelezettek vagyunk magánszférájának védelme iránt az Általános Adatvédelmi Rendelet (EU) 2016/679 („GDPR") és a vonatkozó szlovák adatvédelmi jogszabályok szerint. Az Alkalmazás használatával Ön tudomásul veszi, hogy elolvasta és megértette jelen Irányelveket.</p>
 <h2>2. Adatkezelő</h2>
-<p>Társaság: JOINA Garden, s. r. o.<br/>Cím: Karpatské námestie 7770/10A, Bratislava – mestská časť Rača 831 06, Szlovák Köztársaság<br/>IČO: 57 313 504<br/>E-mail: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
+<p>Társaság: JOINA Garden, s. r. o.<br/>Cím: Čerešňová 2625/2, 924 01 Galanta, Szlovák Köztársaság<br/>IČO: 57 313 504<br/>E-mail: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
 <h2>3. Összegyűjtött személyes adatok</h2>
 <h2>3.1 Fiókadatok</h2>
 <p>Fiók létrehozásakor az alábbi adatokat gyűjtjük:</p>
@@ -247,7 +247,7 @@ const contentByLocale: Record<string, LocaleContent> = {
 <h2>15. Az Irányelvek módosítása</h2>
 <p>Jelen Irányelveket időről időre frissíthetjük. A lényeges változásokról az Alkalmazásban történő közzététellel értesítjük. A dokumentum elején lévő „Hatályba lépés" dátum jelzi a legfrissebb verzió érvényességét.</p>
 <h2>16. Kapcsolat</h2>
-<p>JOINA Garden, s. r. o.<br/>Karpatské námestie 7770/10A<br/>Bratislava – mestská časť Rača 831 06, Szlovák Köztársaság<br/>E-mail: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
+<p>JOINA Garden, s. r. o.<br/>Čerešňová 2625/2<br/>924 01 Galanta, Szlovák Köztársaság<br/>E-mail: <a href="mailto:privacy@gardenyx.eu" class="underline">privacy@gardenyx.eu</a></p>
     `,
   },
 };

@@ -178,8 +178,8 @@ export type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true
 const COMPANY_INFO = [
   'GardenYX',
   'JOINA Garden, s. r. o.',
-  'Karpatské námestie 7770/10A',
-  '831 06 Bratislava – mestská časť Rača',
+  'Čerešňová 2625/2',
+  '924 01 Galanta',
   'IČO: 57 313 504',
   'E-mail: support@gardenyx.eu'
 ];
