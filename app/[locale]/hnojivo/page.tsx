@@ -374,6 +374,13 @@ export default async function FertilizerPage({ params }: { params: Promise<{ loc
               name: product.name,
               image: toAbsoluteUrl(siteUrl, product.images[0]?.src),
               description: product.short_description,
+              offers: {
+                '@type': 'Offer',
+                url: `${siteUrl}/${locale === 'sk' ? 'sk/produkt' : locale === 'hu' ? 'hu/termek' : 'en/product'}/${product.slug}`,
+                priceCurrency: 'EUR',
+                price: parseFloat(product.price).toFixed(2),
+                availability: product.stock_status !== 'outofstock' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+              },
             },
           })),
         },
