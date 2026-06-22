@@ -166,14 +166,6 @@ export default function Header({ locale }: { locale: string }) {
         { title: t('organicFertilizer'), href: '/organicke-hnojivo' },
         { title: t('lawnFertilizer'), href: '/hnojivo-na-travnik' },
         { title: t('fruitTreeFertilizer'), href: '/hnojivo-na-ovocne-stromy' },
-        {
-          title: t('strawberryGuide'),
-          href: locale === 'en'
-            ? '/blog/when-to-fertilize-strawberries'
-            : locale === 'hu'
-              ? '/blog/mikor-tragyazzuk-az-epret'
-              : '/blog/kedy-hnojit-jahody',
-        },
       ],
     },
     { title: t('news'), href: '/blog' },
