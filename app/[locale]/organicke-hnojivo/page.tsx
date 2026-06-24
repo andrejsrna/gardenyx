@@ -306,6 +306,12 @@ export default async function OrganicFertilizerPage({ params }: { params: Promis
             item: {
               '@type': 'Product',
               name: product.name,
+              sku: product.sku || product.id.toString(),
+              mpn: product.sku || product.slug,
+              brand: {
+                '@type': 'Brand',
+                name: 'Hakofyt',
+              },
               image: toAbsoluteUrl(siteUrl, product.images[0]?.src),
               description: product.short_description,
               offers: {
