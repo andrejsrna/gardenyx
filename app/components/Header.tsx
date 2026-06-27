@@ -167,6 +167,7 @@ export default function Header({ locale }: { locale: string }) {
         { title: t('organicFertilizer'), href: '/organicke-hnojivo' },
         { title: t('lawnFertilizer'), href: '/hnojivo-na-travnik' },
         { title: t('fruitTreeFertilizer'), href: '/hnojivo-na-ovocne-stromy' },
+        { title: t('citrusFertilizer'), href: '/hnojivo-na-citrusy' },
       ],
     },
     { title: t('news'), href: '/blog' },
