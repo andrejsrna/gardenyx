@@ -40,6 +40,11 @@ export const routing = defineRouting({
       en: '/blueberry-fertilizer',
       hu: '/afonya-mutragya',
     },
+    '/hnojivo-na-citrusy': {
+      sk: '/hnojivo-na-citrusy',
+      en: '/citrus-fertilizer',
+      hu: '/citrus-mutragya',
+    },
     '/hnojivo-na-kvety': {
       sk: '/hnojivo-na-kvety',
       en: '/flower-fertilizer',

@@ -29,6 +29,7 @@ const LOCALIZED_STATIC_PATHS: Record<string, Record<string, string>> = {
   '/organicke-hnojivo': { sk: '/sk/organicke-hnojivo', en: '/en/organic-fertilizer', hu: '/hu/szerves-mutragya' },
   '/hnojivo-na-zeleninu': { sk: '/sk/hnojivo-na-zeleninu', en: '/en/vegetable-fertilizer', hu: '/hu/zoldseg-mutragya' },
   '/hnojivo-na-cucoriedky': { sk: '/sk/hnojivo-na-cucoriedky', en: '/en/blueberry-fertilizer', hu: '/hu/afonya-mutragya' },
+  '/hnojivo-na-citrusy': { sk: '/sk/hnojivo-na-citrusy', en: '/en/citrus-fertilizer', hu: '/hu/citrus-mutragya' },
   '/hnojivo-na-kvety': { sk: '/sk/hnojivo-na-kvety', en: '/en/flower-fertilizer', hu: '/hu/virag-mutragya' },
   '/hnojivo-na-travnik': { sk: '/sk/hnojivo-na-travnik', en: '/en/lawn-fertilizer', hu: '/hu/gyeptragya' },
   '/hnojivo-na-ovocne-stromy': { sk: '/sk/hnojivo-na-ovocne-stromy', en: '/en/fruit-tree-fertilizer', hu: '/hu/gyumolcsfa-tragya' },
