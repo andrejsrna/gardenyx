@@ -8,6 +8,7 @@ import { recordCouponRedemption } from '@/app/lib/coupons';
 import { finalizeOrder } from '@/app/lib/checkout/finalize-order';
 import { PRODUCT_VAT_RATE, SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { taxFromGross } from '@/app/lib/pricing/math';
+import { readChunkedMeta } from '@/app/lib/stripe/metadata';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
@@ -83,10 +84,10 @@ export async function ensureOrderFromPaymentIntent(pi: StripePI) {
   }
 
   const md = (pi.metadata || {}) as Record<string, string | undefined>;
-  const cart = parseBase64Json<{ li: Array<{ product_id: number; quantity: number }>; sm: string }>(md.cart_signature);
-  const billing = parseBase64Json<Record<string, unknown>>(md.b) || {};
-  const shipping = parseBase64Json<Record<string, unknown>>(md.s) || {};
-  const metaData = parseBase64Json<Array<{ key: string; value: string }>>(md.md) || [];
+  const cart = parseBase64Json<{ li: Array<{ product_id: number; quantity: number }>; sm: string }>(readChunkedMeta(md, 'cart_signature'));
+  const billing = parseBase64Json<Record<string, unknown>>(readChunkedMeta(md, 'b')) || {};
+  const shipping = parseBase64Json<Record<string, unknown>>(readChunkedMeta(md, 's')) || {};
+  const metaData = parseBase64Json<Array<{ key: string; value: string }>>(readChunkedMeta(md, 'md')) || [];
 
   if (!cart?.li?.length) {
     return null;

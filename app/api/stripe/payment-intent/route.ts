@@ -9,6 +9,7 @@ import { validateCoupon } from '@/app/lib/coupons';
 import { SHIPPING_COST_PACKETA_HOME, SHIPPING_COST_PACKETA_PICKUP } from '@/app/lib/checkout/constants';
 import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '@/app/lib/pricing/math';
+import { readChunkedMeta, setChunkedMeta } from '@/app/lib/stripe/metadata';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
@@ -126,23 +127,26 @@ export async function POST(request: Request) {
                 automatic_payment_methods: {
                     enabled: true,
                 },
-                metadata: {
-                    cart_signature: cartSignature,
-                    b: Buffer.from(JSON.stringify(validatedData.customer.billing || {})).toString('base64'),
-                    s: Buffer.from(JSON.stringify(validatedData.customer.shipping || {})).toString('base64'),
-                    ib: String(Boolean(validatedData.customer.is_business)),
-                    mc: String(Boolean(validatedData.customer.marketing_consent)),
-                    cn: (validatedData.customer.customer_note || '').slice(0, 480),
-                    md: validatedData.customer.meta_data ? Buffer.from(JSON.stringify(validatedData.customer.meta_data)).toString('base64') : '',
-                    sc: computedShippingCost.toFixed(2), // shipping cost in EUR as string (gross)
-                    sct: computedShippingCostBase.toFixed(2), // net shipping total (base)
-                    sctx: taxFromNet(computedShippingCostBase, SHIPPING_VAT_RATE).toFixed(2), // shipping tax
-                    cp: couponCode || '',
-                    da: discountAmount.toFixed(2),
-                    fs: freeShipping ? '1' : '',
-                    cpt: couponType || '',
-                    cpa: couponRawAmount !== undefined ? String(couponRawAmount) : ''
-                },
+                metadata: (() => {
+                    const m: Record<string, string> = {
+                        ib: String(Boolean(validatedData.customer.is_business)),
+                        mc: String(Boolean(validatedData.customer.marketing_consent)),
+                        cn: (validatedData.customer.customer_note || '').slice(0, 480),
+                        sc: computedShippingCost.toFixed(2),
+                        sct: computedShippingCostBase.toFixed(2),
+                        sctx: taxFromNet(computedShippingCostBase, SHIPPING_VAT_RATE).toFixed(2),
+                        cp: couponCode || '',
+                        da: discountAmount.toFixed(2),
+                        fs: freeShipping ? '1' : '',
+                        cpt: couponType || '',
+                        cpa: couponRawAmount !== undefined ? String(couponRawAmount) : ''
+                    };
+                    setChunkedMeta(m, 'cart_signature', cartSignature);
+                    setChunkedMeta(m, 'b', Buffer.from(JSON.stringify(validatedData.customer.billing || {})).toString('base64'));
+                    setChunkedMeta(m, 's', Buffer.from(JSON.stringify(validatedData.customer.shipping || {})).toString('base64'));
+                    setChunkedMeta(m, 'md', validatedData.customer.meta_data ? Buffer.from(JSON.stringify(validatedData.customer.meta_data)).toString('base64') : '');
+                    return m;
+                })(),
                 statement_descriptor_suffix: 'GARDENYX',
                 receipt_email: receiptEmail
             }, { idempotencyKey });
@@ -160,9 +164,9 @@ export async function POST(request: Request) {
                         limit: 10,
                         created: { gte: Math.floor(Date.now() / 1000) - 3600 } // Last hour
                     });
-                    
-                    const existingPI = paymentIntents.data.find(pi => 
-                        pi.metadata.cart_signature === cartSignature &&
+
+                    const existingPI = paymentIntents.data.find(pi =>
+                        pi.metadata && readChunkedMeta(pi.metadata as Record<string, string | undefined>, 'cart_signature') === cartSignature &&
                         pi.amount === amountInCents &&
                         pi.receipt_email === receiptEmail
                     );

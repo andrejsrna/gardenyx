@@ -7,6 +7,7 @@ import { getProductsByIds } from '@/app/lib/products';
 import { recordCouponRedemption } from '@/app/lib/coupons';
 import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { netFromGross, taxFromGross } from '@/app/lib/pricing/math';
+import { readChunkedMeta } from '@/app/lib/stripe/metadata';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 const creatingByPi = new Set<string>();
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
     }
 
     const md = (pi.metadata || {}) as Record<string, string | undefined>;
-    const cartSignature = md.cart_signature;
+    const cartSignature = readChunkedMeta(md, 'cart_signature');
     if (!cartSignature) {
       return NextResponse.json({ error: 'Missing cart signature' }, { status: 400 });
     }
@@ -71,12 +72,15 @@ export async function POST(request: Request) {
     
     try {
       const decoded = JSON.parse(Buffer.from(cartSignature, 'base64').toString('utf8')) as { li: Array<{ product_id: number; quantity: number }>; sm: string; d?: number; cp?: string | null; fs?: boolean };
-      const b = md.b ? JSON.parse(Buffer.from(md.b, 'base64').toString('utf8')) : undefined;
-      const s = md.s ? JSON.parse(Buffer.from(md.s, 'base64').toString('utf8')) : undefined;
+      const bRaw = readChunkedMeta(md, 'b');
+      const sRaw = readChunkedMeta(md, 's');
+      const mdRaw = readChunkedMeta(md, 'md');
+      const b = bRaw ? JSON.parse(Buffer.from(bRaw, 'base64').toString('utf8')) : undefined;
+      const s = sRaw ? JSON.parse(Buffer.from(sRaw, 'base64').toString('utf8')) : undefined;
       const ib = md.ib === 'true';
       const mc = md.mc === 'true';
       const cn = md.cn || '';
-      const metaData = md.md ? JSON.parse(Buffer.from(md.md, 'base64').toString('utf8')) : [];
+      const metaData = mdRaw ? JSON.parse(Buffer.from(mdRaw, 'base64').toString('utf8')) : [];
       const sc = typeof md.sc === 'string' ? md.sc : '0.00'; // gross shipping
       const sct = typeof md.sct === 'string' ? md.sct : undefined; // net shipping
       const sctx = typeof md.sctx === 'string' ? md.sctx : undefined; // shipping tax
