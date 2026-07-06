@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { isAutomationAuthorized } from '@/app/lib/automation/config';
 import * as packetaHandler from './packeta/route';
 import * as finalizeHandler from './finalize/route';
+import * as newsletterWeeklyHandler from './newsletter-weekly/route';
 
 export async function POST(request: Request) {
   if (!isAutomationAuthorized(request)) {
@@ -34,6 +35,11 @@ export async function POST(request: Request) {
       }
       if (key === 'finalize') {
         const res = await finalizeHandler.POST(request);
+        results.push({ job: key, status: res.status, data: await res.json().catch(() => ({})) });
+        return;
+      }
+      if (key === 'newsletter-weekly') {
+        const res = await newsletterWeeklyHandler.POST(request);
         results.push({ job: key, status: res.status, data: await res.json().catch(() => ({})) });
         return;
       }
