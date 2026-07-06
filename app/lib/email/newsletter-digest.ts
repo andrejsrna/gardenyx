@@ -75,7 +75,7 @@ type ArticleCard = {
 const buildArticleCard = (card: ArticleCard) => {
   const imgHtml = card.coverImage
     ? `<img src="${card.coverImage}" alt="${card.title}" width="660" style="display:block;width:100%;max-width:660px;height:auto;border-radius:12px 12px 0 0;margin:0 0 16px 0;" />`
-    : '';
+    : `<div style="height:120px;border-radius:12px 12px 0 0;background:linear-gradient(135deg,#515a45 0%,#414838 100%);display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;"><span style="font-size:36px;">🌿</span></div>`;
 
   return `
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
@@ -175,9 +175,6 @@ export async function sendNewsletterDigest(params: SendNewsletterDigestParams): 
     <p style="margin:0 0 18px 0;color:#475569;">${s.intro}</p>
     ${cardsHtml}
     <p style="margin:24px 0 4px 0;font-weight:700;color:#2b3026;">${s.footerTeam}</p>
-    <p style="margin:0;color:#94a3b8;font-size:12px;line-height:18px;">
-      <a href="${unsubscribeUrl}" style="color:#94a3b8;">${s.unsubscribe}</a>
-    </p>
   `;
 
   const textContent = [
