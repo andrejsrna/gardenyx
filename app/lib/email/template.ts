@@ -78,7 +78,7 @@ export function renderEmail(params: RenderEmailParams) {
   const headerVariant = params.headerVariant || 'image';
   const brandMarkup = headerVariant === 'text'
     ? `
-      <span style="display:inline-block;font-size:30px;line-height:1;font-weight:900;letter-spacing:0.08em;color:#ffffff;text-transform:uppercase;">
+      <span style="display:inline-block;font-size:20px;line-height:1;font-weight:900;letter-spacing:0.08em;color:#ffffff;text-transform:uppercase;">
         Garden<span style="color:#ffffff;">YX</span>
       </span>
     `
@@ -101,7 +101,7 @@ export function renderEmail(params: RenderEmailParams) {
                         ${brandMarkup}
                       </a>
                     </td>
-                    <td align="right" style="padding:18px 22px;font-family:'Inter','Arial',sans-serif;font-size:12px;font-weight:600;color:#ffffff;">${TAGLINE}</td>
+                    <td align="right" style="padding:18px 22px;font-family:'Inter','Arial',sans-serif;font-size:12px;font-weight:600;color:#ffffff;"><span style="color:#ffffff;">${TAGLINE}</span></td>
                   </tr>
                 </table>
               </td>
