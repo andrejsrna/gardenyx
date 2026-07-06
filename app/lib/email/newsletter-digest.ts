@@ -196,7 +196,7 @@ export async function sendNewsletterDigest(params: SendNewsletterDigestParams): 
     preheader: s.preheader,
     greeting: s.greeting(params.firstName),
     content,
-    headerVariant: 'image',
+    headerVariant: 'text',
     footerNote: `<a href="${unsubscribeUrl}" style="color:#94a3b8;">${s.unsubscribe}</a>`,
   });
 
