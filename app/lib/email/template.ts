@@ -83,7 +83,7 @@ export function renderEmail(params: RenderEmailParams) {
       </span>
     `
     : `
-      <img src="${SITE_URL}/logo.png" alt="GardenYX" width="150" height="44" style="display:block;max-width:150px;height:auto;" />
+      <img src="${SITE_URL}/logo_gardenyx.png" alt="GardenYX" width="150" height="44" style="display:block;max-width:150px;height:auto;" />
     `;
 
   return `
