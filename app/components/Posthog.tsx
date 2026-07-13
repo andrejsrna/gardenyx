@@ -19,7 +19,8 @@ export default function Posthog() {
 posthog.init('phc_KAZwsQtej3SdqkkqYevFiQJu1b6XuwxSVoStuzKENuL', {
   api_host: 'https://eu.i.posthog.com',
   defaults: '2025-05-24',
-  person_profiles: 'identified_only'
+  person_profiles: 'identified_only',
+  disable_surveys: true
 });
       `}
     </Script>
