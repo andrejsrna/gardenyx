@@ -9,6 +9,7 @@ import { safeGetItem, safeRemoveItem, safeSetItem } from '../lib/utils/safe-loca
 
 interface CartItem {
     id: number;
+    variationId?: number;
     name: string;
     price: number;
     quantity: number;
@@ -40,8 +41,8 @@ interface CartContextType {
     /** Manual discount key for analytics / order meta (e.g. “cure_3m”). */
     manualDiscountKey: string | null;
     addToCart: (item: CartItem) => void;
-    removeFromCart: (itemId: number) => void;
-    updateQuantity: (itemId: number, quantity: number) => void;
+    removeFromCart: (itemId: number, variationId?: number) => void;
+    updateQuantity: (itemId: number, quantity: number, variationId?: number) => void;
     clearCart: () => void;
     saveCartWithEmail: (email: string) => void;
     applyPendingCoupon: () => void;
@@ -421,11 +422,11 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         const itemWithOriginalPrice = {...item, price: item.price};
 
         setItems(prevItems => {
-            const existingItem = prevItems.find(i => i.id === itemWithOriginalPrice.id);
+            const existingItem = prevItems.find(i => i.id === itemWithOriginalPrice.id && i.variationId === itemWithOriginalPrice.variationId);
             let updatedItems;
             if (existingItem) {
                 updatedItems = prevItems.map(i =>
-                    i.id === itemWithOriginalPrice.id ? {
+                    i.id === itemWithOriginalPrice.id && i.variationId === itemWithOriginalPrice.variationId ? {
                         ...i,
                         quantity: i.quantity + itemWithOriginalPrice.quantity
                     } : i
@@ -449,22 +450,22 @@ export function CartProvider({children}: { children: React.ReactNode }) {
         openCart();
     }, [openCart]);
 
-    const removeFromCart = useCallback((itemId: number) => {
-        const itemToRemove = items.find(item => item.id === itemId);
+    const removeFromCart = useCallback((itemId: number, variationId?: number) => {
+        const itemToRemove = items.find(item => item.id === itemId && item.variationId === variationId);
         if (itemToRemove) {
             tracking.removeFromCart(itemToRemove);
         }
-        setItems(prevItems => prevItems.filter(item => item.id !== itemId));
+        setItems(prevItems => prevItems.filter(item => item.id !== itemId || item.variationId !== variationId));
     }, [items]);
 
-    const updateQuantity = useCallback((itemId: number, quantity: number) => {
+    const updateQuantity = useCallback((itemId: number, quantity: number, variationId?: number) => {
         if (quantity < 1) {
-            removeFromCart(itemId);
+            removeFromCart(itemId, variationId);
             return;
         }
         setItems(prevItems =>
             prevItems.map(item =>
-                item.id === itemId ? { ...item, quantity } : item
+                item.id === itemId && item.variationId === variationId ? { ...item, quantity } : item
             )
         );
         lastActionRef.current = { type: 'update', itemId };

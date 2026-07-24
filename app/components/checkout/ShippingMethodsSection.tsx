@@ -4,7 +4,7 @@ import { ChangeEvent } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import type { FormData, PacketaPoint } from '../../lib/checkout/types';
-import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME, SHIPPING_COST_PERSONAL_PICKUP } from '../../lib/checkout/constants';
+
 import { Package, Truck, MapPin } from 'lucide-react';
 
 interface ShippingMethodsSectionProps {
@@ -16,6 +16,7 @@ interface ShippingMethodsSectionProps {
     section: 'billing' | 'shipping' | 'consents' | 'root'
   ) => void;
   onPacketaPointSelect: () => void;
+  shippingCostBase: number;
 }
 
 export default function ShippingMethodsSection({
@@ -24,6 +25,7 @@ export default function ShippingMethodsSection({
   selectedPacketaPoint,
   onInputChange,
   onPacketaPointSelect,
+  shippingCostBase,
 }: ShippingMethodsSectionProps) {
   const t = useTranslations('checkout.shipping');
   const locale = useLocale();
@@ -32,7 +34,7 @@ export default function ShippingMethodsSection({
     {
       id: 'packeta_pickup',
       title: t('methods.packetaPickup.title'),
-      price: SHIPPING_COST_PACKETA_PICKUP,
+      price: formData.shipping_method === 'packeta_pickup' ? shippingCostBase : 0,
       description: t('methods.packetaPickup.description'),
       icon: <Package className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
       countries: null,
@@ -40,7 +42,7 @@ export default function ShippingMethodsSection({
     {
       id: 'packeta_home',
       title: t('methods.packetaHome.title'),
-      price: SHIPPING_COST_PACKETA_HOME,
+      price: formData.shipping_method === 'packeta_home' ? shippingCostBase : 0,
       description: t('methods.packetaHome.description'),
       icon: <Truck className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
       countries: null,
@@ -48,7 +50,7 @@ export default function ShippingMethodsSection({
     {
       id: 'personal_pickup',
       title: t('methods.personalPickup.title'),
-      price: SHIPPING_COST_PERSONAL_PICKUP,
+      price: 0,
       description: t('methods.personalPickup.description'),
       icon: <MapPin className="w-6 h-6 shrink-0 text-gray-600" aria-hidden="true" />,
       countries: ['SK'],
@@ -98,7 +100,7 @@ export default function ShippingMethodsSection({
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{method.description}</p>
                 <p className="text-base font-bold text-green-600 mt-2">
-                  {method.price === 0 ? t('free') : `${method.price.toFixed(2)} €`}
+                  {method.id !== formData.shipping_method ? 'Vyberte dopravu' : method.price === 0 ? t('free') : `${method.price.toFixed(2)} €`}
                 </p>
               </div>
             </label>

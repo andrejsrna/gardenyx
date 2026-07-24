@@ -4,7 +4,7 @@ import { FormEvent } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
-import { SHIPPING_COST_PACKETA_PICKUP, SHIPPING_COST_PACKETA_HOME } from '../../lib/checkout/constants';
+
 import { PRODUCT_VAT_PERCENT, PRODUCT_VAT_RATE, SHIPPING_VAT_PERCENT, SHIPPING_VAT_RATE } from '../../lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
 import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
@@ -13,6 +13,7 @@ import CouponSection from '../CouponSection';
 
 interface CartItem {
   id: number;
+  variationId?: number;
   name: string;
   price: number;
   quantity: number;
@@ -28,10 +29,12 @@ interface OrderSummarySectionProps {
   isFormValid: boolean;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onCustomerNoteChange: (note: string) => void;
-  onRemoveItem: (id: number) => void;
-  onUpdateQuantity: (id: number, quantity: number) => void;
+  onRemoveItem: (id: number, variationId?: number) => void;
+  onUpdateQuantity: (id: number, quantity: number, variationId?: number) => void;
   discountAmount?: number;
   appliedCoupon?: string | null;
+  shippingCostBase: number;
+  shippingQuoteError?: string | null;
 }
 
 export default function OrderSummarySection({
@@ -45,6 +48,8 @@ export default function OrderSummarySection({
   onUpdateQuantity,
   discountAmount = 0,
   appliedCoupon = null,
+  shippingCostBase,
+  shippingQuoteError,
 }: OrderSummarySectionProps) {
   const t = useTranslations('checkout.summary');
   const { couponType, manualDiscountLabel } = useCart();
@@ -54,13 +59,7 @@ export default function OrderSummarySection({
   const netSubtotal = subtotalAfterDiscount / (1 + PRODUCT_VAT_RATE);
   const vatAmount = subtotalAfterDiscount - netSubtotal;
   
-  const getShippingCostBase = () => {
-    if (formData.shipping_method === 'packeta_pickup') return SHIPPING_COST_PACKETA_PICKUP;
-    if (formData.shipping_method === 'packeta_home') return SHIPPING_COST_PACKETA_HOME;
-    return null;
-  };
-  
-  const shippingCostBase = getShippingCostBase(); // základ bez DPH
+  const hasShippingMethod = Boolean(formData.shipping_method);
   const shippingCostWithVat = shippingCostBase ? grossFromNet(shippingCostBase, SHIPPING_VAT_RATE) : 0; // s DPH
   const shippingVat = shippingCostBase ? taxFromNet(shippingCostBase, SHIPPING_VAT_RATE) : 0; // len DPH
   const total = Math.max(0, subtotalAfterDiscount + shippingCostWithVat);
@@ -73,7 +72,7 @@ export default function OrderSummarySection({
       {/* Cart Items */}
       <div className="space-y-3 mb-4">
         {cartItems.map((item) => (
-          <div key={item.id} className="flex items-center gap-3 group">
+          <div key={`${item.id}-${item.variationId ?? 'base'}`} className="flex items-center gap-3 group">
             <div className="relative w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs overflow-hidden">
               {item.image ? (
                 <Image 
@@ -92,7 +91,7 @@ export default function OrderSummarySection({
               <div className="mt-1 inline-flex items-center rounded-md border border-gray-200">
                 <button
                   type="button"
-                  onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                  onClick={() => onUpdateQuantity(item.id, item.quantity - 1, item.variationId)}
                   className="px-2 py-0.5 text-sm text-gray-600 hover:bg-gray-50"
                   aria-label={t('actions.decreaseQuantity', { name: item.name })}
                 >
@@ -103,7 +102,7 @@ export default function OrderSummarySection({
                 </span>
                 <button
                   type="button"
-                  onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                  onClick={() => onUpdateQuantity(item.id, item.quantity + 1, item.variationId)}
                   className="px-2 py-0.5 text-sm text-gray-600 hover:bg-gray-50"
                   aria-label={t('actions.increaseQuantity', { name: item.name })}
                 >
@@ -116,7 +115,7 @@ export default function OrderSummarySection({
             </div>
             <button 
               type="button"
-              onClick={() => onRemoveItem(item.id)}
+              onClick={() => onRemoveItem(item.id, item.variationId)}
               className="text-gray-400 hover:text-red-500 transition-colors"
               aria-label={t('actions.removeItem', { name: item.name })}
             >
@@ -178,12 +177,12 @@ export default function OrderSummarySection({
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">{t('shippingInclVat')}</span>
           <span className="font-medium">
-            {shippingCostBase === null 
-              ? <span className="text-xs text-gray-500">{t('shippingMethodNotSelected')}</span> 
+            {!hasShippingMethod
+              ? <span className="text-xs text-gray-500">{t('shippingMethodNotSelected')}</span>
               : `${shippingCostWithVat.toFixed(2)} €`}
           </span>
         </div>
-        {shippingCostBase !== null && shippingCostBase > 0 && (
+        {hasShippingMethod && shippingCostBase > 0 && (
           <>
             <div className="flex justify-between text-xs text-gray-500">
               <span>{t('baseWithoutVat')}</span>
@@ -195,6 +194,7 @@ export default function OrderSummarySection({
             </div>
           </>
         )}
+        {shippingQuoteError && <p className="text-xs text-red-600">{shippingQuoteError}</p>}
       </div>
       
       <div className="border-t mt-4 pt-4">

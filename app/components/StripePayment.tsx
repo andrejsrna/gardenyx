@@ -68,6 +68,7 @@ interface StripePaymentFormProps {
 
 interface PaymentIntentItem {
   id: number;
+  variationId?: number;
   quantity: number;
 }
 
@@ -584,6 +585,7 @@ export default function StripePayment({
   const stableItems = useMemo(() => 
     items?.map(item => ({ 
       product_id: Number(item.id), 
+      variation_id: item.variationId ? Number(item.variationId) : undefined,
       quantity: Number(item.quantity) 
     })) || [], 
     [items]

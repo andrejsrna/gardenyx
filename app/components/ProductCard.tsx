@@ -26,17 +26,25 @@ export default function ProductCard({ product, locale: _locale, isPriority = fal
       return;
     }
 
+    const variant = product.type === 'variable'
+      ? product.variants?.find((item) => item.stockStatus !== 'outofstock')
+      : undefined;
+    const price = variant?.price ?? parseFloat(product.price);
+    const name = variant ? `${product.name} – ${variant.name}` : product.name;
+
     tracking.addToCart({
       id: product.id,
-      name: product.name,
-      price: parseFloat(product.price),
+      name,
+      price,
       quantity: 1
     });
 
     addToCart({
       id: product.id,
-      name: product.name,
-      price: parseFloat(product.price),
+      variationId: variant?.id,
+      sku: variant?.sku ?? product.sku ?? undefined,
+      name,
+      price,
       image: product.images[0]?.src || '',
       quantity: 1
     });

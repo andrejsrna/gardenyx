@@ -187,18 +187,39 @@ export default function CheckoutClient() {
     }
   }, [customerData, setFormData, setSameAsShipping]);
 
-  // Shipping cost calculation
-  const getShippingCost = useCallback(() => {
-    switch (formData.shipping_method) {
-      case 'packeta_pickup': return 2.9;
-      case 'packeta_home': return 3.8;
-      case 'personal_pickup': return 0;
-      default: return 0;
-    }
-  }, [formData.shipping_method]);
+  const [shippingCostBase, setShippingCostBase] = useState(0);
+  const [shippingQuoteError, setShippingQuoteError] = useState<string | null>(null);
 
-  const shippingCostBase = getShippingCost(); // základ bez DPH
-  const shippingCostWithVat = grossFromNet(shippingCostBase, SHIPPING_VAT_RATE); // s DPH
+  useEffect(() => {
+    if (!formData.shipping_method || !items.length) {
+      setShippingCostBase(0);
+      setShippingQuoteError(null);
+      return;
+    }
+    const controller = new AbortController();
+    fetch('/api/shipping/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        items: items.map((item) => ({ productId: item.id, variationId: item.variationId, sku: item.sku, quantity: item.quantity })),
+        shippingMethod: formData.shipping_method,
+        paymentMethod: formData.payment_method || undefined,
+      }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Nepodarilo sa vypočítať dopravu');
+        setShippingCostBase(Number(data.totalNet) || 0);
+        setShippingQuoteError(null);
+      })
+      .catch((error) => {
+        if (error.name !== 'AbortError') setShippingQuoteError(error.message);
+      });
+    return () => controller.abort();
+  }, [items, formData.shipping_method, formData.payment_method]);
+  const effectiveShippingCostBase = couponFreeShipping ? 0 : shippingCostBase;
+  const shippingCostWithVat = grossFromNet(effectiveShippingCostBase, SHIPPING_VAT_RATE); // s DPH
   const finalTotal = parseFloat((totalPrice + shippingCostWithVat).toFixed(2));
 
   // Add to cart handler for recommended products
@@ -415,6 +436,7 @@ export default function CheckoutClient() {
         ],
         line_items: items.map(item => ({
           product_id: item.id,
+          variation_id: item.variationId,
           quantity: item.quantity,
           price: item.price,
           total: item.price * item.quantity,
@@ -429,8 +451,8 @@ export default function CheckoutClient() {
             : formData.shipping_method === 'packeta_home'
               ? t('shippingMethods.packetaHome')
               : t('shippingMethods.personalPickup'),
-          total: shippingCostBase.toFixed(2),
-          total_tax: taxFromNet(shippingCostBase, SHIPPING_VAT_RATE).toFixed(2),
+          total: effectiveShippingCostBase.toFixed(2),
+          total_tax: taxFromNet(effectiveShippingCostBase, SHIPPING_VAT_RATE).toFixed(2),
           taxes: []
         }],
         idempotency_key: attemptKey,
@@ -504,7 +526,7 @@ export default function CheckoutClient() {
     }
   // couponType, manualDiscountKey, manualDiscountLabel intentionally omitted to avoid submit loop
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [validateForm, formData, items, shippingCostBase, finalTotal, clearCart, resetForm, customerData, appliedCoupon, discountAmount, couponFreeShipping, t]);
+  }, [validateForm, formData, items, effectiveShippingCostBase, finalTotal, clearCart, resetForm, customerData, appliedCoupon, discountAmount, couponFreeShipping, t]);
 
   // Check if form is valid for submit button
   const isFormValid = Boolean(formData.billing.first_name && 
@@ -625,6 +647,7 @@ export default function CheckoutClient() {
                 selectedPacketaPoint={selectedPacketaPoint}
                 onInputChange={handleInputChange}
                 onPacketaPointSelect={handlePacketaPointSelect}
+                shippingCostBase={shippingCostBase}
               />
 
               <PaymentMethodsSection
@@ -659,6 +682,8 @@ export default function CheckoutClient() {
                 onUpdateQuantity={updateQuantity}
                 discountAmount={Math.max(0, Number(discountAmount) || 0)}
                 appliedCoupon={appliedCoupon}
+                shippingCostBase={effectiveShippingCostBase}
+                shippingQuoteError={shippingQuoteError}
               />
             </div>
           </div>
@@ -688,6 +713,7 @@ export default function CheckoutClient() {
         <StripePayment
           items={items.map(i => ({ 
             id: Number(i.id), 
+            variationId: i.variationId ? Number(i.variationId) : undefined,
             quantity: Number(i.quantity) 
           })).filter(i => i.id > 0 && i.quantity > 0)}
           shippingMethod={formData.shipping_method}

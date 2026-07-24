@@ -56,6 +56,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       image: product.images[0]?.src || '',
       quantity,
       sku: sku ?? undefined,
+      variationId: selectedVariant?.id,
     });
 
     toast.success('Produkt pridaný do košíka', {

@@ -6,7 +6,7 @@ import { rateLimit } from '@/app/lib/utils/rateLimit';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
 import { getProductsByIds } from '@/app/lib/products';
 import { validateCoupon } from '@/app/lib/coupons';
-import { SHIPPING_COST_PACKETA_HOME, SHIPPING_COST_PACKETA_PICKUP } from '@/app/lib/checkout/constants';
+import { getPacketaShippingQuote } from '@/app/lib/checkout/packeta-shipping';
 import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '@/app/lib/pricing/math';
 import { readChunkedMeta, setChunkedMeta } from '@/app/lib/stripe/metadata';
@@ -15,7 +15,7 @@ import { readChunkedMeta, setChunkedMeta } from '@/app/lib/stripe/metadata';
 
 const requestSchema = z.object({
     cart: z.object({
-        line_items: z.array(z.object({ product_id: z.number(), quantity: z.number().positive() })),
+        line_items: z.array(z.object({ product_id: z.number(), variation_id: z.number().optional(), sku: z.string().optional(), quantity: z.number().positive() })),
         shipping_method: z.string()
     }),
     discountAmount: z.number().nonnegative().default(0).optional(),
@@ -97,15 +97,12 @@ export async function POST(request: Request) {
             couponRawAmount = discountAmount;
         }
 
-        // Recalculate shipping based on selected method
-        let computedShippingCostBase = 0; // základ bez DPH
-        if (!freeShipping) {
-            if (validatedData.cart.shipping_method === 'packeta_home') {
-                computedShippingCostBase = SHIPPING_COST_PACKETA_HOME;
-            } else if (validatedData.cart.shipping_method === 'packeta_pickup') {
-                computedShippingCostBase = SHIPPING_COST_PACKETA_PICKUP;
-            }
-        }
+        const shippingQuote = await getPacketaShippingQuote(
+            validatedData.cart.line_items.map((item) => ({ productId: item.product_id, variationId: item.variation_id, sku: item.sku, quantity: item.quantity })),
+            validatedData.cart.shipping_method,
+            'stripe',
+        );
+        const computedShippingCostBase = freeShipping ? 0 : shippingQuote.totalNet;
         
         const computedShippingCost = grossFromNet(computedShippingCostBase, SHIPPING_VAT_RATE); // s DPH
 

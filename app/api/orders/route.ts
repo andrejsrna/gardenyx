@@ -15,6 +15,7 @@ import { getIronSession } from 'iron-session';
 import { sessionConfig } from '@/app/lib/config/session';
 import type { SessionData } from '@/app/lib/config/session';
 import { calculateTotalWeight } from '@/app/lib/packeta';
+import { getPacketaShippingQuote } from '@/app/lib/checkout/packeta-shipping';
 
 interface PacketaResponse {
   response: {
@@ -441,19 +442,15 @@ export async function POST(request: Request) {
       ? 'processing'
       : (orderData.status || 'pending');
 
-    const shippingTotal = orderData.shipping_lines?.reduce((sum, line) => {
-      const net = Number(line.total) || 0;
-      const tax = Number(line.total_tax) || 0;
-      return sum + net + tax;
-    }, 0) || 0;
-    const shippingTaxTotal = orderData.shipping_lines?.reduce((sum, line) => {
-      const explicitTax = Number(line.total_tax);
-      if (Number.isFinite(explicitTax)) {
-        return sum + explicitTax;
-      }
-      const net = Number(line.total);
-      return Number.isFinite(net) ? sum + taxFromNet(net, SHIPPING_VAT_RATE) : sum;
-    }, 0) || 0;
+    const freeShipping = orderMetaData.some(m => m.key === '_coupon_free_shipping' && m.value === 'true');
+    const shippingQuote = await getPacketaShippingQuote(
+      orderData.line_items.map((item) => ({ productId: item.product_id, variationId: item.variation_id, sku: item.sku, quantity: item.quantity })),
+      orderData.shipping_method,
+      orderData.payment_method,
+    );
+    const shippingNet = freeShipping ? 0 : shippingQuote.totalNet;
+    const shippingTaxTotal = taxFromNet(shippingNet, SHIPPING_VAT_RATE);
+    const shippingTotal = shippingNet + shippingTaxTotal;
 
     const metaPacketa = {
       id: orderMetaData.find(m => m.key === '_packeta_point_id')?.value || null,
