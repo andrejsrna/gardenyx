@@ -11,7 +11,7 @@ const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
     windowMs: 60000 // per minute
   },
   payment: {
-    max: 10,     // 10 requests
+    max: 30,     // 30 requests (payment intent sa vytvára automaticky pri zmenách v pokladni)
     windowMs: 900000 // per 15 minutes
   },
   auth: {
