@@ -7,6 +7,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import prisma from '@/app/lib/prisma';
 import { getArticleTranslation, getLocalizedArticleSlug, localeBcp47, markdownToHtml } from '@/app/lib/article';
+import { verifyPreviewToken } from '@/app/lib/preview';
 
 // Deduplicates the DB call between generateMetadata and the page component
 // within a single request.
@@ -24,24 +25,56 @@ const getPublishedArticle = cache(async (slug: string, locale: string) => {
   }) ?? null;
 });
 
-type ArticlePageProps = { params: Promise<{ locale: string; slug: string }> };
+// Draft-or-published lookup used only when a preview token is present in the
+// query string. Not cached across requests — preview should always reflect
+// the very latest saved draft.
+async function findArticleForPreview(slug: string, locale: string) {
+  const byCanonicalSlug = await prisma.article.findFirst({ where: { slug } });
+  if (byCanonicalSlug) return byCanonicalSlug;
+
+  const allArticles = await prisma.article.findMany();
+  return allArticles.find((article) => {
+    const translation = getArticleTranslation(article.translations, locale);
+    return translation.slug === slug;
+  }) ?? null;
+}
+
+type ArticlePageProps = {
+  params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ preview?: string }>;
+};
+
+async function resolveArticle(slug: string, locale: string, previewToken: string | undefined) {
+  if (previewToken) {
+    const candidate = await findArticleForPreview(slug, locale);
+    if (candidate && verifyPreviewToken(candidate.id, candidate.updatedAt, previewToken)) {
+      return { article: candidate, isPreview: true };
+    }
+    // Invalid/stale token: fall through to the normal published-only lookup
+    // instead of leaking draft content.
+  }
+  const article = await getPublishedArticle(slug, locale);
+  return { article, isPreview: false };
+}
 
 function localizedArticleUrl(siteUrl: string, locale: string, articleSlug: string, translations: unknown) {
   const localizedSlug = getLocalizedArticleSlug(articleSlug, translations, locale);
   return `${siteUrl}/${locale}/blog/${localizedSlug}`;
 }
 
-export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: ArticlePageProps): Promise<Metadata> {
   const { locale, slug } = await params;
-  const article = await getPublishedArticle(slug, locale);
+  const { preview } = await searchParams;
+  const { article, isPreview } = await resolveArticle(slug, locale, preview);
   if (!article) return {};
   const t = getArticleTranslation(article.translations, locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
   const canonicalUrl = localizedArticleUrl(siteUrl, locale, article.slug, article.translations);
 
   return {
-    title: t.metaTitle || t.title || slug,
+    title: (isPreview ? '[Náhľad] ' : '') + (t.metaTitle || t.title || slug),
     description: t.metaDescription || t.excerpt || '',
+    ...(isPreview ? { robots: { index: false, follow: false } } : {}),
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -69,11 +102,12 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   };
 }
 
-export default async function ArticleDetailPage({ params }: ArticlePageProps) {
+export default async function ArticleDetailPage({ params, searchParams }: ArticlePageProps) {
   const { locale, slug } = await params;
+  const { preview } = await searchParams;
   setRequestLocale(locale);
 
-  const article = await getPublishedArticle(slug, locale);
+  const { article, isPreview } = await resolveArticle(slug, locale, preview);
   if (!article) notFound();
 
   const t = getArticleTranslation(article.translations, locale);
@@ -114,7 +148,18 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
 
   return (
     <main className="min-h-screen bg-white">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      {!isPreview && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      )}
+      {isPreview && (
+        <div className="sticky top-0 z-50 bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-amber-950 shadow-md">
+          {locale === 'sk'
+            ? `Náhľad ${article.status === 'published' ? 'aktualizácie' : 'konceptu'} — tento článok nie je verejne dostupný.`
+            : locale === 'hu'
+              ? `${article.status === 'published' ? 'Frissítés' : 'Vázlat'} előnézete — ez a cikk nyilvánosan nem érhető el.`
+              : `${article.status === 'published' ? 'Update' : 'Draft'} preview — this article is not publicly available.`}
+        </div>
+      )}
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         <Link href="/blog" className="text-sm text-emerald-700 hover:text-emerald-600 mb-8 inline-block">
           ← {locale === 'sk' ? 'Späť na blog' : locale === 'hu' ? 'Vissza a blogra' : 'Back to blog'}

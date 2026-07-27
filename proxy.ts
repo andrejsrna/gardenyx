@@ -53,7 +53,9 @@ const ALLOWED_PARAMS = new Set([
   // Cron job selector
   'job',
   // Needed for Stripe success + internal lookups
-  'id', 'payment_intent', 'payment_intent_client_secret'
+  'id', 'payment_intent', 'payment_intent_client_secret',
+  // Article preview signed token (see app/lib/preview.ts)
+  'preview'
 ]);
 
 const CSP_DIRECTIVES = {

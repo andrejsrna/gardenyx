@@ -36,6 +36,7 @@ type Props = {
   action: (prevState: unknown, formData: FormData) => Promise<unknown>;
   title: string;
   deleteId?: string;
+  previewUrls?: { sk: string; en: string; hu: string };
 };
 
 const LANG_LABELS = {
@@ -111,7 +112,7 @@ function LangSection({ locale, t }: { locale: 'sk' | 'en' | 'hu'; t: ArticleTran
   );
 }
 
-export default function ArticleForm({ initial, action, title, deleteId }: Props) {
+export default function ArticleForm({ initial, action, title, deleteId, previewUrls }: Props) {
   const [, formAction] = useActionState(action, null);
 
   return (
@@ -177,6 +178,42 @@ export default function ArticleForm({ initial, action, title, deleteId }: Props)
                 </div>
               </div>
             </section>
+
+            {previewUrls && (
+              <section className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
+                <h2 className="text-lg font-semibold text-white">Náhľad</h2>
+                <p className="mt-1 text-xs text-slate-400">
+                  Zobrazí, ako bude článok vyzerať na webe — funguje aj pre neuloženú zmenu stavu (draft) a nie je verejne dostupný ani indexovaný.
+                  Link platí len pre aktuálne uloženú verziu; po ďalšom uložení sa musí otvoriť znova z tejto stránky.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <a
+                    href={previewUrls.sk}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-emerald-500/50 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/20"
+                  >
+                    🇸🇰 Náhľad SK
+                  </a>
+                  <a
+                    href={previewUrls.en}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-emerald-500/50 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/20"
+                  >
+                    🇬🇧 Náhľad EN
+                  </a>
+                  <a
+                    href={previewUrls.hu}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border border-emerald-500/50 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/20"
+                  >
+                    🇭🇺 Náhľad HU
+                  </a>
+                </div>
+              </section>
+            )}
 
             <section className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-emerald-900/10">
               <h2 className="text-lg font-semibold text-white">Titulný obrázok</h2>

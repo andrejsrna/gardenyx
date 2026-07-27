@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import prisma from '@/app/lib/prisma';
+import { generatePreviewToken } from '@/app/lib/preview';
 import ArticleForm from '../ArticleForm';
 import { updateArticleAction } from '../actions';
 
@@ -36,13 +37,23 @@ export default async function AdminEditArticlePage({ params }: { params: Promise
     ? new Date(article.publishedAt).toISOString().slice(0, 10)
     : '';
 
+  const translations = safeTranslations(article.translations);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gardenyx.eu';
+  const previewToken = generatePreviewToken(article.id, article.updatedAt);
+  const previewUrls = {
+    sk: `${siteUrl}/sk/blog/${translations.sk.slug || article.slug}?preview=${previewToken}`,
+    en: `${siteUrl}/en/blog/${translations.en.slug || article.slug}?preview=${previewToken}`,
+    hu: `${siteUrl}/hu/blog/${translations.hu.slug || article.slug}?preview=${previewToken}`,
+  };
+
   const initial = {
     id: article.id,
     slug: article.slug,
     status: article.status,
     coverImage: article.coverImage ?? '',
     publishedAt,
-    translations: safeTranslations(article.translations),
+    translations,
   };
 
   return (
@@ -51,6 +62,7 @@ export default async function AdminEditArticlePage({ params }: { params: Promise
       action={updateArticleAction}
       title={`Upraviť: ${initial.translations.sk.title || article.slug}`}
       deleteId={article.id}
+      previewUrls={previewUrls}
     />
   );
 }
