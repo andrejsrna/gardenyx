@@ -311,6 +311,52 @@ export async function sendReturnNoticeEmail(order: OrderWithRelations, to: strin
   return api.sendTransacEmail(email);
 }
 
+export async function sendPaymentMethodChangedEmail(
+  order: OrderWithRelations,
+  to: string,
+  oldMethod: string,
+  newMethod: string,
+) {
+  const apiKey = getBrevoApiKey();
+  if (!apiKey || !to) return;
+
+  const api = new TransactionalEmailsApi();
+  api.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
+
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@example.com';
+  const senderName = process.env.BREVO_SENDER_NAME || 'GardenYX';
+
+  const billing = order.addresses.find(a => a.type === 'BILLING');
+  const greeting = billing?.firstName ? `Ahoj ${billing.firstName},` : 'Ahoj,';
+
+  const rows = [
+    { label: 'Objednávka', value: getOrderNumberLabel(order) },
+    { label: 'Pôvodná platba', value: getPaymentLabel(oldMethod) },
+    { label: 'Nová platba', value: getPaymentLabel(newMethod) },
+    { label: 'Suma na úhradu', value: formatCurrency(order.total) },
+  ];
+
+  const content = `
+    ${infoNote('Platba kartou neprebehla úspešne, preto sme vašu objednávku automaticky prepli na <strong>dobierku</strong>. Tovar zaplatíte v hotovosti pri prevzatí balíka.')}
+    ${keyValueTable(rows)}
+    <p style="margin:0;color:#475569;">Nový štítok zásielky bol už vytvorený a objednávka sa pripravuje na odoslanie. Ďakujeme za pochopenie.</p>
+  `;
+
+  const email = new SendSmtpEmail();
+  email.subject = `Zmena spôsobu platby – objednávka ${getOrderNumberLabel(order)}`;
+  email.htmlContent = renderEmail({
+    title: 'Zmena spôsobu platby',
+    preheader: `Platba zmenená na dobierku – ${formatCurrency(order.total)}`,
+    greeting,
+    content,
+    footerNote: 'Ak máte otázky, stačí odpovedať na tento email.',
+  });
+  email.sender = { name: senderName, email: senderEmail };
+  email.to = [{ email: to }];
+
+  return api.sendTransacEmail(email);
+}
+
 export async function sendInvoiceLinkEmail(order: OrderWithRelations, to: string, invoiceUrl: string, invoiceNumber: string) {
   const apiKey = getBrevoApiKey();
   if (!apiKey || !to || !invoiceUrl) return;
