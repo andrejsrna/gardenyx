@@ -36,7 +36,7 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 - **GSC pred zmenou:** URL: 14 kliknutí, 384 zobrazení, pozícia 9,54 (3-mesačný export). Dopyty `hnojivo na zeleninu`: 38 zobrazení, 0 kliknutí, pozícia 15,55; `najlepšie hnojivo na zeleninu`: 35 zobrazení, 0 kliknutí, pozícia 10,46.
 - **Zmena:** title a meta description cielia na `najlepšie hnojivo na zeleninu`; pridaná SK sekcia výberu podľa fázy rastu; existujúci paprikový článok už odkazuje na landing page.
 - **Dôvod / hypotéza:** URL má viditeľnosť na druhej polovici prvej/druhej strane, ale neberie kliknutia. Presnejší snippet a rozhodovací obsah majú zvýšiť relevanciu a CTR bez zmeny URL.
-- **Commit alebo deploy:** doplniť po pushe.
+- **Commit alebo deploy:** `dcb7c0b`.
 - **GSC výsledok:** doplniť po 4–6 týždňoch.
 - **Dátum ďalšej kontroly:** 2026-09-15.
 
