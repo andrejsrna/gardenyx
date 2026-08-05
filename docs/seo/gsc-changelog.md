@@ -29,6 +29,19 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-08-05 — Článok: Hnojivo na zemiaky
+
+- **Typ:** nový poradenský obsah
+- **GSC vstup:** dopyt `hakofyt na zemiaky` mal 25 zobrazení, 1 kliknutie a pozíciu 9,72 v exporte z 2026-08-04. Presný článok pre tento intent pred publikovaním neexistoval.
+- **URL:**
+  - SK: `/sk/blog/hnojivo-na-zemiaky`
+  - EN: `/en/blog/potato-fertilizer`
+  - HU: `/hu/blog/burgonya-mutragya`
+- **Obsah:** príprava pôdy, fázy rastu, NPK rovnováha, listová výživa, časté chyby a FAQ; 3 CDN obrázky; odkazy na Hakofyt Plus zelenina, zeleninovú landing page a NPK článok.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-09-15.
+
 ### 2026-08-04 — Snippet a intent: Hnojivo na zeleninu
 
 - **Typ:** snippet / obsah / interné SEO
