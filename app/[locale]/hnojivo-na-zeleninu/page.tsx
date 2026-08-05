@@ -31,9 +31,9 @@ const npkArticleSlug: Record<string, string> = {
 
 const copy = {
   sk: {
-    metaTitle: 'Hnojivo na zeleninu: paradajky, uhorky a záhrada | GardenYX',
+    metaTitle: 'Najlepšie hnojivo na zeleninu: paradajky, paprika a uhorky | GardenYX',
     metaDescription:
-      'Vyberte si vyvážené NPK hnojivo na zeleninu. Hakofyt Plus zelenina podporuje korene, fotosyntézu, príjem živín a kvalitu úrody.',
+      'Ako vybrať najlepšie hnojivo na zeleninu? Hakofyt Plus zelenina je vyvážené NPK listové hnojivo pre paradajky, papriku, uhorky aj ďalšie plodiny.',
     eyebrow: 'Hnojivo na zeleninu',
     title: 'Hnojivo na zeleninu pre silné korene, zdravé listy a kvalitnejšiu úrodu',
     intro:
@@ -58,6 +58,13 @@ const copy = {
       ['01', 'Rieďte podľa etikety', 'Dodržte odporúčané dávkovanie pre konkrétnu plodinu a fázu rastu.'],
       ['02', 'Aplikujte mimo horúčav', 'Najlepšie ráno alebo večer, nie na priamom slnku a nie na prehriate rastliny.'],
       ['03', 'Opakujte počas sezóny', 'Zelenina reaguje najlepšie na pravidelnú výživu v rozumných intervaloch.'],
+    ],
+    chooseTitle: 'Ako vybrať najlepšie hnojivo na zeleninu',
+    chooseIntro: 'Najlepšie hnojivo na zeleninu nie je jedno univerzálne číslo na obale. Vyberajte podľa fázy rastu, typu plodiny a spôsobu aplikácie. Pri paradajkách, paprike a uhorkách má zmysel vyvážená výživa s NPK živinami a mikroprvkami, nie jednostranné pridávanie dusíka.',
+    choosePoints: [
+      ['Po výsadbe', 'Uprednostnite výživu, ktorá podporí ujatie sadeníc a rozvoj koreňov.'],
+      ['Pri raste listov', 'Rastlina potrebuje pravidelnú, ale vyváženú dávku živín — prebytok dusíka môže podporiť listy na úkor kvetov.'],
+      ['Pri kvitnutí a plodoch', 'Pre kvalitnú úrodu je dôležitá vyvážená výživa a pravidelná aplikácia podľa etikety.'],
     ],
     relatedTitle: 'Súvisiace témy',
     related: [
@@ -352,6 +359,25 @@ export default async function VegetableFertilizerPage({ params }: { params: Prom
           </div>
         </div>
       </section>
+
+      {locale === 'sk' && (
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <h2 className="text-3xl font-black tracking-tight text-stone-950">{copy.sk.chooseTitle}</h2>
+              <p className="mt-4 max-w-xl leading-7 text-stone-700">{copy.sk.chooseIntro}</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {copy.sk.choosePoints.map(([title, text]) => (
+                <article key={title} className="rounded-3xl border border-emerald-100 bg-emerald-50/50 p-6">
+                  <h3 className="font-black text-stone-950">{title}</h3>
+                  <p className="mt-2 leading-7 text-stone-700">{text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
         <div>
