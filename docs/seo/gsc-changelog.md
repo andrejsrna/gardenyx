@@ -38,7 +38,7 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
   - EN: `/en/blog/potato-fertilizer`
   - HU: `/hu/blog/burgonya-mutragya`
 - **Obsah:** príprava pôdy, fázy rastu, NPK rovnováha, listová výživa, časté chyby a FAQ; 3 CDN obrázky; odkazy na Hakofyt Plus zelenina, zeleninovú landing page a NPK článok.
-- **Commit alebo deploy:** doplniť po pushe.
+- **Commit alebo deploy:** `835f2f7`.
 - **GSC výsledok:** doplniť po 4–6 týždňoch.
 - **Dátum ďalšej kontroly:** 2026-09-15.
 
