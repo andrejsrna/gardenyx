@@ -29,6 +29,19 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-08-05 — Landing page: Hnojivo na jahody
+
+- **Typ:** nová transakčná SEO landing page
+- **Témy:** `hnojivo na jahody`, `eper műtrágya`, `strawberry fertilizer`, Hakofyt B jahody.
+- **URL:**
+  - SK: `/sk/hnojivo-na-jahody`
+  - EN: `/en/strawberry-fertilizer`
+  - HU: `/hu/eper-mutragya`
+- **Obsah:** SK/EN/HU lokalizácia, metadata, canonical, alternate hreflang, Product + FAQPage JSON-LD schema, prelinkovanie na Hakofyt hub, produkt `Hakofyt B jahody` a poradenský článok `kedy-hnojit-jahody`.
+- **Prepojenia:** doplnené do sitemap, `i18n/routing.ts`, `Header.tsx` a `Footer.tsx`.
+- **Commit alebo deploy:** doplniť po pushe.
+- **Dátum ďalšej kontroly:** 2026-09-15.
+
 ### 2026-08-05 — Článok: Hnojivo na zemiaky
 
 - **Typ:** nový poradenský obsah

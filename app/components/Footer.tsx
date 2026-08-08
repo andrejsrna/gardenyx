@@ -94,6 +94,7 @@ export default function Footer() {
     { href: '/hnojivo-na-travnik', label: t('seoPages.links.lawn') },
     { href: '/hnojivo-na-ovocne-stromy', label: t('seoPages.links.fruitTrees') },
     { href: '/hnojivo-na-citrusy', label: t('seoPages.links.citrus') },
+    { href: '/hnojivo-na-jahody', label: t('seoPages.links.strawberries') },
     { href: '/hnojivo-na-zeleninu', label: t('seoPages.links.vegetables') },
     { href: '/hnojivo-na-kvety', label: t('seoPages.links.flowers') },
     { href: '/kupit', label: t('seoPages.links.shop') },

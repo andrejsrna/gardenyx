@@ -59,6 +59,12 @@ const localeToUseCaseCards: Record<string, Array<{ title: string; description: s
       label: 'Pozrieť hnojivo na ovocné stromy',
     },
     {
+      title: 'Hakofyt B na jahody',
+      description: 'Pre bohaté kvitnutie, šťavnaté a sladšie jahody. Vhodné pri vyhľadávaní výživy pre jahodníky.',
+      href: '/sk/hnojivo-na-jahody',
+      label: 'Pozrieť hnojivo na jahody',
+    },
+    {
       title: 'Hakofyt Max na trávnik',
       description: 'Ak riešite hustý zelený trávnik, vyšší dopyt po dusíku alebo regeneráciu po zime, sem vedie najrelevantnejšia cesta.',
       href: '/sk/hnojivo-na-travnik',
@@ -79,6 +85,12 @@ const localeToUseCaseCards: Record<string, Array<{ title: string; description: s
       label: 'View fruit tree fertilizer',
     },
     {
+      title: 'Hakofyt B for strawberries',
+      description: 'For abundant flowering and sweet, juicy strawberries. Ideal when searching for strawberry plant nutrition.',
+      href: '/en/strawberry-fertilizer',
+      label: 'View strawberry fertilizer',
+    },
+    {
       title: 'Hakofyt Max for lawns',
       description: 'If the goal is a dense green lawn, higher nitrogen demand or post-winter recovery, this is the most relevant next page.',
       href: '/en/lawn-fertilizer',
@@ -97,6 +109,12 @@ const localeToUseCaseCards: Record<string, Array<{ title: string; description: s
       description: 'Almához, szilvához és más gyümölcsfákhoz. Jó illeszkedés a gyümölcsfák trágyázása és szezonális tápanyag-utánpótlás témákhoz.',
       href: '/hu/gyumolcsfa-tragya',
       label: 'Gyümölcsfa műtrágya megtekintése',
+    },
+    {
+      title: 'Hakofyt B szamócához',
+      description: 'Bőséges virágzásért és édes, lédús eperért. Ideális eper műtrágya keresésekor.',
+      href: '/hu/eper-mutragya',
+      label: 'Eper műtrágya megtekintése',
     },
     {
       title: 'Hakofyt Max gyephez',
