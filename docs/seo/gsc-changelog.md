@@ -36,7 +36,7 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 - **GSC pred zmenou:** 211 zobrazení, CTR 1,42 %, priemerná pozícia 14,64.
 - **Zmena:** EN title a meta description teraz cielia na hydrangeas, balcony plants a flower beds; pridaný interný odkaz na existujúci EN článok o hnojení hortenzií.
 - **Dôvod / hypotéza:** URL má najväčší organický objem s nízkym CTR. Konkrétnejší snippet a relevantné obsahové prepojenie majú zvýšiť relevanciu bez novej URL.
-- **Commit alebo deploy:** doplniť po pushe.
+- **Commit alebo deploy:** `7b01333`.
 - **GSC výsledok:** doplniť po 4–6 týždňoch.
 - **Dátum ďalšej kontroly:** 2026-09-15.
 
