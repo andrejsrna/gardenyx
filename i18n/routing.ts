@@ -65,6 +65,11 @@ export const routing = defineRouting({
       en: '/fruit-tree-fertilizer',
       hu: '/gyumolcsfa-tragya',
     },
+    '/startovacie-hnojivo': {
+      sk: '/startovacie-hnojivo',
+      en: '/starter-fertilizer',
+      hu: '/indito-mutragya',
+    },
     '/moj-ucet': {
       sk: '/moj-ucet',
       en: '/my-account',

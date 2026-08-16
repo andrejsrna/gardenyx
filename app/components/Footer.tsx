@@ -93,6 +93,7 @@ export default function Footer() {
     { href: '/hnojiva-hakofyt', label: t('seoPages.links.hakofyt') },
     { href: '/hnojivo-na-travnik', label: t('seoPages.links.lawn') },
     { href: '/hnojivo-na-ovocne-stromy', label: t('seoPages.links.fruitTrees') },
+    { href: '/startovacie-hnojivo', label: t('seoPages.links.starter') },
     { href: '/hnojivo-na-citrusy', label: t('seoPages.links.citrus') },
     { href: '/hnojivo-na-jahody', label: t('seoPages.links.strawberries') },
     { href: '/hnojivo-na-zeleninu', label: t('seoPages.links.vegetables') },

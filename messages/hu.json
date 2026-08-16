@@ -10,7 +10,8 @@
     "news": "Hírek",
     "contact": "Kapcsolat",
     "myAccount": "Fiókom",
-    "hello": "Szia {name}"
+    "hello": "Szia {name}",
+    "starterFertilizer": "Indító műtrágya"
   },
   "blogIndex": {
     "title": "Hírek",
@@ -726,7 +727,8 @@
         "flowers": "Virág műtrágya",
         "shop": "Minden termék",
         "blog": "Útmutatók és cikkek",
-        "strawberries": "Eper műtrágya"
+        "strawberries": "Eper műtrágya",
+        "starter": "Indító műtrágya"
       }
     },
     "payments": {

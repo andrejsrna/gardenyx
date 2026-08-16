@@ -10,7 +10,8 @@
     "news": "Aktuality",
     "contact": "Kontakt",
     "myAccount": "Môj účet",
-    "hello": "Ahoj {name}"
+    "hello": "Ahoj {name}",
+    "starterFertilizer": "Štartovacie hnojivo"
   },
   "blogIndex": {
     "title": "Aktuality",
@@ -726,7 +727,8 @@
         "flowers": "Hnojivo na kvety",
         "shop": "Všetky produkty",
         "blog": "Poradňa a články",
-        "strawberries": "Hnojivo na jahody"
+        "strawberries": "Hnojivo na jahody",
+        "starter": "Štartovacie hnojivo"
       }
     },
     "payments": {

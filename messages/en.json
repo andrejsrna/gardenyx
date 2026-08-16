@@ -10,7 +10,8 @@
     "news": "News",
     "contact": "Contact",
     "myAccount": "My Account",
-    "hello": "Hello {name}"
+    "hello": "Hello {name}",
+    "starterFertilizer": "Starter fertilizer"
   },
   "blogIndex": {
     "title": "News",
@@ -726,7 +727,8 @@
         "flowers": "Flower fertilizer",
         "shop": "All products",
         "blog": "Guides and articles",
-        "strawberries": "Strawberry fertilizer"
+        "strawberries": "Strawberry fertilizer",
+        "starter": "Starter fertilizer"
       }
     },
     "payments": {

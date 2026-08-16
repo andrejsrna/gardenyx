@@ -29,6 +29,20 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-08-05 — Landing page: Štartovacie hnojivo
+
+- **Typ:** nová transakčná SEO landing page
+- **Témy:** `štartovacie hnojivo`, `starter fertilizer`, `indító műtrágya`, hnojivo po výsadbe a na zakorenenie.
+- **URL:**
+  - SK: `/sk/startovacie-hnojivo`
+  - EN: `/en/starter-fertilizer`
+  - HU: `/hu/indito-mutragya`
+- **Obsah:** SK/EN/HU lokalizácia, metadata, canonical, alternate hreflang, Product + FAQPage JSON-LD, prelinkovanie na produkt `Hakofyt Plus štartovacie hnojivo` a hnojivový hub.
+- **Prepojenia:** doplnené do sitemap, `i18n/routing.ts`, `Header.tsx` (dropdown), `Footer.tsx` a use-case karty `/hnojivo`.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** nová URL; doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-09-15.
+
 ### 2026-06-30 — Článok: Hnojivo na čučoriedky
 
 - **Typ:** poradenský obsah / long-tail podpora

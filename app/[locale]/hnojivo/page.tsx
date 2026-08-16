@@ -78,6 +78,12 @@ const copy = {
         href: '/hnojivo-na-jahody',
         label: 'Hnojivo na jahody',
       },
+      {
+        title: 'Sadenice a presadené rastliny',
+        text: 'Mladé rastliny po presadení ocenia podporu zakorenenia a jemný štart výživy.',
+        href: '/startovacie-hnojivo',
+        label: 'Štartovacie hnojivo',
+      },
     ],
     methodTitle: 'Prečo listové hnojivo',
     methodText:
@@ -166,6 +172,12 @@ const copy = {
         href: '/hnojivo-na-jahody',
         label: 'Strawberry fertilizer',
       },
+      {
+        title: 'Seedlings and transplanted plants',
+        text: 'Young plants after transplanting benefit from rooting support and a gentle nutrition start.',
+        href: '/startovacie-hnojivo',
+        label: 'Starter fertilizer',
+      },
     ],
     methodTitle: 'Why foliar fertilizer',
     methodText:
@@ -253,6 +265,12 @@ const copy = {
         text: 'Az eper tavaszi induláskor, virágzás előtt és szüret után igényel célzott tápanyagellátást.',
         href: '/hnojivo-na-jahody',
         label: 'Eper műtrágya',
+      },
+      {
+        title: 'Palánták és kiültetett növények',
+        text: 'A fiatal, ültetés utáni növények gyökeresedést és kíméletes tápanyagindítást igényelnek.',
+        href: '/startovacie-hnojivo',
+        label: 'Indító műtrágya',
       },
     ],
     methodTitle: 'Miért lombtrágya',
