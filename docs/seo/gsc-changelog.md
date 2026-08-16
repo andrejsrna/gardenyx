@@ -39,7 +39,7 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
   - HU: `/hu/indito-mutragya`
 - **Obsah:** SK/EN/HU lokalizácia, metadata, canonical, alternate hreflang, Product + FAQPage JSON-LD, prelinkovanie na produkt `Hakofyt Plus štartovacie hnojivo` a hnojivový hub.
 - **Prepojenia:** doplnené do sitemap, `i18n/routing.ts`, `Header.tsx` (dropdown), `Footer.tsx` a use-case karty `/hnojivo`.
-- **Commit alebo deploy:** doplniť po pushe.
+- **Commit alebo deploy:** `ad318bf`.
 - **GSC výsledok:** nová URL; doplniť po 4–6 týždňoch.
 - **Dátum ďalšej kontroly:** 2026-09-15.
 
