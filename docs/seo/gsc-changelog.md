@@ -39,7 +39,7 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 - **Obsah:** výber hnojiva na citrusy, mikroprvky (železo, zinok), sezónny plán hnojenia, listová výživa, časté chyby a FAQ; SK/EN/HU lokalizácia a 3 CDN obrázky.
 - **Prepojenia:** Hakofyt B citrusy, citrusová landing page `/hnojivo-na-citrusy`, Hakofyt hub, NPK článok, hnojivový hub.
 - **Stav:** publikované v DB 2026-08-05.
-- **Commit alebo deploy:** doplniť po pushe.
+- **Commit alebo deploy:** `ccefbd4`.
 - **GSC výsledok:** nová URL; doplniť po 4–6 týždňoch.
 - **Dátum ďalšej kontroly:** 2026-09-15.
 
