@@ -29,6 +29,20 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-08-05 — Článok: Ako hnojiť citrusy
+
+- **Typ:** poradenský obsah / long-tail podpora
+- **URL:**
+  - SK: `/sk/blog/ako-hnojit-citrusy`
+  - EN: `/en/blog/how-to-fertilize-citrus`
+  - HU: `/hu/blog/hogyan-tragyazzuk-a-citrusfeleket`
+- **Obsah:** výber hnojiva na citrusy, mikroprvky (železo, zinok), sezónny plán hnojenia, listová výživa, časté chyby a FAQ; SK/EN/HU lokalizácia a 3 CDN obrázky.
+- **Prepojenia:** Hakofyt B citrusy, citrusová landing page `/hnojivo-na-citrusy`, Hakofyt hub, NPK článok, hnojivový hub.
+- **Stav:** publikované v DB 2026-08-05.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** nová URL; doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-09-15.
+
 ### 2026-08-05 — Landing page: Štartovacie hnojivo
 
 - **Typ:** nová transakčná SEO landing page
