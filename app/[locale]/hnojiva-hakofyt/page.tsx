@@ -65,6 +65,18 @@ const localeToUseCaseCards: Record<string, Array<{ title: string; description: s
       label: 'Pozrieť hnojivo na jahody',
     },
     {
+      title: 'Hakofyt B na citrusy',
+      description: 'Pre citróny, mandarínky a iné citrusy so zameraním na zelené listy, vitalitu a mikroprvky.',
+      href: '/sk/hnojivo-na-citrusy',
+      label: 'Pozrieť hnojivo na citrusy',
+    },
+    {
+      title: 'Hakofyt B na čučoriedky',
+      description: 'Cielená listová výživa pre čučoriedky a ďalšie kyslomilné rastliny.',
+      href: '/sk/hnojivo-na-cucoriedky',
+      label: 'Pozrieť hnojivo na čučoriedky',
+    },
+    {
       title: 'Hakofyt Max na trávnik',
       description: 'Ak riešite hustý zelený trávnik, vyšší dopyt po dusíku alebo regeneráciu po zime, sem vedie najrelevantnejšia cesta.',
       href: '/sk/hnojivo-na-travnik',
@@ -91,6 +103,18 @@ const localeToUseCaseCards: Record<string, Array<{ title: string; description: s
       label: 'View strawberry fertilizer',
     },
     {
+      title: 'Hakofyt B for citrus plants',
+      description: 'For lemons, mandarins and other citrus plants, with a focus on green leaves and micronutrients.',
+      href: '/en/citrus-fertilizer',
+      label: 'View citrus fertilizer',
+    },
+    {
+      title: 'Hakofyt B for blueberries',
+      description: 'Targeted foliar nutrition for blueberries and other acid-loving plants.',
+      href: '/en/blueberry-fertilizer',
+      label: 'View blueberry fertilizer',
+    },
+    {
       title: 'Hakofyt Max for lawns',
       description: 'If the goal is a dense green lawn, higher nitrogen demand or post-winter recovery, this is the most relevant next page.',
       href: '/en/lawn-fertilizer',
@@ -115,6 +139,18 @@ const localeToUseCaseCards: Record<string, Array<{ title: string; description: s
       description: 'Bőséges virágzásért és édes, lédús eperért. Ideális eper műtrágya keresésekor.',
       href: '/hu/eper-mutragya',
       label: 'Eper műtrágya megtekintése',
+    },
+    {
+      title: 'Hakofyt B citrusfélékhez',
+      description: 'Citromhoz, mandarinhoz és más citrusfélékhez, zöld levelekhez és jobb vitalitáshoz.',
+      href: '/hu/citrus-mutragya',
+      label: 'Citrus műtrágya megtekintése',
+    },
+    {
+      title: 'Hakofyt B áfonyához',
+      description: 'Célzott lombtrágya áfonyához és más savanyú talajt kedvelő növényekhez.',
+      href: '/hu/afonya-mutragya',
+      label: 'Áfonya műtrágya megtekintése',
     },
     {
       title: 'Hakofyt Max gyephez',
