@@ -29,6 +29,17 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-08-05 — EN flower fertilizer: snippet a hydrangea prepojenie
+
+- **Typ:** snippet / interné SEO
+- **URL:** `/en/flower-fertilizer`
+- **GSC pred zmenou:** 211 zobrazení, CTR 1,42 %, priemerná pozícia 14,64.
+- **Zmena:** EN title a meta description teraz cielia na hydrangeas, balcony plants a flower beds; pridaný interný odkaz na existujúci EN článok o hnojení hortenzií.
+- **Dôvod / hypotéza:** URL má najväčší organický objem s nízkym CTR. Konkrétnejší snippet a relevantné obsahové prepojenie majú zvýšiť relevanciu bez novej URL.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-09-15.
+
 ### 2026-08-05 — Hakofyt hub: snippet a interné prepojenia
 
 - **Typ:** snippet / interné SEO

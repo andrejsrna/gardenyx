@@ -29,6 +29,8 @@ const npkArticleSlug: Record<string, string> = {
   hu: 'npk-mutragya-jelentese',
 };
 
+const hydrangeaArticleSlug = 'hydrangea-fertilizer-when-and-how-to-feed';
+
 const copy = {
   sk: {
     metaTitle: 'Hnojivo na kvety: balkónové rastliny, hortenzie a záhony | GardenYX',
@@ -74,9 +76,9 @@ const copy = {
     ],
   },
   en: {
-    metaTitle: 'Flower fertilizer for balcony plants, hydrangeas and beds | GardenYX',
+    metaTitle: 'Flower fertilizer for hydrangeas, balcony plants and beds | GardenYX',
     metaDescription:
-      'Hakofyt B Flowers is foliar fertilizer for flowering plants with increased boron, potassium and phosphorus for more intense blooming.',
+      'Choose flower fertilizer for hydrangeas, balcony plants and beds. Hakofyt B Flowers supports stronger blooms with phosphorus, potassium, boron and trace elements.',
     eyebrow: 'Flower fertilizer',
     title: 'Flower fertilizer for richer blooming, larger flowers and stronger colors',
     intro:
@@ -104,6 +106,7 @@ const copy = {
     ],
     relatedTitle: 'Related topics',
     related: [
+      ['hydrangeaArticle', 'Hydrangea fertilizer: when and how to feed'],
       ['/hnojivo', 'Garden fertilizer'],
       ['/organicke-hnojivo', 'Organic fertilizer'],
       ['npkArticle', 'What NPK fertilizer means'],
@@ -358,6 +361,8 @@ export default async function FlowerFertilizerPage({ params }: { params: Promise
               href={
                 href === 'npkArticle'
                   ? { pathname: '/blog/[slug]', params: { slug: npkArticleSlug[locale] || npkArticleSlug.sk } }
+                  : href === 'hydrangeaArticle'
+                    ? { pathname: '/blog/[slug]', params: { slug: hydrangeaArticleSlug } }
                   : href as AnyHref
               }
               className="rounded-3xl border border-amber-100 bg-white p-6 font-bold text-amber-800 shadow-sm hover:border-amber-300"
