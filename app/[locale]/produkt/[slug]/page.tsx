@@ -37,6 +37,12 @@ function localizedShopPath(locale: string) {
   return '/sk/kupit';
 }
 
+const strawberryGuideByLocale = {
+  sk: { href: '/sk/hnojivo-na-jahody', label: 'Ako hnojiť jahody počas sezóny' },
+  en: { href: '/en/strawberry-fertilizer', label: 'How to fertilize strawberries during the season' },
+  hu: { href: '/hu/eper-mutragya', label: 'Hogyan trágyázzuk az epret szezon közben' },
+} as const;
+
 function stripHtml(value: string) {
   return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -120,6 +126,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const productPath = localizedProductPath(locale, product.slug);
   const shopPath = localizedShopPath(locale);
   const productUrl = siteUrl ? `${siteUrl}${productPath}` : productPath;
+  const strawberryGuide = product.slug === 'hakofyt-b-jahody'
+    ? strawberryGuideByLocale[locale as keyof typeof strawberryGuideByLocale] ?? strawberryGuideByLocale.sk
+    : null;
 
   const breadcrumbItems = [
     { name: t('breadcrumbs.home'), url: siteUrl ? `${siteUrl}${localePrefix}` : `${localePrefix || '/'}` },
@@ -205,6 +214,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
               {product.short_description ? (
                 <p className="mt-6 text-base leading-7 text-stone-700">{product.short_description}</p>
+              ) : null}
+
+              {strawberryGuide ? (
+                <Link
+                  href={strawberryGuide.href}
+                  className="mt-4 inline-flex text-sm font-semibold text-green-700 underline decoration-green-300 underline-offset-4 hover:text-green-900"
+                >
+                  {strawberryGuide.label}
+                </Link>
               ) : null}
 
               <div className="mt-8">

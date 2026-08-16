@@ -72,6 +72,12 @@ const copy = {
         href: '/hnojivo-na-kvety',
         label: 'Hnojivo na kvety',
       },
+      {
+        title: 'Jahody',
+        text: 'Jahodníky potrebujú výživu pri jarnom štarte, pred kvitnutím aj po zbere úrody.',
+        href: '/hnojivo-na-jahody',
+        label: 'Hnojivo na jahody',
+      },
     ],
     methodTitle: 'Prečo listové hnojivo',
     methodText:
@@ -154,6 +160,12 @@ const copy = {
         href: '/hnojivo-na-kvety',
         label: 'Flower fertilizer',
       },
+      {
+        title: 'Strawberries',
+        text: 'Strawberry plants benefit from nutrition at spring start, before flowering and after harvest.',
+        href: '/hnojivo-na-jahody',
+        label: 'Strawberry fertilizer',
+      },
     ],
     methodTitle: 'Why foliar fertilizer',
     methodText:
@@ -235,6 +247,12 @@ const copy = {
         text: 'A virágzó növények több foszfort, káliumot és bórt igényelnek a gazdagabb virágzáshoz.',
         href: '/hnojivo-na-kvety',
         label: 'Virág műtrágya',
+      },
+      {
+        title: 'Eper',
+        text: 'Az eper tavaszi induláskor, virágzás előtt és szüret után igényel célzott tápanyagellátást.',
+        href: '/hnojivo-na-jahody',
+        label: 'Eper műtrágya',
       },
     ],
     methodTitle: 'Miért lombtrágya',

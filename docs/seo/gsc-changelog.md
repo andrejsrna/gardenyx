@@ -29,6 +29,16 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-08-05 — Jahodový cluster: hub a produktové prepojenie
+
+- **Typ:** interné SEO
+- **URL:** `/sk/hnojivo`, `/sk/produkt/hakofyt-b-jahody` a localized EN/HU varianty.
+- **Zmena:** hlavný hnojivový hub má novú use-case kartu pre jahody; detail produktu Hakofyt B jahody má kontextový odkaz na poradenskú landing page.
+- **Dôvod / hypotéza:** nová landing page potrebuje kontextové odkazy z hlavného hubu aj priamo z transakčného produktu, aby Google aj návštevník videli jeden súvislý intentový cluster.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** nová URL; doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-09-15.
+
 ### 2026-08-05 — EN flower fertilizer: snippet a hydrangea prepojenie
 
 - **Typ:** snippet / interné SEO
