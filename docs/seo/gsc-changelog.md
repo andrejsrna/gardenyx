@@ -29,6 +29,20 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-06-30 — Článok: Hnojivo na čučoriedky
+
+- **Typ:** poradenský obsah / long-tail podpora
+- **URL:**
+  - SK: `/sk/blog/hnojivo-na-cucoriedky`
+  - EN: `/en/blog/blueberry-fertilizer`
+  - HU: `/hu/blog/afonya-mutragya`
+- **Obsah:** kyslá pôda a pH, sezónny plán hnojenia, dávkovanie tekutého hnojiva, časté chyby a FAQ; SK/EN/HU lokalizácia a 3 CDN obrázky.
+- **Prepojenia:** Hakofyt B čučoriedky, Hakofyt hub, všeobecný hnojivový hub, články o jahodách, zelenine a NPK.
+- **Stav:** publikované v DB 2026-06-30; seed aktualizovaný tak, aby reprodukoval publikovanú verziu.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** doplniť po ďalšom exporte.
+- **Dátum ďalšej kontroly:** 2026-09-15.
+
 ### 2026-08-05 — Jahodový cluster: hub a produktové prepojenie
 
 - **Typ:** interné SEO

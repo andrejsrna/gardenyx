@@ -3,381 +3,376 @@ import 'dotenv/config';
 import prisma from '../app/lib/prisma';
 
 const slug = 'hnojivo-na-cucoriedky';
-const publishedAt = new Date('2026-06-08T12:00:00.000Z');
+const publishedAt = new Date('2026-06-30T12:00:00.000Z');
 const imageBase = 'https://cdn.gardenyx.eu/gardenyx/articles/hnojivo-na-cucoriedky';
-const coverImage = `${imageBase}/hnojivo-na-cucoriedky-hero.png`;
+const coverImage = `${imageBase}/hnojivo-na-cucoriedky-hero-20260630.png`;
 
-const content = String.raw`Čučoriedky sú špecifické tým, že nevyžadujú len živiny. Potrebujú aj vhodné kyslé prostredie. Preto sa pri nich neoplatí rozmýšľať rovnako ako pri bežnej zelenine, trávniku alebo ovocných stromoch. Zlé hnojivo môže rastline krátkodobo dodať živiny, ale zároveň narušiť podmienky v substráte.
+const content = String.raw`Čučoriedky sú v záhrade trochu iné než väčšina ovocných kríkov. Potrebujú kyslú pôdu, rovnomernú vlhkosť a výživu, ktorá rešpektuje ich koreňový systém. Ak ich hnojíte náhodne alebo prípravkom, ktorý mení pôdnu reakciu nesprávnym smerom, rastlina môže rásť pomaly, slabšie rodiť alebo jej začnú blednúť listy.
 
-Ak chcete čučoriedky hnojiť správne, sledujte dve veci naraz: výživu rastliny a stabilitu kyslej pôdy. Cieľom nie je rastlinu „nakopnúť“ silnou dávkou, ale pravidelne a šetrne podporovať listy, kvitnutie, tvorbu plodov a celkovú vitalitu.
+Dobré hnojenie čučoriedok preto začína pôdou. Hnojivo má podporiť rast, kvitnutie a tvorbu plodov, ale nemá nahradiť kyslý substrát, mulčovanie a pravidelnú zálievku. Najlepší výsledok vzniká vtedy, keď výživu spojíte so správnym pH, vodou a načasovaním počas sezóny.
 
-![Zdravé čučoriedky v kyslom substráte s listovou výživou](${coverImage})
+![Zdravý čučoriedkový krík v záhrade](${coverImage})
 
-## Rýchla odpoveď: čím hnojiť čučoriedky
+## Rýchla odpoveď: aké hnojivo na čučoriedky vybrať
 
-Čučoriedky hnojte šetrne, pravidelne a s ohľadom na kyslé pH pôdy. Najväčšou chybou je použiť univerzálne hnojivo alebo zásah, ktorý mení reakciu substrátu. Ako doplnková výživa dáva zmysel listové hnojivo určené pre čučoriedky a kyslomilné rastliny, napríklad [Hakofyt B čučoriedky](/produkt/hakofyt-b-cucoriedky).
+Na čučoriedky vyberajte hnojivo vhodné pre kyslomilné rastliny alebo priamo pre čučoriedky. Dôležité je, aby podporilo rast a úrodu, ale zároveň zbytočne nemenilo kyslosť pôdy. Pri tekutej výžive je praktické dávkovanie počas vegetácie a aplikácia mimo horúčav.
 
-Pri čučoriedkach platí jednoduché pravidlo: najprv udržujte správne podmienky v pôde, potom dopĺňajte výživu podľa fázy rastu a stavu rastliny.
+Pre pestované čučoriedky je určený [Hakofyt B čučoriedky](/sk/produkt/hakofyt-b-cucoriedky). Ide o organominerálne hnojivo s mikroelementmi, humínovými kyselinami, aminokyselinami, vitamínmi a prírodnými stimulátormi rastu. Produkt je navrhnutý tak, aby podporoval intenzívny rast a úrodu čučoriedok bez zásahu do kyslosti pôdy.
 
-## Prečo sú čučoriedky citlivé na hnojenie
+Ak si chcete pozrieť celý rad hnojív podľa pestovanej rastliny, pokračujte na [hnojivá Hakofyt](/sk/hnojiva-hakofyt) alebo všeobecnú stránku [hnojivo pre záhradu](/sk/hnojivo).
 
-Čučoriedky patria medzi kyslomilné rastliny. Najlepšie prosperujú v kyslom, vzdušnom a primerane vlhkom substráte. Ak je pôda príliš zásaditá alebo ťažká, rastlina má problém prijímať niektoré živiny, aj keď sú v pôde prítomné.
+## Prečo čučoriedky potrebujú kyslú pôdu
 
-Typickým signálom problému sú slabý rast, bledé alebo žltnúce listy a menšia úroda. Nemusí to hneď znamenať, že rastlina potrebuje silnejšiu dávku hnojiva. Často je príčinou práve nevhodné pH, preschnutie, premokrenie alebo vyčerpaný substrát.
+Čučoriedky patria medzi kyslomilné rastliny. Najlepšie prosperujú v kyslej pôde, často približne v rozmedzí pH 4,5 až 5,5. Ak je pôda príliš zásaditá, rastlina môže mať problém prijímať niektoré živiny, hoci sú v pôde prítomné. Typickým signálom býva slabý rast alebo žltnutie listov pri zelenších žilkách.
 
-Čučoriedky majú zároveň plytší koreňový systém. Preto horšie znášajú extrémy: preschnutie, preliatie aj nárazové prehnojenie. Pri výžive je lepšie pracovať s jemnejšími dávkami a pravidelnosťou.
+Preto nestačí len pridať hnojivo. Ak čučoriedka rastie v nevhodnej pôde, výživa nemusí fungovať podľa očakávania. Pri výsadbe a obnove záhona má zmysel použiť kyslý substrát, rašelinu alebo materiály vhodné pre čučoriedky a kyslomilné rastliny. Povrch pôdy pomáha chrániť mulč z kôry alebo ihličia, ktorý udržiava vlhkosť a obmedzuje prehrievanie koreňov.
+
+![Kontrola pôdy a pH pri pestovaní čučoriedok](${imageBase}/ph-pody-cucoriedky-20260630.png)
 
 ## Kedy hnojiť čučoriedky počas roka
 
-![Kedy hnojiť čučoriedky od jarných výhonkov cez kvitnutie po plody](${imageBase}/kedy-hnojit-cucoriedky.png)
+Najdôležitejšie obdobie hnojenia je jar a prvá časť vegetácie. Rastlina vtedy obnovuje rast, tvorí listy, kvety a neskôr plody. Jemná pravidelná výživa je lepšia než nárazové silné dávky.
 
-### Na jar po štarte vegetácie
+| Obdobie | Cieľ výživy | Poznámka |
+| --- | --- | --- |
+| Skorá jar | štart rastu po zime | najprv skontrolujte vlhkosť a stav rastliny |
+| Pred kvitnutím | kondícia pred kvetmi | neprehnojiť, najmä ak je rastlina slabá |
+| Po odkvitnutí | podpora rastu a plodov | dôležitá je pravidelná voda |
+| Po zbere | mierna regenerácia | bez neskorého silného rastového hnojenia |
+| Jeseň | príprava na zimu | skôr starostlivosť o pôdu a mulč |
 
-Prvé hnojenie dáva zmysel vtedy, keď rastlina po zime začína aktívne rásť. Objavujú sa nové listy a výhonky, rastlina sa prebúdza a potrebuje podporu vitality. V tomto období nepoužívajte zbytočne silné dávky. Dôležitejšia je stabilita substrátu, vlhkosť a šetrná výživa.
+### Hnojenie na jar
 
-### Pred kvitnutím
+Na jar najprv odstráňte poškodené časti, skontrolujte mulč a vlhkosť pôdy. Keď čučoriedka začne aktívne rásť, môžete pridať výživu. Ak je pôda suchá, najprv zalejte a až potom hnojte.
 
-Pred kvitnutím rastlina potrebuje dobrú kondíciu. Cieľom nie je tlačiť len listy, ale podporiť celkový stav rastliny, aby zvládla kvitnutie a neskôr tvorbu plodov. Vhodná je jemná listová výživa mimo ostrého slnka.
+### Pred kvitnutím a počas tvorby plodov
 
-### Po odkvitnutí a pri tvorbe plodov
+Pred kvitnutím a po odkvitnutí rastlina potrebuje stabilné podmienky. Dôležitá je voda, zdravé listy a postupná výživa. Čučoriedky majú plytké korene, preto zle znášajú preschnutie, prehrievanie a prudké výkyvy.
 
-Po odkvitnutí sa pozornosť presúva na plody. Rastlina potrebuje dostatok vody, stabilné prostredie a výživu, ktorá nepôsobí jednostranne. Nepravidelná zálievka alebo stres môžu zhoršiť kvalitu úrody viac než samotný nedostatok hnojiva.
+### Po zbere
 
-### Koncom leta opatrne
+Po zbere rastlina dopĺňa silu. Mierna podpora môže dávať zmysel, ale vyhnite sa neskorému silnému hnojeniu, ktoré by tlačilo nový mäkký rast pred zimou. V tomto období sa oplatí skontrolovať mulč a celkový stav záhona.
 
-Neskoré silné hnojenie nie je ideálne. Rastlina sa má postupne pripraviť na ukončenie sezóny. Ak je potrebná podpora, mala by byť mierna a vždy podľa stavu rastliny a odporúčania na etikete konkrétneho prípravku.
+## Ako dávkovať tekuté hnojivo na čučoriedky
 
-## Čím hnojiť čučoriedky
+Pri tekutom hnojive je výhoda v tom, že sa dá používať pravidelne počas vegetácie. Pri [Hakofyt B čučoriedky](/sk/produkt/hakofyt-b-cucoriedky) sa držte etikety produktu: riedenie je 1:100, teda 100 ml na 10 litrov vody, a aplikácia sa opakuje približne každých 10 až 14 dní počas vegetačného obdobia.
 
-Pri čučoriedkach sa oplatí rozlišovať medzi pôdnou úpravou a doplnkovou výživou. Substrát rieši dlhodobé podmienky: kyslosť, vzdušnosť, organickú hmotu a schopnosť držať vlhkosť. Hnojivo zase pomáha rastline počas sezóny pokryť aktuálne potreby.
+Hnojivo aplikujte ráno alebo večer, nie počas horúceho poludnia. Ak je rastlina zvädnutá alebo pôda preschnutá, najprv ju stabilizujte vodou. Výživa funguje najlepšie vtedy, keď rastlina nie je v strese.
 
-Na čučoriedky nie je vhodné bez rozmyslu používať univerzálne záhradné hnojivá. Niektoré môžu byť príliš silné, nevhodne vyvážené alebo neberú ohľad na kyslomilný charakter rastliny.
-
-Pre praktické hobby pestovanie je dobré mať:
-
-- kyslý substrát alebo vhodne pripravené stanovisko,
-- mulč z kôry alebo iného vhodného materiálu,
-- pravidelnú, ale nie prehnanú zálievku,
-- cielenú výživu pre čučoriedky alebo kyslomilné rastliny,
-- kontrolu stavu listov počas sezóny.
-
-Ak chcete doplniť výživu cez list, pozrite si [hnojivo na čučoriedky](/hnojivo-na-cucoriedky). Landing page vysvetľuje použitie produktu Hakofyt B čučoriedky a jeho miesto v starostlivosti o kyslomilné rastliny.
-
-## Listové hnojivo: kedy má zmysel
-
-Listové hnojivo sa aplikuje na listovú plochu. Rastlina vie časť živín prijať cez listy, čo je praktické najmä počas sezóny, keď chcete reagovať na slabšiu vitalitu alebo podporiť rast bez hrubého zásahu do pôdy.
-
-Pri čučoriedkach je to výhoda práve preto, že pôdne podmienky sú citlivé. Listová výživa nenahrádza správne pH substrátu, ale môže byť šetrným doplnkom, ak rastlina potrebuje podporu.
-
-Dôležité pravidlá:
-
-- aplikujte ráno alebo večer,
-- neaplikujte na prehriate rastliny,
-- nehnojte počas suchého stresu,
-- držte sa dávkovania z etikety,
-- sledujte reakciu listov po aplikácii.
+![Aplikácia zriedeného hnojiva ku koreňom čučoriedky](${imageBase}/ako-hnojit-cucoriedky-20260630.png)
 
 ## Najčastejšie chyby pri hnojení čučoriedok
 
-![Najčastejšie chyby pri hnojení čučoriedok a kyslomilných rastlín](${imageBase}/chyby-pri-hnojeni-cucoriedok.png)
+### Hnojenie bez kontroly pH
 
-### Použitie univerzálneho hnojiva bez ohľadu na pH
+Ak je pôda príliš zásaditá, čučoriedka nemusí živiny dobre prijímať. Pestovateľ potom často pridáva ďalšie hnojivo, ale problém je v pôdnej reakcii. Pri slabom raste alebo blednutí listov preto myslite aj na pH, nie iba na dávku hnojiva.
 
-Univerzálne hnojivo nemusí byť automaticky problém, ale pri čučoriedkach je to riziko. Ak nerieši potreby kyslomilných rastlín, môže rastline pomôcť menej, než očakávate.
+### Použitie nevhodného univerzálneho hnojiva
 
-### Vápnenie alebo zásadité zásahy v blízkosti čučoriedok
+Nie každé univerzálne hnojivo je vhodné pre kyslomilné rastliny. Pri čučoriedkach je lepšie vybrať produkt s jasným určením pre čučoriedky alebo acidofilné rastliny. Tak sa vyhnete tomu, že budete riešiť rast, ale zhoršíte pôdne podmienky.
 
-Čučoriedky potrebujú kyslé prostredie. Vápnenie, zásaditá voda alebo nevhodný substrát môžu zhoršiť príjem živín. Výsledkom potom môžu byť žlté listy a slabý rast, aj keď ste hnojili.
+### Hnojenie počas sucha alebo horúčav
 
-### Prehnojenie dusíkom
+Čučoriedky potrebujú rovnomernú vlhkosť. Ak sú v strese zo sucha, hnojenie nemusí pomôcť. Najprv upravte zálievku, doplňte mulč a až potom pokračujte výživou.
 
-Príliš veľa dusíka môže podporiť mäkký rast a znížiť rovnováhu rastliny. Pri čučoriedkach je dôležitejšia stabilná kondícia než rýchly, bujný rast za každú cenu.
+### Príliš neskoré silné hnojenie
 
-### Hnojenie počas horúčav
+Silné rastové hnojenie na konci sezóny môže podporiť mladý rast, ktorý nestihne dobre vyzrieť pred zimou. Na jeseň sa viac sústreďte na pôdu, mulč a prípravu rastliny na pokojové obdobie.
 
-Počas horúčav rastlina často rieši hlavne vodný stres. Hnojenie vtedy nemusí pomôcť a môže ju ešte viac zaťažiť. Najprv stabilizujte zálievku a aplikujte až mimo extrémnych podmienok.
+## Praktický plán pre hobby pestovateľa
 
-## Praktický postup pre hobby pestovateľa
+1. Pri výsadbe pripravte kyslý substrát a vzdušné stanovište.
+2. Udržujte pôdu rovnomerne vlhkú, ale nepremokrenú.
+3. Povrch zamulčujte kôrou, ihličím alebo vhodným organickým materiálom.
+4. Na jar začnite výživu až pri aktívnom raste.
+5. Počas vegetácie používajte hnojivo podľa etikety a mimo horúčav.
+6. Sledujte listy: blednutie môže naznačiť problém s pH alebo príjmom živín.
+7. Po zbere podporte regeneráciu mierne, bez neskorých silných dávok.
 
-1. Skontrolujte, či čučoriedka rastie v kyslom a vzdušnom substráte.
-2. Udržujte rovnomernú vlhkosť, ale rastlinu neprelievajte.
-3. Mulčujte vhodným materiálom, aby substrát nevysychal.
-4. Hnojte šetrne podľa fázy rastu.
-5. Listové hnojivo aplikujte ráno alebo večer.
-6. Po aplikácii sledujte listy a celkovú vitalitu rastliny.
-
-Ak pestujete viac kyslomilných rastlín, podobné princípy využijete aj pri ďalších druhoch. Pre širší prehľad výživy si môžete pozrieť aj [organické hnojivo](/organicke-hnojivo) alebo hlavný hub [hnojivá Hakofyt](/hnojiva-hakofyt).
-
-## Odporúčaný produkt
-
-Pre čučoriedky a kyslomilné rastliny je pripravený [Hakofyt B čučoriedky](/produkt/hakofyt-b-cucoriedky). Ide o listové hnojivo, ktoré dáva zmysel ako šetrná doplnková výživa počas sezóny.
-
-Ak chcete najprv prejsť všeobecné odporúčanie, začnite stránkou [hnojivo na čučoriedky](/hnojivo-na-cucoriedky), kde je zhrnuté použitie, načasovanie aj FAQ.
+Ak pestujete aj ďalšie bobuľoviny, môže sa vám hodiť článok [kedy hnojiť jahody](/sk/blog/kedy-hnojit-jahody). Pre zeleninovú časť záhrady pozrite aj [ako hnojiť zeleninu](/sk/blog/ako-hnojit-zeleninu) a [NPK hnojivo: čo znamenajú čísla na obale](/sk/blog/npk-hnojivo-co-znamena).
 
 ## Najčastejšie otázky
 
-### Aké hnojivo je najlepšie na čučoriedky?
+### Aké pH pôdy potrebujú čučoriedky?
 
-Najlepšie je cielene zvoliť hnojivo pre čučoriedky alebo kyslomilné rastliny. Dôležité je, aby výživa rešpektovala kyslé prostredie a nepôsobila príliš agresívne.
+Čučoriedky potrebujú kyslú pôdu, najčastejšie približne pH 4,5 až 5,5. Ak je pôda zásaditejšia, rastlina môže slabšie prijímať živiny.
 
-### Kedy hnojiť čučoriedky na jar?
+### Kedy začať hnojiť čučoriedky na jar?
 
-Na jar hnojte až vtedy, keď rastlina začína aktívne rásť. Sledujte nové listy a výhonky. Príliš skoré alebo silné hnojenie nemusí byť potrebné.
+Začnite až vtedy, keď rastlina po zime obnoví aktívny rast. Najprv skontrolujte vlhkosť pôdy, mulč a zdravotný stav kríka.
 
-### Môžem použiť univerzálne hnojivo?
+### Môžem čučoriedky hnojiť počas plodenia?
 
-Pri čučoriedkach radšej opatrne. Univerzálne hnojivo nemusí rešpektovať potreby kyslomilných rastlín. Bezpečnejšie je použiť cielený produkt a sledovať aj pH substrátu.
+Áno, ale opatrne a podľa etikety konkrétneho hnojiva. Počas plodenia je rovnako dôležitá pravidelná zálievka a stabilné podmienky.
 
-### Prečo čučoriedkam žltnú listy?
+### Prečo čučoriedke žltnú listy?
 
-Žltnutie listov môže súvisieť s nevhodným pH, problémom s príjmom živín, premokrením, suchom alebo koreňovým stresom. Nie vždy je riešením silnejšia dávka hnojiva.
+Častou príčinou je nevhodné pH pôdy a horší príjem živín, ale môže ísť aj o stres zo sucha, premokrenia alebo poškodenia koreňov. Najprv skontrolujte pôdu, vodu a stanovište.
 
-### Je listové hnojivo vhodné pre čučoriedky?
+### Je Hakofyt B čučoriedky vhodný aj na iné kyslomilné rastliny?
 
-Áno, ako doplnková výživa počas sezóny. Aplikujte ho mimo ostrého slnka, podľa etikety a na rastliny, ktoré nie sú v strese zo sucha alebo horúčav.`;
+Produkt je určený najmä pre pestované čučoriedky a acidofilné rastliny. Pri inom použití sa riaďte etiketou a potrebami konkrétnej rastliny.
 
-const contentEn = String.raw`Blueberries are specific because they do not need only nutrients. They also need a suitable acidic growing environment. That is why fertilizing them should not be treated like feeding ordinary vegetables, lawns or fruit trees. The wrong fertilizer may add nutrients for a short time, but it can also disturb the conditions in the substrate.
+## Zdroje
 
-To fertilize blueberries well, watch two things at once: plant nutrition and stable acidic soil. The goal is not to push the plant with a strong dose, but to support leaves, flowering, fruit formation and overall vitality gently and regularly.
+- [University of Minnesota Extension: Growing blueberries in the home garden](https://extension.umn.edu/fruit/growing-blueberries-home-garden)
+- [Penn State Extension: Blueberries for the Home Garden](https://extension.psu.edu/blueberries-for-the-home-garden)
+- [Oregon State University Extension: Growing blueberries in your home garden](https://extension.oregonstate.edu/catalog/pub/ec-1304-growing-blueberries-your-home-garden)`;
 
-![Healthy blueberries in acidic substrate with foliar nutrition](${coverImage})
+const contentEn = String.raw`Blueberries need more specific care than many common fruit shrubs. They prefer acidic soil, steady moisture and nutrition that respects their shallow root system. If you fertilize randomly or use a product that pushes soil conditions in the wrong direction, growth can slow down, leaves may turn pale and the harvest can suffer.
 
-## Quick answer: what to fertilize blueberries with
+Good blueberry fertilizing therefore starts with soil. Fertilizer should support growth, flowering and fruit formation, but it cannot replace acidic growing media, mulch and regular watering. The best results come when nutrition, pH, water and timing work together.
 
-Fertilize blueberries gently, regularly and with respect for acidic soil pH. The biggest mistake is using a universal fertilizer or any treatment that changes the substrate reaction. As supplemental nutrition, a foliar fertilizer for blueberries and acid-loving plants makes sense, such as [Hakofyt B Blueberries](/en/product/hakofyt-b-cucoriedky).
+![Healthy blueberry bush in a garden](${coverImage})
 
-With blueberries, remember the simple rule: first maintain the right soil conditions, then add nutrition according to the growth stage and the condition of the plant.
+## Quick answer: what fertilizer to choose for blueberries
 
-## Why blueberries are sensitive to fertilizing
+Choose a fertilizer made for blueberries or acid-loving plants. It should support growth and harvest without unnecessarily changing soil acidity. Liquid nutrition is practical during the growing season, especially when applied outside hot midday conditions.
 
-Blueberries are acid-loving plants. They grow best in acidic, airy and evenly moist substrate. If the soil is too alkaline or heavy, the plant may struggle to take up some nutrients even when they are present in the soil.
+For cultivated blueberries, see [Hakofyt B Blueberries](/en/product/hakofyt-b-cucoriedky). It is an organomineral fertilizer with trace elements, humic acids, amino acids, vitamins and natural growth stimulators. It is designed to support intensive growth and blueberry yield without affecting soil acidity.
 
-Typical warning signs include weak growth, pale or yellowing leaves and lower yield. This does not always mean the plant needs a stronger fertilizer dose. The cause is often unsuitable pH, drying out, waterlogging or depleted substrate.
+For the broader range, visit [Hakofyt fertilizers](/en/hakofyt-fertilizers) or the general [garden fertilizer](/en/fertilizer) page.
 
-Blueberries also have a shallow root system. They tolerate extremes poorly: drought, overwatering and sudden overfertilizing. Gentler doses and regular care work better than strong one-time feeding.
+## Why blueberries need acidic soil
+
+Blueberries are acid-loving plants. They usually grow best in acidic soil, often around pH 4.5 to 5.5. If soil is too alkaline, the plant may struggle to take up some nutrients even when they are present. Weak growth and yellowing leaves with greener veins can be warning signs.
+
+That is why fertilizer alone is not enough. If a blueberry is planted in unsuitable soil, feeding may not work as expected. At planting and when renewing a bed, use acidic substrate or materials suitable for blueberries and other acid-loving plants. Bark or pine-needle mulch helps protect the shallow root zone and keeps moisture more stable.
+
+![Soil and pH check when growing blueberries](${imageBase}/ph-pody-cucoriedky-20260630.png)
 
 ## When to fertilize blueberries during the year
 
-![When to fertilize blueberries from spring shoots through flowering to fruit](${imageBase}/kedy-hnojit-cucoriedky.png)
+The most important feeding period is spring and the first part of the growing season. The plant resumes growth, makes leaves, flowers and later fruit. Gentle regular nutrition is better than occasional heavy doses.
 
-### In spring after growth starts
+| Period | Nutrition goal | Note |
+| --- | --- | --- |
+| Early spring | restart growth after winter | check moisture and plant condition first |
+| Before flowering | condition before flowers | do not overfeed weak plants |
+| After flowering | support growth and fruit | regular water matters |
+| After harvest | moderate recovery | avoid late strong growth feeding |
+| Autumn | winter preparation | focus on soil and mulch |
 
-The first feeding makes sense when the plant begins active growth after winter. New leaves and shoots appear, and the plant needs support for vitality. Do not use unnecessarily strong doses. Stable substrate, moisture and gentle nutrition matter more.
+### Spring feeding
 
-### Before flowering
+In spring, remove damaged parts, check mulch and soil moisture. Once the blueberry starts active growth, feeding can begin. If the soil is dry, water first and fertilize later.
 
-Before flowering, the plant needs good condition. The goal is not only leafy growth, but overall strength so the plant can handle flowering and later fruit development. Gentle foliar feeding outside harsh sun is suitable.
+### Before flowering and during fruit formation
 
-### After bloom and during fruit formation
+Before flowering and after bloom, the plant needs stable conditions. Water, healthy leaves and gradual nutrition matter. Blueberries have shallow roots, so drying, overheating and sudden swings are stressful.
 
-After bloom, attention shifts to fruit. The plant needs enough water, stable conditions and balanced nutrition. Irregular watering or stress can reduce crop quality more than a simple lack of fertilizer.
+### After harvest
 
-### Be careful in late summer
+After harvest, the plant rebuilds strength. Moderate support can make sense, but avoid late strong fertilizing that pushes soft new growth before winter. This is also a good time to check mulch and bed condition.
 
-Late strong feeding is not ideal. The plant should gradually finish the season. If support is needed, keep it moderate and follow the condition of the plant and the product label.
+## How to dose liquid blueberry fertilizer
 
-## What to use for blueberry fertilizing
+Liquid fertilizer is useful because it can be applied regularly during vegetation. With [Hakofyt B Blueberries](/en/product/hakofyt-b-cucoriedky), follow the product label: dilute 1:100, which means 100 ml per 10 litres of water, and apply approximately every 10 to 14 days during the growing season.
 
-For blueberries, distinguish between substrate care and supplemental nutrition. The substrate determines long-term conditions: acidity, airiness, organic matter and moisture balance. Fertilizer helps cover seasonal needs.
+Apply in the morning or evening, not during hot midday sun. If the plant is wilted or the soil is dry, stabilize it with water first. Nutrition works best when the plant is not under stress.
 
-Do not automatically use universal garden fertilizers on blueberries. Some can be too strong, poorly balanced or unsuitable for acid-loving plants.
+![Applying diluted fertilizer around blueberry roots](${imageBase}/ako-hnojit-cucoriedky-20260630.png)
 
-For home growing, it is useful to have acidic substrate, suitable mulch, regular watering, targeted nutrition for blueberries and ongoing leaf monitoring.
+## Common blueberry fertilizing mistakes
 
-If you want to support nutrition through leaves, see the [blueberry fertilizer](/en/blueberry-fertilizer) page. It explains the use of Hakofyt B Blueberries and its role in caring for acid-loving plants.
+### Fertilizing without checking pH
 
-## Foliar fertilizer: when it makes sense
+If soil is too alkaline, blueberries may not take up nutrients well. Growers often add more fertilizer, but the real issue is soil reaction. When growth is weak or leaves turn pale, think about pH as well as fertilizer dose.
 
-Foliar fertilizer is applied to the leaf surface. The plant can absorb part of the nutrients through leaves, which is useful during the season when you want to respond to weaker vitality or support growth without disturbing the soil.
+### Using an unsuitable universal fertilizer
 
-This is helpful for blueberries because soil conditions are sensitive. Foliar nutrition does not replace correct substrate pH, but it can be a gentle supplement.
+Not every universal fertilizer is suitable for acid-loving plants. For blueberries, choose a product clearly intended for blueberries or acid-loving crops.
 
-Apply in the morning or evening, avoid overheated plants, do not fertilize during drought stress, follow the label dose and watch the plant response.
+### Feeding during drought or heat
 
-## Common mistakes when fertilizing blueberries
+Blueberries need consistent moisture. If they are stressed by drought, fertilizer may not help. Adjust watering, refresh mulch and continue feeding only after the plant is stable.
 
-![Common mistakes when fertilizing blueberries and acid-loving plants](${imageBase}/chyby-pri-hnojeni-cucoriedok.png)
+### Strong late-season feeding
 
-### Using universal fertilizer without considering pH
+Strong growth feeding late in the season can push soft growth that may not mature before winter. In autumn, focus more on soil, mulch and preparing the plant for dormancy.
 
-Universal fertilizer is not always a problem, but for blueberries it is a risk. If it does not respect the needs of acid-loving plants, it may help less than expected.
+## Practical plan for home growers
 
-### Liming or alkaline treatments near blueberries
+1. Prepare acidic growing media at planting.
+2. Keep soil evenly moist, not waterlogged.
+3. Mulch with bark, pine needles or suitable organic material.
+4. Start feeding in spring only after active growth begins.
+5. During vegetation, follow the fertilizer label and avoid heat.
+6. Watch the leaves: pale leaves may indicate pH or nutrient uptake issues.
+7. After harvest, support recovery moderately and avoid strong late doses.
 
-Blueberries need acidic conditions. Lime, alkaline water or unsuitable substrate can reduce nutrient uptake. The result may be yellow leaves and weak growth even after fertilizing.
-
-### Too much nitrogen
-
-Too much nitrogen can support soft growth and reduce plant balance. With blueberries, stable condition matters more than fast lush growth at any cost.
-
-### Fertilizing during heat
-
-During heat, the plant is often dealing with water stress. Fertilizing may not help and can add more stress. Stabilize watering first and apply only outside extreme conditions.
-
-## Practical routine for home growers
-
-1. Check that the blueberry grows in acidic, airy substrate.
-2. Keep moisture even, but do not overwater.
-3. Mulch with suitable material to reduce drying.
-4. Fertilize gently according to the growth stage.
-5. Apply foliar fertilizer in the morning or evening.
-6. Watch leaves and overall plant vitality after application.
-
-For broader context, see [organic fertilizer](/en/organic-fertilizer) or the main [Hakofyt fertilizers](/en/hakofyt-fertilizers) hub.
-
-## Recommended product
-
-For blueberries and acid-loving plants, use [Hakofyt B Blueberries](/en/product/hakofyt-b-cucoriedky). It is a foliar fertilizer that works well as gentle supplemental nutrition during the season.
+For other berries, read [when to fertilize strawberries](/en/blog/when-to-fertilize-strawberries). For vegetables, see [how to fertilize vegetables](/en/blog/how-to-fertilize-vegetables) and [NPK fertilizer: what the numbers mean](/en/blog/npk-fertilizer-meaning).
 
 ## Frequently asked questions
 
-### What is the best fertilizer for blueberries?
+### What soil pH do blueberries need?
 
-Choose a targeted fertilizer for blueberries or acid-loving plants. It should respect acidic conditions and avoid overly aggressive feeding.
+Blueberries need acidic soil, usually around pH 4.5 to 5.5. If the soil is more alkaline, nutrient uptake may be weaker.
 
-### When should I fertilize blueberries in spring?
+### When should I start fertilizing blueberries in spring?
 
-Fertilize when the plant begins active growth and forms new leaves and shoots. Very early or overly strong feeding is usually unnecessary.
+Start only after active growth resumes. Check soil moisture, mulch and plant condition first.
 
-### Can I use universal fertilizer?
+### Can I fertilize blueberries while they are fruiting?
 
-Use caution. Universal fertilizer may not respect acid-loving plant needs. A targeted product is safer, while substrate pH should still be monitored.
+Yes, but carefully and according to the fertilizer label. During fruiting, regular water and stable conditions are just as important.
 
 ### Why are blueberry leaves turning yellow?
 
-Yellowing may be related to unsuitable pH, nutrient uptake problems, waterlogging, drought or root stress. A stronger fertilizer dose is not always the solution.
+Unsuitable soil pH and poor nutrient uptake are common reasons, but drought, waterlogging or root damage can also cause stress. Check soil, water and site conditions first.
 
-### Is foliar fertilizer suitable for blueberries?
+### Is Hakofyt B Blueberries suitable for other acid-loving plants?
 
-Yes, as supplemental nutrition during the season. Apply outside harsh sun, follow the label and avoid drought- or heat-stressed plants.`;
+It is intended mainly for cultivated blueberries and acid-loving plants. For other uses, follow the product label and the needs of the specific plant.
 
-const contentHu = String.raw`Az áfonya különleges növény, mert nemcsak tápanyagokra van szüksége. Megfelelő savanyú közeg is kell neki. Ezért nem érdemes ugyanúgy trágyázni, mint a hétköznapi zöldségeket, gyepet vagy gyümölcsfákat. A rossz műtrágya rövid távon adhat tápanyagot, de közben ronthatja a közeg feltételeit.
+## Sources
 
-Az áfonya helyes trágyázásánál egyszerre két dolgot kell figyelni: a növény tápanyagellátását és a savanyú közeg stabilitását. A cél nem az erős egyszeri adag, hanem a lomb, a virágzás, a termésképzés és a vitalitás rendszeres, kíméletes támogatása.
+- [University of Minnesota Extension: Growing blueberries in the home garden](https://extension.umn.edu/fruit/growing-blueberries-home-garden)
+- [Penn State Extension: Blueberries for the Home Garden](https://extension.psu.edu/blueberries-for-the-home-garden)
+- [Oregon State University Extension: Growing blueberries in your home garden](https://extension.oregonstate.edu/catalog/pub/ec-1304-growing-blueberries-your-home-garden)`;
 
-![Egészséges áfonya savanyú közegben lombtrágyázással](${coverImage})
+const contentHu = String.raw`Az áfonya gondozása eltér sok más gyümölcstermő bokortól. Savanyú talajt, egyenletes nedvességet és a sekély gyökérzethez illő tápanyagellátást igényel. Ha véletlenszerűen trágyázza, vagy olyan terméket használ, amely rossz irányba tolja a talaj állapotát, a növekedés lelassulhat, a levelek fakulhatnak és a termés is gyengébb lehet.
 
-## Gyors válasz: mivel trágyázzuk az áfonyát
+A jó áfonyatrágyázás ezért a talajjal kezdődik. A műtrágya feladata a növekedés, virágzás és termésképzés támogatása, de nem helyettesíti a savanyú közeget, a mulcsot és a rendszeres öntözést. A legjobb eredményt a tápanyag, pH, víz és időzítés együtt adja.
 
-Az áfonyát kíméletesen, rendszeresen és a savanyú pH figyelembevételével trágyázza. A legnagyobb hiba az univerzális műtrágya vagy olyan kezelés, amely megváltoztatja a közeg reakcióját. Kiegészítő tápanyagellátásként hasznos lehet az áfonyához és savanyú közeget kedvelő növényekhez készült lombtrágya, például a [Hakofyt B Áfonya](/hu/termek/hakofyt-b-cucoriedky).
+![Egészséges áfonyabokor a kertben](${coverImage})
 
-Az egyszerű szabály: először tartsa rendben a talajfeltételeket, utána pótolja a tápanyagot a fejlődési szakasz és a növény állapota szerint.
+## Gyors válasz: milyen műtrágyát válasszunk áfonyához
 
-## Miért érzékeny az áfonya a trágyázásra
+Áfonyához áfonyára vagy savanyú talajt kedvelő növényekre készült műtrágyát válasszon. Fontos, hogy támogassa a növekedést és a termést, de ne változtassa feleslegesen a talaj savasságát. A folyékony tápanyag praktikus a vegetációs időszakban, különösen ha nem a déli hőségben alkalmazza.
 
-Az áfonya savanyú közeget kedvelő növény. Savanyú, levegős és egyenletesen nedves közegben fejlődik a legjobban. Ha a talaj túl lúgos vagy tömör, a növény akkor is nehezen vehet fel bizonyos tápanyagokat, ha azok jelen vannak.
+Termesztett áfonyához készült a [Hakofyt B Áfonya](/hu/termek/hakofyt-b-cucoriedky). Organominerális műtrágya mikroelemekkel, huminsavakkal, aminosavakkal, vitaminokkal és természetes növekedésserkentőkkel. Úgy készült, hogy támogassa az intenzív növekedést és az áfonya termését anélkül, hogy befolyásolná a talaj savasságát.
 
-Figyelmeztető jel lehet a gyenge növekedés, a halvány vagy sárguló levél és a kisebb termés. Ez nem mindig azt jelenti, hogy erősebb műtrágya kell. Gyakran a nem megfelelő pH, kiszáradás, túlöntözés vagy kimerült közeg az ok.
+A teljes kínálatért nézze meg a [Hakofyt műtrágyák](/hu/hakofyt-mutragyak) oldalt vagy az általános [kerti műtrágya](/hu/mutragya) áttekintést.
 
-Az áfonyának sekélyebb gyökérzete van, ezért rosszul tűri a szélsőségeket. A kisebb, kíméletesebb adagok és a rendszeres gondozás jobb, mint az erős egyszeri trágyázás.
+## Miért igényel az áfonya savanyú talajt
+
+Az áfonya savanyú talajt kedvelő növény. Legjobban savanyú közegben fejlődik, gyakran körülbelül 4,5 és 5,5 közötti pH mellett. Ha a talaj túl lúgos, a növény nehezebben vesz fel bizonyos tápanyagokat akkor is, ha azok jelen vannak. Figyelmeztető jel lehet a gyenge növekedés vagy a levelek sárgulása zöldebb erezettel.
+
+Ezért a műtrágya önmagában nem elég. Ha az áfonya nem megfelelő talajban van, a tápanyagpótlás sem fog jól működni. Ültetéskor és az ágyás megújításakor használjon savanyú közeget vagy áfonyához alkalmas anyagokat. A kéreg- vagy tűlevélmulcs segít védeni a sekély gyökérzónát és stabilabban tartani a nedvességet.
+
+![Talaj és pH ellenőrzése áfonya termesztésekor](${imageBase}/ph-pody-cucoriedky-20260630.png)
 
 ## Mikor trágyázzuk az áfonyát az év során
 
-![Mikor trágyázzuk az áfonyát tavaszi hajtástól virágzáson át termésig](${imageBase}/kedy-hnojit-cucoriedky.png)
+A legfontosabb időszak a tavasz és a vegetáció első része. A növény újra növekedni kezd, leveleket, virágokat, később termést hoz. A kíméletes, rendszeres tápanyagpótlás jobb, mint a ritka erős adagok.
 
-### Tavasszal a növekedés indulása után
+| Időszak | Cél | Megjegyzés |
+| --- | --- | --- |
+| Kora tavasz | növekedés indítása tél után | először ellenőrizze a nedvességet |
+| Virágzás előtt | kondíció a virágok előtt | ne trágyázza túl a gyenge növényt |
+| Virágzás után | növekedés és termés támogatása | a rendszeres víz fontos |
+| Szüret után | mérsékelt regeneráció | kerülje a késői erős növekedési trágyázást |
+| Ősz | téli felkészülés | fókusz a talajon és mulcson |
 
-Az első trágyázás akkor indokolt, amikor a növény tél után aktív növekedésbe kezd. Megjelennek az új levelek és hajtások. Ilyenkor a stabil közeg, a nedvesség és a kíméletes tápanyagpótlás fontosabb, mint az erős adag.
+### Tavaszi trágyázás
 
-### Virágzás előtt
+Tavasszal távolítsa el a sérült részeket, ellenőrizze a mulcsot és a talaj nedvességét. Amikor az áfonya aktív növekedésnek indul, elkezdhető a tápanyagpótlás. Száraz talajnál először öntözzön, utána trágyázzon.
 
-Virágzás előtt jó kondícióra van szükség. A cél nem csak a lomb növelése, hanem a növény általános erősítése, hogy jól kezelje a virágzást és később a termésképzést.
+### Virágzás előtt és termésképzéskor
 
-### Virágzás után és termésképzéskor
+Virágzás előtt és után a növény stabil körülményeket igényel. Fontos a víz, az egészséges levélzet és a fokozatos tápanyagpótlás. Az áfonya sekély gyökerű, ezért rosszul tűri a kiszáradást, túlmelegedést és hirtelen változásokat.
 
-Virágzás után a termések kerülnek előtérbe. A növénynek vízre, stabil körülményekre és kiegyensúlyozott tápanyagellátásra van szüksége. A rendszertelen öntözés és stressz jobban ronthatja a termést, mint önmagában a tápanyaghiány.
+### Szüret után
 
-### Nyár végén óvatosan
+Szüret után a növény erőt gyűjt. Mérsékelt támogatás hasznos lehet, de kerülje a késői erős trágyázást, amely puha új hajtásokat indíthat tél előtt. Ilyenkor érdemes a mulcsot és az ágyás állapotát is ellenőrizni.
 
-A késői erős trágyázás nem ideális. A növénynek lassan le kell zárnia a szezont. Ha támogatás kell, legyen mérsékelt és kövesse a termék címkéjét.
+## Hogyan adagoljuk a folyékony áfonyaműtrágyát
 
-## Mivel trágyázzuk az áfonyát
+A folyékony műtrágya előnye, hogy rendszeresen használható a vegetációs időszakban. A [Hakofyt B Áfonya](/hu/termek/hakofyt-b-cucoriedky) esetében kövesse a címkét: hígítás 1:100, vagyis 100 ml 10 liter vízhez, és kijuttatás körülbelül 10-14 naponta a vegetáció alatt.
 
-Áfonyánál különbséget kell tenni a közeg gondozása és a kiegészítő tápanyagpótlás között. A közeg adja a hosszú távú feltételeket: savanyúság, levegősség, szerves anyag és nedvesség. A műtrágya a szezonális igényeket segít fedezni.
+Reggel vagy este alkalmazza, ne a déli hőségben. Ha a növény hervadt vagy a talaj száraz, először stabilizálja vízzel. A tápanyag akkor működik a legjobban, ha a növény nincs stresszben.
 
-Univerzális kerti műtrágyát ne használjon automatikusan áfonyára. Egyes készítmények túl erősek vagy nem veszik figyelembe a savanyú közeget kedvelő növények igényeit.
-
-Ha lombon keresztül szeretné támogatni a növényt, nézze meg az [áfonya műtrágya](/hu/afonya-mutragya) oldalt. Ez bemutatja a Hakofyt B Áfonya szerepét a savanyú közeget kedvelő növények gondozásában.
-
-## Lombtrágya: mikor hasznos
-
-A lombtrágyát a levelekre juttatjuk. A növény a tápanyagok egy részét a levélen keresztül fel tudja venni. Ez akkor hasznos, ha szezon közben szeretné támogatni a vitalitást anélkül, hogy durván beavatkozna a talajba.
-
-Áfonyánál ez előny, mert a talajfeltételek érzékenyek. A lombtrágya nem helyettesíti a megfelelő pH-t, de kíméletes kiegészítő lehet.
+![Hígított műtrágya kijuttatása az áfonya tövéhez](${imageBase}/ako-hnojit-cucoriedky-20260630.png)
 
 ## Gyakori hibák az áfonya trágyázásánál
 
-![Gyakori hibák az áfonya és savanyú közeget kedvelő növények trágyázásánál](${imageBase}/chyby-pri-hnojeni-cucoriedok.png)
+### Trágyázás pH-ellenőrzés nélkül
 
-A leggyakoribb hiba az univerzális műtrágya használata pH figyelembevétele nélkül. További gond a meszezés vagy lúgos közeg az áfonya közelében, a túl sok nitrogén, illetve a hőségben történő trágyázás.
+Ha a talaj túl lúgos, az áfonya nem veszi fel jól a tápanyagokat. Ilyenkor sokan több műtrágyát adnak, pedig a gond a talaj reakciója. Gyenge növekedésnél vagy fakó leveleknél gondoljon a pH-ra is.
 
-## Gyakorlati rutin hobbikertészeknek
+### Nem megfelelő univerzális műtrágya használata
 
-1. Ellenőrizze, hogy az áfonya savanyú, levegős közegben nő.
-2. Tartsa egyenletesen nedvesen, de ne öntözze túl.
-3. Mulcsozza megfelelő anyaggal.
-4. Trágyázzon kíméletesen a fejlődési szakasz szerint.
-5. Lombtrágyát reggel vagy este alkalmazzon.
-6. Figyelje a leveleket és a növény vitalitását.
+Nem minden univerzális műtrágya alkalmas savanyú talajt kedvelő növényekhez. Áfonyánál válasszon egyértelműen áfonyára vagy acidofil növényekre készült terméket.
 
-További összefüggésekhez nézze meg a [szerves műtrágya](/hu/szerves-mutragya) oldalt vagy a [Hakofyt műtrágyák](/hu/hakofyt-mutragyak) hubot.
+### Trágyázás szárazságban vagy hőségben
 
-## Ajánlott termék
+Az áfonya egyenletes nedvességet igényel. Szárazság okozta stresszben a műtrágya nem biztos, hogy segít. Először rendezze az öntözést, frissítse a mulcsot, és csak stabil növénynél folytassa a tápanyagpótlást.
 
-Áfonyához és savanyú közeget kedvelő növényekhez készült a [Hakofyt B Áfonya](/hu/termek/hakofyt-b-cucoriedky). Lombtrágyaként kíméletes kiegészítő tápanyagellátást adhat szezon közben.
+### Késői erős trágyázás
+
+A szezon végi erős növekedési trágyázás puha hajtásokat indíthat, amelyek tél előtt nem érnek be. Ősszel inkább a talajra, mulcsra és a nyugalmi időszakra való felkészítésre figyeljen.
+
+## Gyakorlati terv hobbikertészeknek
+
+1. Ültetéskor készítsen savanyú közeget.
+2. Tartsa a talajt egyenletesen nedvesen, de ne pangó vizesen.
+3. Mulcsozzon kéreggel, tűlevéllel vagy megfelelő szerves anyaggal.
+4. Tavasszal csak aktív növekedés után kezdje a tápanyagpótlást.
+5. Vegetáció alatt kövesse a címkét és kerülje a hőséget.
+6. Figyelje a leveleket: a fakulás pH- vagy tápanyagfelvételi gondot jelezhet.
+7. Szüret után mérsékelten támogassa a regenerációt, késői erős adag nélkül.
+
+Más bogyósokhoz olvassa el a [mikor trágyázzuk az epret](/hu/blog/mikor-tragyazzuk-az-epret) cikket. Zöldségekhez hasznos lehet a [zöldségek trágyázása](/hu/blog/hogyan-tragyazzuk-a-zoldsegeket) és az [NPK műtrágya jelentése](/hu/blog/npk-mutragya-jelentese).
 
 ## Gyakori kérdések
 
-### Milyen műtrágya a legjobb áfonyához?
+### Milyen pH kell az áfonyának?
 
-Célzott, áfonyához vagy savanyú közeget kedvelő növényekhez való műtrágya. Fontos, hogy tiszteletben tartsa a savanyú környezetet.
+Az áfonya savanyú talajt igényel, általában körülbelül 4,5 és 5,5 közötti pH mellett. Lúgosabb talajban gyengébb lehet a tápanyagfelvétel.
 
-### Mikor trágyázzuk az áfonyát tavasszal?
+### Mikor kezdjük tavasszal az áfonya trágyázását?
 
-Akkor, amikor a növény aktív növekedésbe kezd és új leveleket, hajtásokat hoz.
+Csak akkor, amikor az aktív növekedés újraindul. Először ellenőrizze a talaj nedvességét, a mulcsot és a növény állapotát.
 
-### Használhatok univerzális műtrágyát?
+### Trágyázható az áfonya termés közben?
 
-Óvatosan. Az univerzális műtrágya nem biztos, hogy megfelel a savanyú közeget kedvelő növények igényeinek.
+Igen, de óvatosan és a termék címkéje szerint. Terméskor a rendszeres víz és a stabil körülmények ugyanolyan fontosak.
 
 ### Miért sárgul az áfonya levele?
 
-Oka lehet nem megfelelő pH, tápanyagfelvételi gond, túlöntözés, szárazság vagy gyökérstressz.
+Gyakori ok a nem megfelelő talaj-pH és a gyenge tápanyagfelvétel, de szárazság, túlöntözés vagy gyökérkárosodás is okozhat stresszt. Először a talajt, vizet és helyet ellenőrizze.
 
-### Alkalmas a lombtrágya áfonyához?
+### Alkalmas a Hakofyt B Áfonya más savanyú talajt kedvelő növényekhez?
 
-Igen, kiegészítő tápanyagellátásként. Ne alkalmazza erős napsütésben vagy stresszes növényen.`;
+Elsősorban termesztett áfonyához és acidofil növényekhez készült. Más használatnál kövesse a címkét és az adott növény igényeit.
+
+## Források
+
+- [University of Minnesota Extension: Growing blueberries in the home garden](https://extension.umn.edu/fruit/growing-blueberries-home-garden)
+- [Penn State Extension: Blueberries for the Home Garden](https://extension.psu.edu/blueberries-for-the-home-garden)
+- [Oregon State University Extension: Growing blueberries in your home garden](https://extension.oregonstate.edu/catalog/pub/ec-1304-growing-blueberries-your-home-garden)`;
 
 const translations = {
   sk: {
     slug,
-    title: 'Ako hnojiť čučoriedky bez zmeny pH pôdy',
+    title: 'Hnojivo na čučoriedky: kedy, čím a ako hnojiť',
     excerpt:
-      'Čučoriedky potrebujú kyslú pôdu a citlivú výživu. Pozrite si, kedy a ako hnojiť čučoriedky, čomu sa vyhnúť a kedy použiť listové hnojivo.',
+      'Praktický sprievodca hnojením čučoriedok: aké pH potrebujú, kedy ich hnojiť, ako dávkovať tekuté hnojivo a čomu sa vyhnúť.',
     content,
-    metaTitle: 'Ako hnojiť čučoriedky bez zmeny pH pôdy | GardenYX',
+    metaTitle: 'Hnojivo na čučoriedky: kedy, čím a ako hnojiť | GardenYX',
     metaDescription:
-      'Čučoriedky potrebujú kyslú pôdu a citlivú výživu. Pozrite si, kedy a ako hnojiť čučoriedky, čomu sa vyhnúť a kedy použiť listové hnojivo.',
+      'Ako vybrať hnojivo na čučoriedky, kedy hnojiť počas roka a prečo je dôležité pH pôdy. Praktický plán pre hobby pestovateľov.',
   },
   en: {
-    slug: 'blueberry-fertilizer-how-to-fertilize-blueberries',
-    title: 'How to fertilize blueberries without changing soil pH',
+    slug: 'blueberry-fertilizer',
+    title: 'Blueberry fertilizer: when, what and how to feed',
     excerpt:
-      'Blueberries need acidic soil and gentle nutrition. Learn when and how to fertilize blueberries, what to avoid and when foliar fertilizer makes sense.',
+      'A practical guide to blueberry fertilizing: soil pH, timing, liquid fertilizer dosage and common mistakes to avoid.',
     content: contentEn,
-    metaTitle: 'How to fertilize blueberries without changing soil pH | GardenYX',
+    metaTitle: 'Blueberry fertilizer: when, what and how to feed | GardenYX',
     metaDescription:
-      'Blueberries need acidic soil and gentle nutrition. Learn when and how to fertilize blueberries, what to avoid and when foliar fertilizer makes sense.',
+      'How to choose blueberry fertilizer, when to feed during the year and why soil pH matters. A practical home garden plan.',
   },
   hu: {
-    slug: 'afonya-mutragyazasa-talaj-ph-valtoztatasa-nelkul',
-    title: 'Hogyan trágyázzuk az áfonyát a talaj pH-jának megváltoztatása nélkül',
+    slug: 'afonya-mutragya',
+    title: 'Áfonya műtrágya: mikor, mivel és hogyan trágyázzuk',
     excerpt:
-      'Az áfonya savanyú közeget és kíméletes tápanyagellátást igényel. Tudja meg, mikor és hogyan trágyázza, és mit érdemes elkerülni.',
+      'Gyakorlati útmutató az áfonya trágyázásához: talaj-pH, időzítés, folyékony műtrágya adagolása és gyakori hibák.',
     content: contentHu,
-    metaTitle: 'Áfonya trágyázása a talaj pH változtatása nélkül | GardenYX',
+    metaTitle: 'Áfonya műtrágya: mikor, mivel és hogyan | GardenYX',
     metaDescription:
-      'Az áfonya savanyú közeget és kíméletes tápanyagellátást igényel. Tudja meg, mikor és hogyan trágyázza, és mikor hasznos a lombtrágya.',
+      'Milyen műtrágyát válasszon áfonyához, mikor trágyázzon és miért fontos a savanyú talaj. Gyakorlati terv hobbikertészeknek.',
   },
 };
 
