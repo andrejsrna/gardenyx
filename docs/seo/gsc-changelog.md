@@ -36,7 +36,7 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 - **GSC pred zmenou:** dopyt `hakofyt hnojivo` — 22 zobrazení, 0 kliknutí, priemerná pozícia 8,18.
 - **Zmena:** nový title a meta description cielia na Hakofyt Plus, B a Max; hero jasne rozlišuje použitie podľa rastliny; hub priamo odkazuje na landing pages pre jahody, citrusy a čučoriedky v SK/EN/HU.
 - **Dôvod / hypotéza:** prvostránkový brandovo-produktový dopyt bez kliknutí. Presnejší snippet a kvalitnejšie cesty k produktovým intentom majú zvýšiť CTR a posilniť relevantné landing pages.
-- **Commit alebo deploy:** doplniť po pushe.
+- **Commit alebo deploy:** `de64339`.
 - **GSC výsledok:** doplniť po 4–6 týždňoch.
 - **Dátum ďalšej kontroly:** 2026-09-15.
 
