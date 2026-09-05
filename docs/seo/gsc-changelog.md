@@ -2,6 +2,8 @@
 
 Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console.
 
+**Aktuálny pracovný plán:** [`2026-09-action-plan.md`](./2026-09-action-plan.md) — plánované úlohy a GSC baseline na september 2026. Do tohto changelogu patria iba skutočne nasadené zmeny.
+
 ## Pravidlá zápisu
 
 - Jeden zápis = jedna nasadená zmena alebo jeden obsahový balík.
