@@ -88,7 +88,7 @@ const CSP_DIRECTIVES = {
     "'self'",
     'https://api.stripe.com', 'https://js.stripe.com', 'https://maps.googleapis.com',
     'https://*.facebook.net', 'https://*.facebook.com',
-    'https://connect.facebook.net', 'https://eu.i.posthog.com',
+    'https://connect.facebook.net', 'https://eu.i.posthog.com', 'https://eu-assets.i.posthog.com',
     'https://www.googletagmanager.com', 'https://www.google-analytics.com', 'https://region1.google-analytics.com',
     'https://stats.g.doubleclick.net', 'https://googleads.g.doubleclick.net',
     'https://www.google.com',
