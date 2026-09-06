@@ -39,6 +39,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "GardenYX – Prírodné hnojivá a stimulátory rastu",
   description: "Objavte prírodné hnojivá a stimulátory rastu GardenYX pre bohatú úrodu a kvitnúcu záhradu.",
+  verification: {
+    google: "WR8d9fCqEU0WksL6AFeQyUIGPvEbutzzbGnSZ91Iwy0",
+  },
   robots: {
     index: true,
     follow: true,
