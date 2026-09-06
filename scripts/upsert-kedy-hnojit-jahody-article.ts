@@ -17,7 +17,7 @@ Dobrá výživa jahôd nie je len o väčších bobuliach. Pomáha rastline lep�
 
 Jahody hnojte najmä na jar po obnovení rastu, pred kvitnutím, opatrne počas tvorby plodov a po zbere. Na jar podporujete listy a vitalitu, pred kvitnutím kondíciu rastliny, počas plodov stabilitu a po zbere regeneráciu. Vyhnite sa silnému dusíkatému hnojeniu tesne pred a počas plodenia, aby rastlina nešla len do listov.
 
-Ak pestujete jahody a chcete sezónnu listovú výživu, pozrite si [Hakofyt B jahody](/sk/produkt/hakofyt-b-jahody). Patrí do širšej ponuky [hnojív Hakofyt](/sk/hnojiva-hakofyt) a nadväzuje na všeobecný prehľad [hnojivo pre záhradu](/sk/hnojivo).
+Ak pestujete jahody a chcete sezónnu listovú výživu, pozrite si [Hakofyt B jahody](/sk/produkt/hakofyt-b-jahody) a prehľad [hnojivo na jahody](/sk/hnojivo-na-jahody). Patrí do širšej ponuky [hnojív Hakofyt](/sk/hnojiva-hakofyt) a nadväzuje na všeobecný prehľad [hnojivo pre záhradu](/sk/hnojivo).
 
 ## Prečo jahody hnojiť podľa fázy rastu
 
@@ -57,7 +57,7 @@ Po zbere veľa pestovateľov na jahody zabudne, no práve vtedy rastlina regener
 
 Jahody potrebujú zdravú pôdu, organickú hmotu, vodu a vyváženú výživu. Kompost alebo dobre pripravený záhon pomáha dlhodobo. Počas sezóny môže byť praktická aj listová výživa, najmä keď chcete rastliny podporiť bez silného zásahu do pôdy.
 
-Pre jahody je určený produkt [Hakofyt B jahody](/sk/produkt/hakofyt-b-jahody). Pri jeho použití sa riaďte odporúčaným dávkovaním a aplikujte ráno alebo večer. Ak chcete porovnať širšie použitie, pozrite si aj kategóriu [hnojivo](/sk/hnojivo).
+Pre jahody je určený produkt [Hakofyt B jahody](/sk/produkt/hakofyt-b-jahody). Ak hľadáte ucelený výber, pozrite si [hnojivo na jahody](/sk/hnojivo-na-jahody). Pri jeho použití sa riaďte odporúčaným dávkovaním a aplikujte ráno alebo večer. Ak chcete porovnať širšie použitie, pozrite si aj kategóriu [hnojivo](/sk/hnojivo).
 
 ## Najčastejšie chyby pri hnojení jahôd
 
@@ -328,13 +328,13 @@ Gyakori ok a túl sok nitrogén, gyenge virágzás, szárazság, idős állomán
 const translations = {
   sk: {
     slug,
-    title: 'Kedy hnojiť jahody: plán od jari po zber',
+    title: 'Kedy hnojiť jahody a čím po zbere: plán pre bohatšiu úrodu',
     excerpt:
-      'Praktický plán hnojenia jahôd: na jar, pred kvitnutím, počas tvorby plodov aj po zbere. Zistite, čím podporiť zdravé jahody a bohatšiu úrodu.',
+      'Kedy hnojiť jahody na jar, pred kvitnutím aj po zbere? Praktický plán hnojenia jahôd, tipy na hnojivo na jahody po zbere a časté chyby.',
     content,
-    metaTitle: 'Kedy hnojiť jahody: plán od jari po zber | GardenYX',
+    metaTitle: 'Kedy hnojiť jahody (aj po zbere): plán hnojenia | GardenYX',
     metaDescription:
-      'Praktický plán hnojenia jahôd: po zime, pred kvitnutím, počas tvorby plodov aj po zbere. Čím podporiť zdravé jahody a bohatšiu úrodu.',
+      'Kedy hnojiť jahody na jar, pred kvitnutím aj po zbere? Praktický plán hnojenia jahôd, tipy na hnojivo na jahody po zbere a chyby pri hnojení jahôd.',
   },
   en: {
     slug: 'when-to-fertilize-strawberries',

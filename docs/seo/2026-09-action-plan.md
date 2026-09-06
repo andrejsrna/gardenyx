@@ -23,7 +23,7 @@
 
 ## Priorita 1 — Jahodový obsahový cluster
 
-**Stav:** plánované
+**Stav:** vykonané 2026-09-06
 **Cieľová URL:** `/sk/blog/kedy-hnojit-jahody`
 
 ### GSC signál
@@ -34,10 +34,10 @@
 
 ### Čo vykonať
 
-- [ ] Preskúmať title a meta description voči najčastejším jahodovým dopytom.
-- [ ] Upraviť úvod tak, aby v prvých odsekoch jednoznačne odpovedal na otázku, kedy a čím hnojiť jahody.
-- [ ] Overiť FAQ a prirodzený kontextový odkaz na `/sk/hnojivo-na-jahody` a produkt Hakofyt B jahody.
-- [ ] Po nasadení zapísať zmenu do `gsc-changelog.md` s dátumom a východiskovými GSC číslami.
+- [x] Preskúmať title a meta description voči najčastejším jahodovým dopytom.
+- [x] Upraviť úvod tak, aby v prvých odsekoch jednoznačne odpovedal na otázku, kedy a čím hnojiť jahody.
+- [x] Overiť FAQ a prirodzený kontextový odkaz na `/sk/hnojivo-na-jahody` a produkt Hakofyt B jahody.
+- [x] Po nasadení zapísať zmenu do `gsc-changelog.md` s dátumom a východiskovými GSC číslami.
 
 ### Kritérium vyhodnotenia
 

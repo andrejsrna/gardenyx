@@ -31,6 +31,17 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-09-06 — Článok: Kedy hnojiť jahody — CTR a cluster
+
+- **Typ:** snippet / interné SEO
+- **URL:** `/sk/blog/kedy-hnojit-jahody` (SK primárne; EN/HU nezmenené)
+- **GSC pred zmenou (7. 8. – 3. 9. 2026):** 3 kliknutia, 305 zobrazení, CTR 0,98 %, pozícia 8,23. Dopyty: `kedy hnojit jahody` 48 zobrazení/pozícia 5,98; `hnojivo na jahody po zbere` 39/8,74; `hnojenie jahôd` 28/11,89. GSC pri URL hlási +115 % zobrazení.
+- **Zmena:** SK title/metaTitle/metaDescription/excerpt zacielené na `kedy hnojiť jahody` + `hnojivo na jahody po zbere`; doplnené kontextové odkazy na landing page `/sk/hnojivo-na-jahody` v úvode aj v sekcii „Čím hnojiť jahody“.
+- **Dôvod / hypotéza:** Najväčšia SK príležitosť v 28-dňovom exporte s viditeľnosťou približne na 1. strane, ale s veľmi nízkym CTR. Presnejší snippet a jasnejšia cesta k transakčnej stránke majú zvýšiť preklik bez novej URL.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-10-10.
+
 ### 2026-08-05 — Článok: Ako hnojiť citrusy
 
 - **Typ:** poradenský obsah / long-tail podpora
