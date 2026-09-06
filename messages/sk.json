@@ -406,9 +406,6 @@
         "vatId": "SKXXXXXXXXXX (voliteľné)"
       }
     },
-    "freeShippingProgress": {
-      "message": "Nakúpte ešte za <amount></amount> a získate dopravu zdarma."
-    },
     "createAccount": {
       "toggle": "Vytvoriť zákaznícky účet",
       "passwordLabel": "Heslo",

@@ -406,9 +406,6 @@
         "vatId": "SKXXXXXXXXXX (opcionális)"
       }
     },
-    "freeShippingProgress": {
-      "message": "Vásároljon még <amount></amount> értékben, és ingyenes szállítást kap."
-    },
     "createAccount": {
       "toggle": "Vásárlói fiók létrehozása",
       "passwordLabel": "Jelszó",

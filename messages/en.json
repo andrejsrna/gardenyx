@@ -406,9 +406,6 @@
         "vatId": "SKXXXXXXXXXX (optional)"
       }
     },
-    "freeShippingProgress": {
-      "message": "Spend <amount></amount> more to get free shipping."
-    },
     "createAccount": {
       "toggle": "Create a customer account",
       "passwordLabel": "Password",
