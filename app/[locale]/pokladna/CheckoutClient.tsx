@@ -544,10 +544,13 @@ export default function CheckoutClient() {
   // Cart items in the format expected by OrderSummarySection
   const cartItems = items.map(item => ({
     id: item.id,
+    variationId: item.variationId,
     name: item.name,
     price: item.price,
     quantity: item.quantity,
     image: item.image || undefined,
+    sku: item.sku,
+    slug: item.slug,
   }));
 
   if (items.length === 0 && !isPaymentSuccessful) {
