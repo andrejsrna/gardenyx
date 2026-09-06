@@ -70,7 +70,7 @@ Zlepšenie CTR pri zachovaní alebo raste zobrazení; pri `/en/fertilizer` samos
 
 ## Priorita 3 — Zeleninový cluster: stabilizácia prvej strany
 
-**Stav:** plánované
+**Stav:** vykonané 2026-09-06 — interné odkazy skontrolované/opravené
 **Cieľová URL:** `/sk/hnojivo-na-zeleninu`
 
 ### GSC signál
@@ -81,9 +81,9 @@ Zlepšenie CTR pri zachovaní alebo raste zobrazení; pri `/en/fertilizer` samos
 
 ### Čo vykonať
 
-- [ ] Dohľadať všetky relevantné články o paprike, paradajkách a zelenine a doplniť len kontextové odkazy na landing page tam, kde chýbajú.
-- [ ] Skontrolovať CTR title/meta po augustovej úprave; ak bude nízke, pripraviť jednu jasnú testovaciu variantu snippetov.
-- [ ] Nepublikovať duplicitnú stránku pre rovnaký intent.
+- [x] Dohľadať všetky relevantné články o paprike, paradajkách a zelenine a doplniť len kontextové odkazy na landing page tam, kde chýbajú.
+- [x] Skontrolovať CTR title/meta po augustovej úprave; ak bude nízke, pripraviť jednu jasnú testovaciu variantu snippetov.
+- [x] Nepublikovať duplicitnú stránku pre rovnaký intent.
 
 ### Kritérium vyhodnotenia
 

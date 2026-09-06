@@ -31,6 +31,17 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-09-06 — Zeleninový cluster: interné prelinkovanie na hnojivo-na-zeleninu
+
+- **Typ:** interné SEO
+- **URL:** `/sk/hnojivo-na-zeleninu` + články `/sk/blog/hnojivo-na-paradajky`, `/sk/blog/hnojivo-na-papriku`, `/sk/blog/ako-hnojit-zeleninu`
+- **GSC pred zmenou (7. 8. – 3. 9. 2026):** `/sk/hnojivo-na-zeleninu` 2 kliky, 145 zobrazení, CTR 1,38 %, pozícia 10,68. Dopyt `najlepšie hnojivo na zeleninu` 1 klik, 37 zobrazení, CTR 2,70 %, pozícia 5,81; `hnojivo na zeleninu` 0/34/18,56.
+- **Zmena:** v článku `hnojivo-na-paradajky` opravené 3 nefunkčné/nesprávne SK interné odkazy (`/hnojivo-na-zeleninu` → `/sk/hnojivo-na-zeleninu`, `/produkt/...` → `/sk/produkt/...`, `/blog/...` → `/sk/blog/...`) aby posilnili zeleninový cluster; články paprika/zemiaky/ako-hnojit-zeleninu už obsahujú správne SK odkazy. Title/meta landing page ostáva po augustovej úprave bez zmeny — sleduje sa CTR.
+- **Dôvod / hypotéza:** Dopyt `najlepšie hnojivo na zeleninu` sa po augustovej úprave dostal z 10,46 na 5,81, ale generický dopyt je stále na 18,56 a CTR zostáva nízke. Správne kontextové prelinkovanie má preniesť relevanciu z podporných článkov na cieľovú landing page.
+- **Commit alebo deploy:** doplniť po pushe.
+- **GSC výsledok:** doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-10-10.
+
 ### 2026-09-06 — EN hub + tomato článok: CTR audit
 
 - **Typ:** snippet / interné SEO

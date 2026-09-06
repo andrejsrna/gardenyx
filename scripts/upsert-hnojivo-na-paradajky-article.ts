@@ -25,7 +25,7 @@ Paradajky potrebujú tri hlavné živiny: dusík, fosfor a draslík. Dusík podp
 
 Prakticky to znamená, že na začiatku pestovania je dôležité zakorenenie a zdravý rast. Pri kvitnutí a tvorbe plodov sa dôraz presúva na vyrovnanú výživu, aby rastlina netvorila len listy, ale dokázala udržať kvety a vyživiť plody.
 
-Ak si chcete ujasniť, čo znamenajú čísla na obale hnojiva, pozrite si aj článok [NPK hnojivo: čo znamenajú čísla na obale](/blog/npk-hnojivo-co-znamena).
+Ak si chcete ujasniť, čo znamenajú čísla na obale hnojiva, pozrite si aj článok [NPK hnojivo: čo znamenajú čísla na obale](/sk/blog/npk-hnojivo-co-znamena).
 
 ## Hnojenie po výsadbe do záhona alebo skleníka
 
@@ -43,9 +43,9 @@ Dôležitý je najmä draslík, pravidelná zálievka a dobrý zdravotný stav l
 
 Listové hnojivo má zmysel vtedy, keď chcete rastlinu podporiť počas aktívneho rastu a sezóny. Živiny sa aplikujú na list, kde ich rastlina vie prijať rýchlejšie než len cez pôdu. To je praktické po presadení, pri raste, pri kvitnutí aj pri tvorbe plodov.
 
-Pre zeleninu vrátane paradajok je vhodnou voľbou [Hakofyt Plus zelenina](/produkt/hakofyt-plus-zelenina). Ide o listové organominerálne hnojivo určené pre zeleninu, ktoré spája NPK živiny, mikroprvky, humínové látky, aminokyseliny a rastové stimulátory.
+Pre zeleninu vrátane paradajok je vhodnou voľbou [Hakofyt Plus zelenina](/sk/produkt/hakofyt-plus-zelenina). Ide o listové organominerálne hnojivo určené pre zeleninu, ktoré spája NPK živiny, mikroprvky, humínové látky, aminokyseliny a rastové stimulátory.
 
-Ak hľadáte širší prehľad výživy pre zeleninovú záhradu, pozrite si aj stránku [hnojivo na zeleninu](/hnojivo-na-zeleninu).
+Ak hľadáte širší prehľad výživy pre zeleninovú záhradu, pozrite si aj stránku [hnojivo na zeleninu](/sk/hnojivo-na-zeleninu).
 
 ## Najčastejšie chyby pri hnojení paradajok
 
@@ -65,7 +65,7 @@ Pri používaní sa držte etikety a aplikujte mimo priameho slnka. Ak paradajky
 
 Paradajky hnojte podľa fázy rastu. Po výsadbe podporujte zakorenenie a ujatie rastlín, počas rastu udržujte pravidelnú výživu a pri kvitnutí a plodoch dávajte pozor na prebytok dusíka. Najlepší výsledok vzniká kombináciou dobre pripravenej pôdy, pravidelnej zálievky, správneho načasovania a hnojiva určeného pre zeleninu.
 
-Ak chcete jednoduchý štart, vyberte si [hnojivo na zeleninu](/hnojivo-na-zeleninu) a pri konkrétnom produkte dodržte odporúčané dávkovanie.
+Ak chcete jednoduchý štart, vyberte si [hnojivo na zeleninu](/sk/hnojivo-na-zeleninu) a pri konkrétnom produkte dodržte odporúčané dávkovanie.
 
 ## Najčastejšie otázky
 
