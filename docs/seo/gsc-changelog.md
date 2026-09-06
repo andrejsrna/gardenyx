@@ -31,6 +31,20 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-09-06 — Článok: Hnojivo na cesnak a cibuľu na jeseň
+
+- **Typ:** nový poradenský obsah (sezónny, jesenný)
+- **GSC vstup:** september export 28 dní neobsahoval samostatný dopyt pre cesnak/cibuľu; téma zvolená ako sezónna príležitosť pred peakom hľadania (október výsadba). Jesenné hnojenie a príprava pôdy má vysokú praktickú hodnotu a nadväzuje na existujúce zeleninové články.
+- **URL:**
+  - SK: `/sk/blog/hnojivo-na-cesnak-a-cibulu`
+  - EN: `/en/blog/garlic-and-onion-fertilizer-autumn`
+  - HU: `/hu/blog/fokhagyma-es-hagyma-tragyazas-osszel`
+- **Obsah:** jesenný základ s draslíkom/fosforom/sírou (NPK 5-15-30), termíny hnojenia pred sadením, rozdiel cesnak vs. cibuľa, pH a priepustnosť pôdy, postup pre 10 m², časté chyby (dusík na jeseň, premokrenie, čerstvý hnoj) a FAQ; SK/EN/HU lokalizácia a 3 CDN obrázky (OpenRouter gemini-2.5-flash-image → R2 `gardenyx/articles/hnojivo-na-cesnak/`).
+- **Prepojenia:** hnojivo-na-zeleninu, Hakofyt Plus zelenina, NPK článok, paradajky/zemiaky, záhradný hub.
+- **Commit alebo deploy:** `hnojivo-na-cesnak-a-cibulu`.
+- **GSC výsledok:** nová URL; doplniť po 4–6 týždňoch.
+- **Dátum ďalšej kontroly:** 2026-10-15.
+
 ### 2026-09-06 — Zeleninový cluster: interné prelinkovanie na hnojivo-na-zeleninu
 
 - **Typ:** interné SEO
