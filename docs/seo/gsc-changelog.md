@@ -38,7 +38,7 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 - **GSC pred zmenou (7. 8. – 3. 9. 2026):** `/en/blog/tomato-fertilizer` 1 klik, 269 zobrazení, CTR 0,37 %, pozícia 10,90; `/en/fertilizer` 1 klik, 211 zobrazení, CTR 0,47 %, pozícia 14,04 (GSC alert -81 % zobrazení). Top EN dopyty v exporte: `flower fertilizer` 8/14,62, `vegetable fertilizer` 7/10,43.
 - **Zmena (diagnostika najprv):** skontrolované prekrývanie dopytov/krajín pre obe URL; pre `/en/blog/tomato-fertilizer` EN title/metaTitle/metaDescription/excerpt preformulované na `When to Fertilize Tomatoes` s dôrazom na timing/dosage; pre `/en/fertilizer` EN metaTitle/metaDescription sprístupnené ako „Choose by Plant“.
 - **Dôvod / hypotéza:** Obe EN URL majú vysoké zobrazenia s veľmi nízkym CTR a pozíciou okolo 11–14. Presnejší, otázkovo-úžitkový snippet má zvýšiť relevanciu voči reálnym EN dopytom bez tvorby novej URL.
-- **Commit alebo deploy:** doplniť po pushe.
+- **Commit alebo deploy:** `de53eba`.
 - **GSC výsledok:** doplniť po 4–6 týždňoch.
 - **Dátum ďalšej kontroly:** 2026-10-10.
 
