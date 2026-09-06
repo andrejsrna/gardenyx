@@ -707,8 +707,10 @@ export default function CheckoutClient() {
       {/* Modals and overlays */}
       {showPacketaSelector && (
         <PacketaPointSelector
+          key={formData.billing.country}
           country={formData.billing.country}
           onSelectAction={handlePacketaPointConfirm}
+          onCloseAction={() => setShowPacketaSelector(false)}
         />
       )}
 
