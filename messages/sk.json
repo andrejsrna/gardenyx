@@ -486,7 +486,10 @@
           "title": "Osobný odber",
           "description": "Mestá: Galanta, Nitra, Trnava — po telefonickom dohovore"
         }
-      }
+      },
+      "overweightNotice": "Hmotnosť košíka {weight} kg presahuje limit 15 kg pre Packeta. Packeta doručenie nie je dostupné — zostáva len osobný odber.",
+      "overweightHint": "Nad 15 kg len osobný odber (Galanta / Nitra / Trnava)",
+      "overweightBadge": "Nedostupné — nad 15 kg"
     },
     "payment": {
       "title": "Spôsob platby",

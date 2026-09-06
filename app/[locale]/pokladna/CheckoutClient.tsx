@@ -189,6 +189,44 @@ export default function CheckoutClient() {
 
   const [shippingCostBase, setShippingCostBase] = useState(0);
   const [shippingQuoteError, setShippingQuoteError] = useState<string | null>(null);
+  const [cartWeightKg, setCartWeightKg] = useState<number | null>(null);
+
+  const PACKETA_MAX_KG = 15;
+  const isOverweight = cartWeightKg !== null && cartWeightKg > PACKETA_MAX_KG;
+
+  // váha košíka pre Packeta limit
+  useEffect(() => {
+    if (!items.length) {
+      setCartWeightKg(null);
+      return;
+    }
+    const controller = new AbortController();
+    fetch('/api/shipping/weight', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        items: items.map((item) => ({ productId: item.id, variationId: item.variationId, sku: item.sku, quantity: item.quantity })),
+      }),
+    })
+      .then(async (res) => {
+        if (!res.ok) return;
+        const data = await res.json();
+        if (typeof data.weightKg === 'number') setCartWeightKg(data.weightKg);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, [items]);
+
+  // ak nad 15 kg a vybratá Packeta → auto prepni na osobný odber (len SK)
+  useEffect(() => {
+    if (!isOverweight) return;
+    if (formData.shipping_method !== 'packeta_pickup' && formData.shipping_method !== 'packeta_home') return;
+    if (formData.billing.country !== 'SK') return;
+    setFormData((prev) => ({ ...prev, shipping_method: 'personal_pickup' }));
+    toast.info(t('shipping.overweightHint'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOverweight]);
 
   useEffect(() => {
     if (!formData.shipping_method || !items.length) {
@@ -651,6 +689,8 @@ export default function CheckoutClient() {
                 onInputChange={handleInputChange}
                 onPacketaPointSelect={handlePacketaPointSelect}
                 shippingCostBase={shippingCostBase}
+                isOverweight={isOverweight}
+                cartWeightKg={cartWeightKg}
               />
 
               <PaymentMethodsSection

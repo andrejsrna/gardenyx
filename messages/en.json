@@ -486,7 +486,10 @@
           "title": "Personal pickup",
           "description": "Cities: Galanta, Nitra, Trnava — by prior phone arrangement"
         }
-      }
+      },
+      "overweightNotice": "Cart weight {weight} kg exceeds the 15 kg Packeta limit. Packeta delivery is not available — only personal pickup remains.",
+      "overweightHint": "Over 15 kg — personal pickup only (Galanta / Nitra / Trnava)",
+      "overweightBadge": "Unavailable — over 15 kg"
     },
     "payment": {
       "title": "Payment method",

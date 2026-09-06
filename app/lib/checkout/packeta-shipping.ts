@@ -3,6 +3,7 @@ import prisma from '@/app/lib/prisma';
 
 // Packeta SK price list, effective 2026-07-01. Prices are for Z-POINT submission,
 // excluding VAT. Source: https://files.packeta.com/web/files/Kompletny_cennik_sluzieb.pdf
+export const PACKETA_MAX_WEIGHT_KG = 15;
 const FUEL_SURCHARGE_RATE = 0.155;
 const TOLL_PER_STARTED_KG = 0.04;
 const COD_FEE = 1;
@@ -109,6 +110,32 @@ export async function getPacketaShippingQuote(
 
 export function getShippingNetFromQuote(quote: PacketaShippingQuote, freeShipping = false) {
   return freeShipping ? 0 : quote.totalNet;
+}
+
+export async function getCartWeightKg(items: ShippingLineItem[]): Promise<number> {
+  const validItems = items.filter((item) => Number.isFinite(item.productId) && item.quantity > 0);
+  if (!validItems.length) return 0;
+  const products = await prisma.product.findMany({
+    where: { wcId: { in: Array.from(new Set(validItems.map((item) => BigInt(item.productId)))) } },
+    select: { wcId: true, weight: true, variants: true },
+  });
+  const productById = new Map<string, typeof products[number]>(products.map((p) => [p.wcId.toString(), p]));
+  let weightKg = 0;
+  for (const item of validItems) {
+    const product = productById.get(String(item.productId));
+    if (!product) continue;
+    const variants = Array.isArray(product.variants) ? product.variants as StoredVariant[] : [];
+    const variant = item.variationId
+      ? variants.find((c) => Number(c.id) === Number(item.variationId))
+      : variants.find((c) => Boolean(item.sku) && String((c as { sku?: unknown }).sku || '') === item.sku);
+    const rawWeight = variant?.weight ?? product.weight;
+    let unitWeight = typeof rawWeight === 'object' && rawWeight && 'toNumber' in rawWeight
+      ? (rawWeight as Prisma.Decimal).toNumber()
+      : Number(rawWeight);
+    if (!Number.isFinite(unitWeight) || unitWeight <= 0) unitWeight = FALLBACK_WEIGHT_KG;
+    weightKg += unitWeight * item.quantity;
+  }
+  return roundMoney(weightKg);
 }
 
 export const PACKETA_PRICE_LIST_EFFECTIVE_FROM = '2026-07-01';

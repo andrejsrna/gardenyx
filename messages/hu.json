@@ -486,7 +486,10 @@
           "title": "Személyes átvétel",
           "description": "Városok: Galanta, Nitra, Trnava — előzetes telefonos egyeztetés alapján"
         }
-      }
+      },
+      "overweightNotice": "A kosár súlya {weight} kg meghaladja a Packeta 15 kg-os limitjét. A Packeta szállítás nem elérhető — csak személyes átvétel maradt.",
+      "overweightHint": "15 kg felett csak személyes átvétel (Galanta / Nitra / Trnava)",
+      "overweightBadge": "Nem elérhető — 15 kg felett"
     },
     "payment": {
       "title": "Fizetési mód",

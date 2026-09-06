@@ -17,6 +17,8 @@ interface ShippingMethodsSectionProps {
   ) => void;
   onPacketaPointSelect: () => void;
   shippingCostBase: number;
+  isOverweight?: boolean;
+  cartWeightKg?: number | null;
 }
 
 export default function ShippingMethodsSection({
@@ -26,9 +28,13 @@ export default function ShippingMethodsSection({
   onInputChange,
   onPacketaPointSelect,
   shippingCostBase,
+  isOverweight = false,
+  cartWeightKg = null,
 }: ShippingMethodsSectionProps) {
   const t = useTranslations('checkout.shipping');
   const locale = useLocale();
+
+  const isPacketaDisabled = Boolean(isOverweight);
 
   const allShippingMethods = [
     {
@@ -64,6 +70,12 @@ export default function ShippingMethodsSection({
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
       <h2 className="text-xl font-semibold mb-2">{t('title')}</h2>
+      {isPacketaDisabled && cartWeightKg !== null && (
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          {t('overweightNotice', { weight: cartWeightKg.toFixed(1) })}
+          <span className="block mt-1 text-xs text-amber-700">{t('overweightHint')}</span>
+        </div>
+      )}
       <div className="mb-4">
         <Link href={`/${locale}/doprava-a-platba#ako-funguje-packeta`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-800 underline">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -76,34 +88,44 @@ export default function ShippingMethodsSection({
       <div className="space-y-3">
         {shippingMethods.map((method) => (
           <div key={method.id} className="relative">
+            {(() => {
+              const packeta = method.id === 'packeta_pickup' || method.id === 'packeta_home';
+              const disabled = packeta && isPacketaDisabled;
+              return (
             <label
-              className="flex p-4 border rounded-lg cursor-pointer transition-colors has-[:checked]:border-green-600 has-[:checked]:bg-green-50/50"
+              className={`flex p-4 border rounded-lg transition-colors ${disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'cursor-pointer has-[:checked]:border-green-600 has-[:checked]:bg-green-50/50'}`}
+              title={disabled ? t('overweightBadge') : undefined}
             >
               <input
                 type="radio"
                 name="shipping_method"
                 value={method.id}
                 checked={formData.shipping_method === method.id}
+                disabled={disabled}
                 onChange={(e) => {
+                  if (disabled) return;
                   onInputChange(e, 'root');
                   if (method.id === 'packeta_pickup' && !selectedPacketaPoint) {
                     onPacketaPointSelect();
                   }
                 }}
-                className="h-4 w-4 mt-1 text-green-600 focus:ring-green-500 border-gray-300"
+                className="h-4 w-4 mt-1 text-green-600 focus:ring-green-500 border-gray-300 disabled:opacity-50"
                 required
               />
               <div className="ml-3 flex-1">
                 <div className="flex items-center gap-3">
                   {method.icon}
                   <span className="font-medium text-gray-900">{method.title}</span>
+                  {disabled && <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">{t('overweightBadge')}</span>}
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{method.description}</p>
                 <p className="text-base font-bold text-green-600 mt-2">
-                  {method.id !== formData.shipping_method ? 'Vyberte dopravu' : method.price === 0 ? t('free') : `${method.price.toFixed(2)} €`}
+                  {disabled ? t('overweightBadge') : method.id !== formData.shipping_method ? 'Vyberte dopravu' : method.price === 0 ? t('free') : `${method.price.toFixed(2)} €`}
                 </p>
               </div>
             </label>
+              );
+            })()}
             
             {method.id === 'packeta_pickup' && formData.shipping_method === 'packeta_pickup' && (
               <div className="mt-3 pl-12 pr-4">
