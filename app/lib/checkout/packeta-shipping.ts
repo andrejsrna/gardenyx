@@ -39,6 +39,8 @@ export type PacketaShippingQuote = {
 
 type StoredVariant = { id?: number; weight?: number | null };
 
+const FALLBACK_WEIGHT_KG = 0.5;
+
 function roundMoney(value: number) {
   return Math.round(value * 100) / 100;
 }
@@ -75,12 +77,13 @@ export async function getPacketaShippingQuote(
       ? variants.find((candidate) => Number(candidate.id) === Number(item.variationId))
       : variants.find((candidate) => Boolean(item.sku) && String((candidate as { sku?: unknown }).sku || '') === item.sku);
     const rawWeight = variant?.weight ?? product.weight;
-    const unitWeight = typeof rawWeight === 'object' && rawWeight && 'toNumber' in rawWeight
+    let unitWeight = typeof rawWeight === 'object' && rawWeight && 'toNumber' in rawWeight
       ? (rawWeight as Prisma.Decimal).toNumber()
       : Number(rawWeight);
 
     if (!Number.isFinite(unitWeight) || unitWeight <= 0) {
-      throw new Error(`Missing shipping weight for product ${item.productId}${item.variationId ? ` variant ${item.variationId}` : ''}`);
+      console.warn(`Missing shipping weight for product ${item.productId}${item.variationId ? ` variant ${item.variationId}` : ''} — using fallback ${FALLBACK_WEIGHT_KG} kg`);
+      unitWeight = FALLBACK_WEIGHT_KG;
     }
     weightKg += unitWeight * item.quantity;
   }
