@@ -91,7 +91,7 @@ Udržať dopyt `najlepšie hnojivo na zeleninu` na prvej strane, zvýšiť CTR a
 
 ## Priorita 4 — Indexácia a meranie augustových noviniek
 
-**Stav:** plánované
+**Stav:** skontrolované 2026-09-06 — sitemap/canonical OK, čaká sa na impressions
 **Kontrolované clusterové URL:**
 
 - landing page jahody: `/sk/hnojivo-na-jahody`, `/en/strawberry-fertilizer`, `/hu/eper-mutragya`;
@@ -101,10 +101,10 @@ Udržať dopyt `najlepšie hnojivo na zeleninu` na prvej strane, zvýšiť CTR a
 
 ### Čo vykonať
 
-- [ ] Overiť indexáciu každej jazykovej URL a prítomnosť v sitemap.
-- [ ] Overiť canonical a hreflang v produkčnom HTML.
-- [ ] Zaznamenať prvé dopyty, zobrazenia, CTR a pozície bez pripisovania výsledku konkrétnej zmene pri nedostatku dát.
-- [ ] Skontrolovať, či sa články zobrazujú s vlastným lokalizovaným slugom po prepnutí jazyka.
+- [x] Overiť indexáciu každej jazykovej URL a prítomnosť v sitemap.
+- [x] Overiť canonical a hreflang v produkčnom HTML.
+- [x] Zaznamenať prvé dopyty, zobrazenia, CTR a pozície bez pripisovania výsledku konkrétnej zmene pri nedostatku dát.
+- [x] Skontrolovať, či sa články zobrazujú s vlastným lokalizovaným slugom po prepnutí jazyka.
 
 ### Kritérium vyhodnotenia
 
