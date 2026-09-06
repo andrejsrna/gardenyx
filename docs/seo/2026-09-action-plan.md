@@ -45,7 +45,7 @@ Po 4–6 týždňoch porovnať clicks, impressions, CTR, pozíciu a dopyty `kedy
 
 ## Priorita 2 — EN organický audit a CTR
 
-**Stav:** plánované
+**Stav:** vykonané 2026-09-06 — snippet upravený, diagnostika dopytov/krajín vykonaná
 **Cieľové URL:** `/en/blog/tomato-fertilizer`, `/en/fertilizer`
 
 ### GSC signál
@@ -59,10 +59,10 @@ GSC zároveň pri `/en/fertilizer` hlási pokles zobrazení o **81 %** oproti ob
 
 ### Čo vykonať
 
-- [ ] Exportovať/pozrieť dopyty a krajiny samostatne pre obe URL; odlíšiť sezónnosť od technického alebo obsahového problému.
-- [ ] Skontrolovať canonical, hreflang, indexáciu a interné odkazy z EN hubov a článkov.
-- [ ] Až po diagnostike upraviť EN title/meta, prvý obsahový blok a relevantné interné odkazy.
-- [ ] Nezakladať novú EN landing page bez potvrdeného intentu v dátach.
+- [x] Exportovať/pozrieť dopyty a krajiny samostatne pre obe URL; odlíšiť sezónnosť od technického alebo obsahového problému.
+- [x] Skontrolovať canonical, hreflang, indexáciu a interné odkazy z EN hubov a článkov.
+- [x] Až po diagnostike upraviť EN title/meta, prvý obsahový blok a relevantné interné odkazy.
+- [x] Nezakladať novú EN landing page bez potvrdeného intentu v dátach.
 
 ### Kritérium vyhodnotenia
 

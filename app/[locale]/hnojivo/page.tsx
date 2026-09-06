@@ -122,9 +122,9 @@ const copy = {
     finalCta: 'Prejsť do obchodu',
   },
   en: {
-    metaTitle: 'Fertilizer for garden, lawn and plants | GardenYX',
+    metaTitle: 'Garden Fertilizer: Choose by Plant — Lawn, Vegetables, Fruit Trees | GardenYX',
     metaDescription:
-      'Choose Hakofyt foliar fertilizer for lawns, vegetables, fruit trees, flowers, blueberries, strawberries and citrus plants. GardenYX helps you choose and dose correctly.',
+      'Looking for garden fertilizer? Choose Hakofyt foliar fertilizer by plant — lawn, vegetables, fruit trees, flowers, strawberries, blueberries and citrus. Dosing guide inside.',
     eyebrow: 'GardenYX fertilizers',
     title: 'Fertilizer for a healthy lawn, stronger plants and richer harvests',
     intro:

@@ -272,13 +272,13 @@ const translations = {
   },
   en: {
     slug: 'tomato-fertilizer',
-    title: 'Tomato fertilizer: when to feed, what to use and how to dose',
+    title: 'When to Fertilize Tomatoes: From Planting to Fruiting',
     excerpt:
-      'A practical guide to feeding tomatoes from transplanting through flowering to fruit formation. Learn when to fertilize, what to avoid and which fertilizer to choose.',
+      'When to fertilize tomatoes after planting, during flowering and fruiting? Learn NPK nutrition, foliar feeding, dosage and common mistakes.',
     content: contentEn,
-    metaTitle: 'Tomato fertilizer: when to feed and how to dose | GardenYX',
+    metaTitle: 'When to Fertilize Tomatoes: Timing, Dosage & Fertilizer | GardenYX',
     metaDescription:
-      'How to fertilize tomatoes after planting, during flowering and fruiting. Practical advice on NPK nutrition, foliar fertilizer and common mistakes.',
+      'When to fertilize tomatoes after planting, during flowering and fruiting? Practical tomato fertilizer guide: NPK, foliar feeding, dosage and mistakes to avoid.',
   },
   hu: {
     slug: 'paradicsom-mutragya',
