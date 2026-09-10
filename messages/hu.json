@@ -47,6 +47,11 @@
       "title": "Szezonális tippek e-mailben",
       "description": "Új útmutatók és trágyázási emlékeztetők — legfeljebb hetente egyszer.",
       "cta": "Feliratkozás"
+    },
+    "pagination": {
+      "previous": "Előző",
+      "next": "Következő",
+      "page": "{page}. oldal / {total}"
     }
   },
   "contactPage": {

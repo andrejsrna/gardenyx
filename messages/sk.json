@@ -47,6 +47,11 @@
       "title": "Sezónne tipy e-mailom",
       "description": "Nové návody a pripomienky hnojenia — najviac raz týždenne.",
       "cta": "Odoberať"
+    },
+    "pagination": {
+      "previous": "Predchádzajúca",
+      "next": "Ďalšia",
+      "page": "Strana {page} z {total}"
     }
   },
   "contactPage": {
