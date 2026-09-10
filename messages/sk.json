@@ -14,12 +14,39 @@
     "starterFertilizer": "Štartovacie hnojivo"
   },
   "blogIndex": {
-    "title": "Aktuality",
-    "description": "Články, návody a sezónne odporúčania k hnojeniu, výžive rastlín a starostlivosti o záhradu.",
+    "title": "Návody na hnojenie a tipy do záhrady",
+    "description": "Sezónne návody podľa rastliny: ako a kedy hnojiť paradajky, zemiaky, papriku, cesnak, trávnik a ovocné stromy. NPK, dávkovanie a listová výživa.",
+    "intro": "Nájdite si návod podľa rastliny alebo témy. Každý článok je praktický — s termínmi, dávkovaním a chybami, ktorým sa vyhnúť.",
     "empty": "Zatiaľ žiadne články.",
+    "emptyFiltered": "V tejto kategórii zatiaľ žiadne články.",
     "meta": {
-      "title": "Aktuality | GardenYX",
-      "description": "Prečítajte si články GardenYX o hnojení, výžive rastlín a sezónnej starostlivosti o záhradu."
+      "title": "Návody na hnojenie: zelenina, trávnik a ovocné stromy | GardenYX",
+      "description": "Praktické návody GardenYX na hnojenie zeleniny, trávnika, ovocných stromov a kvetov. Kedy hnojiť, aké NPK zvoliť a ako ho správne aplikovať."
+    },
+    "breadcrumbs": {
+      "home": "Domov",
+      "current": "Blog"
+    },
+    "filters": {
+      "all": "Všetko",
+      "vegetables": "Zelenina",
+      "fruit": "Ovocie",
+      "lawn": "Trávnik",
+      "flowers": "Kvety",
+      "knowhow": "Know-how"
+    },
+    "featured": {
+      "badge": "Najnovší návod"
+    },
+    "shopCta": {
+      "title": "Hľadáte hnojivo?",
+      "description": "Vyberte si listové hnojivo Hakofyt podľa vašej rastliny.",
+      "cta": "Prejsť do obchodu"
+    },
+    "newsletterCta": {
+      "title": "Sezónne tipy e-mailom",
+      "description": "Nové návody a pripomienky hnojenia — najviac raz týždenne.",
+      "cta": "Odoberať"
     }
   },
   "contactPage": {

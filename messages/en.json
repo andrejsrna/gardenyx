@@ -14,12 +14,39 @@
     "starterFertilizer": "Starter fertilizer"
   },
   "blogIndex": {
-    "title": "News",
-    "description": "Articles, guides and seasonal advice about fertilizing, plant nutrition and garden care.",
+    "title": "Fertilizer Guides & Garden Tips",
+    "description": "Seasonal, plant-specific guides: how and when to fertilize tomatoes, potatoes, peppers, garlic, lawn and fruit trees. NPK explained, dosage and foliar feeding tips.",
+    "intro": "Find the right guide by plant or topic. Every article is practical — with timing, dosage and mistakes to avoid.",
     "empty": "No articles yet.",
+    "emptyFiltered": "No articles in this category yet.",
     "meta": {
-      "title": "News | GardenYX",
-      "description": "Read GardenYX articles about fertilizing, plant nutrition and seasonal garden care."
+      "title": "Fertilizer Guides: Vegetables, Lawn & Fruit Trees | GardenYX",
+      "description": "Practical GardenYX guides on fertilizing vegetables, lawn, fruit trees and flowers. When to feed, which NPK to choose and how to apply it correctly."
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "current": "Blog"
+    },
+    "filters": {
+      "all": "All",
+      "vegetables": "Vegetables",
+      "fruit": "Fruit & Berries",
+      "lawn": "Lawn",
+      "flowers": "Flowers",
+      "knowhow": "Know-how"
+    },
+    "featured": {
+      "badge": "Latest guide"
+    },
+    "shopCta": {
+      "title": "Looking for fertilizer?",
+      "description": "Choose Hakofyt foliar fertilizer that matches your plants.",
+      "cta": "Browse fertilizers"
+    },
+    "newsletterCta": {
+      "title": "Get seasonal tips by email",
+      "description": "New guides and fertilizing reminders — at most once a week.",
+      "cta": "Subscribe"
     }
   },
   "contactPage": {

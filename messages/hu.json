@@ -14,12 +14,39 @@
     "starterFertilizer": "Indító műtrágya"
   },
   "blogIndex": {
-    "title": "Hírek",
-    "description": "Cikkek, útmutatók és szezonális tanácsok trágyázásról, növénytáplálásról és kertgondozásról.",
+    "title": "Trágyázási útmutatók és kerti tippek",
+    "description": "Szezonális, növény-specifikus útmutatók: hogyan és mikor trágyázzon paradicsomot, burgonyát, paprikát, fokhagymát, gyepet és gyümölcsfákat. NPK, adagolás és lombtrágyázás.",
+    "intro": "Találja meg a megfelelő útmutatót növény vagy téma szerint. Minden cikk gyakorlatias — időzítéssel, adagolással és elkerülendő hibákkal.",
     "empty": "Még nincsenek cikkek.",
+    "emptyFiltered": "Ebben a kategóriában még nincsenek cikkek.",
     "meta": {
-      "title": "Hírek | GardenYX",
-      "description": "Olvassa el a GardenYX cikkeit a trágyázásról, növénytáplálásról és szezonális kertgondozásról."
+      "title": "Trágyázási útmutatók: zöldség, gyep és gyümölcsfák | GardenYX",
+      "description": "Gyakorlati GardenYX útmutatók zöldségek, gyep, gyümölcsfák és virágok trágyázásához. Mikor tápláljon, milyen NPK-t válasszon és hogyan juttassa ki."
+    },
+    "breadcrumbs": {
+      "home": "Főoldal",
+      "current": "Blog"
+    },
+    "filters": {
+      "all": "Mind",
+      "vegetables": "Zöldség",
+      "fruit": "Gyümölcs",
+      "lawn": "Gyep",
+      "flowers": "Virág",
+      "knowhow": "Tudástár"
+    },
+    "featured": {
+      "badge": "Legújabb útmutató"
+    },
+    "shopCta": {
+      "title": "Műtrágyát keres?",
+      "description": "Válassza ki növényeihez illő Hakofyt lombtrágyát.",
+      "cta": "Bolt megtekintése"
+    },
+    "newsletterCta": {
+      "title": "Szezonális tippek e-mailben",
+      "description": "Új útmutatók és trágyázási emlékeztetők — legfeljebb hetente egyszer.",
+      "cta": "Feliratkozás"
     }
   },
   "contactPage": {
