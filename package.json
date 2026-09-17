@@ -38,7 +38,7 @@
     "@stripe/stripe-js": "^8.9.0",
     "@tiptap/extension-image": "^3.31.3",
     "@tiptap/extension-link": "^3.22.5",
-    "@tiptap/extension-placeholder": "^3.22.5",
+    "@tiptap/extension-placeholder": "^3.31.3",
     "@tiptap/react": "^3.22.5",
     "@tiptap/starter-kit": "^3.31.3",
     "@types/xml2js": "^0.4.14",
