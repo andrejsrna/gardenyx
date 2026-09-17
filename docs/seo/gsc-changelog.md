@@ -31,6 +31,17 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-09-17 — Článok: Ako hnojiť trávnik na jeseň
+
+- **Nasadené:** odborný článok k sezónnemu dopytu a existujúcej landing page trávnikového hnojiva, publikovaný vo všetkých podporovaných lokalizáciách:
+  - SK: `/sk/blog/ako-hnojit-travnik-na-jesen`
+  - EN: `/en/blog/how-to-fertilize-lawn-in-autumn`
+  - HU: `/hu/blog/oszi-gyeptragyazas`
+- **Obsah:** rozdiel medzi jesennou a jarnou výživou, vhodné načasovanie, draslík vs. neskorý dusík, posledné kosenie, odstránenie lístia, plán pre 100 m², FAQ a overiteľné odborné zdroje.
+- **Médiá:** tri originálne obrázky sú uložené na R2/CDN pod prefixom `gardenyx/articles/hnojenie-travnika-na-jesen/`.
+- **Interné prepojenia:** landing page hnojiva na trávnik, Hakofyt Max tráva, NPK vysvetlenie, jarný článok o trávniku a Hakofyt hub.
+- **Stav v GSC:** nasadené; bez tvrdenia o výsledkoch pred získaním dát. Indexáciu, impressions a dopyty skontrolovať po 4–6 týždňoch.
+
 ### 2026-09-06 — Článok: Hnojivo na cesnak a cibuľu na jeseň
 
 - **Typ:** nový poradenský obsah (sezónny, jesenný)

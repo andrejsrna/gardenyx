@@ -127,11 +127,11 @@ Google nákupy sú samostatný produktový kanál. Aktiváciu neprezentovať ako
 
 ## Priorita 6 — September obsahový plán
 
-**Stav:** rozpracované 2026-09-06 — 1/2 článkov publikovaných (cesnak/cibuľa)
+**Stav:** splnené 2026-09-17 — 2/2 článkov publikovaných.
 **Záväzok:** minimálne **2 odborné články** za mesiac, vždy SK/EN/HU.
 
 - [x] **Článok 1/2:** `hnojivo na cesnak a cibuľu na jeseň` — SK `/sk/blog/hnojivo-na-cesnak-a-cibulu`, EN `/en/blog/garlic-and-onion-fertilizer-autumn`, HU `/hu/blog/fokhagyma-es-hagyma-tragyazas-osszel` — 3 R2 obrázky, publikované 2026-09-06.
-- [ ] **Článok 2/2:** téma podľa GSC/sezónnosti — návrh: trávnik na jeseň alebo cibuľoviny — drift podľa plánu.
+- [x] **Článok 2/2:** `ako hnojiť trávnik na jeseň` — SK `/sk/blog/ako-hnojit-travnik-na-jesen`, EN `/en/blog/how-to-fertilize-lawn-in-autumn`, HU `/hu/blog/oszi-gyeptragyazas` — 3 R2 obrázky, publikované 2026-09-17.
 
 ### Kritériá výberu tém
 
