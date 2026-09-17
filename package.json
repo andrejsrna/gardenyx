@@ -61,7 +61,7 @@
     "node-fetch": "^3.3.2",
     "pg": "^8.19.0",
     "prisma": "7.4.2",
-    "react": "^19.2.5",
+    "react": "^19.3.0",
     "react-cookie-consent": "^10.0.1",
     "react-dom": "^19.2.5",
     "react-hot-toast": "^2.6.0",
