@@ -28,7 +28,7 @@
     "import:woo-orders": "echo \"Deprecated: WooCommerce import removed\""
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1002.0",
+    "@aws-sdk/client-s3": "^3.1131.0",
     "@getbrevo/brevo": "^3.0.1",
     "@heroicons/react": "^2.2.0",
     "@prisma/adapter-pg": "7.4.2",
