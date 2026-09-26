@@ -15,7 +15,10 @@ type BlogPageProps = {
 
 const CATEGORIES = ['all', 'vegetables', 'fruit', 'lawn', 'flowers', 'knowhow'] as const;
 type Category = (typeof CATEGORIES)[number];
-const PAGE_SIZE = 9;
+// Articles shown in the grid under the hero/featured card, per page.
+// 6 divides evenly into the sm:2-col / lg:3-col grid (2 or 3 full rows),
+// so pagination never leaves a ragged last row.
+const GRID_SIZE = 6;
 
 function getCategoryFromSlug(slug: string): Category {
   const s = slug.toLowerCase();
@@ -74,13 +77,17 @@ export default async function BlogPage({ params, searchParams }: BlogPageProps) 
   };
 
   const filtered = activeCat === 'all' ? withCat : withCat.filter((a) => a.category === activeCat);
-  const total = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  // The first article overall is the hero/featured card and only appears on
+  // page 1. Every other article is paginated in groups of GRID_SIZE.
+  const featuredArticle = filtered[0] ?? null;
+  const gridArticles = filtered.slice(1);
+  const totalPages = Math.max(1, Math.ceil(gridArticles.length / GRID_SIZE));
   const safePage = Math.min(page, totalPages);
-  const start = (safePage - 1) * PAGE_SIZE;
-  const paginated = filtered.slice(start, start + PAGE_SIZE);
-  const featured = safePage === 1 ? paginated[0] ?? null : null;
-  const rest = featured ? paginated.slice(1) : paginated;
+  const gridStart = (safePage - 1) * GRID_SIZE;
+  const rest = gridArticles.slice(gridStart, gridStart + GRID_SIZE);
+  const featured = safePage === 1 ? featuredArticle : null;
+  const paginated = featured ? [featured, ...rest] : rest;
+  const start = featured ? 0 : gridStart + 1;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu';
   const paramsStr = [
