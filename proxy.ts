@@ -41,7 +41,7 @@ const corsHeaders = {
 };
 
 const ALLOWED_PARAMS = new Set([
-  'ad_id', 'pixel', 'key', 'page', 'search', 'tag', 'include', 'locale', 'slug',
+  'ad_id', 'pixel', 'key', 'page', 'cat', 'search', 'tag', 'include', 'locale', 'slug',
   'fbclid', 'fbc', 'gclid', 'utm_source', 'utm_medium', 'utm_campaign',
   'utm_term', 'utm_content',
   // Reviews token

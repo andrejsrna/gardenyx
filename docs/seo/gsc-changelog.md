@@ -2,7 +2,7 @@
 
 Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console.
 
-**Aktuálny pracovný plán:** [`2026-09-action-plan.md`](./2026-09-action-plan.md) — plánované úlohy a GSC baseline na september 2026. Do tohto changelogu patria iba skutočne nasadené zmeny.
+**Aktuálny pracovný plán:** [`2026-10-action-plan.md`](./2026-10-action-plan.md) — októbrové priority a GSC baseline; september je archivovaný v `2026-09-action-plan.md`. Do tohto changelogu patria iba skutočne nasadené zmeny.
 
 ## Pravidlá zápisu
 
@@ -30,6 +30,13 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 | Watch | články hortenzie/paprika | Publikované 2026-07-13 / 2026-07-22; júl je priskorý na vyhodnotenie. | Kontrola indexácie, impressions a dopytov. | 2026-09-15 |
 
 ## Zmeny
+
+### 2026-10-11 — Jahodový článok: jesenná výživa
+
+- URL: `/sk/blog/kedy-hnojit-jahody`. Rozšírené telo existujúceho článku, nie nová URL: jesenná odpoveď, raz/stále rodiace jahody a nádoby, rozhodovacia tabuľka, 2 FAQ a zdroj RHS.
+- Produktové odkazy zachované, odporúčanie podľa reálnej potreby a etikety; zdravý záhon nemusí potrebovať ďalšiu dávku. Zachované metadata, publikovanie a EN/HU; backup a read-back DB aj živé HTML overené.
+- GSC baseline: dopyt `cim hnojit jahody na jesen`, 23 zobrazení, 0 klikov, pozícia 9,70 za 30. 6. – 29. 9. 2026. Výsledky hodnotiť po 4–6 týždňoch, nie tvrdiť už teraz.
+- Reprodukovateľný, idempotentný patch: `scripts/update-strawberry-autumn-seo.ts`, chránený proti súbežnej redakčnej zmene.
 
 ### 2026-09-17 — Článok: Ako hnojiť trávnik na jeseň
 

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import { cache } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
@@ -20,6 +21,26 @@ type Category = (typeof CATEGORIES)[number];
 // so pagination never leaves a ragged last row.
 const GRID_SIZE = 6;
 
+const getBlogArticles = cache(async () => {
+  const articles = await prisma.article.findMany({
+    where: { status: 'published' },
+    orderBy: { publishedAt: 'desc' },
+    select: { id: true, slug: true, coverImage: true, publishedAt: true, translations: true },
+  });
+  return articles.map((a) => {
+    const slugs = [a.slug, ...Object.values(a.translations as Record<string, { slug?: string }>).map((tr) => tr.slug ?? '')].join(' ');
+    return { ...a, category: getCategoryFromSlug(slugs) };
+  });
+});
+
+function resolveBlogParams(cat: unknown, page: unknown, total: number) {
+  const activeCat: Category = typeof cat === 'string' && (CATEGORIES as readonly string[]).includes(cat) ? cat as Category : 'all';
+  const requested = typeof page === 'string' && /^[1-9]\d*$/.test(page) && Number.isSafeInteger(Number(page)) ? Number(page) : 1;
+  const safePage = Math.min(requested, Math.max(1, Math.ceil(Math.max(0, total - 1) / GRID_SIZE)));
+  const query = [activeCat !== 'all' ? `cat=${activeCat}` : '', safePage > 1 ? `page=${safePage}` : ''].filter(Boolean).join('&');
+  return { activeCat, safePage, suffix: query ? `?${query}` : '' };
+}
+
 function getCategoryFromSlug(slug: string): Category {
   const s = slug.toLowerCase();
   if (/(paprik|paradajk|zemiak|cesnak|cibul|zelenin|potato|pepper|garlic|onion|vegetable|burgonya|paprika|fokhagyma|hagyma|zoldseg)/.test(s))
@@ -38,13 +59,19 @@ export async function generateMetadata({ params, searchParams }: BlogPageProps):
   const tFilters = await getTranslations({ locale, namespace: 'blogIndex.filters' });
   const baseTitle = t('title');
   const baseDesc = t('description');
-  const activeCat = cat && (CATEGORIES as readonly string[]).includes(cat) ? cat : null;
-  if (activeCat && activeCat !== 'all') {
-    const catLabel = tFilters(activeCat as never) as string;
-    return { title: `${catLabel}${page && page !== '1' ? ` (p. ${page})` : ''} — ${baseTitle}`, description: baseDesc };
-  }
-  if (page && page !== '1') return { title: `${baseTitle} (p. ${page})`, description: baseDesc };
-  return { title: baseTitle, description: baseDesc };
+  const articles = await getBlogArticles();
+  const category = resolveBlogParams(cat, page, articles.length).activeCat;
+  const total = articles.filter((a) => category === 'all' || a.category === category).length;
+  const { activeCat, safePage, suffix } = resolveBlogParams(cat, page, total);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.gardenyx.eu';
+  const title = `${activeCat !== 'all' ? `${tFilters(activeCat)} — ` : ''}${baseTitle}${safePage > 1 ? ` (p. ${safePage})` : ''}`;
+  return {
+    title, description: baseDesc,
+    alternates: {
+      canonical: `${siteUrl}/${locale}/blog${suffix}`,
+      languages: Object.fromEntries(['sk', 'en', 'hu'].map((lang) => [lang, `${siteUrl}/${lang}/blog${suffix}`])),
+    },
+  };
 }
 
 export default async function BlogPage({ params, searchParams }: BlogPageProps) {
@@ -53,18 +80,7 @@ export default async function BlogPage({ params, searchParams }: BlogPageProps) 
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'blogIndex' });
   const activeCat: Category = cat && (CATEGORIES as readonly string[]).includes(cat) ? (cat as Category) : 'all';
-  const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1);
-
-  const articles = await prisma.article.findMany({
-    where: { status: 'published' },
-    orderBy: { publishedAt: 'desc' },
-    select: { id: true, slug: true, coverImage: true, publishedAt: true, translations: true },
-  });
-
-  const withCat = articles.map((a) => {
-    const slugs = [a.slug, ...Object.values(a.translations as Record<string, { slug?: string }>).map((tr) => tr.slug ?? '')].join(' ');
-    return { ...a, category: getCategoryFromSlug(slugs) as Category };
-  });
+  const withCat = await getBlogArticles();
 
   // counts per category
   const counts: Record<Category | 'all', number> = {
@@ -82,7 +98,7 @@ export default async function BlogPage({ params, searchParams }: BlogPageProps) 
   const featuredArticle = filtered[0] ?? null;
   const gridArticles = filtered.slice(1);
   const totalPages = Math.max(1, Math.ceil(gridArticles.length / GRID_SIZE));
-  const safePage = Math.min(page, totalPages);
+  const { safePage } = resolveBlogParams(cat, pageParam, filtered.length);
   const gridStart = (safePage - 1) * GRID_SIZE;
   const rest = gridArticles.slice(gridStart, gridStart + GRID_SIZE);
   const featured = safePage === 1 ? featuredArticle : null;
