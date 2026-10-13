@@ -1,6 +1,17 @@
 # GardenYX — SEO plán na október 2026
 
-**Stav:** plánované, nie nasadené. Pripravené 2. 10. 2026.
+**Stav:** rozpracované; časť vykonaná, technické nasadenie čaká. Pripravené 2. 10. 2026.
+
+## Podklady pre mesačný klientsky reporting — 11. 10. 2026
+
+- **Hotové na produkcii:** jesenná sekcia jahodového článku `/sk/blog/kedy-hnojit-jahody`, rozhodovacia tabuľka, 2 FAQ, odborný zdroj RHS; DB backup, read-back a HTTP 200 s novým obsahom overené. Kód reprodukovateľnej aktualizácie v commite `d99034a`.
+- **Audit hotový:** 6 septembrových jazykových URL článkov cesnak/cibuľa a jesenný trávnik má správne canonical/hreflang/robots/schema URL a sitemap. Toto nie je potvrdenie indexácie Google; URL Inspection zostáva otvorené.
+- **Pripravené, nie potvrdené na produkcii:** opravy blogových canonical/hreflang, normalizácie stránkovania a priechodu parametra `cat` v proxy. Commit `d99034a` pushnutý na main; produkčný build a 27 lokálnych kontrol metadata/schema pre SK/EN/HU úspešné.
+- **Blokátor nasadenia pri poslednej kontrole:** Coolify DB recovery režim; log `No space left on device`. Živý blog vtedy stále nemal canonical a používal starú verziu. Pred mesačným reportom overiť aktuálny deploy/live HTML, neuvádzať samotný push ako nasadenie.
+- **Lint:** existujúca nekompatibilita typescript-eslint s TypeScript 7; lint neprešiel, produkčný build prešiel.
+- **Ďalej:** bezpečné uvoľnenie disku a dokončenie deployu; potom zeleninová landing page. Účinok SEO zatiaľ nemeraný, baseline z exportu 30. 6. – 29. 9. 2026; následné výsledky až z porovnateľných okien.
+
+Klientsky reporting je mesačný. Po každej SEO práci doplniť stav, presné URL, dátum, commit, overenia a blokátory; nasadené zmeny patria do changelogu, čakajúce do plánu.
 **Zdroj:** GSC Web export `gardenyx.eu-Performance-on-Search-2026-10-02.zip`, denné dáta 30. 6. – 29. 9. 2026. Stránkové a dopytové tabuľky sú za celé obdobie, nie samostatne za september.
 
 ## Východiskové údaje
@@ -25,7 +36,7 @@
 
 ## Týždne 2–4 — obsahový záväzok
 
-- [ ] Článok 1, návrh: **Ako pripraviť pôdu po zbere na ďalšiu sezónu: kompost, živiny a najčastejšie chyby.** Pred vytvorením audit existujúceho zeleninového/NPK/cesnakového obsahu; samostatná URL iba pri odlišnom intente. Téma je sezónny redakčný návrh, nie doložený objem vyhľadávania.
+- [x] Článok 1 (11. 10., DB live): **Ako pripraviť pôdu po zbere na ďalšiu sezónu: kompost, mulč a najčastejšie chyby.** Odlišný intent (prázdny záhon po zbere) oproti živinám pestovanej zeleniny, NPK a jesennej výsadbe cesnaku. Publikované `/sk/blog/ako-pripravit-podu-po-zbere`, `/en/blog/prepare-soil-after-harvest`, `/hu/blog/talaj-elokeszitese-betakaritas-utan`; 3 vlastné obrázky R2 `gardenyx/articles/priprava-pody-po-zbere/`, vizuálne aj GET `200 image/png` overené. Reprodukovateľný skript `scripts/upsert-priprava-pody-po-zbere-article.ts`, interné odkazy na zeleninový hub, NPK, cesnak/cibuľu, sezónnu zeleninu, odborné zdroje RHS, FAQ. Build OK, repo lint naďalej zlyháva pre TS7/typescript-eslint. Články + interné URL na produkcii HTTP 200, canonical/hreflang a 3 obrázky na každom locale overené; živá sitemap zatiaľ nový záznam neobsahuje (lokálne /sitemap.xml áno) — sledovať po nasadení/reštarte. Sezónny redakčný návrh, nie doložený objem vyhľadávania.
 - [ ] Článok 2, návrh: **Citrusy v zime: svetlo, zálievka a kedy obmedziť hnojenie.** Nadviazať na existujúci článok a citrusový produkt bez duplicitného hnojivového intentu. Téma je sezónny návrh; existujúca SK citrusová landing page má 3 kliky/143 zobrazení, pozíciu 6,37 za celé obdobie.
 - [ ] Každý schválený článok: SK/EN/HU, 3 vlastné obrázky na CDN, praktické FAQ, overené zdroje, odkazy na existujúci hub/produkt, kontrola URL a sitemap. Produktové odporúčania podriadiť sezóne a etikete, nie marketingu.
 

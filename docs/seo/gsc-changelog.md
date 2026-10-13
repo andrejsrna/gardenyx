@@ -31,6 +31,14 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-10-11 — Článok: Príprava pôdy po zbere
+
+- **Nasadené v DB a live overené:** SK `/sk/blog/ako-pripravit-podu-po-zbere`, EN `/en/blog/prepare-soil-after-harvest`, HU `/hu/blog/talaj-elokeszitese-betakaritas-utan` — HTTP 200, vlastné canonical, vzájomné hreflang, každá stránka obsahuje tri obrazové prvky (cover + 2 v tele).
+- **Obsah:** samostatný zámer prázdneho zeleninového záhona po zbere; zdravie pôdy, vyzretý kompost, mulč vs. zelené hnojenie, opatrnosť pri minerálnej výžive, checklist, FAQ a overené zdroje RHS. Neodporúča aplikovať listové hnojivo na prázdny záhon.
+- **Obrázky:** tri nové originálne PNG na R2/CDN `gardenyx/articles/priprava-pody-po-zbere/`, každý GET 200 image/png a vizuálne kontrolovaný. Interné odkazy na zeleninovú landing page a článok, NPK a cesnak/cibuľu; všetky odkazy overené HTTP 200.
+- **Meranie:** nová URL nebola v dodanom GSC exporte 30. 6. – 29. 9.; pre toto obdobie neuvádzať vymyslené čísla. Stav indexácie a dopyty skontrolovať o 4–6 týždňov cez URL Inspection a GSC. Živá sitemap zatiaľ nový článok neuvádza, lokálne generovaná áno; sledovať po nasadení/reštarte kódu.
+- **Reprodukovateľnosť:** `scripts/upsert-priprava-pody-po-zbere-article.ts` (bez prepisu existujúceho článku). Build prešiel; lint má existujúci TS7/typescript-eslint blocker.
+
 ### 2026-10-11 — Jahodový článok: jesenná výživa
 
 - URL: `/sk/blog/kedy-hnojit-jahody`. Rozšírené telo existujúceho článku, nie nová URL: jesenná odpoveď, raz/stále rodiace jahody a nádoby, rozhodovacia tabuľka, 2 FAQ a zdroj RHS.
