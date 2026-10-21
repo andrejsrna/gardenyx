@@ -31,7 +31,7 @@ Klientsky reporting je mesačný. Po každej SEO práci doplniť stav, presné U
 ## Týždeň 2 — existujúci obsah a CTR
 
 - [x] Jahody 11. 10.: rozšírený existujúci SK článok o jesennú výživu, rozhodovaciu tabuľku, rozlíšenie odrôd/nádob a 2 FAQ. Zdroj RHS; produktová podpora rešpektuje etiketu a neodporúča automatické neskoré hnojenie. Baseline `cim hnojit jahody na jesen`: 23 zobrazení, 0 klikov, pozícia 9,70 (30. 6. – 29. 9.). Zachované EN/HU, metadata aj publikovanie; DB backup pred zmenou a živý obsah overené.
-- [ ] Zelenina: posilniť existujúcu landing page pre generický dopyt `hnojivo na zeleninu` (99 zobrazení, 0 klikov, pozícia 14,72) a otázky výberu podľa fázy rastu; overiť produktové a článkové odkazy. URL má 7 klikov/471 zobrazení, CTR 1,49 % za celé obdobie.
+- [x] Zelenina — **21. 10. nasadené a live overené**, commit `a30086b`: SK title/meta pre generický intent, výber pred výsadbou/počas rastu/pri plodení, rozlíšenie pôdnej a listovej výživy, dve nové FAQ (aj v schema) a päť odkazov na zeleninové články vrátane prípravy pôdy po zbere. Build OK; lokálny produkčný HTTP test title/canonical/5 odkazov/6 FAQ a EN/HU bez SK sekcie prešiel; cieľové články live HTTP 200. Lint naďalej existujúci TS7/typescript-eslint blocker. Push na main úspešný; Coolify finished, živé HTML obsahuje nový title aj blok návodov. Baseline `hnojivo na zeleninu`: 99 zobrazení, 0 klikov, pozícia 14,72; URL 7 klikov/471 zobrazení, CTR 1,49 % (30. 6. – 29. 9. 2026). Výsledky vyhodnotiť až v porovnateľných 28-dňových oknách po nasadení.
 - [ ] EN: prioritne analyzovať `/en/blog/tomato-fertilizer` (3/624, CTR 0,48 %, pozícia 10,50), `/en/fertilizer` (2/455, CTR 0,44 %) a `/en/vegetable-fertilizer` (0/192, pozícia 11,41). Ďalšie kandidáty `/en/lawn-fertilizer` (1/163, pozícia 7,48) a `/en/hakofyt-fertilizers` (1/170, pozícia 7,71). Title/meta upraviť až podľa konkrétnych dopytov a krajín, nie naslepo. Neoptimalizovať predajné copy pre krajiny, kam obchod nedoručuje.
 
 ## Týždne 2–4 — obsahový záväzok
@@ -45,6 +45,12 @@ Klientsky reporting je mesačný. Po každej SEO práci doplniť stav, presné U
 - [ ] Zmerať 28-dňové výsledky pred a po zmene na rovnakých URL/dopytoch. Reportovať clicks, impressions, CTR a pozíciu so správnym rozsahom.
 - [ ] Overiť produktové structured data, feedové ceny/dostupnosť/dopravu oproti checkoutu a diagnostiku zamietnutých produktov. Neprehlasovať feed za aktivovaný bez Merchant Center dôkazov.
 - [ ] Klientsky report: realizované vs. plánované úlohy, bez garantovaného rastu a bez pripisovania objednávok GSC.
+
+## Overenie otvorených bodov — 21. 10. 2026
+
+- Živá `/sitemap.xml` už obsahuje článok `ako-pripravit-podu-po-zbere` (HTTP 200); predchádzajúci bod chýbajúcej sitemap je vyriešený.
+- Živý blog `?cat=vegetables` vracia HTTP 200 a správny canonical vrátane kategórie; predchádzajúca oprava metadát/transportu kategórie je viditeľná na produkcii.
+- Coolify deploy `a30086b` dokončený (`finished`); živé HTML potvrdzuje nový title a obsah zeleninovej landing page.
 
 ## Kritériá úspechu
 

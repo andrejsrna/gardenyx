@@ -31,6 +31,14 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-10-21 — Zeleninová landing page: intent, výber a interné odkazy
+
+- **Nasadené:** `/sk/hnojivo-na-zeleninu`, commit `a30086b`, Coolify finished a živé HTML HTTP 200 s novým title a obsahom.
+- Title/meta spresnené pre generické hľadanie; výber podľa fázy rastu, rozlíšenie základnej a listovej výživy, dve FAQ s rovnakým obsahom vo FAQPage schema. Päť odkazov na existujúce články (zelenina, paradajky, paprika, zemiaky, pôda po zbere). EN/HU copy ponechané, URL/canonical/hreflang nemeníme.
+- **Overenie:** produkčný build OK; lokálny produkčný HTTP test title/canonical/5 odkazov/6 FAQ schema a EN/HU izolácie OK; päť cieľových článkov live HTTP 200. Lint blokovaný existujúcou nekompatibilitou TS7/typescript-eslint.
+- **Baseline:** dopyt `hnojivo na zeleninu` 99 zobrazení, 0 klikov, pozícia 14,72; URL 7 klikov/471 zobrazení, CTR 1,49 % za 30. 6. – 29. 9. 2026. Ide o starší agregovaný export, nie aktuálne 28-dňové okno pred zmenou. Získať porovnateľný export a výsledky vyhodnotiť po 4–6 týždňoch; rast zatiaľ netvrdiť.
+- **Uzavretá staršia kontrola:** živá sitemap už obsahuje článok o pôde po zbere a živý blog má canonical pre kategóriu. Google indexácia tým nie je potvrdená.
+
 ### 2026-10-11 — Článok: Príprava pôdy po zbere
 
 - **Nasadené v DB a live overené:** SK `/sk/blog/ako-pripravit-podu-po-zbere`, EN `/en/blog/prepare-soil-after-harvest`, HU `/hu/blog/talaj-elokeszitese-betakaritas-utan` — HTTP 200, vlastné canonical, vzájomné hreflang, každá stránka obsahuje tri obrazové prvky (cover + 2 v tele).
