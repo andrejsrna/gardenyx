@@ -31,6 +31,12 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-10-21 — Trvalé presmerovania jazykových aliasov článkov
+
+- **Nasadené:** commit `6847caf`, Coolify `finished`; verejné regresné HTTP testy úspešné. `/en/blog/ako-a-kedy-hnojit-travnik-na-jar` vracia 308 na `/en/blog/how-and-when-to-fertilize-your-lawn-in-spring`; rovnaká normalizácia funguje pre HU alias na `/hu/blog/hogyan-es-mikor-tragyazzuk-a-gyepet-tavasszal`. Pravidlo čerpá lokalizované slugy zo zverejnených DB článkov, nie iba z pevnej mapy týchto dvoch URL.
+- **Overenie:** test bol pred opravou červený (200 namiesto 308), po oprave zelený lokálne aj live. Správne SK/EN/HU URL 200, canonical/hreflang zachované, neplatný preview token nenarúša redirect; platný podpísaný náhľad lokálne 200/noindex bez redirectu. Produkčný build OK; lint má existujúci TS7/typescript-eslint blocker. Test: `scripts/test-article-slug-redirects.ts`.
+- **Dôvod:** GSC drilldown EN duplicitnej URL, posledné prehľadanie 13. 6. 2026; dnes už mala canonical, ale stále bola samostatne dostupná ako 200. HU stará Shopify URL bola už presmerovaná a nevyžadovala novú mapu. Zmena nie je potvrdením vyriešenia hlásenia sitemap ani Google indexácie. Opätovné prehľadanie sledovať cez URL Inspection, výkon až po 4–6 týždňoch v rovnakých oknách.
+
 ### 2026-10-21 — Článok: Citrusy v zime
 
 - **Publikované v DB a overené na produkcii:** `/sk/blog/citrusy-v-zime`, `/en/blog/citrus-care-in-winter`, `/hu/blog/citrusfelek-teleltetese` — HTTP 200, vlastné canonical, vzájomné hreflang, indexovateľnosť a Article schema URL. DB read-back potvrdil všetky texty a metadata.
