@@ -31,6 +31,14 @@ Priebežný záznam SEO zmien, ich dôvodov a výsledkov v Google Search Console
 
 ## Zmeny
 
+### 2026-10-21 — Článok: Citrusy v zime
+
+- **Publikované v DB a overené na produkcii:** `/sk/blog/citrusy-v-zime`, `/en/blog/citrus-care-in-winter`, `/hu/blog/citrusfelek-teleltetese` — HTTP 200, vlastné canonical, vzájomné hreflang, indexovateľnosť a Article schema URL. DB read-back potvrdil všetky texty a metadata.
+- **Obsah:** svetlé bezmrazové zimovisko, rozdiely druhov, zálievka podľa substrátu, zimná výživa podľa rastu/etikety, diagnostika opadu a škodcov, prechod von na jar, 4 FAQ v každom jazyku. Zdroj RHS; bez plošného zákazu zimného hnojenia či neoverených dávok. Odkazy na citrusovú landing page, existujúci článok o hnojení a Hakofyt hub v každom locale; všetkých 9 cieľov live HTTP 200.
+- **Obrázky:** tri nové AI ilustrácie `gardenyx/articles/citrusy-v-zime/{citrusy-zimovanie-hero,kontrola-zalievky,kontrola-listov}-20261021.png`; vizuálna kontrola, CDN GET 200 image/png, na každej verzii presne tri rôzne obrázky.
+- **Overenie a zdrojový kód:** produkčný build prešiel; existujúci lint blocker typescript-eslint/TS7 zostáva. `scripts/upsert-citrusy-v-zime-article.ts` odmieta prepísať už existujúci záznam. Prvá živá sitemap HTTP 200 ešte neobsahovala nové URL — nevydávať za potvrdenú sitemap ani indexáciu; sledovať v pláne po deployi.
+- **GSC:** nová URL bez vlastnej baseline. Sezónny redakčný návrh, nie tvrdenie o objeme dopytov. Kontrola po 4–6 týždňoch v porovnateľných oknách; bez tvrdenia o raste alebo Google indexácii.
+
 ### 2026-10-21 — Zeleninová landing page: intent, výber a interné odkazy
 
 - **Nasadené:** `/sk/hnojivo-na-zeleninu`, commit `a30086b`, Coolify finished a živé HTML HTTP 200 s novým title a obsahom.
