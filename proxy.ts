@@ -298,6 +298,30 @@ export async function proxy(request: NextRequest) {
       await rateLimit(ip);
     }
 
+    // Resolve canonical article slugs before rendering starts. A page-level
+    // redirect can become a streamed HTTP 200 instead of a real HTTP 308.
+    const articlePath = pathname.match(/^\/(sk|en|hu)\/blog\/([^/]+)$/);
+    if (articlePath && (request.method === 'GET' || request.method === 'HEAD')) {
+      const [, locale, encodedSlug] = articlePath;
+      const slug = decodeURIComponent(encodedSlug);
+      const { default: prisma } = await import('./app/lib/prisma');
+      const article = await prisma.article.findUnique({
+        where: { slug },
+        select: { id: true, status: true, translations: true, updatedAt: true },
+      });
+      if (article?.status === 'published') {
+        const { getLocalizedArticleSlug } = await import('./app/lib/article');
+        const { verifyPreviewToken } = await import('./app/lib/preview');
+        const localizedSlug = getLocalizedArticleSlug(slug, article.translations, locale);
+        const isPreview = verifyPreviewToken(article.id, article.updatedAt, request.nextUrl.searchParams.get('preview'));
+        if (!isPreview && slug !== localizedSlug) {
+          const params = sanitizeUrlParams(request.nextUrl);
+          params.delete('preview');
+          return buildRedirectResponse(request, `/${locale}/blog/${encodeURIComponent(localizedSlug)}`, params);
+        }
+      }
+    }
+
     if (isAdmin) {
       const adminAuthResponse = requireAdminAuth(request);
       if (adminAuthResponse) {
