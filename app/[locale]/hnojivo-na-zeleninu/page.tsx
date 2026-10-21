@@ -31,9 +31,9 @@ const npkArticleSlug: Record<string, string> = {
 
 const copy = {
   sk: {
-    metaTitle: 'Najlepšie hnojivo na zeleninu: paradajky, paprika a uhorky | GardenYX',
+    metaTitle: 'Hnojivo na zeleninu: výber podľa fázy rastu | GardenYX',
     metaDescription:
-      'Ako vybrať najlepšie hnojivo na zeleninu? Hakofyt Plus zelenina je vyvážené NPK listové hnojivo pre paradajky, papriku, uhorky aj ďalšie plodiny.',
+      'Vyberte hnojivo na zeleninu podľa pôdy, plodiny a fázy rastu. Rozdiel medzi základnou a listovou výživou, praktické rady a Hakofyt Plus zelenina.',
     eyebrow: 'Hnojivo na zeleninu',
     title: 'Hnojivo na zeleninu pre silné korene, zdravé listy a kvalitnejšiu úrodu',
     intro:
@@ -60,11 +60,11 @@ const copy = {
       ['03', 'Opakujte počas sezóny', 'Zelenina reaguje najlepšie na pravidelnú výživu v rozumných intervaloch.'],
     ],
     chooseTitle: 'Ako vybrať najlepšie hnojivo na zeleninu',
-    chooseIntro: 'Najlepšie hnojivo na zeleninu nie je jedno univerzálne číslo na obale. Vyberajte podľa fázy rastu, typu plodiny a spôsobu aplikácie. Pri paradajkách, paprike a uhorkách má zmysel vyvážená výživa s NPK živinami a mikroprvkami, nie jednostranné pridávanie dusíka.',
+    chooseIntro: 'Najlepšie hnojivo na zeleninu vyberajte podľa pôdy, konkrétnej plodiny a fázy rastu. Základná výživa pôdy a doplnková listová výživa plnia odlišnú úlohu. Pri slabom raste najprv skontrolujte zálievku, odvodnenie a zdravotný stav; ďalšia dávka hnojiva nemusí vyriešiť príčinu.',
     choosePoints: [
-      ['Po výsadbe', 'Uprednostnite výživu, ktorá podporí ujatie sadeníc a rozvoj koreňov.'],
-      ['Pri raste listov', 'Rastlina potrebuje pravidelnú, ale vyváženú dávku živín — prebytok dusíka môže podporiť listy na úkor kvetov.'],
-      ['Pri kvitnutí a plodoch', 'Pre kvalitnú úrodu je dôležitá vyvážená výživa a pravidelná aplikácia podľa etikety.'],
+      ['Pred výsadbou', 'Posúďte pôdu a predchádzajúce hnojenie. Vyzretý kompost pomáha štruktúre; konkrétne živiny dopĺňajte podľa potreby, pri opakovaných problémoch podľa rozboru.'],
+      ['Počas rastu', 'Po ujmutí sadeníc voľte dávkovanie podľa plodiny a etikety. Listová výživa môže dopĺňať prísun živín, nenahrádza však pôdu, korene a primeranú zálievku.'],
+      ['Pri kvitnutí a plodoch', 'Sledujte rovnomerný prísun vody aj živín. Nepodporujte naslepo rast listov vysokou dávkou dusíka a nekombinujte viac prípravkov bez kontroly celkovej dávky.'],
     ],
     relatedTitle: 'Súvisiace témy',
     related: [
@@ -78,6 +78,8 @@ const copy = {
       ['Môžem použiť hnojivo na paradajky aj uhorky?', 'Áno, Hakofyt Plus zelenina je univerzálne hnojivo pre zeleninu vrátane paradajok, uhoriek, papriky, zemiakov, šalátov a byliniek.'],
       ['Kedy hnojiť zeleninu?', 'Najčastejšie po výsadbe, počas intenzívneho rastu a pri tvorbe plodov. Vyhnite sa aplikácii počas horúčav a silného priameho slnka.'],
       ['Je listové hnojivo vhodné pre hobby záhradu?', 'Áno. Pri dodržaní dávkovania je praktické aj pre hobby pestovateľov, pretože živiny sa cez listy prijímajú rýchlo.'],
+      ['Aký je rozdiel medzi základným a listovým hnojením?', 'Základná výživa sa plánuje podľa pôdy a plodiny. Listové hnojivo sa aplikuje na rastúce rastliny podľa etikety ako doplnok; nenahrádza organickú hmotu a starostlivosť o pôdu.'],
+      ['Treba po zbere hnojiť prázdny zeleninový záhon?', 'Nie automaticky. Posúďte pôdu, doterajšie hnojenie a budúcu plodinu. Povrch chráňte vhodným mulčom alebo včas vysiatym zeleným hnojením. Listový prípravok neaplikujte na prázdnu pôdu ako náhradu tejto starostlivosti.'],
     ],
   },
   en: {
@@ -375,6 +377,23 @@ export default async function VegetableFertilizerPage({ params }: { params: Prom
                 </article>
               ))}
             </div>
+          </div>
+          <div className="mt-8 rounded-3xl border border-emerald-100 bg-emerald-50/50 p-6">
+            <h3 className="text-xl font-black text-stone-950">Praktické návody pre zeleninový záhon</h3>
+            <p className="mt-3 leading-7 text-stone-700">Počas sezóny riešte výživu rastlín, po zbere ochranu a štruktúru pôdy. Postup prispôsobte konkrétnej plodine a termínu.</p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {[
+                ['ako-hnojit-zeleninu', 'Ako hnojiť zeleninu počas sezóny'],
+                ['hnojivo-na-paradajky', 'Výživa paradajok podľa fázy rastu'],
+                ['hnojivo-na-papriku', 'Hnojenie papriky bez zbytočných chýb'],
+                ['hnojivo-na-zemiaky', 'Príprava pôdy a výživa zemiakov'],
+                ['ako-pripravit-podu-po-zbere', 'Príprava pôdy po zbere: kompost a mulč'],
+              ].map(([slug, label]) => (
+                <li key={slug}>
+                  <Link href={{ pathname: '/blog/[slug]', params: { slug } }} className="font-semibold text-emerald-800 underline decoration-emerald-300 underline-offset-4 hover:text-emerald-950">{label}</Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}
