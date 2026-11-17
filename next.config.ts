@@ -1,5 +1,4 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
-import type { Configuration } from 'webpack';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
@@ -99,13 +98,6 @@ const nextConfig = {
   compiler: {
     // Keep runtime logs available when production debugging is explicitly enabled.
     removeConsole: process.env.NODE_ENV === 'production' && !keepProductionConsole,
-  },
-  webpack: (config: Configuration) => {
-    config.infrastructureLogging = {
-      ...(config.infrastructureLogging || {}),
-      level: 'error',
-    };
-    return config;
   },
 }
 
