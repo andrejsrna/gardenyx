@@ -153,7 +153,7 @@ function LanguageSwitcher({ locale }: { locale: string }) {
   );
 }
 
-export default function Header({ locale }: { locale: string }) {
+export default function Header({ locale, minimal = false }: { locale: string; minimal?: boolean }) {
   const t = useTranslations('nav');
   const { customerData, isLoading } = useAuth();
   const { closeCart } = useCart();
@@ -188,6 +188,21 @@ export default function Header({ locale }: { locale: string }) {
   }, [isMobileMenuOpen]);
 
   const customerName = customerData?.billing?.first_name || customerData?.first_name || safeGetItem('customerName') || '';
+
+  if (minimal) {
+    return (
+      <header className="border-b border-emerald-100/70 bg-white">
+        <div className="container mx-auto px-4 flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center" aria-label="GardenYX">
+            <Image src="/logo_gardenyx.png" alt="GardenYX" width={824} height={221} priority className="h-9 w-auto" />
+          </Link>
+          <Link href="/kupit" className="text-sm font-medium text-emerald-700 hover:text-emerald-800">
+            ← {t('backToShop')}
+          </Link>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-emerald-100/70 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 relative">

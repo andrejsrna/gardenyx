@@ -1,6 +1,7 @@
 'use client';
 
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
+import { useCart } from '../../context/CartContext';
 import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
 import { sanitizePhone } from '../../lib/utils/sanitize';
@@ -36,6 +37,17 @@ export default function BillingInformationSection({
   setPhoneError,
 }: BillingInformationSectionProps) {
   const t = useTranslations('checkout.billingInformation');
+  const { saveCartWithEmail } = useCart();
+  const savedEmailRef = useRef('');
+  const [showAddress2, setShowAddress2] = useState(Boolean(formData.billing.address_2));
+
+  // Stores the cart for a single reminder; the cron job sends it after 1 h if no order exists.
+  const handleEmailBlur = () => {
+    const email = formData.billing.email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email === savedEmailRef.current) return;
+    savedEmailRef.current = email;
+    saveCartWithEmail(email);
+  };
 
   const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     const rawPhone = e.target.value;
@@ -62,6 +74,27 @@ export default function BillingInformationSection({
     <div className="bg-white p-6 rounded-lg shadow-sm">
       <h2 className="text-xl font-semibold mb-4">{t('title')}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Email */}
+        <div className="md:col-span-2">
+          <label htmlFor="billing-email" className="block text-sm font-medium text-gray-700">
+            {t('fields.email')} <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="billing-email"
+            name="email"
+            type="email"
+            placeholder={t('placeholders.email')}
+            value={formData.billing.email}
+            onChange={(e) => onInputChange(e, 'billing')}
+            onBlur={handleEmailBlur}
+            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
+              formErrors?.['billing.email'] ? 'ring-2 ring-red-500 bg-red-50' : ''
+            }`}
+            required
+            autoComplete="email"
+          />
+        </div>
+
         {/* First Name */}
         <div>
           <label htmlFor="billing-first_name" className="block text-sm font-medium text-gray-700">
@@ -75,7 +108,7 @@ export default function BillingInformationSection({
             value={formData.billing.first_name}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.first_name'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              formErrors?.['billing.first_name'] ? 'ring-2 ring-red-500 bg-red-50' : ''
             }`}
             required
             autoComplete="given-name"
@@ -95,30 +128,10 @@ export default function BillingInformationSection({
             value={formData.billing.last_name}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.last_name'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              formErrors?.['billing.last_name'] ? 'ring-2 ring-red-500 bg-red-50' : ''
             }`}
             required
             autoComplete="family-name"
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label htmlFor="billing-email" className="block text-sm font-medium text-gray-700">
-            {t('fields.email')} <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="billing-email"
-            name="email"
-            type="email"
-            placeholder={t('placeholders.email')}
-            value={formData.billing.email}
-            onChange={(e) => onInputChange(e, 'billing')}
-            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.email'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
-            }`}
-            required
-            autoComplete="email"
           />
         </div>
 
@@ -135,8 +148,8 @@ export default function BillingInformationSection({
             onChange={handlePhoneChange}
             placeholder={t('placeholders.phone')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              phoneError ? 'border-red-500' : ''
-            } ${formErrors?.['billing.phone'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+              phoneError ? 'ring-2 ring-red-500 bg-red-50' : ''
+            } ${formErrors?.['billing.phone'] ? 'ring-2 ring-red-500 bg-red-50' : ''}`}
             required
             autoComplete="tel"
           />
@@ -156,7 +169,7 @@ export default function BillingInformationSection({
             onChange={onSyncedFieldChange}
             placeholder={t('placeholders.address')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              formErrors?.['billing.address_1'] ? 'ring-2 ring-red-500 bg-red-50' : ''
             }`}
             required
             autoComplete="street-address"
@@ -164,6 +177,7 @@ export default function BillingInformationSection({
         </div>
 
         {/* Address 2 (Apartment/Suite) */}
+        {showAddress2 ? (
         <div className="md:col-span-2">
           <label htmlFor="billing-address_2" className="block text-sm font-medium text-gray-700">{t('fields.address2')}</label>
           <input
@@ -173,12 +187,19 @@ export default function BillingInformationSection({
             value={formData.billing.address_2 || ''}
             onChange={(e) => onInputChange(e, 'billing')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.address_2'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              formErrors?.['billing.address_2'] ? 'ring-2 ring-red-500 bg-red-50' : ''
             }`}
             placeholder={t('placeholders.address2')}
             aria-label={t('fields.address2')}
           />
         </div>
+        ) : (
+          <div className="md:col-span-2 -mt-2">
+            <button type="button" onClick={() => setShowAddress2(true)} className="text-sm text-green-700 hover:text-green-800 underline">
+              {t('addAddress2')}
+            </button>
+          </div>
+        )}
 
         {/* City */}
         <div>
@@ -193,7 +214,7 @@ export default function BillingInformationSection({
             value={formData.billing.city}
             onChange={onSyncedFieldChange}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.city'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              formErrors?.['billing.city'] ? 'ring-2 ring-red-500 bg-red-50' : ''
             }`}
             required
             autoComplete="address-level2"
@@ -216,7 +237,7 @@ export default function BillingInformationSection({
             placeholder={postcodeProps.placeholder}
             title={t('postcodeTitle')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.postcode'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              formErrors?.['billing.postcode'] ? 'ring-2 ring-red-500 bg-red-50' : ''
             }`}
             required
             autoComplete="postal-code"
@@ -234,7 +255,7 @@ export default function BillingInformationSection({
             value={formData.billing.country}
             onChange={(e) => onInputChange(e, 'billing')}
             className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-              formErrors?.['billing.country'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+              formErrors?.['billing.country'] ? 'ring-2 ring-red-500 bg-red-50' : ''
             }`}
             required
             autoComplete="country"

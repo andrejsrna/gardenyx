@@ -300,3 +300,18 @@ model Article {
   @@index([status])
   @@index([publishedAt])
 }
+
+model AbandonedCart {
+  id         String    @id @default(cuid())
+  token      String    @unique
+  email      String    @unique
+  locale     String    @default("sk")
+  items      Json // [{ id, variationId?, quantity }]
+  total      Decimal   @db.Decimal(10, 2)
+  remindedAt DateTime?
+  optedOutAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([remindedAt, updatedAt])
+}

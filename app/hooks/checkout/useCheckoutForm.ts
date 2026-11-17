@@ -8,14 +8,14 @@ import { updateShippingFromBilling } from '../../lib/checkout/utils';
 const INITIAL_FORM_DATA: FormData = {
   billing: INITIAL_BILLING_INFO,
   shipping: INITIAL_SHIPPING_INFO,
-  shipping_method: '',
-  payment_method: '',
+  shipping_method: 'packeta_pickup',
+  payment_method: 'cod',
   customer_note: '',
   meta_data: [],
   is_business: false,
   create_account: false,
   account_password: '',
-  consents: { termsAndPrivacy: false, marketing: true },
+  consents: { termsAndPrivacy: true, marketing: false },
 };
 
 export function useCheckoutForm() {
@@ -23,12 +23,17 @@ export function useCheckoutForm() {
   const [formErrors, setFormErrors] = useState<Record<string, string[] | undefined> | null>(null);
   const [sameAsShipping, setSameAsShipping] = useState(true);
 
+  const clearFieldError = useCallback((key: string) => {
+    setFormErrors(prev => (prev?.[key] ? { ...prev, [key]: undefined } : prev));
+  }, []);
+
   const handleInputChange = useCallback((
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     section: 'billing' | 'shipping' | 'consents' | 'root'
   ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
+    clearFieldError(section === 'root' ? name : `${section}.${name}`);
 
     setFormData(prev => {
       const newState = { ...prev };
@@ -68,10 +73,11 @@ export function useCheckoutForm() {
 
       return newState;
     });
-  }, [sameAsShipping]);
+  }, [sameAsShipping, clearFieldError]);
 
   const handleSyncedFieldChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    clearFieldError(`billing.${name}`);
     setFormData(prev => {
         const newBilling = { ...prev.billing, [name]: value };
         return {
@@ -80,7 +86,7 @@ export function useCheckoutForm() {
             ...(sameAsShipping && { shipping: updateShippingFromBilling(newBilling, prev.shipping) }),
         };
     });
-  }, [sameAsShipping]);
+  }, [sameAsShipping, clearFieldError]);
 
   const handleSameAsShippingChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;

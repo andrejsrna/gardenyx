@@ -29,6 +29,7 @@ export default async function LocaleLayout({
   const messages = (await import(`../../messages/${locale}.json`)).default;
   const headerList = await headers();
   const isAdminRoute = headerList.get('x-admin-route') === '1';
+  const isCheckoutRoute = headerList.get('x-checkout-route') === '1';
 
   return (
     <NextIntlClientProvider messages={messages}>
@@ -37,9 +38,9 @@ export default async function LocaleLayout({
           <CookieConsentProvider>
             {!isAdminRoute && <SalesSuspensionBanner />}
             {!isAdminRoute && <DeliveryCountryPopup />}
-            {!isAdminRoute && <Header locale={locale} />}
+            {!isAdminRoute && <Header locale={locale} minimal={isCheckoutRoute} />}
             {children}
-            {!isAdminRoute && <Footer />}
+            {!isAdminRoute && !isCheckoutRoute && <Footer />}
           </CookieConsentProvider>
         </CartProvider>
       </AuthProvider>

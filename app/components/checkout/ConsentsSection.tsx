@@ -3,7 +3,6 @@
 import { ChangeEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
-import { Link } from '../../../i18n/navigation';
 
 interface ConsentsSectionProps {
   formData: FormData;
@@ -16,7 +15,6 @@ interface ConsentsSectionProps {
 
 export default function ConsentsSection({
   formData,
-  formErrors,
   onInputChange,
 }: ConsentsSectionProps) {
   const t = useTranslations('checkout.consents');
@@ -25,48 +23,6 @@ export default function ConsentsSection({
       <h3 className="text-lg font-semibold mb-4">{t('title')}</h3>
       
       <div className="space-y-4">
-        {/* Combined Terms + Privacy */}
-        <div>
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              name="termsAndPrivacy"
-              checked={formData.consents.termsAndPrivacy}
-              onChange={(e) => onInputChange(e, 'consents')}
-              className={`mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500 ${
-                formErrors?.['consents.termsAndPrivacy'] ? 'border-red-500' : ''
-              }`}
-              required
-            />
-            <span className="text-sm text-gray-700">
-              {t('termsPrefix')}{' '}
-              <Link 
-                href="/obchodne-podmienky" 
-                className="text-green-600 hover:text-green-700 underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('termsLink')}
-              </Link>
-              {' '}{t('and')}{' '}
-              <Link 
-                href="/ochrana-osobnych-udajov" 
-                className="text-green-600 hover:text-green-700 underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('privacyLink')}
-              </Link>
-              {' '}<span className="text-red-500">*</span>
-            </span>
-          </label>
-          {formErrors?.['consents.termsAndPrivacy'] && (
-            <p className="mt-1 text-xs text-red-600">
-              {t('requiredError')}
-            </p>
-          )}
-        </div>
-
         {/* Marketing Consent */}
         <div>
           <label className="flex items-start gap-3 cursor-pointer">
@@ -84,9 +40,6 @@ export default function ConsentsSection({
         </div>
       </div>
       
-      <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-        <p className="text-xs text-gray-600"><span className="text-red-500">*</span> {t('requiredHint')}</p>
-      </div>
     </div>
   );
 } 

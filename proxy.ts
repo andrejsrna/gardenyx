@@ -369,6 +369,9 @@ export async function proxy(request: NextRequest) {
       if (isAdmin) {
         requestHeaders.set('x-admin-route', '1');
       }
+      if (/^\/(sk\/pokladna|en\/checkout|hu\/penztar)\/?$/.test(pathname)) {
+        requestHeaders.set('x-checkout-route', '1');
+      }
       response = intlRewriteTarget
         ? NextResponse.rewrite(intlRewriteTarget, { request: { headers: requestHeaders } })
         : NextResponse.next({ request: { headers: requestHeaders } });

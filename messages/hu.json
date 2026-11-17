@@ -11,7 +11,8 @@
     "contact": "Kapcsolat",
     "myAccount": "Fiókom",
     "hello": "Szia {name}",
-    "starterFertilizer": "Indító műtrágya"
+    "starterFertilizer": "Indító műtrágya",
+    "backToShop": "Vissza a vásárláshoz"
   },
   "blogIndex": {
     "title": "Trágyázási útmutatók és kerti tippek",
@@ -397,7 +398,8 @@
         "address": "Utcanév és házszám",
         "address2": "Utcanév, házszám, lakásszám",
         "city": "Pozsony"
-      }
+      },
+      "addAddress2": "+ Kiegészítő cím hozzáadása (lakás, emelet)"
     },
     "shippingInformation": {
       "title": "Szállítási cím",
@@ -456,7 +458,9 @@
       "passwordRequired": "A fiók létrehozásához jelszó szükséges",
       "packetaPointRequired": "Kérjük, válasszon Packeta átvételi pontot.",
       "termsRequired": "El kell fogadnia az általános szerződési feltételeket és az adatvédelmi tájékoztatót.",
-      "generic": "Űrlapellenőrzési hiba."
+      "generic": "Űrlapellenőrzési hiba.",
+      "missingFields": "Kérjük, töltse ki: {fields}",
+      "requiredField": "Kötelező mező"
     },
     "toasts": {
       "productAdded": "{name} hozzáadva a kosárhoz.",
@@ -544,7 +548,7 @@
       }
     },
     "consents": {
-      "title": "Hozzájárulások",
+      "title": "Újdonságok e-mailben",
       "termsPrefix": "Elfogadom a",
       "and": "és",
       "termsLink": "felhasználási feltételeket",
@@ -580,9 +584,12 @@
       "customerNotePlaceholder": "Bármilyen különleges utasítás a rendeléséhez...",
       "processingOrder": "A rendelés feldolgozása...",
       "salesSuspended": "Az értékesítés szünetel",
-      "completeOrder": "Rendelés befejezése • {total} €",
+      "completeOrder": "Fizetési kötelezettséggel járó megrendelés • {total} €",
       "sslEncryption": "SSL titkosítás",
-      "securePayment": "Biztonságos fizetés"
+      "securePayment": "Biztonságos fizetés",
+      "termsNotice": "A megrendelés elküldésével elfogadja a <terms>felhasználási feltételeket</terms>, és megerősíti, hogy megismerte az <privacy>adatvédelmi tájékoztatót</privacy>.",
+      "haveCoupon": "Van kuponkódom",
+      "mobileSummary": "Rendelés összesítése"
     }
   },
   "stripePayment": {

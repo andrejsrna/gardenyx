@@ -69,7 +69,7 @@ export default function ShippingInformationSection({
               value={formData.shipping.first_name}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.first_name'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.first_name'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required
               autoComplete="shipping given-name"
@@ -89,7 +89,7 @@ export default function ShippingInformationSection({
               value={formData.shipping.last_name}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.last_name'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.last_name'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required
               autoComplete="shipping family-name"
@@ -107,7 +107,7 @@ export default function ShippingInformationSection({
               value={formData.shipping.company}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.company'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.company'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               autoComplete="shipping organization"
             />
@@ -126,7 +126,7 @@ export default function ShippingInformationSection({
               value={formData.shipping.address_1}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.address_1'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.address_1'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required
               autoComplete="shipping street-address"
@@ -144,7 +144,7 @@ export default function ShippingInformationSection({
               value={formData.shipping.address_2 || ''}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.address_2'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.address_2'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               autoComplete="shipping address-line2"
             />
@@ -163,7 +163,7 @@ export default function ShippingInformationSection({
               value={formData.shipping.city}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.city'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.city'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required
               autoComplete="shipping address-level2"
@@ -186,7 +186,7 @@ export default function ShippingInformationSection({
               placeholder={postcodeProps.placeholder}
               title={t('postcodeTitle')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.postcode'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.postcode'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required
               autoComplete="shipping postal-code"
@@ -204,7 +204,7 @@ export default function ShippingInformationSection({
               value={formData.shipping.country}
               onChange={(e) => onInputChange(e, 'shipping')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['shipping.country'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['shipping.country'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required
               autoComplete="shipping country"

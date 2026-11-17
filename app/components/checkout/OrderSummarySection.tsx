@@ -10,6 +10,7 @@ import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
 import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
 import { useCart } from '../../context/CartContext';
 import CouponSection from '../CouponSection';
+import { Link } from '../../../i18n/navigation';
 
 interface CartItem {
   id: number;
@@ -128,9 +129,12 @@ export default function OrderSummarySection({
       </div>
 
       {/* Coupon section */}
-      <div className="mb-4">
-        <CouponSection />
-      </div>
+      <details className="mb-4" open={Boolean(appliedCoupon) || undefined}>
+        <summary className="cursor-pointer text-sm text-green-700 hover:text-green-800 underline list-none">{t('haveCoupon')}</summary>
+        <div className="mt-3">
+          <CouponSection />
+        </div>
+      </details>
 
       <div className="border-t pt-4 space-y-2">
         {/* Subtotal */}
@@ -224,11 +228,11 @@ export default function OrderSummarySection({
       <form onSubmit={onSubmit} className="mt-6">
         <button
           type="submit"
-          disabled={!isFormValid || isLoading || isSalesSuspended}
+          disabled={isLoading || isSalesSuspended}
           className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 ${
             isFormValid && !isLoading && !isSalesSuspended
               ? 'bg-green-600 hover:bg-green-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl'
-              : 'bg-gray-400 cursor-not-allowed'
+              : `bg-gray-400 ${isLoading || isSalesSuspended ? 'cursor-not-allowed' : 'cursor-pointer'}`
           }`}
         >
           {isLoading ? (
@@ -245,6 +249,12 @@ export default function OrderSummarySection({
             <span>{t('completeOrder', { total: total.toFixed(2) })}</span>
           )}
         </button>
+        <p className="mt-3 text-xs text-gray-500 text-center">
+          {t.rich('termsNotice', {
+            terms: (chunks) => <Link href="/obchodne-podmienky" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700">{chunks}</Link>,
+            privacy: (chunks) => <Link href="/ochrana-osobnych-udajov" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700">{chunks}</Link>,
+          })}
+        </p>
       </form>
       
       {/* Security badges */}

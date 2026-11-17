@@ -11,7 +11,8 @@
     "contact": "Contact",
     "myAccount": "My Account",
     "hello": "Hello {name}",
-    "starterFertilizer": "Starter fertilizer"
+    "starterFertilizer": "Starter fertilizer",
+    "backToShop": "Back to shop"
   },
   "blogIndex": {
     "title": "Fertilizer Guides & Garden Tips",
@@ -397,7 +398,8 @@
         "address": "Street name and house number",
         "address2": "Street name, house number, apartment number",
         "city": "Bratislava"
-      }
+      },
+      "addAddress2": "+ Add apartment, suite, floor"
     },
     "shippingInformation": {
       "title": "Shipping address",
@@ -456,7 +458,9 @@
       "passwordRequired": "Password is required to create an account",
       "packetaPointRequired": "Please select a Packeta pickup point.",
       "termsRequired": "You must agree to the terms and conditions and the privacy policy.",
-      "generic": "Form validation error."
+      "generic": "Form validation error.",
+      "missingFields": "Please fill in: {fields}",
+      "requiredField": "This field is required"
     },
     "toasts": {
       "productAdded": "{name} was added to the cart.",
@@ -544,7 +548,7 @@
       }
     },
     "consents": {
-      "title": "Consents",
+      "title": "News by e-mail",
       "termsPrefix": "I agree with the",
       "and": "and",
       "termsLink": "terms and conditions",
@@ -580,9 +584,12 @@
       "customerNotePlaceholder": "Any special instructions for your order...",
       "processingOrder": "Processing order...",
       "salesSuspended": "Sales suspended",
-      "completeOrder": "Complete order • {total} €",
+      "completeOrder": "Order with obligation to pay • {total} €",
       "sslEncryption": "SSL encryption",
-      "securePayment": "Secure payment"
+      "securePayment": "Secure payment",
+      "termsNotice": "By placing the order you agree to the <terms>terms and conditions</terms> and confirm that you have read the <privacy>privacy policy</privacy>.",
+      "haveCoupon": "I have a discount code",
+      "mobileSummary": "Order summary"
     }
   },
   "stripePayment": {

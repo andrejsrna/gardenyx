@@ -1,112 +1,34 @@
 import { NextResponse } from 'next/server';
-import * as SibApiV3Sdk from '@getbrevo/brevo';
-import { getSiteUrl, isMarketingAutomationEnabled } from '@/app/lib/automation/config';
-import { renderEmail, emailButton, infoNote } from '@/app/lib/email/template';
+import prisma from '@/app/lib/prisma';
+import { rateLimit } from '@/app/lib/utils/rateLimit';
+import { normalizeLocale, resolveItems, sanitizeItems, saveAbandonedCart } from '@/app/lib/cart/abandoned';
 
-function getBrevoClient() {
-  const apiKey = process.env.BREVO_API_KEY;
-  if (!apiKey) {
-    throw new Error('BREVO_API_KEY is not set in environment variables');
-  }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-  apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, apiKey);
-  return apiInstance;
-}
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image?: string;
-  sku?: string;
-  slug?: string;
-}
-
-interface AbandonedCart {
-  items: CartItem[];
-  totalPrice: number;
-  timestamp: string;
-  email: string;
-}
-
+/** Stores the cart for a delayed reminder (sent by the `abandoned` cron job), never e-mails right away. */
 export async function POST(request: Request) {
+  const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0]?.trim() || 'unknown';
   try {
-    if (!isMarketingAutomationEnabled()) {
-      return NextResponse.json({ status: 'disabled' });
-    }
-
-    const cart: AbandonedCart = await request.json();
-
-    if (!cart.email || !cart.items || cart.items.length === 0) {
-      return NextResponse.json(
-        { error: 'Invalid cart data' },
-        { status: 400 }
-      );
-    }
-
-    // Format cart items for email
-    const itemsList = cart.items
-      .map(item => `
-        <tr>
-          <td style="padding:10px;border:1px solid #e2e8f0;">${item.name}</td>
-          <td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">${item.quantity}x</td>
-          <td style="padding:10px;border:1px solid #e2e8f0;text-align:right;">${item.price.toFixed(2)} €</td>
-        </tr>
-      `)
-      .join('');
-
-    const siteUrl = getSiteUrl();
-
-    const content = `
-      <p style="margin:0 0 10px 0;color:#475569;">Váš košík stále čaká. Ak sa chcete vrátiť k objednávke, tu je rýchly prehľad:</p>
-      <table role="presentation" style="width:100%;border-collapse:collapse;margin:16px 0;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
-        <thead>
-          <tr style="background-color:#f8fafc;">
-            <th style="padding:10px;text-align:left;border:1px solid #e2e8f0;">Produkt</th>
-            <th style="padding:10px;text-align:center;border:1px solid #e2e8f0;">Množstvo</th>
-            <th style="padding:10px;text-align:right;border:1px solid #e2e8f0;">Cena</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${itemsList}
-          <tr>
-            <td colspan="2" style="padding:10px;font-weight:bold;border:1px solid #e2e8f0;">Celková suma:</td>
-            <td style="padding:10px;text-align:right;font-weight:bold;color:#515a45;border:1px solid #e2e8f0;">${cart.totalPrice.toFixed(2)} €</td>
-          </tr>
-        </tbody>
-      </table>
-      ${emailButton({ label: 'Dokončiť objednávku', url: `${siteUrl}/pokladna` })}
-      ${infoNote('Ak ste dostali tento email omylom alebo už máte objednané, stačí ho ignorovať.')}
-    `;
-
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.subject = 'Dokončite svoj nákup na GardenYX';
-    sendSmtpEmail.htmlContent = renderEmail({
-      title: 'Váš košík na vás čaká',
-      preheader: 'Dokončite svoj nákup na GardenYX',
-      content
-    });
-    sendSmtpEmail.sender = {
-      name: process.env.BREVO_SENDER_NAME || 'GardenYX',
-      email: process.env.BREVO_SENDER_EMAIL || 'noreply@gardenyx.eu',
-    };
-    sendSmtpEmail.to = [{ email: cart.email }];
-
-    // Send the email
-    const apiInstance = getBrevoClient();
-    await apiInstance.sendTransacEmail(sendSmtpEmail);
-
-    // Store the abandoned cart in your database here if needed
-    // await prisma.abandonedCart.create({ data: cart });
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Failed to process abandoned cart:', error);
-    return NextResponse.json(
-      { error: 'Failed to process abandoned cart' },
-      { status: 500 }
-    );
+    await rateLimit(ip, 'newsletter');
+  } catch {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
-} 
+
+  const body = await request.json().catch(() => null);
+  const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
+  const items = sanitizeItems(body?.items);
+  if (!EMAIL_RE.test(email) || email.length > 254 || items.length === 0) {
+    return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
+  }
+
+  const saved = await saveAbandonedCart(email, items, normalizeLocale(body?.locale));
+  return saved ? NextResponse.json({ success: true }) : NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
+}
+
+/** Restore link from the reminder e-mail: returns cart items for localStorage (never the e-mail). */
+export async function GET(request: Request) {
+  const token = new URL(request.url).searchParams.get('token') || '';
+  const cart = token ? await prisma.abandonedCart.findUnique({ where: { token } }) : null;
+  if (!cart) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  return NextResponse.json({ items: await resolveItems(sanitizeItems(cart.items), normalizeLocale(cart.locale)) });
+}

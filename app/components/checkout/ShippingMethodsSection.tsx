@@ -68,7 +68,7 @@ export default function ShippingMethodsSection({
   );
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div id="checkout-shipping-method" className="bg-white p-6 rounded-lg shadow-sm scroll-mt-24">
       <h2 className="text-xl font-semibold mb-2">{t('title')}</h2>
       {isPacketaDisabled && cartWeightKg !== null && (
         <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">

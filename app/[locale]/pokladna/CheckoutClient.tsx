@@ -26,7 +26,6 @@ import {
   RecommendedProducts,
   BillingInformationSection,
   ShippingInformationSection,
-  CreateAccountSection,
   ConsentsSection,
   ShippingMethodsSection,
   PaymentMethodsSection,
@@ -39,6 +38,30 @@ import { SHIPPING_VAT_RATE } from '../../lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
 import { updateShippingFromBilling, translateFieldName } from '../../lib/checkout/utils';
 import { useCheckoutForm } from '../../hooks/checkout';
+
+const REQUIRED_BILLING_FIELDS = [
+  ['email', 'email'],
+  ['phone', 'phone'],
+  ['first_name', 'firstName'],
+  ['last_name', 'lastName'],
+  ['address_1', 'address'],
+  ['city', 'city'],
+  ['postcode', 'postcode'],
+] as const;
+
+const SECTION_IDS: Record<string, string> = {
+  shipping_method: 'checkout-shipping-method',
+  payment_method: 'checkout-payment-method',
+};
+
+function focusCheckoutField(path: string) {
+  const el = document.getElementById(SECTION_IDS[path] ?? path.replace('.', '-'));
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement) {
+    el.focus({ preventScroll: true });
+  }
+}
 
 export default function CheckoutClient() {
   const tCart = useTranslations('cart');
@@ -313,6 +336,17 @@ export default function CheckoutClient() {
 
   // Form validation
   const validateForm = useCallback((): boolean => {
+    const missing = REQUIRED_BILLING_FIELDS.filter(([key]) => !String(formData.billing[key] ?? '').trim());
+    if (missing.length) {
+      setFormErrors(Object.fromEntries(missing.map(([key]) => [`billing.${key}`, [t('validation.requiredField')]])));
+      toast.error(t('validation.missingFields', {
+        fields: missing.map(([, label]) => t(`billingInformation.fields.${label}`)).join(', '),
+      }));
+      focusCheckoutField(`billing.${missing[0][0]}`);
+      return false;
+    }
+
+    let focusPath = '';
     try {
       const sanitizedData = {
         ...formData,
@@ -345,23 +379,30 @@ export default function CheckoutClient() {
 
       if (!sanitizedData.billing.phone || !/^\+\d{9,15}$/.test(sanitizedData.billing.phone)) {
         setPhoneError(t('validation.phoneFormat'));
+        toast.error(t('validation.phoneFormat'));
+        focusCheckoutField('billing.phone');
         return false;
       }
 
       if (formData.is_business) {
         if (!sanitizedData.billing.company?.trim()) {
+          focusPath = 'billing.company';
           throw new Error(t('validation.companyRequired'));
         }
         if (!sanitizedData.billing.ic?.trim()) {
+          focusPath = 'billing.ic';
           throw new Error(t('validation.icRequired'));
         }
         if (!sanitizedData.billing.dic?.trim()) {
+          focusPath = 'billing.dic';
           throw new Error(t('validation.dicRequired'));
         }
         if (!/^\d{8}$/.test(sanitizedData.billing.ic)) {
+          focusPath = 'billing.ic';
           throw new Error(t('validation.icDigits'));
         }
         if (!/^\d{10}$/.test(sanitizedData.billing.dic)) {
+          focusPath = 'billing.dic';
           throw new Error(t('validation.dicDigits'));
         }
       }
@@ -379,6 +420,7 @@ export default function CheckoutClient() {
       if (formData.shipping_method === 'packeta_pickup') {
         const hasPacketaPoint = formData.meta_data.some(item => item.key === '_packeta_point_id');
         if (!hasPacketaPoint) {
+          focusPath = 'shipping_method';
           throw new Error(t('validation.packetaPointRequired'));
         }
       }
@@ -405,8 +447,10 @@ export default function CheckoutClient() {
         const firstError = error.issues[0];
         const translatedField = translateFieldName(firstError.path.join('.'));
         toast.error(`${translatedField}: ${firstError.message}`);
+        focusCheckoutField(firstError.path.join('.'));
       } else {
         toast.error(error instanceof Error ? error.message : t('validation.generic'));
+        if (focusPath) focusCheckoutField(focusPath);
       }
       return false;
     }
@@ -571,10 +615,12 @@ export default function CheckoutClient() {
     formData.billing.last_name && 
     formData.billing.email && 
     formData.billing.phone && 
+    /^\+\d{9,15}$/.test(formData.billing.phone) &&
     formData.billing.address_1 && 
     formData.billing.city && 
     formData.billing.postcode && 
     formData.shipping_method && 
+    (formData.shipping_method !== 'packeta_pickup' || formData.meta_data.some(item => item.key === '_packeta_point_id')) &&
     formData.payment_method && 
     formData.consents.termsAndPrivacy &&
     !isSalesSuspendedClient()); // Add sales suspension check
@@ -643,24 +689,27 @@ export default function CheckoutClient() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Forms */}
             <div className="lg:col-span-2 space-y-6">
+              <details className="lg:hidden bg-white rounded-lg shadow-sm">
+                <summary className="flex justify-between items-center p-4 cursor-pointer font-semibold">
+                  <span>{t('summary.mobileSummary')} ({items.reduce((n, i) => n + i.quantity, 0)})</span>
+                  <span className="text-green-600">{finalTotal.toFixed(2)} €</span>
+                </summary>
+                <ul className="px-4 pb-4 space-y-1 text-sm text-gray-700">
+                  {items.map(item => (
+                    <li key={`${item.id}-${item.variationId ?? ''}`} className="flex justify-between gap-3">
+                      <span>{item.quantity}× {item.name}</span>
+                      <span className="shrink-0">{(item.price * item.quantity).toFixed(2)} €</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+
               <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mt-0.5 shrink-0 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
                 <span>{t.rich('deliveryDisclaimerSk', { strong: (chunks) => <strong>{chunks}</strong> })}</span>
               </div>
-
-              <RecommendedProducts
-                totalPrice={totalPrice}
-                recommendedProducts={[]}
-                onAddToCart={handleAddToCart}
-              />
-
-              <BusinessPurchaseSection
-                formData={formData}
-                formErrors={formErrors}
-                onInputChange={handleInputChange}
-              />
 
               <BillingInformationSection
                 formData={formData}
@@ -671,6 +720,12 @@ export default function CheckoutClient() {
                 onSyncedFieldChange={handleSyncedFieldChange}
                 onFormDataChange={setFormData}
                 setPhoneError={setPhoneError}
+              />
+
+              <BusinessPurchaseSection
+                formData={formData}
+                formErrors={formErrors}
+                onInputChange={handleInputChange}
               />
 
               <ShippingInformationSection
@@ -699,10 +754,10 @@ export default function CheckoutClient() {
                 onInputChange={handleInputChange}
               />
 
-              <CreateAccountSection
-                formData={formData}
-                formErrors={formErrors}
-                onInputChange={handleInputChange}
+              <RecommendedProducts
+                totalPrice={totalPrice}
+                recommendedProducts={[]}
+                onAddToCart={handleAddToCart}
               />
 
               <ConsentsSection

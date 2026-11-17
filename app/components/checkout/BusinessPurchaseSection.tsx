@@ -47,7 +47,7 @@ export default function BusinessPurchaseSection({
               value={formData.billing.company}
               onChange={(e) => onInputChange(e, 'billing')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['billing.company'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['billing.company'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required={formData.is_business}
               placeholder={t('placeholders.company')}
@@ -67,7 +67,7 @@ export default function BusinessPurchaseSection({
               value={formData.billing.ic || ''}
               onChange={(e) => onInputChange(e, 'billing')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['billing.ic'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['billing.ic'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required={formData.is_business}
               placeholder={t('placeholders.ic')}
@@ -88,7 +88,7 @@ export default function BusinessPurchaseSection({
               value={formData.billing.dic || ''}
               onChange={(e) => onInputChange(e, 'billing')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['billing.dic'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['billing.dic'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               required={formData.is_business}
               placeholder={t('placeholders.dic')}
@@ -109,7 +109,7 @@ export default function BusinessPurchaseSection({
               value={formData.billing.dic_dph || ''}
               onChange={(e) => onInputChange(e, 'billing')}
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 px-3 py-2 text-sm ${
-                formErrors?.['billing.dic_dph'] ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+                formErrors?.['billing.dic_dph'] ? 'ring-2 ring-red-500 bg-red-50' : ''
               }`}
               placeholder={t('placeholders.vatId')}
             />

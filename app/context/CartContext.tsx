@@ -395,19 +395,20 @@ export function CartProvider({children}: { children: React.ReactNode }) {
     }, [items, lastSavedCart]);
 
     const saveCartWithEmail = async (email: string) => {
-        if (items.length > 0) {
-            const currentSubtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-            const abandonedCart: AbandonedCart = {
-                items,
-                totalPrice: currentSubtotal,
-                timestamp: new Date().toISOString(),
-                email
-            };
-            try {
-                safeSetItem('abandonedCart', JSON.stringify(abandonedCart));
-            } catch (error) {
-                console.error('Failed to save abandoned cart:', error);
-            }
+        if (items.length === 0) return;
+        const locale = window.location.pathname.split('/')[1];
+        try {
+            await fetch('/api/cart/abandoned', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    locale,
+                    items: items.map(({ id, variationId, quantity }) => ({ id, variationId, quantity })),
+                }),
+            });
+        } catch (error) {
+            console.error('Failed to save abandoned cart:', error);
         }
     };
 

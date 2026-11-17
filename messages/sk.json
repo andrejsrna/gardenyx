@@ -11,7 +11,8 @@
     "contact": "Kontakt",
     "myAccount": "Môj účet",
     "hello": "Ahoj {name}",
-    "starterFertilizer": "Štartovacie hnojivo"
+    "starterFertilizer": "Štartovacie hnojivo",
+    "backToShop": "Späť k nákupu"
   },
   "blogIndex": {
     "title": "Návody na hnojenie a tipy do záhrady",
@@ -397,7 +398,8 @@
         "address": "Názov ulice a číslo domu",
         "address2": "Názov ulice, číslo domu, číslo bytu",
         "city": "Bratislava"
-      }
+      },
+      "addAddress2": "+ Pridať doplnkovú adresu (byt, poschodie)"
     },
     "shippingInformation": {
       "title": "Adresa doručenia",
@@ -456,7 +458,9 @@
       "passwordRequired": "Heslo je povinné pre vytvorenie účtu",
       "packetaPointRequired": "Prosím, vyberte výdajné miesto Packeta.",
       "termsRequired": "Je potrebné súhlasiť s obchodnými podmienkami a zásadami ochrany osobných údajov.",
-      "generic": "Chyba pri validácii formulára."
+      "generic": "Chyba pri validácii formulára.",
+      "missingFields": "Vyplňte: {fields}",
+      "requiredField": "Toto pole je povinné"
     },
     "toasts": {
       "productAdded": "{name} bol pridaný do košíka.",
@@ -544,7 +548,7 @@
       }
     },
     "consents": {
-      "title": "Súhlasy",
+      "title": "Novinky e-mailom",
       "termsPrefix": "Súhlasím s",
       "and": "a",
       "termsLink": "obchodnými podmienkami",
@@ -580,9 +584,12 @@
       "customerNotePlaceholder": "Akékoľvek špeciálne pokyny pre vašu objednávku...",
       "processingOrder": "Objednávka sa spracúva...",
       "salesSuspended": "Predaje pozastavené",
-      "completeOrder": "Dokončiť objednávku • {total} €",
+      "completeOrder": "Objednať s povinnosťou platby • {total} €",
       "sslEncryption": "SSL šifrovanie",
-      "securePayment": "Bezpečná platba"
+      "securePayment": "Bezpečná platba",
+      "termsNotice": "Odoslaním objednávky súhlasíte s <terms>obchodnými podmienkami</terms> a potvrdzujete, že ste sa oboznámili so <privacy>zásadami ochrany osobných údajov</privacy>.",
+      "haveCoupon": "Mám zľavový kód",
+      "mobileSummary": "Súhrn objednávky"
     }
   },
   "stripePayment": {

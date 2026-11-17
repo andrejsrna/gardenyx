@@ -44,7 +44,7 @@ export default function PaymentMethodsSection({
   ];
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div id="checkout-payment-method" className="bg-white p-6 rounded-lg shadow-sm scroll-mt-24">
       <h2 className="text-xl font-semibold mb-4">{t('title')}</h2>
       
       <div className="space-y-3">
