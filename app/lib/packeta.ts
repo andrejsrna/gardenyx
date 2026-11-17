@@ -61,8 +61,7 @@ async function calculateTotalWeight(items: OrderItemWithProduct[]): Promise<numb
 
 const config: PacketaShopConfig = {
   db: prisma,
-  // Sent as `eshop_id` since launch; keep it until the sender setup in client.packeta.com is checked.
-  senderAttributes: { eshop_id: process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY' },
+  // Own Packeta account with a single sender (JOINA Garden), so no `eshop` label is sent.
   homeCarrierIds: PACKETA_HOME_CARRIER_IDS,
   homeCountryCase: 'lower',
   weightKg: items => calculateTotalWeight(items.map(item => ({ productId: BigInt(item.productId), variationId: item.variationId == null ? null : BigInt(item.variationId), quantity: item.quantity }))),

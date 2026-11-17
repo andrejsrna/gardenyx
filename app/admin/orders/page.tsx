@@ -1,15 +1,13 @@
 import Link from 'next/link';
-import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import prisma from '@/app/lib/prisma';
-import { fetchPacketaStatus, resolvePaymentStatusAfterDelivery, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@eshop-core/packeta/status';
+import { hasPacketaCredentials } from '@eshop-core/packeta/status';
+import { syncOrderPacketaStatuses } from '@/app/lib/packeta-sync';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
-import { sendReturnNoticeEmail } from '@/app/lib/email/order-confirmation';
 import { RecoverOrderForm } from '@/app/admin/orders/RecoverOrderForm';
 
 export const dynamic = 'force-dynamic';
-
-const RETURN_NOTIFY_AFTER = process.env.RETURN_NOTIFY_AFTER ? new Date(process.env.RETURN_NOTIFY_AFTER) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
 type Order = Prisma.OrderGetPayload<{ include: { addresses: true; meta: true } }>;
 
@@ -27,103 +25,10 @@ const formatDate = (value?: string | Date) => {
 
 const getMetaValue = (order: Order, key: string) => order.meta?.find(m => m.key === key)?.value || null;
 
-const upsertLocalMeta = (order: Order, key: string, value: string) => {
-  const existing = order.meta.find(m => m.key === key);
-  if (existing) {
-    existing.value = value;
-    return;
-  }
-  order.meta.push({
-    id: `local_${order.id}_${key}`,
-    orderId: order.id,
-    key,
-    value,
-    json: null
-  });
-};
-
-async function ensurePacketaStatuses(orders: Order[]) {
-  if (!hasPacketaCredentials()) return;
-
-  const ordersToSync = orders.filter(order =>
-    getMetaValue(order, '_packeta_packet_id') &&
-    !['completed', 'cancelled'].includes(order.status)
-  );
-
-  for (const order of ordersToSync) {
-    const packetId = getMetaValue(order, '_packeta_packet_id');
-    if (!packetId) continue;
-
-    try {
-      const status = await fetchPacketaStatus(packetId);
-      const newStatus = mapPacketaStatusToOrderStatus(status.code);
-      const billingEmail = order.addresses?.find(a => a.type === 'BILLING')?.email || null;
-
-      await prisma.$transaction(async (tx) => {
-        const nextPaymentStatus = resolvePaymentStatusAfterDelivery(newStatus, order.paymentMethod, order.paymentStatus);
-        await tx.order.update({
-          where: { id: order.id },
-          data: {
-            status: newStatus,
-            paymentStatus: nextPaymentStatus
-          }
-        });
-
-        const existingCode = await tx.orderMeta.findFirst({
-          where: { orderId: order.id, key: '_packeta_status_code' }
-        });
-        if (existingCode) {
-          await tx.orderMeta.update({ where: { id: existingCode.id }, data: { value: String(status.code) } });
-        } else {
-          await tx.orderMeta.create({ data: { orderId: order.id, key: '_packeta_status_code', value: String(status.code) } });
-        }
-
-        const existingText = await tx.orderMeta.findFirst({
-          where: { orderId: order.id, key: '_packeta_status_text' }
-        });
-        if (existingText) {
-          await tx.orderMeta.update({ where: { id: existingText.id }, data: { value: status.text } });
-        } else {
-          await tx.orderMeta.create({ data: { orderId: order.id, key: '_packeta_status_text', value: status.text } });
-        }
-      });
-
-      order.status = newStatus;
-      order.paymentStatus = resolvePaymentStatusAfterDelivery(newStatus, order.paymentMethod, order.paymentStatus);
-      upsertLocalMeta(order, '_packeta_status_code', String(status.code));
-      upsertLocalMeta(order, '_packeta_status_text', status.text);
-
-      if (
-        billingEmail &&
-        newStatus === OrderStatus.cancelled &&
-        order.paymentMethod !== 'cod' &&
-        new Date(order.createdAt) >= RETURN_NOTIFY_AFTER
-      ) {
-        const alreadyNotified = order.meta.find(m => m.key === '_return_notified_at');
-        if (!alreadyNotified) {
-          try {
-            const fullOrder = await prisma.order.findUnique({
-              where: { id: order.id },
-              include: { items: true, addresses: true }
-            });
-            if (fullOrder) {
-              await sendReturnNoticeEmail(fullOrder, billingEmail);
-              const now = new Date().toISOString();
-              await prisma.orderMeta.create({
-                data: { orderId: order.id, key: '_return_notified_at', value: now }
-              });
-              upsertLocalMeta(order, '_return_notified_at', now);
-            }
-          } catch (err) {
-            console.warn('[admin packeta return email] failed', err);
-          }
-        }
-      }
-    } catch (error) {
-      console.warn(`[admin packeta sync] failed for order ${order.id}`, error);
-    }
-  }
-}
+// Orders on this page whose Packeta status should be refreshed before rendering.
+const ordersToSync = (orders: Order[]) => orders
+  .filter(order => getMetaValue(order, '_packeta_packet_id') && !['completed', 'cancelled'].includes(order.status))
+  .map(order => order.id);
 
 async function deleteOrderAction(formData: FormData) {
   'use server';
@@ -146,7 +51,7 @@ export default async function OrdersPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const currentPage = Math.max(1, Number(params?.page) || 1);
 
-  const [orders, total] = await Promise.all([
+  const loadPage = () => Promise.all([
     prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
       take: perPage,
@@ -156,7 +61,9 @@ export default async function OrdersPage({ searchParams }: PageProps) {
     prisma.order.count()
   ]);
 
-  await ensurePacketaStatuses(orders);
+  let [orders, total] = await loadPage();
+  const toSync = hasPacketaCredentials() ? ordersToSync(orders) : [];
+  if (toSync.length && (await syncOrderPacketaStatuses(toSync)).updated) [orders, total] = await loadPage();
 
   const totalPages = Math.max(1, Math.ceil(total / perPage));
 

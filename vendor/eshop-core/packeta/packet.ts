@@ -42,8 +42,8 @@ export interface PacketaDb {
 
 export type PacketaShopConfig = {
   db: PacketaDb;
-  /** Sender fields merged into packetAttributes, e.g. `{ eshop: 'MYSHOP' }` (client.packeta.com/senders). */
-  senderAttributes: Record<string, string>;
+  /** Sender label (`eshop`), needed only when the Packeta account has several senders. */
+  sender?: string;
   /** Case of the `country` attribute sent for home delivery (default upper). */
   homeCountryCase?: 'upper' | 'lower';
   /** Home-delivery carrier id by upper-case country code; the first entry is the fallback. */
@@ -98,7 +98,7 @@ export async function createPacketaPacketForOrder(
     value: total,
     currency: order.currency || 'EUR',
     weight: String(await config.weightKg(order.items)),
-    ...config.senderAttributes,
+    eshop: config.sender,
     cod: order.paymentMethod === 'cod' ? total : undefined,
   };
 
