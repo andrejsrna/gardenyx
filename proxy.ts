@@ -322,7 +322,7 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    if (isAdmin) {
+    if (isAdmin || needsAdminApiAuth(request)) {
       const adminAuthResponse = requireAdminAuth(request);
       if (adminAuthResponse) {
         return adminAuthResponse;
@@ -432,6 +432,18 @@ function isValidFbc(value: string): boolean {
 
 function isAdminPath(pathname: string): boolean {
   return pathname.startsWith(ADMIN_PATH_PREFIX);
+}
+
+// These /api/admin routes check the automation token themselves (cron, n8n, CouponsClient),
+// so dashboard Basic auth is skipped only when such a token is sent. Everything else under
+// /api/admin (invoice exports, Packeta labels, uploads) requires the dashboard login.
+const TOKEN_AUTHENTICATED_ADMIN_API = /^\/api\/admin\/(coupons|orders\/[^/]+\/resend|recover-order|reactivation\/test|feature-flags\/reactivation)$/;
+
+function needsAdminApiAuth(request: NextRequest): boolean {
+  const { pathname, searchParams } = request.nextUrl;
+  if (!pathname.startsWith('/api/admin/')) return false;
+  if (!TOKEN_AUTHENTICATED_ADMIN_API.test(pathname)) return true;
+  return !(request.headers.get('x-admin-token') || searchParams.get('token'));
 }
 
 function requireAdminAuth(request: NextRequest): NextResponse | null {
