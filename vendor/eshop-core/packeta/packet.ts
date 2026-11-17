@@ -98,7 +98,7 @@ export async function createPacketaPacketForOrder(
     value: total,
     currency: order.currency || 'EUR',
     weight: String(await config.weightKg(order.items)),
-    eshop: config.sender,
+    ...(config.sender ? { eshop: config.sender } : {}),
     cod: order.paymentMethod === 'cod' ? total : undefined,
   };
 
