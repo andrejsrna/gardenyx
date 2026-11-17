@@ -1,23 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
 
 const STORAGE_KEY = 'gardenyx_delivery_popup_seen';
+const noSubscription = () => () => {};
 
 export default function DeliveryCountryPopup() {
   const t = useTranslations('deliveryPopup');
-  const [visible, setVisible] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return !localStorage.getItem(STORAGE_KEY);
-  });
+  // Server snapshot is "not seen yet = hidden", so hydration matches the server HTML;
+  // reading localStorage during the first render made React discard and re-render the whole page.
+  const unseen = useSyncExternalStore(noSubscription, () => !localStorage.getItem(STORAGE_KEY), () => false);
+  const [closed, setClosed] = useState(false);
 
   function close() {
     localStorage.setItem(STORAGE_KEY, '1');
-    setVisible(false);
+    setClosed(true);
   }
 
-  if (!visible) return null;
+  if (!unseen || closed) return null;
 
   return (
     <div

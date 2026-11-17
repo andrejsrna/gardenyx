@@ -3,6 +3,7 @@
 import { createContext, useContext, useSyncExternalStore } from 'react';
 import {
   getCookieConsentSnapshot,
+  getServerCookieConsentSnapshot,
   hasConsentFor,
   subscribeToCookieConsentChanges,
 } from '../components/CookieConsentBanner';
@@ -25,7 +26,7 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
   const { consent, details: consentDetails } = useSyncExternalStore(
     subscribeToCookieConsentChanges,
     getCookieConsentSnapshot,
-    getCookieConsentSnapshot,
+    getServerCookieConsentSnapshot,
   );
 
   const value: CookieConsentContextType = {

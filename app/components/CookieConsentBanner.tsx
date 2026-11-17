@@ -158,6 +158,9 @@ export const getCookieConsentSnapshot = (): ConsentSnapshot => {
   return cachedConsentSnapshot;
 };
 
+/** Server/hydration snapshot: no consent known, so hydration matches the server HTML. */
+export const getServerCookieConsentSnapshot = (): ConsentSnapshot => EMPTY_CONSENT_SNAPSHOT;
+
 export const subscribeToCookieConsentChanges = (onStoreChange: () => void) => {
   if (typeof window === 'undefined') {
     return () => undefined;
@@ -180,7 +183,7 @@ export default function CookieConsentBanner() {
   const { consent, details, isSeznamBrowser } = useSyncExternalStore(
     subscribeToCookieConsentChanges,
     getCookieConsentSnapshot,
-    getCookieConsentSnapshot,
+    getServerCookieConsentSnapshot,
   );
 
   const privacyHref =
