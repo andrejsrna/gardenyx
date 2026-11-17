@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { safeRemoveItem, safeSetItem } from '@/app/lib/utils/safe-local-storage';
+import { safeRemoveItem, safeSetItem } from '@eshop-core/utils/safe-local-storage';
 
 const CHECKOUT_PATH: Record<string, string> = { sk: '/sk/pokladna', en: '/en/checkout', hu: '/hu/penztar' };
 const SHOP_PATH: Record<string, string> = { sk: '/sk/kupit', en: '/en/shop', hu: '/hu/vasarlas' };

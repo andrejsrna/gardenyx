@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/app/lib/stripe';
-import { isSalesSuspended, getSalesSuspensionMessage } from '@/app/lib/utils/sales-suspension';
+import { isSalesSuspended, getSalesSuspensionMessage } from '@eshop-core/utils/sales-suspension';
 import prisma from '../../../lib/prisma';
 import { getProductsByIds } from '@/app/lib/products';
 // Emails + Packeta are handled by /api/orders finalizeOrder step.

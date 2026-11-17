@@ -10,7 +10,7 @@ import Posthog from './components/Posthog';
 import FacebookPixel from './components/FacebookPixel';
 import OrganizationSchema from './components/seo/OrganizationSchema';
 import WebSiteSchema from './components/seo/WebSiteSchema';
-import { isSalesSuspended, getSalesSuspensionMessage } from './lib/utils/sales-suspension';
+import { isSalesSuspended, getSalesSuspensionMessage } from '@eshop-core/utils/sales-suspension';
 import { GoogleTagManagerHead, GoogleTagManagerBody } from "./components/GoogleTagManager";
 import Loading from './loading';
 import "./globals.css";

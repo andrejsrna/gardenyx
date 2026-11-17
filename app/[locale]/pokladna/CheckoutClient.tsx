@@ -12,10 +12,10 @@ import StripePayment from '../../components/StripePayment';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useCookieConsent } from '../../context/CookieConsentContext';
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../../lib/utils/sales-suspension';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
 
-import { validatePassword } from '../../lib/utils/password';
-import { sanitizeInput, sanitizePhone, sanitizePostcode } from '../../lib/utils/sanitize';
+import { validatePassword } from '@eshop-core/utils/password';
+import { sanitizeInput, sanitizePhone, sanitizePostcode } from '@eshop-core/utils/sanitize';
 import { checkoutFormSchema } from '../../lib/validations/checkout';
 import { createOrder } from '../../lib/orders';
 import type { Product } from '../../lib/content-types';

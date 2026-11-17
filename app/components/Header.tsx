@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import CartButton from './CartButton';
-import { safeGetItem } from '../lib/utils/safe-local-storage';
+import { safeGetItem } from '@eshop-core/utils/safe-local-storage';
 import { useTranslations } from 'next-intl';
 import { Link } from '../../i18n/navigation';
 

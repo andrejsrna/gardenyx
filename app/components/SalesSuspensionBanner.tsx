@@ -1,6 +1,6 @@
 'use client';
 
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
 
 interface SalesSuspensionBannerProps {
   className?: string;

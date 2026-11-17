@@ -5,7 +5,7 @@ import { resetCookieConsentValue } from 'react-cookie-consent';
 import { deleteCookie } from 'cookies-next';
 import { FormEvent, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { safeRemoveItem } from '../lib/utils/safe-local-storage';
+import { safeRemoveItem } from '@eshop-core/utils/safe-local-storage';
 import { Link } from '../../i18n/navigation';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -4,7 +4,7 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useTranslations } from 'next-intl';
 import type { FormData } from '../../lib/checkout/types';
-import { sanitizePhone } from '../../lib/utils/sanitize';
+import { sanitizePhone } from '@eshop-core/utils/sanitize';
 import { SUPPORTED_COUNTRIES } from '../../lib/checkout/constants';
 
 function getPostcodeProps(country: string) {

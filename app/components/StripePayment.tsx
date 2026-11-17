@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { usePaymentStore } from '../stores/paymentStore';
 
 import { tracking } from '../lib/tracking';
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
 
 
 const logPaymentEvent = (type: string, data: Record<string, unknown>) => {

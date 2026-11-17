@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { useCart } from '../context/CartContext'; // Adjust path if necessary
 import type { Product } from '../lib/content-types'; // Adjust path if necessary
 import { tracking } from '../lib/tracking';
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
 import { Link } from '../../i18n/navigation';
 
 interface ProductCardProps {

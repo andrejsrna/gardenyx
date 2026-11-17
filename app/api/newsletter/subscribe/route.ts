@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '../../../lib/prisma';
 import { upsertBrevoContact } from '../../../lib/newsletter/brevo';
-import { rateLimit } from '../../../lib/utils/rateLimit';
+import { rateLimit } from '@eshop-core/utils/rateLimit';
 
 const subscribeSchema = z.object({
   email: z.string().email(),

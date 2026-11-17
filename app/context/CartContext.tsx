@@ -4,8 +4,8 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { toast } from 'sonner';
 import { tracking } from '../lib/tracking';
 import { trackConversion, reportAddToCartConversion } from '../components/GoogleAds';
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '../lib/utils/sales-suspension';
-import { safeGetItem, safeRemoveItem, safeSetItem } from '../lib/utils/safe-local-storage';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
+import { safeGetItem, safeRemoveItem, safeSetItem } from '@eshop-core/utils/safe-local-storage';
 
 interface CartItem {
     id: number;

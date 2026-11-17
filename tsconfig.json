@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@eshop-core/*": [
+        "./vendor/eshop-core/*"
       ]
     }
   },

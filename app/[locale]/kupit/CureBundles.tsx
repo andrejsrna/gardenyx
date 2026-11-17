@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useCart } from '@/app/context/CartContext';
 import { tracking } from '@/app/lib/tracking';
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@/app/lib/utils/sales-suspension';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
 
 const CAPSULES_ID = 47;
 const GEL_ID = 669;

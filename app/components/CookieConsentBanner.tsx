@@ -4,7 +4,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import CookieConsent, { getCookieConsentValue } from 'react-cookie-consent';
-import { safeGetItem } from '../lib/utils/safe-local-storage';
+import { safeGetItem } from '@eshop-core/utils/safe-local-storage';
 
 type ConsentDetails = {
   necessary: boolean;

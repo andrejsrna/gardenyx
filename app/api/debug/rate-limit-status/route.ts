@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRateLimitStatus } from '@/app/lib/utils/rateLimit';
+import { getRateLimitStatus } from '@eshop-core/utils/rateLimit';
 
 export async function GET(request: NextRequest) {
   // Only allow in development or with proper auth

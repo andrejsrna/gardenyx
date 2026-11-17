@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { rateLimit } from './app/lib/utils/rateLimit';
+import { rateLimit } from '@eshop-core/utils/rateLimit';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 

@@ -3,7 +3,7 @@ import { isAutomationAuthorized } from '@/app/lib/automation/config';
 import * as packetaHandler from './packeta/route';
 import * as finalizeHandler from './finalize/route';
 import * as newsletterWeeklyHandler from './newsletter-weekly/route';
-import { runAbandonedCartJob } from '@/app/lib/cart/abandoned-job';
+import { abandonedCart } from '@/app/lib/cart/abandoned';
 
 export async function POST(request: Request) {
   if (!isAutomationAuthorized(request)) {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         return;
       }
       if (key === 'abandoned') {
-        results.push({ job: key, status: 200, data: await runAbandonedCartJob() });
+        results.push({ job: key, status: 200, data: await abandonedCart.runJob() });
         return;
       }
       results.push({ job: key, status: 400, data: { error: 'Unknown job' } });

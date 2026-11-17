@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '../../../../i18n/navigation';
 import { useCart } from '@/app/context/CartContext';
 import type { Product } from '@/app/lib/content-types';
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@/app/lib/utils/sales-suspension';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
 
 interface Props {
   product: Product;

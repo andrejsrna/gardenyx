@@ -7,7 +7,7 @@ import type { FormData } from '../../lib/checkout/types';
 
 import { PRODUCT_VAT_PERCENT, PRODUCT_VAT_RATE, SHIPPING_VAT_PERCENT, SHIPPING_VAT_RATE } from '../../lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
-import { isSalesSuspendedClient } from '../../lib/utils/sales-suspension';
+import { isSalesSuspendedClient } from '@eshop-core/utils/sales-suspension';
 import { useCart } from '../../context/CartContext';
 import CouponSection from '../CouponSection';
 import { Link } from '../../../i18n/navigation';

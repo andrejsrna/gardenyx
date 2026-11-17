@@ -9,7 +9,7 @@ import { tracking } from '@/app/lib/tracking';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { ShoppingCart, Minus, Plus } from 'lucide-react';
-import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@/app/lib/utils/sales-suspension';
+import { isSalesSuspendedClient, getSalesSuspensionMessageClient } from '@eshop-core/utils/sales-suspension';
 
 interface AddToCartButtonProps {
   product: Product;

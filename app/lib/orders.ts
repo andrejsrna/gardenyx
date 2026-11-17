@@ -1,4 +1,4 @@
-import { getCsrfToken } from './utils/csrf';
+import { getCsrfToken } from '@eshop-core/utils/csrf';
 import type { Product } from './content-types';
 
 export interface OrderLineItem {
