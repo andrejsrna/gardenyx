@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createHash } from 'crypto';
-import { Builder, Parser } from 'xml2js';
 import prisma from '@/app/lib/prisma';
 import { getStoredOrderItemIds, isPrismaIntegerOverflowError, withSourceOrderItemIdsInMeta } from '@/app/lib/orders/item-id-storage';
 import { toJsonSafe } from '@/app/lib/utils/json';
@@ -14,7 +13,6 @@ import { taxFromGross, taxFromNet } from '@/app/lib/pricing/math';
 import { getIronSession } from 'iron-session';
 import { sessionConfig } from '@/app/lib/config/session';
 import type { SessionData } from '@/app/lib/config/session';
-import { calculateTotalWeight } from '@/app/lib/packeta';
 import { getPacketaShippingQuote } from '@/app/lib/checkout/packeta-shipping';
 
 interface PacketaResponse {
@@ -92,13 +90,6 @@ interface OrderData {
 
 type OrderWithRelations = Prisma.OrderGetPayload<{ include: { items: true; addresses: true; meta: true } }>;
 
-// logBrevoFailure removed: finalizeOrder handles email error logging now.
-
-const PACKETA_API_URL = 'https://www.zasilkovna.cz/api/rest';
-const PACKETA_API_PASSWORD = process.env.PACKETA_API_SECRET;
-const PACKETA_CARRIER_ID = '131';
-const PACKETA_ESHOP_ID = process.env.PACKETA_ESHOP_ID || 'FITDOPLNKY';
-
 function normalizePacketaHomeAddress(shipping: OrderData['shipping']) {
   const address1 = (shipping.address_1 || '').trim();
   const address2 = (shipping.address_2 || '').trim();
@@ -140,132 +131,6 @@ async function findExistingOrder(idempotencyKey: string) {
       meta: true
     }
   });
-}
-
-function parseAddress(addressLine: string): { street: string; houseNumber: string } {
-  if (!addressLine) {
-    return { street: '', houseNumber: '' };
-  }
-  const match = addressLine.match(/^(.*?)\s*([\d/A-Za-z-]+)$/);
-  if (match && match[2] && /\d/.test(match[2])) {
-    const street = (match[1] || '').trim();
-    const houseNumber = match[2].trim();
-    return { street, houseNumber };
-  }
-  return { street: addressLine.trim(), houseNumber: '' };
-}
-
-/** Reserved for future Packeta integration from order creation flow */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- keep for potential use
-async function createPacketaPacket(orderData: OrderData, order: OrderWithRelations) {
-  if (!PACKETA_API_PASSWORD) {
-    throw new Error('Missing Packeta API Password');
-  }
-  const isHomeDelivery = orderData.shipping_method === 'packeta_home';
-
-  const packetAttributes: Record<string, string | undefined> = {
-    number: order.orderNumber.toString(),
-    name: orderData.shipping.first_name,
-    surname: orderData.shipping.last_name,
-    email: orderData.billing.email,
-    phone: orderData.billing.phone.replace(/[^\d]/g, ''),
-    value: order.total.toString(),
-    currency: order.currency,
-    weight: (await calculateTotalWeight(orderData.line_items.map(li => ({
-      productId: BigInt(li.product_id),
-      variationId: li.variation_id ? BigInt(li.variation_id) : null,
-      quantity: li.quantity,
-    })))).toString(),
-    eshop_id: PACKETA_ESHOP_ID,
-    cod: orderData.payment_method === 'cod' ? order.total.toString() : undefined
-  };
-
-  if (isHomeDelivery) {
-    let addressLine = orderData.shipping.address_1;
-    let parsed = parseAddress(addressLine);
-    if (!parsed.street && orderData.shipping.address_2) {
-      addressLine = orderData.shipping.address_2;
-      parsed = parseAddress(addressLine);
-    }
-    const { street, houseNumber } = parsed;
-    if (!street) {
-      throw new Error(`Invalid address format for home delivery (missing street): ${addressLine}`);
-    }
-    if (!houseNumber) {
-      logError('Packeta Address Warning', {
-        error: {
-          message: `Address '${addressLine}' parsed without house number. Sending empty houseNumber.`,
-          parsedStreet: street,
-          parsedHouseNumber: houseNumber,
-        },
-        orderId: order.id,
-        timestamp: new Date().toISOString()
-      });
-    }
-    Object.assign(packetAttributes, {
-      addressId: PACKETA_CARRIER_ID,
-      street,
-      houseNumber,
-      city: orderData.shipping.city,
-      zip: orderData.shipping.postcode.replace(/\s/g, '')
-    });
-  } else {
-    const pointId = orderData.meta_data?.find(m => m.key === '_packeta_point_id')?.value;
-    if (!pointId) {
-      throw new Error('Missing Packeta point ID for pickup delivery');
-    }
-    Object.assign(packetAttributes, {
-      addressId: pointId
-    });
-  }
-
-  const xmlData = {
-    createPacket: {
-      apiPassword: PACKETA_API_PASSWORD,
-      packetAttributes
-    }
-  };
-
-  const builder = new Builder({
-    renderOpts: { pretty: true, indent: '  ' },
-    xmldec: { version: '1.0', encoding: 'UTF-8' }
-  });
-  const xmlRequest = builder.buildObject(xmlData);
-
-  const response = await fetch(PACKETA_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/xml',
-      'Accept': 'application/xml'
-    },
-    body: xmlRequest
-  });
-
-  const responseText = await response.text();
-
-  if (!response.ok) {
-    throw new Error(`Failed to create Packeta packet: ${response.statusText}. Response: ${responseText}`);
-  }
-
-  const parser = new Parser({ explicitArray: false });
-  const result = await parser.parseStringPromise(responseText) as PacketaResponse;
-
-  if (result.response?.status !== 'ok') {
-    throw new Error(result.response?.message || `Failed to create Packeta packet: ${result.response?.status}`);
-  }
-  if (!result.response.result) {
-    throw new Error('Missing result data in Packeta response');
-  }
-
-  await prisma.orderMeta.createMany({
-    data: [
-      { orderId: order.id, key: '_packeta_packet_id', value: result.response.result.id },
-      { orderId: order.id, key: '_packeta_barcode', value: result.response.result.barcode },
-      { orderId: order.id, key: '_packeta_barcode_text', value: result.response.result.barcodeText }
-    ]
-  });
-
-  return result.response.result;
 }
 
 function toDecimal(value: number | string | undefined, fallback = 0) {

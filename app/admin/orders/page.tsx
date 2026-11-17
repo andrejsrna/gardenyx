@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import prisma from '@/app/lib/prisma';
-import { fetchPacketaStatus, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
+import { fetchPacketaStatus, resolvePaymentStatusAfterDelivery, hasPacketaCredentials, mapPacketaStatusToOrderStatus } from '@eshop-core/packeta/status';
 import { statusClass, statusLabels } from '@/app/admin/orders/constants';
 import { sendReturnNoticeEmail } from '@/app/lib/email/order-confirmation';
 import { RecoverOrderForm } from '@/app/admin/orders/RecoverOrderForm';
@@ -10,15 +10,6 @@ import { RecoverOrderForm } from '@/app/admin/orders/RecoverOrderForm';
 export const dynamic = 'force-dynamic';
 
 const RETURN_NOTIFY_AFTER = process.env.RETURN_NOTIFY_AFTER ? new Date(process.env.RETURN_NOTIFY_AFTER) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
-const resolvePaymentStatus = (newStatus: OrderStatus, paymentMethod: string, current: PaymentStatus) => {
-  if (newStatus === OrderStatus.completed) return PaymentStatus.paid;
-  if (newStatus === OrderStatus.cancelled) {
-    if (paymentMethod === 'cod') return PaymentStatus.failed;
-    return PaymentStatus.refunded;
-  }
-  return current;
-};
 
 type Order = Prisma.OrderGetPayload<{ include: { addresses: true; meta: true } }>;
 
@@ -69,7 +60,7 @@ async function ensurePacketaStatuses(orders: Order[]) {
       const billingEmail = order.addresses?.find(a => a.type === 'BILLING')?.email || null;
 
       await prisma.$transaction(async (tx) => {
-        const nextPaymentStatus = resolvePaymentStatus(newStatus, order.paymentMethod, order.paymentStatus);
+        const nextPaymentStatus = resolvePaymentStatusAfterDelivery(newStatus, order.paymentMethod, order.paymentStatus);
         await tx.order.update({
           where: { id: order.id },
           data: {
@@ -98,7 +89,7 @@ async function ensurePacketaStatuses(orders: Order[]) {
       });
 
       order.status = newStatus;
-      order.paymentStatus = resolvePaymentStatus(newStatus, order.paymentMethod, order.paymentStatus);
+      order.paymentStatus = resolvePaymentStatusAfterDelivery(newStatus, order.paymentMethod, order.paymentStatus);
       upsertLocalMeta(order, '_packeta_status_code', String(status.code));
       upsertLocalMeta(order, '_packeta_status_text', status.text);
 

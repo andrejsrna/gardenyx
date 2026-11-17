@@ -3,22 +3,12 @@ import { isAutomationAuthorized } from '@/app/lib/automation/config';
 import prisma from '@/app/lib/prisma';
 import { OrderStatus, PaymentStatus, Prisma } from '@prisma/client';
 import { sendInvoiceLinkEmail, sendPacketaStatusEmail, sendReturnNoticeEmail } from '@/app/lib/email/order-confirmation';
-import { fetchPacketaStatus, mapPacketaStatusToOrderStatus } from '@/app/lib/packeta-status';
+import { fetchPacketaStatus, resolvePaymentStatusAfterDelivery, mapPacketaStatusToOrderStatus } from '@eshop-core/packeta/status';
 import { createInvoiceForOrder } from '@/app/lib/invoice/create-invoice';
 
 const RETURN_NOTIFY_AFTER = process.env.RETURN_NOTIFY_AFTER ? new Date(process.env.RETURN_NOTIFY_AFTER) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
 const emailStatusCodes = new Set([2, 4, 5]);
-
-const resolvePaymentStatus = (newStatus: OrderStatus, paymentMethod: string, current: PaymentStatus) => {
-  if (newStatus === OrderStatus.completed) return PaymentStatus.paid;
-  if (newStatus === OrderStatus.cancelled) {
-    if (paymentMethod === 'cod') return PaymentStatus.failed;
-    // For prepaid, mark refunded to unblock finance flow
-    return PaymentStatus.refunded;
-  }
-  return current;
-};
 
 export async function POST(request: Request) {
   if (!isAutomationAuthorized(request)) {
@@ -48,7 +38,7 @@ export async function POST(request: Request) {
             where: { id: order.id },
             data: {
               status: newStatus,
-              paymentStatus: resolvePaymentStatus(newStatus, order.paymentMethod, order.paymentStatus),
+              paymentStatus: resolvePaymentStatusAfterDelivery(newStatus, order.paymentMethod, order.paymentStatus),
             }
           });
 
