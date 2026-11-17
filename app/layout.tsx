@@ -12,7 +12,6 @@ import OrganizationSchema from './components/seo/OrganizationSchema';
 import WebSiteSchema from './components/seo/WebSiteSchema';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@eshop-core/utils/sales-suspension';
 import { GoogleTagManagerHead, GoogleTagManagerBody } from "./components/GoogleTagManager";
-import Loading from './loading';
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.gardenyx.eu";
@@ -97,15 +96,13 @@ export default async function RootLayout({
       </head>
       <body className={`${nunitoSans.variable} ${fraunces.variable} antialiased`}>
         <GoogleTagManagerBody />
-        <Suspense fallback={<Loading />}>
-          {children}
-          <Toaster />
-          <GoogleAnalytics />
-          <Posthog />
-          <FacebookPixel />
-          <GoogleAds />
-          <CookieConsentBanner />
-        </Suspense>
+        {children}
+        <Toaster />
+        <Suspense fallback={null}><GoogleAnalytics /></Suspense>
+        <Posthog />
+        <Suspense fallback={null}><FacebookPixel /></Suspense>
+        <GoogleAds />
+        <CookieConsentBanner />
       </body>
     </html>
   );
