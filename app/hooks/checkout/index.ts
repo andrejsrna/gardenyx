@@ -1,1 +1,1 @@
-export { useCheckoutForm } from './useCheckoutForm'; 
+export { useCheckoutForm, updateShippingFromBilling } from './useCheckoutForm';

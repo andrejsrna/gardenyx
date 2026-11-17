@@ -70,12 +70,3 @@ export interface WooCommerceOrder {
   shipping_lines: Array<{ method_id: string; method_title: string; total: string; total_tax?: string; taxes?: Array<unknown> }>;
   idempotency_key?: string;
 }
-
-export interface AddressComponents {
-  streetNumber?: string;
-  route?: string;
-  locality?: string;
-  postalCode?: string;
-  country?: string;
-  formattedAddress?: string;
-} 

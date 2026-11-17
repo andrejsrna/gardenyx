@@ -3,7 +3,7 @@
 import { ChangeEvent } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import type { FormData, PacketaPoint } from '../../lib/checkout/types';
+import type { FormData, PacketaPoint } from '@eshop-core/checkout/types';
 
 import { Package, Truck, MapPin } from 'lucide-react';
 

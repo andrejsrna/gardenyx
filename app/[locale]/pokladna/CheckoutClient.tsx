@@ -33,11 +33,11 @@ import {
 } from '../../components/checkout';
 
 // Import types, constants and hooks
-import type { PacketaPoint, PaymentError, WooCommerceOrder } from '../../lib/checkout/types';
+import type { PacketaPoint, PaymentError, WooCommerceOrder } from '@eshop-core/checkout/types';
 import { SHIPPING_VAT_RATE } from '../../lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '../../lib/pricing/math';
-import { updateShippingFromBilling, translateFieldName } from '../../lib/checkout/utils';
-import { useCheckoutForm } from '../../hooks/checkout';
+import { translateFieldName } from '@eshop-core/checkout/form';
+import { useCheckoutForm, updateShippingFromBilling } from '../../hooks/checkout';
 
 const REQUIRED_BILLING_FIELDS = [
   ['email', 'email'],

@@ -3,7 +3,7 @@
 import { FormEvent } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import type { FormData } from '../../lib/checkout/types';
+import type { FormData } from '@eshop-core/checkout/types';
 
 import { PRODUCT_VAT_PERCENT, PRODUCT_VAT_RATE, SHIPPING_VAT_PERCENT, SHIPPING_VAT_RATE } from '../../lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '../../lib/pricing/math';

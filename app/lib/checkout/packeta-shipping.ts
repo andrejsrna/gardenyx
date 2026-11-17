@@ -1,49 +1,47 @@
 import { Prisma } from '@prisma/client';
 import prisma from '@/app/lib/prisma';
+import {
+  FALLBACK_WEIGHT_KG,
+  getPacketaShippingQuote as quote,
+  roundMoney,
+  unitWeightOrFallback,
+  type PacketaShippingQuote,
+  type ShippingLineItem,
+} from '@eshop-core/packeta/pricing';
 
-// Packeta SK price list, effective 2026-07-01. Prices are for Z-POINT submission,
-// excluding VAT. Source: https://files.packeta.com/web/files/Kompletny_cennik_sluzieb.pdf
-export const PACKETA_MAX_WEIGHT_KG = 15;
-const FUEL_SURCHARGE_RATE = 0.155;
-const TOLL_PER_STARTED_KG = 0.04;
-const COD_FEE = 1;
+export { PACKETA_MAX_WEIGHT_KG } from '@eshop-core/packeta/pricing';
+export type { PacketaShippingQuote, ShippingLineItem };
 
-const PICKUP_TIERS = [
-  { maxKg: 5, price: 2.7 },
-  { maxKg: 10, price: 4.2 },
-  { maxKg: 15, price: 4.7 },
-] as const;
+type StoredVariant = { id?: number; weight?: number | null; sku?: unknown };
 
-const HOME_TIERS = [
-  { maxKg: 1, price: 4 },
-  { maxKg: 2, price: 4.55 },
-  { maxKg: 5, price: 4.75 },
-  { maxKg: 10, price: 6.12 },
-  { maxKg: 15, price: 7.25 },
-] as const;
+/** Unit weights (variant weight first, then product) for the cart; `null` for unknown products. */
+async function unitWeights(items: ShippingLineItem[]) {
+  const products = await prisma.product.findMany({
+    where: { wcId: { in: Array.from(new Set(items.map((item) => BigInt(item.productId)))) } },
+    select: { wcId: true, weight: true, variants: true },
+  });
+  const productById = new Map(products.map((product) => [product.wcId.toString(), product]));
+  return items.map((item) => {
+    const product = productById.get(String(item.productId));
+    if (!product) return null;
+    const variants = Array.isArray(product.variants) ? product.variants as StoredVariant[] : [];
+    const variant = item.variationId
+      ? variants.find((candidate) => Number(candidate.id) === Number(item.variationId))
+      : variants.find((candidate) => Boolean(item.sku) && String(candidate.sku || '') === item.sku);
+    const rawWeight = variant?.weight ?? product.weight;
+    return typeof rawWeight === 'object' && rawWeight && 'toNumber' in rawWeight
+      ? (rawWeight as Prisma.Decimal).toNumber()
+      : Number(rawWeight);
+  });
+}
 
-export type ShippingLineItem = {
-  productId: number;
-  variationId?: number | null;
-  sku?: string | null;
-  quantity: number;
-};
-
-export type PacketaShippingQuote = {
-  weightKg: number;
-  basePrice: number;
-  fuelSurcharge: number;
-  tollSurcharge: number;
-  codFee: number;
-  totalNet: number;
-};
-
-type StoredVariant = { id?: number; weight?: number | null };
-
-const FALLBACK_WEIGHT_KG = 0.5;
-
-function roundMoney(value: number) {
-  return Math.round(value * 100) / 100;
+async function cartWeightKg(items: ShippingLineItem[]) {
+  const weights = await unitWeights(items);
+  return items.reduce((sum, item, i) => {
+    if (weights[i] === null) throw new Error(`Product ${item.productId} not found`);
+    const label = `product ${item.productId}${item.variationId ? ` variant ${item.variationId}` : ''}`;
+    return sum + unitWeightOrFallback(weights[i], label) * item.quantity;
+  }, 0);
 }
 
 export async function getPacketaShippingQuote(
@@ -54,88 +52,18 @@ export async function getPacketaShippingQuote(
   if (shippingMethod === 'personal_pickup') {
     return { weightKg: 0, basePrice: 0, fuelSurcharge: 0, tollSurcharge: 0, codFee: 0, totalNet: 0 };
   }
-  if (shippingMethod !== 'packeta_pickup' && shippingMethod !== 'packeta_home') {
-    throw new Error('Unsupported shipping method');
-  }
-
-  const validItems = items.filter((item) => Number.isFinite(item.productId) && item.quantity > 0);
-  if (!validItems.length) throw new Error('Cart is empty');
-
-  const products = await prisma.product.findMany({
-    where: { wcId: { in: Array.from(new Set(validItems.map((item) => BigInt(item.productId)))) } },
-    select: { wcId: true, weight: true, variants: true },
-  });
-  type ShippingProduct = typeof products[number];
-  const productById = new Map<string, ShippingProduct>(products.map((product) => [product.wcId.toString(), product]));
-
-  let weightKg = 0;
-  for (const item of validItems) {
-    const product = productById.get(String(item.productId));
-    if (!product) throw new Error(`Product ${item.productId} not found`);
-
-    const variants = Array.isArray(product.variants) ? product.variants as StoredVariant[] : [];
-    const variant = item.variationId
-      ? variants.find((candidate) => Number(candidate.id) === Number(item.variationId))
-      : variants.find((candidate) => Boolean(item.sku) && String((candidate as { sku?: unknown }).sku || '') === item.sku);
-    const rawWeight = variant?.weight ?? product.weight;
-    let unitWeight = typeof rawWeight === 'object' && rawWeight && 'toNumber' in rawWeight
-      ? (rawWeight as Prisma.Decimal).toNumber()
-      : Number(rawWeight);
-
-    if (!Number.isFinite(unitWeight) || unitWeight <= 0) {
-      console.warn(`Missing shipping weight for product ${item.productId}${item.variationId ? ` variant ${item.variationId}` : ''} — using fallback ${FALLBACK_WEIGHT_KG} kg`);
-      unitWeight = FALLBACK_WEIGHT_KG;
-    }
-    weightKg += unitWeight * item.quantity;
-  }
-
-  const tiers = shippingMethod === 'packeta_pickup' ? PICKUP_TIERS : HOME_TIERS;
-  const tier = tiers.find((candidate) => weightKg <= candidate.maxKg);
-  if (!tier) throw new Error(`Cart weight ${roundMoney(weightKg)} kg exceeds Packeta's 15 kg limit`);
-
-  const basePrice = tier.price;
-  const fuelSurcharge = roundMoney(basePrice * FUEL_SURCHARGE_RATE);
-  const tollSurcharge = roundMoney(Math.ceil(weightKg) * TOLL_PER_STARTED_KG);
-  const codFee = paymentMethod === 'cod' ? COD_FEE : 0;
-
-  return {
-    weightKg: roundMoney(weightKg),
-    basePrice,
-    fuelSurcharge,
-    tollSurcharge,
-    codFee,
-    totalNet: roundMoney(basePrice + fuelSurcharge + tollSurcharge + codFee),
-  };
+  return quote(items, shippingMethod, paymentMethod, cartWeightKg);
 }
 
-export function getShippingNetFromQuote(quote: PacketaShippingQuote, freeShipping = false) {
-  return freeShipping ? 0 : quote.totalNet;
-}
-
+/** Cart weight for the overweight warning; unknown products are skipped. */
 export async function getCartWeightKg(items: ShippingLineItem[]): Promise<number> {
   const validItems = items.filter((item) => Number.isFinite(item.productId) && item.quantity > 0);
   if (!validItems.length) return 0;
-  const products = await prisma.product.findMany({
-    where: { wcId: { in: Array.from(new Set(validItems.map((item) => BigInt(item.productId)))) } },
-    select: { wcId: true, weight: true, variants: true },
-  });
-  const productById = new Map<string, typeof products[number]>(products.map((p) => [p.wcId.toString(), p]));
-  let weightKg = 0;
-  for (const item of validItems) {
-    const product = productById.get(String(item.productId));
-    if (!product) continue;
-    const variants = Array.isArray(product.variants) ? product.variants as StoredVariant[] : [];
-    const variant = item.variationId
-      ? variants.find((c) => Number(c.id) === Number(item.variationId))
-      : variants.find((c) => Boolean(item.sku) && String((c as { sku?: unknown }).sku || '') === item.sku);
-    const rawWeight = variant?.weight ?? product.weight;
-    let unitWeight = typeof rawWeight === 'object' && rawWeight && 'toNumber' in rawWeight
-      ? (rawWeight as Prisma.Decimal).toNumber()
-      : Number(rawWeight);
-    if (!Number.isFinite(unitWeight) || unitWeight <= 0) unitWeight = FALLBACK_WEIGHT_KG;
-    weightKg += unitWeight * item.quantity;
-  }
+  const weights = await unitWeights(validItems);
+  const weightKg = validItems.reduce((sum, item, i) => {
+    const weight = weights[i];
+    if (weight === null) return sum;
+    return sum + (Number.isFinite(weight) && weight > 0 ? weight : FALLBACK_WEIGHT_KG) * item.quantity;
+  }, 0);
   return roundMoney(weightKg);
 }
-
-export const PACKETA_PRICE_LIST_EFFECTIVE_FROM = '2026-07-01';

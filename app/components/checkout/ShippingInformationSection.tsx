@@ -2,7 +2,7 @@
 
 import { ChangeEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import type { FormData } from '../../lib/checkout/types';
+import type { FormData } from '@eshop-core/checkout/types';
 import { SUPPORTED_COUNTRIES } from '../../lib/checkout/constants';
 
 function getPostcodeProps(country: string) {

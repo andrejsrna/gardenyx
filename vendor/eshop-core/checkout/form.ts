@@ -1,6 +1,14 @@
 import type { BillingInfo, ShippingInfo } from './types';
 
-export function updateShippingFromBilling(billingData: BillingInfo, currentShipping: ShippingInfo): ShippingInfo {
+/**
+ * Shipping address copied from billing ("same as billing"). `fixed` overrides fields the shop
+ * does not let the customer choose (NKV: `{ state: 'Slovenská republika', country: 'SK' }`).
+ */
+export function updateShippingFromBilling(
+  billingData: BillingInfo,
+  currentShipping: ShippingInfo,
+  fixed?: Partial<Pick<ShippingInfo, 'state' | 'country'>>,
+): ShippingInfo {
   return {
     ...currentShipping,
     first_name: billingData.first_name,
@@ -12,6 +20,7 @@ export function updateShippingFromBilling(billingData: BillingInfo, currentShipp
     state: billingData.state || '',
     postcode: billingData.postcode,
     country: billingData.country || 'SK',
+    ...fixed,
   };
 }
 
