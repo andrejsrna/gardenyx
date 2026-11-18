@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
 import { Prisma, OrderStatus, PaymentMethod, PaymentStatus } from '@prisma/client';
 import { getStripe } from '@eshop-core/stripe/client';
+import { createStripeWebhook, type StripePI } from '@eshop-core/stripe/webhook';
 import prisma from '@/app/lib/prisma';
 import { getStoredOrderItemIds, isPrismaIntegerOverflowError, withSourceOrderItemIdsInMeta } from '@/app/lib/orders/item-id-storage';
 import { getProductsByIds } from '@/app/lib/products';
@@ -10,15 +10,7 @@ import { PRODUCT_VAT_RATE, SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants
 import { taxFromGross } from '@/app/lib/pricing/math';
 import { readChunkedMeta } from '@eshop-core/stripe/metadata';
 
-// NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
-
-export type StripePI = {
-  id: string;
-  amount?: number;
-  amount_received?: number;
-  status?: string;
-  metadata?: Record<string, string | undefined>;
-};
+export type { StripePI } from '@eshop-core/stripe/webhook';
 
 const toDec = (value: number | string | undefined, fallback = 0) => {
   const num = typeof value === 'string' ? Number(value) : value;
@@ -230,89 +222,11 @@ export async function ensureOrderFromPaymentIntent(pi: StripePI) {
   return created.id;
 }
 
-export async function POST(request: Request) {
-  const stripe = getStripe();
-  try {
-    const signature = request.headers.get('stripe-signature');
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!signature || !endpointSecret) {
-      return NextResponse.json({ error: 'Invalid webhook config' }, { status: 400 });
-    }
-
-    const rawBody = await request.arrayBuffer();
-    const rawBodyBuffer = Buffer.from(rawBody);
-
-    let event: unknown;
-    try {
-      event = stripe.webhooks.constructEvent(rawBodyBuffer, signature, endpointSecret);
-    } catch {
-      return NextResponse.json({ error: 'Signature verification failed' }, { status: 400 });
-    }
-
-    const typedEvent = event as { type: string; data: { object: unknown } };
-
-    switch (typedEvent.type) {
-      case 'payment_intent.succeeded': {
-        const pi = typedEvent.data.object as StripePI;
-        try {
-          const orderId = pi.metadata?.order_id;
-          if (orderId) {
-            const order = await prisma.order.findUnique({ where: { id: orderId } });
-            if (order) {
-              const expectedCents = Number(order.total) * 100;
-              if (Number.isFinite(expectedCents) && expectedCents > 0 && typeof pi.amount_received === 'number' && pi.amount_received !== expectedCents) {
-                await prisma.order.update({
-                  where: { id: orderId },
-                  data: {
-                    status: OrderStatus.on_hold,
-                    meta: { create: { key: '_stripe_amount_received', value: String(pi.amount_received) } }
-                  }
-                });
-                break;
-              }
-              await prisma.order.update({
-                where: { id: orderId },
-                data: {
-                  status: OrderStatus.processing,
-                  paymentStatus: PaymentStatus.paid,
-                  transactionId: pi.id,
-                  meta: { create: { key: '_stripe_payment_intent_id', value: pi.id } }
-                }
-              });
-              break;
-            }
-          }
-
-          await ensureOrderFromPaymentIntent(pi);
-        } catch (err) {
-          console.error('[Stripe Webhook] ensureOrderFromPaymentIntent failed:', err);
-          // keep webhook resilient
-        }
-        break;
-      }
-      case 'payment_intent.payment_failed': {
-        const pi = typedEvent.data.object as { id: string; metadata?: Record<string, string | undefined> };
-        const orderId = pi.metadata?.order_id;
-        if (orderId) {
-          try {
-            await prisma.order.update({
-              where: { id: orderId },
-              data: {
-                status: OrderStatus.failed,
-                paymentStatus: PaymentStatus.pending,
-                customerNote: 'Platba zlyhala. Skúste prosím zaplatiť znova alebo zvoľte iný spôsob.'
-              }
-            });
-          } catch {}
-        }
-        break;
-      }
-      default:
-        break;
-    }
-
-    return NextResponse.json({ received: true });
-  } catch {
-    return NextResponse.json({ error: 'Webhook handler error' }, { status: 500 });
-  }
-}
+export const POST = createStripeWebhook({
+  getStripe,
+  getEndpointSecret: () => process.env.STRIPE_WEBHOOK_SECRET,
+  order: prisma.order,
+  ensureOrderFromPaymentIntent,
+  failedPaymentNote: 'Platba zlyhala. Skúste prosím zaplatiť znova alebo zvoľte iný spôsob.',
+  logError: error => console.error('[Stripe Webhook] ensureOrderFromPaymentIntent failed:', error),
+});
