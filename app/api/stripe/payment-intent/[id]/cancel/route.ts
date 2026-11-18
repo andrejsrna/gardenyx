@@ -1,6 +1,6 @@
 import { logError } from '@eshop-core/utils/logger';
 import { NextRequest, NextResponse } from 'next/server';
-import { getStripe } from '@/app/lib/stripe';
+import { getStripe } from '@eshop-core/stripe/client';
 import { rateLimit } from '@eshop-core/utils/rateLimit';
 import prisma from '@/app/lib/prisma';
 import type Stripe from 'stripe';

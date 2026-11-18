@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getStripe } from '@/app/lib/stripe';
+import { getStripe } from '@eshop-core/stripe/client';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@eshop-core/utils/sales-suspension';
 import prisma from '../../../lib/prisma';
 import { getProductsByIds } from '@/app/lib/products';
@@ -7,7 +7,7 @@ import { getProductsByIds } from '@/app/lib/products';
 import { recordCouponRedemption } from '@/app/lib/coupons';
 import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { netFromGross, taxFromGross } from '@/app/lib/pricing/math';
-import { readChunkedMeta } from '@/app/lib/stripe/metadata';
+import { readChunkedMeta } from '@eshop-core/stripe/metadata';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 const creatingByPi = new Set<string>();

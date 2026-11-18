@@ -24,5 +24,3 @@ export function getStripe(): Stripe {
   }
   return stripeSingleton;
 }
-
-

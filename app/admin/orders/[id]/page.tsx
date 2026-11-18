@@ -238,7 +238,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
     let stripeCancelled = false;
     if (stripePIId && oldMethod === 'stripe') {
       try {
-        const { getStripe } = await import('@/app/lib/stripe');
+        const { getStripe } = await import('@eshop-core/stripe/client');
         const stripe = getStripe();
         const pi = await stripe.paymentIntents.retrieve(stripePIId);
         if (pi.status === 'succeeded') {

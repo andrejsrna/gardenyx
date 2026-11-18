@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
 import {z} from 'zod';
 import crypto from 'crypto';
-import { getStripe } from '@/app/lib/stripe';
+import { getStripe } from '@eshop-core/stripe/client';
 import { rateLimit } from '@eshop-core/utils/rateLimit';
 import { isSalesSuspended, getSalesSuspensionMessage } from '@eshop-core/utils/sales-suspension';
 import { getProductsByIds } from '@/app/lib/products';
@@ -9,7 +9,7 @@ import { validateCoupon } from '@/app/lib/coupons';
 import { getPacketaShippingQuote } from '@/app/lib/checkout/packeta-shipping';
 import { SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { grossFromNet, taxFromNet } from '@/app/lib/pricing/math';
-import { readChunkedMeta, setChunkedMeta } from '@/app/lib/stripe/metadata';
+import { readChunkedMeta, setChunkedMeta } from '@eshop-core/stripe/metadata';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 

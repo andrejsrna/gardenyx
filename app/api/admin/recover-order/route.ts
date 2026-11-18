@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getStripe } from '@/app/lib/stripe';
+import { getStripe } from '@eshop-core/stripe/client';
 import { ensureOrderFromPaymentIntent, StripePI } from '@/app/api/stripe/webhook/route';
 import { getAutomationAdminToken } from '@/app/lib/automation/config';
 import prisma from '@/app/lib/prisma';

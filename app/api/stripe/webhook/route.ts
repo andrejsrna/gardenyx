@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Prisma, OrderStatus, PaymentMethod, PaymentStatus } from '@prisma/client';
-import { getStripe } from '@/app/lib/stripe';
+import { getStripe } from '@eshop-core/stripe/client';
 import prisma from '@/app/lib/prisma';
 import { getStoredOrderItemIds, isPrismaIntegerOverflowError, withSourceOrderItemIdsInMeta } from '@/app/lib/orders/item-id-storage';
 import { getProductsByIds } from '@/app/lib/products';
@@ -8,7 +8,7 @@ import { recordCouponRedemption } from '@/app/lib/coupons';
 import { finalizeOrder } from '@/app/lib/checkout/finalize-order';
 import { PRODUCT_VAT_RATE, SHIPPING_VAT_RATE } from '@/app/lib/pricing/constants';
 import { taxFromGross } from '@/app/lib/pricing/math';
-import { readChunkedMeta } from '@/app/lib/stripe/metadata';
+import { readChunkedMeta } from '@eshop-core/stripe/metadata';
 
 // NOTE: initialize Stripe inside the handler so build doesn't fail when env vars are missing
 
